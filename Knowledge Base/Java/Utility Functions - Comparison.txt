@@ -1,0 +1,50 @@
+Utility Functions (Built-in)
+
+	Comparison Operations
+
+		Integer.
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	int		compare(int x, int y)			Compare where: 		0: Equal 		<0: x < y		>0: x > y		(Signed - 2-Complement)
+			int		compareTo(int i)			Compare where:		0: Equal		<0: this < i		>0: this > i
+		static	int		compareUnsigned(int x, int y)		Compare where: 		0: Equal 		<0: x < y		>0: x > y		(Unsigned)
+
+			boolean		equals(Object obj)			True if obj is an Integer, not null and value is same as this		
+
+		static	int		min(int a, int b)			Return the smallest of a or b
+		static	int		max(int a, int b)			Return the largest of a or b
+
+
+		System Property
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	Integer		getInteger(String s)			Get System Property s (as defined/obtained via System.getProperty(String s)), val is the default value returned if property do not exist, use null if not needed to prevent unnecessary allocation of Integer
+		static	Integer		getInteger(String s, int val)
+		static	Integer		getInteger(String s, Integer val)
+
+
+		Division
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	int		divideUnsigned(int x, int y)		Divide x/y as both unsigned
+
+		static	int		remainderUnsigned(int x, int y)		Return the unsigned remainder of x/y (compared to % which I presume is signed)
+
+
+		Sign
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static 	int		signum(int i)				Return the sign of i:
+
+											i: -12:		return: -1
+											i: 0:		return: 0
+											i: 12:		return: 1
+
+		HashCode
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			int		hashCode()				Return hashCode for this
+		static	int		hashCode(int i)				Return hashCode for i
+
+
+	

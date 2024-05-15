@@ -1,0 +1,383 @@
+Generic - Type Parameters
+
+	Types:
+
+		Type Parameters may only be declared by the following x3 components:
+
+			1. Class:		Type Parameter defined at Class Level:			class ClassA<T>
+			2. Interface:		Type Parameter defined at Interface Level:		interface InterfaceA<T>
+			3. Local:		Type Parameter defined at Constructor/Method Level:	<K, T extends Number> K methodA(T t, K k, int i)
+
+			1. Class<T>
+
+				Members			Permitted Type Parameters
+				_________________________________________________
+
+				Instance Variables	//Class
+				Constructor		//Class and Local
+				Method			//Class and Local
+				Static Method		//Local
+
+			2. Interface<T>
+
+				Members			Permitted Type Parameters
+				_________________________________________________
+
+				Abstract Method		//Interface and Local
+				Default Method		//Interface and Local
+				Static Method		//Local
+
+	Key Global Rules:
+
+		1. Identical:				All Class/Interface/Local Type Parameters are identical in behaviour, semantics and syntax. 
+		2. Methods:
+
+			i.  All Methods (inc. Constructor):	May use Class/Interface or Local.
+			ii. Static Methods:			May use Local Type only.
+
+		3. Class/Interface Type Parameters:	May not be used within any static context.
+
+	General Form:
+
+		Class:
+
+			[Access Modifier] class	[Identifier/Name] [Type Parameters] <T, V> extends [Extended Class] implements [Implementing Interfaces [Comma Separated List]]
+
+			class Class<T>
+			{
+				T objT;						//Class		Instance Variable must be initialised via an argument passed to the Constructor or Method.
+				final T objT;					//Class		Instance Variable (Final) must be initialised via an argument passed to the Constructor only.
+
+					Class (T t, int i){}			//Class
+				<K, V> 	Class (V v, int i){}			//Local
+				<K, V> 	Class (K k, V v, int i){}		//Class and Local
+				<K, T> 	Class (K k, int i){}			//Local (with Class Override)
+
+					T method (T t, int i){}			//Class
+				<K, V> 	K method (V v, int i){}			//Local
+				<K, V> 	T method (K k, V v, int i){}		//Class and Local
+				<K, T> 	T method (K k, int i){}			//Local (with Class Override)
+
+				static <K, V> K staticMethod (V v, int i){}	//Local
+				static <K, T> T staticMethod (K k, int i){}	//Local (with Class Override)
+			}
+
+			Compile Fail:
+
+				class Class<T>
+				{
+					static T objT;				//Compile Fail		Class Variable:		Class Type Parameter used in static context	
+					static final T objT;			//Compile Fail		Class Variable (Final)	Class Type Parameter used in static context
+
+					static T staticMethod (T t, int i){}	//Compile Fail		Class Type Parameter used in static context	
+				}
+
+		Interface:
+
+			[Access Modifier] interface [Identifier/Name] [Type Parameters] <T, V> extends [Extended Interfaces [Comma Separated List]]
+
+			interface Interface<T, V>
+			{
+				int i 	= 1;						//Fields are all Class Variables and implicit 'public', 'static', 'final' constants.
+				String 	= "Test";					//Fields must be instantiated/initialised when declared.
+											//All types are permitted except an Interface Type Parameter.
+
+						T abstractMethod (T t, int i);		//Class
+					<K, V> 	K abstractMethod (V v, int i);		//Local
+					<K, V> 	T abstractMethod (K k, V v, int i);	//Class and Local
+					<K, T> 	T abstractMethod (K k, int i);		//Local (with Class Override)
+
+				default        	T defaultMethod (T t, int i){}		//Class
+				default <K, V> 	K defaultMethod (V v, int i){}		//Local
+				default <K, V> 	T defaultMethod (K k, V v, int i){}	//Class and Local
+				default <K, T> 	T defaultMethod (K k, int i){}		//Local (with Class Override)
+
+				static 	<K, V> 	K staticMethod (V v, int i){}		//Local
+				static	<K, T> 	T staticMethod (K k, int i){}		//Local (with Class Override)
+
+				Inner Class						//Nested Types e.g. Helper Classes
+				Inner Interface
+				Inner Enum
+			}
+
+			Compile Fail:
+
+				interface Interface<T>
+				{
+							T objT;						//Compile Fail		Instance Variables are implicit 'public', 'static', 'final'	Interface Type Parameter used in static context
+					final 		T objT;						//Compile Fail		Instance Variables are implicit 'public', 'static', 'final' 	Interface Type Parameter used in static context
+					static 		T objT;						//Compile Fail		Class Variable							Interface Type Parameter used in static context
+					static final 	T objT;						//Compile Fail		Class Variable (Final)						Interface Type Parameter used in static context
+
+						final 	T abstractMethod 	(T t, int i);		//Compile Fail		'final' not permitted anywhere in interface.
+					static 	final 	T staticMethod 		(T t, int i);		//Compile Fail		'final' not permitted anywhere in interface.
+					default final 	T defaultMethod 	(T t, int i);		//Compile Fail		'final' not permitted anywhere in interface.
+
+					static 		T staticMethod 		(T t, int i){}		//Compile Fail		Interface Type Parameter used in static context
+				}			
+
+			T V:		Class/Interface Type Parameters
+			<T, V>:		Class/Interface Type Parameter List <T, V>.
+
+	Placeholder:		T is a placeholder.
+	Non-Static:		T is implicit non-static.
+	Erasure:		T is replaced with Object and unknown at compile time.
+	Non-Primitives:		T may only hold non-primitive types only i.e. reference variables only:
+
+					1. Class
+  					2. Interface
+					3. Array
+					4. Parameterised Type:
+
+						i.  Another Generic Class which has been invoked:		Box<Integer>	
+						ii. Another Generic Interface which has been invoked:		Comparable<Integer>
+
+	Existence:		T may only be used as:
+
+					1. Instance Variable
+					2. Parameter
+					3. Local Variable
+					4. Return
+			
+	Type Specification:
+
+		Alowed:	
+
+			1. Unbounded			<T>
+			2. Upper Bounded		<T extends ClassA>
+			3. Minimal Implementation	<T extends InterfaceA 	& InterfaceB 	& ...>
+			4. Multiple Bounded		<T extends ClassA<T> 	& InterfaceA<T> & ...>
+			5. Multiple Parameters		<T, V>
+
+		Not Allowed:
+
+			1. Lower Bound		<T super ClassA>
+			2. Wildcards		<? super ClassA>
+
+		Examples:
+
+			<T extends ClassA>:
+
+				T can be:
+
+					i.  Class:		ClassA (or subclass).
+
+                	<T extends InterfaceA>:
+
+				T can be:
+
+					i.  Interface:		InterfaceA (or subinterface).
+					ii. Class:		A class which ultimately implements (or contains) InterfaceA (or subinterface).
+
+				NB: A subinterface will always contain the literal and expected abstract methods given that it is an extension of its superinterface(s).
+
+			<T extends InterfaceA & InterfaceB<T>>:
+
+				T can be:
+
+					i.  Interface:		An interface which extends both:
+
+						a. InterfaceA 		(or subinterface)	(and)
+						b. InterfaceB<T>	(or subinterface)
+
+					ii. Class:		ClassA (or subclass) which ultimately implements (or contains) both:
+
+						a. InterfaceA 		(or subinterface)	(and)
+						b. InterfaceB<T> 	(or subinterface)
+
+			<T extends ClassA & InterfaceA & InterfaceB<T>>:
+
+				T can be:
+
+					i.  Class:		ClassA (or subclass) which ultimately implements (or contains) both:
+
+						a. InterfaceA 		(or subinterface)	(and)
+						b. InterfaceB<T> 	(or subinterface)
+
+                	<(T extends ClassA),(V extends InterfaceA)>
+
+				T should be read/considered as:
+
+					- A description of what T or V must be.
+                			- Used as a placeholder within the body of interface in accordance with the upper bound constraint.
+					- Do not 'think of' the T or V as something 'separate'.
+
+		Examples:
+
+			Class:		class Class		<T>
+					class Class		<T extends ClassA>					//T must be of 		ClassA (or subclass)
+					class Class		<T extends InterfaceA>					//T must implement 	InterfaceA (or subinterface)
+					class Class		<T extends InterfaceA & InterfaceB ...>			//T must implement 	InterfaceA (or subinterface) and InterfaceB (or subinterface)
+					class Class		<T extends ClassA & InterfaceA & InterfaceB ...>	//T must be of 		ClassA (or subclass) and implement InterfaceA (or subinterface) and InterfaceB (or subinterface)
+																//NB: Any extended Class must go first
+					//Compile Error
+
+						class Class		<T super ClassA>				//Compile Error		No Lower Bound
+						class Class		<? super ClassA>				//Compile Error		No wilcard with lower bound
+						class Class		<? extends ClassA>				//Compile Error		No wildcard with extended clause 
+
+			Interface:	interface Interface	<T>
+					interface Interface	<T extends ClassA>
+					interface Interface	<T extends InterfaceA>
+					interface Interface	<T extends InterfaceA & InterfaceB ...>
+					interface Interface	<T extends ClassA & InterfaceA & InterfaceB ...>
+
+					//Compile Error
+
+						interface Interface	<T super ClassA>				//Compile Error		No Lower Bound
+						interface Interface	<? super ClassA>				//Compile Error		No wilcard with lower bound
+						interface Interface	<? extends ClassA>				//Compile Error		No wildcard with extended clause
+
+			Local:		public static <T> 						T 	staticMethod(T t)
+					public static <T extends ClassA> 				T 	staticMethod(T t)
+					public static <T extends InterfaceA> 				T 	staticMethod(T t)
+					public static <T extends InterfaceA & InterfaceB ...> 		T 	staticMethod(T t)
+					public static <T extends ClassA & InterfaceA & InterfaceB ...> 	T 	staticMethod(T t)
+
+					//Compile Error
+
+						public static <T super ClassA> 		T 	staticMethod(T t)	//Compile Error		No Lower Bound
+						public static <? super ClassA> 		T 	staticMethod(T t)	//Compile Error		No wilcard with lower bound
+						public static <? extends ClassA> 	T 	staticMethod(T t)	//Compile Error		No wildcard with extended clause
+
+		NB:
+			interface GenericInterface<T, Integer>			//Makes no sense, Integer considered to be a placeholder Type Parameter.
+			interface GenericInterface<T, V extends Integer>	//Correct.
+
+	Parameterised Types as Type Arguments:
+
+		Type Arguments may be other generic classes/interfaces:
+
+            		<T extends InterfaceA>:                     		//T can be of type InterfaceA 				or x1 of its subinterfaces.
+           		<T extends InterfaceA<T>>:                  		//T can be of type InterfaceA<T> 			or x1 of its subinterfaces.
+            		<T extends InterfaceA<ClassA>>:            		//T can be of type InterfaceA<ClassA> 			or x1 of its subinterfaces.
+            		<T extends InterfaceA<InterfaceB>>:         		//T can be of type InterfaceA<InterfaceB> 		or x1 of its subinterfaces.
+            		<T extends InterfaceA<ClassA<ClassB>>>:   		//T can be of type InterfaceA<ClassA<ClassB>>> 		or x1 of its subinterfaces.
+
+	Erasure:
+
+           	- In order to maintain backward compatibility with legacy Java.
+            	- All type parameters are cast to Objects and recast when required.
+            	- Therefore:
+
+                	Compile Time:     Generic Types are unknown and converted to Object and cast accordingly.
+                	Runtime:          Known
+
+	Static/Non-Static:
+
+		The primary aspect which determines what and where each type of Type Parameter can be used within a class/interface is whether the context is static or non-static.
+
+		Key Rules:
+
+			1. Class/Interface Type Parameters:
+
+				- Class/Interface Type Parameters are implicitly/automatically placed within non-Static memory.
+				- Class/Interface Type Parameters can only be used in non-Static memory.
+				- Class/Interface Type Parameters can not be used in Static memory.
+
+			2. Local Type Parameters:
+
+				- Local Type Parameters are the only Type Parameters which may be used in Static memory.
+
+			3. Static Methods:
+
+				- Static methods are the only Static memory which may contain Type Parameters of any kind.
+
+			2. Non-Static Methods may use any combination of the following:
+
+				Local
+				Class
+				Local and Class
+				Local (with Class override)
+
+				NB: All non-static methods:
+
+					Class:		Constructor
+							Method
+
+					Interface:	Abstract Method
+							Default Method
+
+			3. Static Methods may only use Local Type Parameters.
+
+		Context:
+
+			Class:
+
+				Non-Static:	Instance Variable
+						Constructor
+						Method
+
+				Static:		Class Variable
+						Static Method
+
+			Interface:
+
+				Non-Static:	Abstract Method
+						Default Method
+
+				Static:		Class Variable
+						Static Method
+
+	Class:
+
+		Instance Variable: (Invocation, Instantiation and Initialisation)			
+
+			Invocation:
+
+				T can be invoked, but reference variable only (null/empty):
+
+				public class MyClass<T>
+				{
+					T objT;
+
+			Instantiated:
+
+				T cannot be instantiated via 'new':
+
+				T objT = new T();	//Compile Error
+
+			Initialised:
+
+				T can only be initialised via it being passed an object/interface as an argument to a constructor/method/static method:
+
+				public class MyClass<T>
+				{
+					T objT;
+
+					MyClass(T t)
+					{
+						objT = t;
+
+			NB:
+				'final' Instance Variable must be initialised:
+
+					1. Within constructor only.
+					2. Via an object being passed as an argument.
+
+			
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

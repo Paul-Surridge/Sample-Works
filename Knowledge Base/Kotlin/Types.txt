@@ -1,0 +1,293 @@
+Kotlin
+
+	Types:
+
+		- Types are either non-null or nullable.
+		- Types do not have the distinction of being primitive nor reference, however when compiled the types are converted to primitive/reference as most appropriate:
+
+			fun foo(): Int = 1		//Compiles to primitive int
+			fun bar(): Int? = 1		//Compiles to reference Integer
+
+			//The corresponding Java code can be obtained via IDE: Search Action 'Show Kotlin Bytecode': 'Decompile'
+
+				public static final int foo() {			//fun foo(): Int = 1
+				    return 1;
+				}
+
+				@Nullable
+				public static final Integer bar() {		//fun bar(): Int? = 1
+				    return Integer.valueOf(1);
+				}
+
+			//This compliation down to primitive/reference is applicable to all such base types e.g. double, float, boolean ...
+
+		- Types convert/use corresponding types in java as follows:
+
+			Kotlin		Java
+			-----------------------------
+			List<Int>	List<Integer>		//Generics all compile using reference types even if has type parameter of a 'primitive' (given that generics do not accept primitives within Java)
+			Array<Int>	Integer[]
+			IntArray	int[]
+			Unit		void
+			Nothing		void
+			String		String			//Kotlin does not have own implementation of java.lang.String but modifies/improves on some confusing functions e.g.
+
+									Java:		"one.two".replaceAll(".","*")			********	(In Java the "." is interpreted as a regular expression)
+									Kotlin:		"one.two".replace(".","*")			one*two*
+									Kotlin:		"one.two".replace(".".toRegex(),"*")		********
+
+	Type Inference:
+
+		- Type inference allows for the Type Specifier to be omitted in all situations where the type can be inferred.
+		- Type inference is only applied when initialising after being declared:
+
+			val count = 2		//Infered to be Int
+			val count = 2.3f	//Infered to be Float
+			val count = 2.7		//Infered to be Double
+			val name = "Paul"	//Infered to be String
+
+		- Type inference is only applicable if the variable is initialised with a value before it is used.
+		- Type Inference should only be used when it is abundantly clear what the type is e.g. from the name of the variable or if it is assigned a literal, excessive use can make it appear unclear and reduce readability.
+
+	Primitive/Basic Types:
+
+		- Primitive Types do 'exist' within Kotlin, they do not exist per se but will compile down to the respective primitive within Java:  
+
+			Integers:			Byte, Short, Int, Long
+			Unsigned integers:		UByte, UShort, UInt, ULong
+			Floating-point numbers:		Float, Double
+			Booleans:			Boolean
+			Characters:			Char
+			Strings:			String
+
+		- Primitive Types are all classes within Kotlin.
+
+	val:
+
+		- val is equivalent to a final field in Java.
+		- val fields can not be reasigned once initialised.
+		- val are typically used as constants:
+
+			val iConstant = 10			//Constant int of 10
+
+		- val when assigned a reference still (as one would expect) allows for the mutation of that instance, val just inhibits the changing of the reference value/address e.g.
+
+			val list = mutatbleListOf("Java")
+			list.add("Kotlin")			//Compile OK
+
+		- val should be the default when declaring variables, due to:
+
+			1. Readable
+			2. Safety
+			3. Functional style
+			4. Easier to support
+
+	var:
+
+		- var is the alternative to val.
+		- var allows for the variable to be reassigned after being initialised.
+
+			var iTest1: Int			//Type explicitly defined if no value is not being supplied to enable inference
+			var iTest2: Int = 10;		//Type explicitly defined and initialised - Recommended
+			var iTest3 = 10;		//Type inferred
+
+			iTest1 = 10			//Variable reassignable
+
+		- var should only be used when absolutely necessary.
+
+	Any
+
+		- Any is analogous to Object in Java.
+		- Any is the supertype of all types, all types are extensions of 'Any' including what may be considered primitves e.g. 'Int':
+
+			Any
+			|_______
+			|	|
+			Int	MyClass
+			|_______|
+			|
+			Nothing
+
+			NB: The corresponding heirachy of nullable equivalents are higher than non-nullable, where the highest type is Any?
+
+				- This is demonstrated via it being possible to assign a non-Nullable to a Nullable but not the other way around:
+
+					Nullable? = non-Nullable	//Compile OK
+					non-Nullable = Nullable? 	//Compile Fail (without necessary checks)
+
+					[Research required to understand how these x2 heirachies are arranged/intertwine and to the extent of real world implications]
+
+			Any?
+			|_______
+			|	|
+			Int?	MyClass?
+			|_______|
+			|
+			Nothing?
+
+	Unit:
+	
+		- Unit is the direct equivalemnt of 'void' in Java.
+		- Unit is always used where void would be used in Java.
+		- Unit is replaced with void within the bytecode.
+		- Unit denotes that 'no meaningful value is returned'
+		- Unit is a name derived from Functional Programming meaning:	'a type that allows only x1 (unit) value therefore can hold no informtion' i.e. a function which completes but returns no meaningful information
+		- Unit can be normally omitted:
+
+			fun f(): Unit {...}
+			fun f() {...}
+
+		- Unit expression i.e. an expression (or function) that returns Unit can be assigned to a variable like all types:
+
+			fun report() {
+			    println("Hello")		//Returns Unit automatically
+			}
+
+			fun report() {
+			    println("Hello")		//Equivalent to the above
+			    return Unit			//Redundant
+			}
+
+			fun main() {
+			    val result = report()	// Prints: Hello (result contains instance of Unit)		(1)
+			    print(result)		// Prints: kotlin.Unit						(2)
+			}
+
+			Here:
+
+				1. The val result = assigned the return value of report(), therefore report() is run and the return value assigned to result.
+				2. The type of result of printed.
+
+	Nothing:
+
+		- Nothing denotes 'the function never returns', presumably execution returns back to the OS.
+		- Nothing is only used for functions which throw an exception (which therefore do not complete successfully):
+
+			fun fail(message: String) Nothing {
+			    throw IllegalStateException(message)
+			}
+
+		- Nothing allows for a function to be called rather than an exception, allowing for a centralised place where the exception is thrown (which is passed individual details about the error state, rather than needing to be manually/explicitly defined and thrown in all locations).
+		- Nothing is a name derived from Functional Programming meaning:	'a type that has no values' i.e. a function that never completes
+		- Nothing is returned by the following expressions:
+
+			1. throw [an exception]
+			2. return
+			3. TODO("Work to be completed") (a function contained in the standard library)
+
+		- Nothing was introduced to Kotlin given that it is the subtype of all types, as demonstrated below:
+
+			fun report(s: String) {
+			    println(s)
+			}
+
+			fun fail(s: String): Nothing {
+			    throw IllegalStateException(s)
+			}
+
+			val answer = if (hasTimePassed()) 42 else report("Not Ready")
+
+			Here:
+
+				1. answer can be assigned either Int or Unit depending upon the result of hasTimePassed().
+				2. Kotlin compiler therefore needs to cover both possible outcomes thereby inferring 'answer' to be a type of Any (which is the first common supertype of Int and Unit).					
+
+			val answer = if (hasTimePassed()) 42 else fail("Not Ready")
+
+			Here:
+
+				1. answer is assigned either Int or Nothing.
+				2. However given that Nothing is a subtype of all types, 'answer' can still be assigned just as an Int (rather than Any) which is preferable allowing for:
+
+					- Extracting the throwing of exceptions to other functions and these functions being included in other expressions.
+
+		- Nothing? is the default type inferred by the compiler:
+
+			var user = null				//Compiler infers that 'user' is Nothing?
+			user = User("Guest")			//Compile Error: This is due to the compiler not knowing what 'user' would be used for (after it was declared) therefore assigns Nothing? by default which is not of type User
+
+			val users = mutableListOf(null)		//Compiler infers that 'users' is a List<Nothing?>
+			users.add(User("Guest"))		//Compile Error: This is due to the compiler not knowing what type 'users' is a list of (after it was declared), therefore assigns Nothing? by default, therefore attempting to add an instance of User will result in compile error
+
+			//The above is resolved by declaring the variables as User nullables explicitly:
+
+			var user: User? = null
+			user = User("Guest")
+
+			val users: List<User?> = mutableListOf(null)
+			users.add(User("Guest"))
+
+		- Nothing? has only x1 expression that can be assigned to it: null (constant)
+
+	Autoboxing:
+
+		- Autoboxing is automatically applied to all applicable Types in Kotlin (just as in Java):
+
+			fun log1(any: Any)
+			{
+			    println("Value: $any")
+			}
+
+			fun log2(any: Int)
+			{
+			    println("Value: $any")
+			}
+
+			log1(2023)	//Literal '2023' is autoboxed to an instance of Any
+			log2(2023)	//Literal '2023' is not autoboxed but simply stored in an Int (which is a primitive within the bytecode)
+
+	Type Cast:
+
+		- Type Casting can be applied using 'as':
+
+			if(any is String)			//'is' equivalent to 'instanceof'
+			{
+			    val s = any as String		//Type cast any to String
+			    s.toUpperCase()
+			}
+
+		- Type Casting will throw an exception if the casting can not be applied:
+
+			val s = "abc"
+
+			println(s as? Int)			//null
+			println(s as Int?)			//Exception
+
+		- Type Casting is not always necessary for compiler can automatically smart cast the type as required.
+
+	Safe Cast:
+
+		- Safe Casting uses 'as?' and is Type Casting with aditional layer of type safety:
+
+			if(any is String)			//'is' equivalent to 'instanceof'
+			{
+			    (any as? String)?.toUpperCase()	//This will cause the whole expression to just return null if 'any' can not be cast to String
+			}
+
+		- Safe Casting operates as follows, the below x2 statements are equivalent:
+
+			val s: String? 	= any as? String				//s is a nullable String assigned the value of 'any' or just null
+			val s 		= if (any is String) any else null		//s is inferred to nullable String assigned the value of 'any' or just null
+
+	Smart Casting:
+
+		- Smart Casting allows for variable to be automatically casted by the compiler:
+
+			if(any is String)
+			{
+			    any.toUpperCase()			//'any' is automatically smart casted to a String, however an exception will be thrown if any can not be cast to String
+			}
+
+		- Smart Casting is applicable to nullable types:
+
+			val s: String?
+
+			if(s == null)
+			    return
+
+			s.length		//Compile OK, this will not generate compile error given that the variable s has already been checked
+						//s is smart casted from String? to String
+
+
+
+

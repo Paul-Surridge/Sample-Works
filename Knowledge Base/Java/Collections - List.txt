@@ -1,0 +1,439 @@
+Collections - List
+
+	Overview:
+
+		- Ordered:	No
+		- Duplicates:	Yes
+		- Lists are also known as a 'Sequence'.
+
+	API:
+
+			Return Type			Method						Description
+		____________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+		Add/Remove:
+
+			void				add​(int index, E Element)			Insert Element at index.
+			boolean				add​(E e)					Append Element to the end of list.
+			
+			boolean				addAll​(int index, Collection<? extends E> c)	Insert Collection at index.
+			boolean				addAll​(Collection<? extends E> c)		Append Collection to the end of list, in the order as defined by c Iterator.
+			
+			E				remove​(int index)				Remove Element at index.
+			boolean				remove​(Object o)				Remove first occurrence of Element, if present.
+			boolean				removeAll​(Collection<?> c)			Remove all Elements contained in supplied Collection c.
+			default boolean 		removeIf​(Predicate<? super E> filter)		Removes all of the elements of this set that satisfy the given predicate.
+			
+			void				clear()						Removes all Elements.
+
+			default void			replaceAll​(UnaryOperator<E> operator)		Replace each Element with the result of applying the operator to that Element.
+			boolean				retainAll​(Collection<?> c)			Retain only the Elements that are contained in the specified collection.
+			
+		Get/Set:
+
+			E				get​(int index)					Return the Element at index.
+			E				set​(int index, E Element)			Return replaced Element at index.
+
+		For Each:
+
+			default void			forEach​(Consumer<? super T> action)		Performs the given action for each element of the Iterable until all elements have been processed or the action throws an exception.
+
+		Query:
+
+			boolean				contains​(Object o)				Return true if list contains the specified Element.
+			boolean				containsAll​(Collection<?> c)			Return true if list contains all of the Elements in Collection c.
+			
+			boolean				isEmpty()					Return true if list contains no Elements.
+			int				size()						Return the number of Elements in list.
+
+		Search:
+
+			int				indexOf​(Object o)				Return index of the first occurrence of Element o (-1 if not present).
+			int				lastIndexOf​(Object o)				Return index of the last occurrence of Element o (-1 if not present).			
+
+		Sort:
+
+			default void			sort​(Comparator<? super E> c)			Sort this list according to the order induced by the specified Comparator (default is natural).
+
+		Range-View:
+
+			List<E>				subList​(int fromIndex, int toIndex)		Returns a Range View between fromIndex (inclusive) and toIndex (exclusive).
+
+		Iterator:
+
+			Iterator<E>			iterator()					Return an iterator over the Elements in proper sequence.
+		
+		ListIterator:
+	
+			ListIterator<E>			listIterator()					Return a ListIterator over the Elements.
+			ListIterator<E>			listIterator​(int index)				Return a ListIterator over the Elements, starting at index.
+
+		Spliterator:
+
+			default Spliterator<E>		spliterator()					Create a Spliterator over the Elements.
+
+		Stream:
+
+			default Stream<E> 		stream()					Returns a sequential Stream with this collection as its source.
+			default Stream<E> 		parallelStream()				Returns a possibly parallel Stream with this collection as its source.
+
+		Unmodifiable List:
+
+			static <E> List<E>		copyOf​(Collection<? extends E> c)		Return an Unmodifiable List containing the Elements of the given Collection, in its iteration order.
+
+			static <E> List<E>		of()						Return an Unmodifiable List containing zero Elements.
+			static <E> List<E>		of​(E e1)					Return an Unmodifiable List containing one Element.
+			static <E> List<E>		of​(E... Elements)				Return an Unmodifiable List containing an arbitrary number of Elements.
+			static <E> List<E>		of​(E e1, E e2)					Return an Unmodifiable List containing two Elements.
+			static <E> List<E>		of​(E e1, E e2, E e3)				Return an Unmodifiable List containing three Elements.
+							...x10
+
+		Array Conversion:
+
+			Object[]			toArray()					Return an array containing all of the Elements in this list in proper sequence (from first to last Element).
+			<T> T[]				toArray​(T[] a)					Return an array containing all of the Elements in this list in proper sequence (from first to last Element), the runtime type of the returned array is that of the specified array.
+			<T> T[] 			toArray​(IntFunction<T[]> generator)		Return an array containing all of the elements in this list, using the provided generator function to allocate the returned array.
+
+		Misc:
+			
+			boolean				equals​(Object o)				Compare the specified object with this list for equality.
+			int				hashCode()					Return the hash code value for this list.
+
+	Implementations:
+
+		1. ArrayList:		Best Performing (Overall)
+		2. LinkedList:		Best Performing (In circumstances)
+
+	Notes:
+
+		Physical Form:
+
+			Index:	Element:
+
+			0 	Element_1		//Duplicate Elements (e1.equals(e2) not e1 == e2)
+			1 	Element_1		//Ordered
+			2 	Element_2		//null Elements
+			3 	Element_2
+			4 	Element_2
+			5 	null			
+			6 	Element_10
+			7 	Element_12
+			8 	Element_15
+			9 	Element_15
+			10 	null
+			11 	Element_17
+			12 	Element_20
+
+		Equality:
+
+			- Lists are equal if they contain:
+
+				1. The same number of Elements.
+				2. The same order of Elements.
+
+				NB: Elements are compared using equals() (not ==), therefore 'equal' Lists do not need to contain exactly the same references, only Elements that would be considered 'equal' whereby e1.equals(e2).
+
+				List 1			List 2
+
+				e_1			e_1
+				e_1			e_1
+				e_2			e_2
+				e_3			e_3
+
+			- Lists can be compared regardless of the implementations given that comparison is done via the implementations own overriden equals().
+
+		ListIterator:
+
+			- ListIterators which are started from non-zero index, the cursor is placed at index:
+
+				List
+
+					|   Element(0)	|   Element(1)	|   Element(2)	|   Element(3)	|   Element(4)	|
+					|		|		|		|		|		|
+					|		|		|		|		|		|
+				Index:	0		1		2		3		4		5
+
+							|---------------------------------------------------------------|
+
+			- ListIterator(1): Starts from Index 1 as shown, next() would return Element(1) (not Element(2)).
+
+		Iterator v ListIterator:
+
+			- Iterator:	Traversal through List (1-way)
+			- ListIterator:	Traversal through List (2-way)
+
+		Iterating v Indexing:
+
+			- Iterating:	Cycle through List via an Iterator or ListIterator
+
+						for(E e : liList)
+							e.someMethod();
+
+			- Indexing:	Cycle through List via direct reference:
+
+						for(int i = 0 ; i< liList.size() ; i+++
+							liList.get(i);
+
+			- Iterating is preferable if the caller does not know the implementation.
+
+		Searching:
+
+			- The two search methods should be used with caution for they may likely use costly linear searches.
+
+		HashCode:
+
+			- List hashCode() is determined as follows:
+
+				int hashCode = 1;
+     				for (E e : list)
+         			    hashCode = 31*hashCode + (e==null ? 0 : e.hashCode());
+	
+			- List hashCode() is totalled such that:
+
+				list1.hashCode()==list2.hashCode();
+
+			- How can list1.equals(list2) imply list1.hashCode() == list2.hashCode()?
+
+		Self Referencing:
+
+			- It is possible for the List to contain themselves as an Element.
+			- This is discouraged due to the ill-defined due to the undefined effects on hashCode() and equals().
+
+		Adding Collections:
+
+			- All added Collections are added using the Iterator of the Collection being added:
+
+				list1.addAll(list2);							//Concatenates list2 onto list1.
+
+				List<Type> list3 = new ArrayList<Type>(list1);				//Concatenates list2 onto list1 non-destructively via intermediate list3.
+				list3.addAll(list2);			
+
+		Unmodifiable List:
+
+			- An Unmodifiable List is a List which can not be altered but the underlying Collection/Elements may still be altered.
+			- An Unmodifiable List may contain a Collection whose Elements may still be referenced externally by other areas of program.
+
+		Optional Abstract Methods:
+
+			- Optional Abstract Methods are defined within the Java API.
+			- Optional Abstract Methods throw/return an UnsupportedOperationException.
+			- Optional Abstract Methods should be clearly documented in any Custom Implementations.
+
+		Range Views:
+
+			- Range View is a 'view' of a particular range or sub-list of the List.
+			- A View is as the name suggests an alternate view of a particular object (in this case the List).
+			- A View is backed by the underlying List i.e. any changes via the view will also affect the List.
+			
+				List<E>	subList​(int fromIndex, int toIndex)
+
+				fromIndex:	Inclusive
+				toIndex:	Exclusive
+
+				NB: This 'half-open range' mirrors the typical for loop:
+
+					for (int i = fromIndex; i < toIndex; i++) {
+    						...
+					}
+
+			- Any operation that requires a List<E>, a sublist can be supplied:
+
+				1. Reduces Code Clutter
+				2. Expressive Code
+
+				NB:
+					- SubList should only be used very briefly as transient object.
+					- SubList should not be used for longer than necessary.
+					- SubList behaviour becomes undefined should the underlying List be altered (add/remove) by other means than the subList, for example:
+
+						1. via List directly.
+						2. via another SubList.
+
+				NB:
+					- A subList of a subList is can be modified whilst still using the original subList (but not concurrently).  
+
+			- For Example:
+
+				1. Remove a sub-section of List:
+
+					list.subList(fromIndex, toIndex).clear();
+
+				2. Search a sub-section of List:
+
+					int i = list.subList(fromIndex, toIndex).indexOf(o);
+					int j = list.subList(fromIndex, toIndex).lastIndexOf(o);
+
+					Whereby returning the index of any found Element relevant to the subList (not the overarching List).
+
+		Removing Elements:
+
+			- Should be noted that it is better, less expensive to remove Elements from the end of a List rather than the start.
+
+		Unmodifiable Lists:
+
+			- List.of() and List.copyOf() are static facctory methods for generating Unmodifiable Lists of List, whereby:
+
+				1. No Add/Remove:					Elements cannot be added, removed, replaced 			or throw UnsupportedOperationException
+				2. No null:						Elements must be non-null 					or throw NullPointerException
+				3. Order:						Order is as per order of arguments supplied or supplied Collection to factory method.
+				4. SubLists:						Implement RandomAccess.
+				5. ByValue:						Not ByRef i.e. the generated Elements maybe originals or copies, therefore operations reliant on the address should be avoided e.g.
+
+												equals()
+												hashCode();
+												==
+												synchronisation
+				
+				6. Serialisable: 					Unmodifiable Lists are only serialisable if all Elements are Serialisable as specified by 'Serialised Form' on Java API.
+				
+			- Ideally the underlying Elements contained within a List should be either:
+
+				1. Immutable:		Elements cannot be altered in anyway.
+				2. Unreachable:		Elements cannot be reached by any of part of the program and potentially altered.
+
+		Exceptions:
+
+			- Exception typically thrown/return when an operation/method is not supported in a particualr implementation:
+
+				Exception					Reason
+				___________________________________________________________________________________________________________________________________
+
+				1. UnsupportedOperationException:		If the set operation is not supported by this list
+				2. ClassCastException:				If the class of the specified Element prevents it from being added to this list
+				3. NullPointerException:			If the specified Element is null and this list does not permit null Elements
+				4. IllegalArgumentException:			If some property of the specified Element prevents it from being added to this list
+				5. IndexOutOfBoundsException:			If the index is out of range (index < 0 || index >= size())	
+
+	Examples:
+
+		Non-Destructive Forms:
+
+			- Achieved via standard approach of using an intermediary List and it Conversion Constructor.
+
+				list<Type> list1 = new ArrayList...
+				list<Type> list2 = new ArrayList...
+				List<Type> list3 = new ArrayList<Type>(list1);
+
+				list3.addAll(list2);
+
+			- Here list1 is unaltered but copied/coverted to list3 and appended list2.
+
+		Aggregate Operation:
+
+			- Utilise Aggregate Operation to append names to list:
+
+				List<String> list = people.stream()
+					.map(Person::getName)
+					.collect(Collectors.toList());
+
+		Swapping Elements:
+
+			public static <E> void swap(List<E> a, int i, int j)
+			{
+    				E tmp = a.get(i);
+    				a.set(i, a.get(j));
+    				a.set(j, tmp);
+			}
+
+		Shuffling:
+
+			public static void shuffle(List<?> list, Random rnd)
+			{
+    				for (int i = list.size(); i > 1; i--)
+        			    swap(list, i - 1, rnd.nextInt(i));
+			}
+
+	List Implementations
+
+		Comparison:
+	
+						ArrayList					LinkedList						Difference
+			____________________________________________________________________________________________________________________		__________
+
+			Speed:			Fastest (1)					(2)							x
+
+			Ordering:		n/a						n/a
+
+			Duplicates:		Yes						Yes
+
+			Backed:			Array						Doubly Linked List					x
+
+			Null:			Yes (Multiple)					Yes (Multiple)
+
+			Synchronised:		No						No
+
+			Iterator:		Yes (Fail-Fast)					Yes (Fail-Fast)
+
+			Optional Operations:	Yes (All)	 				Yes (All)
+
+			Time Complexity:	Operation Dependent				peration Dependent					x
+
+		ArrayList:
+
+			- Fast, due to:
+
+				1. No Internal Node: 	Does not need to allocate an internal Node object for each Element in the List.
+				2. System.arrayCopy():	Can take advantage of System.arrayCopy() when moving multiple Elements at the same time.
+
+			- Array:
+
+				1. Collection equivalent of an Array.
+				2. Resizeable Array.
+
+			- Time Complexity:
+
+				Constant Time:
+
+					.size() .isEmpty() .get() .set() .iterator() .listIterator()
+
+				Amortised Time:
+
+					.add()
+
+					Depends on the number of Elements being added within the add() method, adding n Elements is O(n) time.
+
+				Linear Time:
+
+					All other operations.
+
+					Constant Factor is low compared to LinkedList.
+
+			- Capacity:		If the expected amount of Elements is known, use ensureCapacity() to potentially reduce the incremenatal reallocations.
+			- Vector:		Similar to Vector but without the Synchronisation overhead.
+			- Synchronisation:	If Synchronisation is required use a Vector rather than an ArrayList synchronised with Collections.synchronizedList.
+			- Interface Variables:	If use Vector ensure that use Interface Variables, as Vectors have a large number of legacy methods.
+			- Permits all Element Types.
+			- Appropriate For:
+
+				1. Most common tasks.
+
+		LinkedList:
+
+			- Traversal:		Operations that index into the list will traverse the list from the beginning or the end, whichever is closer to the specified index.
+			- Stack:		Similar to Stack but is unsynchronised.
+			- Permits all Elements.
+			- Appropriate For:
+
+				1. Frequently add Elements to beginning of List.
+				2. Iterate over and delete Elements.
+
+		CopyOnWriteArrayList:
+
+			- List backed up by a 'copy-on-write' array, where all mutative operations are implemented by making a new copy of the array i.e. (no locking is required).
+			- Mutative operations are dependent on the size of the List.
+			- Appropriate For:
+
+				1. Low Modification
+				2. High Iteration
+				3. Iteration while concurrently add/remove Elements.
+
+					For Example:
+
+						1. Event Handler Lists:		Lists that must not contain duplicates.
+
+		Arrays.asList():
+
+			Appropriate For:
+
+				1. Lists of fixed size.
+				2. Lists that do not use add, remove containsAll()...

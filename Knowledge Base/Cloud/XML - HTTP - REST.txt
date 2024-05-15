@@ -1,0 +1,981 @@
+XML
+
+	Overview:
+
+		- XML Extensible Markup Language.
+		- XML was designed to store and transport data.
+		- XML was designed to be both human and machine readable.
+		- XML was designed to be self-descriptive.
+		- XML is typically used to distribute and transport data over the internet.
+		- XML does not 'do' anythng, there is no active component of XML.
+		- XML is just information wrapped in tags.
+		- XML documents can easily add/remove data without effecting existing non-related systems that use that file.
+		- XML became a W3C Recommendation in February 1998.
+		- XML separates data from presentation.
+		- XML does not carry data about how it should be displayed.
+		- XML documents are considered 'well formed' if that adhere to all of the good practice syntax as listed below.
+		- XML software should be small, fast and compatible.
+
+	Standards:
+
+		- XML has many standards:
+
+			XML AJAX
+			XML DOM
+			XML XPath
+			XML XSLT
+			XML XQuery
+			XML DTD
+			XML Schema
+			XML Services
+
+	XML v HTML
+				Purpose					Focus			Tags Predefined
+		_______________________________________________________________________________________________
+
+		XML		Transport and Store Data		Data Content		N
+		HTML		Transport and Display Data		Data Appearance		Y
+
+	XML Tags:
+
+		- XML tags are not predefined.
+		- XML tags and the document structure are all created by the authour.
+
+	XML Simplifcation:
+
+		- XML simplifies:
+
+			- Data Sharing
+			- Data Transport
+			- Platform Changes
+			- Data Availability
+
+		- XML allows for data to be transported between differing machines.
+		- XML is a structure that can be easily interpreted by all machines.
+
+	XML Document:
+
+		- XML document is an XML instance.
+		- XML components are:
+
+			Prolog:		XML specification at top of document:
+
+						<?xml version="1.0" encoding="UTF-8"?>
+
+						- Prolog is optional, if it exists it must be at top of document.
+						- Prolog is not part of the XML document.
+						- UTF-8 is the default character encoding.
+
+			Element:	Basic constituient part of XML.
+
+						<title>...</title>
+
+						- Element has the following components available:
+
+							1. Text
+							2. Attributes
+							3. Elements
+							4. [Combination of the above]
+
+						- Element includes both the start/end tags (not just internal data).
+						- Element may be empty:
+
+							<title></title>
+
+							NB: Empty element may have attributes
+
+						- Elements must all be 'properly' nested.
+
+								<b><i>This text is bold and italic</i></b>
+							Not: 	<i><b>This text is bold and italic</i></b>
+
+						- Elements should be able to be:
+
+							1. Order:	Read in any order without causing the software reader to fail..
+							2. Extended:	Added/removed without causing the software reader to fail.
+
+						- Elements may contain multiple attributes (but discouraged):
+
+							<note day="10" month="01" year="2008"
+							to="Tove" from="Jani" heading="Reminder"
+							body="Don't forget me this weekend!">
+							</note>
+
+						- Elements naming rules:
+
+							1. Element names are case-sensitive.
+							2. Element names must start with a letter or underscore.
+							3. Element names cannot start with the letters xml (or XML/Xml).
+							4. Element names can contain:
+
+								Characters	[a-z A-Z]
+								Digits		[0-9]
+								Hyphens		-
+								Underscore	_
+								Period		.
+
+							5. Element names cannot contain spaces.
+
+							Overall: Any name can be used, no words are reserved (except xml).
+
+							Best Practices:
+
+								- Element naming convention must be consistent.
+								- Element may refer to a record in database, in which case follow same schema.
+								- Element may use following styles:
+
+									Lower case	<firstname>
+									Upper case	<FIRSTNAME>
+									Snake case	<first_name>	Underscore separates words.
+									Pascal case	<FirstName>	Uppercase first letter in each word.
+									Camel case	<firstName>	Uppercase first letter in each word except the first.
+
+								- Elements should avoid
+
+									-		<first-name>
+									.		<first.name>
+									:		<first:name>
+									Non-english letters:		Prevent risk of reader incompatibility
+
+								- Element should be short descriptive:
+
+									<book_title> not <the_title_of_the_book>
+
+						- Elements should not contain child elements of the same name i.e. element siblings should not contain the same name unless using namespaces.
+
+			Attribute:	Key/value pair associated with the element.
+
+						<title lang="en">...</title>
+
+						- Attribute are intended to contain data specific to the element.
+						- Attribute values must be wrapped in quotes "" or ''.
+
+							<person gender="female">
+							<person gender='female'>
+							<person name='Open "the" door'>
+							<person name='Open &quot;the&quot; door'>
+
+						- Attribute key/value pairs should be formatted as elements where possible
+
+							<note date="2008-01-10">
+							  <to>Tove</to>
+							  <from>Jani</from>
+							</note>
+
+							Place date components into discrete elements:
+
+							<note>
+							  <date>
+							    <year>2008</year>
+							    <month>01</month>
+							    <day>10</day>
+							  </date>
+							  <to>Tove</to>
+							  <from>Jani</from>
+							</note>
+
+						- Attribute may not contain:
+
+							1. Multiple Values
+							2. Tree Structures
+
+						- Attributes are not easily added/removed without the potential risk to any application reading the xml file.
+						- Attributes should primarily be used for metadata e.g. data about the data contained with any child elements rather than data specific to the child element types:
+						- Attributes can typically be used for ID metadata which is not relevant to the email but purely used for referencing purposes by an external application.
+
+							<messages>
+							  <email id="501">
+							    <to>Tove</to>
+							    <from>Jani</from>
+							    <heading>Reminder</heading>
+							    <body>Don't forget this weekend!</body>
+							  </email>
+							  <email id="502">
+							    <to>Jani</to>
+							    <from>Tove</from>
+							    <heading>Re: Reminder</heading>
+							    <body>I will not</body>
+							  </email>
+							</messages>
+
+			Text:		Text data associated with the element.
+
+						<title>Harry Potter</title>
+
+			Root:		Initial element below the xml specification wrapping the overall document.
+
+						<?xml version="1.0" encoding="UTF-8"?>
+						<bookstore>
+			  			  ...
+						</bookstore>
+
+			Sibling:	Elements with the same parent:
+
+						<?xml version="1.0" encoding="UTF-8"?>
+						<bookstore>
+			  			  <book>Harry Potter</book>
+			  			  <book>The Road To Reality</book>
+						</bookstore>
+
+			Parent/Child:	Elements with such relationship within the tree of the document e.g. book and bookstore.
+
+			Tag:		Tags enclose an element:
+
+						<book>The Road To Reality</book>
+
+						- Elements must have a closing tag.
+						- Elements are case sensitive.
+						- Prolog does not have a closing tag as it is not part of document.
+
+					Closing Tag:
+
+						<book>The Road To Reality</book>
+						<book>The Road To Reality />
+
+						- Closing a tag can be completed using </tag> or />.
+						- Closing tag must have the smae case as the opening tag.
+						- Open/close tags also referred as start/end tags.
+
+					Self-Closing Tag:
+
+						<book></book> 				= <book/>
+						<book="The Road To Reality"></book> 	= <book="The Road To Reality"/>
+
+						NB: The 'short-cut' notation of a self-closing tag is typically used when the element does not contain any child elements of its own.
+
+		- Example:
+
+			<?xml version="1.0" encoding="UTF-8"?>
+			<bookstore>
+			  <book category="cooking">
+    			    <title lang="en">Everyday Italian</title>
+    			    <author>Giada De Laurentiis</author>
+    			    <year>2005</year>
+    			    <price>30.00</price>
+  			  </book>
+			  <book category="children">
+    			    <title lang="en">Harry Potter</title>
+    			    <author>J K. Rowling</author>
+    			    <year>2005</year>
+    			    <price>29.99</price>
+  			  </book>
+			</bookstore>
+
+	Entity Reference:
+
+		- Entity references are replacement for special characters that would confuse the interpreter and generate an error:
+
+			<message>salary < 1000</message>
+
+		- The '< 1000' would generate an error.
+
+			<message>salary &lt; 1000</message>
+
+		- Replace with &lt; to allow for the insertion of the <.
+		- There are x5 predefined entity references:
+
+			&lt;	<	less than
+			&gt;	>	greater than
+			&amp;	&	ampersand 
+			&apos;	'	apostrophe
+			&quot;	"	quotation mark
+
+			NB: Only < and & are illegal in XML, but is good practice to use all x5.
+
+	Comments:
+
+		- Comments in XML are as follows:
+
+			<!-- This is a comment -->
+
+		- Comments with x2 dashes -- are not permitted:
+
+			<!-- This is an invalid -- comment -->
+
+	White Space:
+
+		- XML perserves all white space (opposed to HTML which truncates all white space to x1 single white space).
+
+			XML:	Hello           Tove
+			HTML:	Hello Tove
+
+	New Line:
+
+		- XML stores a new line with just LF, opposed to:
+
+			OS		New Line
+			________________________
+
+			Windows:	CR+LF
+			MacOS:		LF
+			Unix:		LF
+			'Old Mac'	CR
+
+	Namespaces:
+
+		- Namespaces provides means to avoid naming conflicts.
+		- Namespaces can be implemented using the xmlns attribute inconjunction with a URI:
+
+			<<prefix>:<element_name> xmlns:<prefix>="<URI>">
+
+			Example:
+
+				<h:table xmlns:h="http://www.w3.org/TR/html4/">
+				  <h:tr>
+				    <h:td>Apples</h:td>
+				    <h:td>Bananas</h:td>
+				  </h:tr>
+				</h:table>
+
+				<f:table xmlns:f="https://www.w3schools.com/furniture">
+				  <f:name>Coffee Table</f:name>
+				  <f:width>80</f:width>
+				  <f:length>120</f:length>
+				</f:table>
+
+			NB: The URI has dual purpose:
+
+				1. Unique Identifier:		Provide a unique identifier for the namespace.
+				2. Reference:			Provide a link to the namespace detailed information if required.
+
+		- Namespaces defined by an element, all child elements with the same prefix are associated with the same namespace.
+		- Namespaces can be declared in the root element:
+
+			<root xmlns:h="http://www.w3.org/TR/html4/"
+			xmlns:f="https://www.w3schools.com/furniture">
+
+			<h:table>
+			  <h:tr>
+			    <h:td>Apples</h:td>
+			    <h:td>Bananas</h:td>
+			  </h:tr>
+			</h:table>
+
+			<f:table>
+			  <f:name>Coffee Table</f:name>
+			  <f:width>80</f:width>
+			  <f:length>120</f:length>
+			</f:table>
+
+			</root>
+
+		- Namespaces can be default which reduces the need to explicitly specify the prefix in all child elements:
+
+			<table xmlns="http://www.w3.org/TR/html4/">
+			  <tr>
+			    <td>Apples</td>
+			    <td>Bananas</td>
+			  </tr>
+			</table>
+
+			<table xmlns="https://www.w3schools.com/furniture">
+			  <name>Coffee Table</name>
+			  <width>80</width>
+			  <length>120</length>
+			</table>
+
+		- Namespaces are commonly used within XSLT which is used to transform XML documents into other formats e.g. HTML.
+
+	XMLHttpRequest:
+
+		- XMLHttpRequest is an object.
+		- XMLHttpRequest enables the following:
+
+			- Auto Update:			Update a web page without reloading the page.
+			- Server Request/Recieve:	Request/receive data from a server after the page has loaded.
+			- Server Send:			Send data to a server in the background.
+
+	XML Parser:
+
+		- XML document can only be accessed once it has been loaded into a XML DOM object.
+		- XML parser is used to convert the text of the XML document into a XML DOM object.
+		- XMLHttpRequest has a built in XML parser enabling the XMLHttpRequest to return data as both a string or a DOM object.
+
+	XML DOM:
+
+		- XML DOM (Document Object Model) defines a standard for carrying out the following tasks with an XML data contained with the document:
+
+			1. Accessing/Reading
+			2. Manipulating
+			3. Updating
+
+		- XML DOM defines a standard for carrying out the following tasks on the elements within the document:
+
+			1. Get
+			2. Change
+			3. Add
+			4. Delete
+
+		- XML DOM:
+
+			"The W3C Document Object Model (DOM) is a platform and language-neutral interface that allows programs and scripts to dynamically access and update the content, structure, and style of a document."
+
+		- XML DOM presents the contents of the XML file as a tree structure naturally using the elements as branches/leaves.
+		- XML DOM is analogous to HTML DOM which presents the contents of the HTML file as a tree structure.
+		- XML DOM allows elements within the document to be accessed/referenced as if nodes on a tree e.g.
+
+			txt = xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue;
+
+	XPath:
+
+		- XPath is a major aspect of the XSLT standard.
+		- XPath is a means to navigate through elements and attributes in an XML document.
+		- XPath allows to set individual nodes or sets of nodes from a XML document.
+		- XPath expressions are used in all common languages.
+
+			XPath Expression			Result
+			_______________________________________________________________________________________________________________________________________________________________________________
+
+			/bookstore/book[1]			Selects the first book element that is the child of the bookstore element
+			/bookstore/book[last()]			Selects the last book element that is the child of the bookstore element
+			/bookstore/book[last()-1]		Selects the last but one book element that is the child of the bookstore element
+			/bookstore/book[position()<3]		Selects the first two book elements that are children of the bookstore element
+			//title[@lang]				Selects all the title elements that have an attribute named lang
+			//title[@lang='en']			Selects all the title elements that have a "lang" attribute with a value of "en"
+			/bookstore/book[price>35.00]		Selects all the book elements of the bookstore element that have a price element with a value greater than 35.00
+			/bookstore/book[price>35.00]/title	Selects all the title elements of the book elements of the bookstore element that have a price element with a value greater than 35.00
+
+	XSLT:
+
+		- XSLT (Extensible Stylesheet Language Transformations) is used to convert an XML document into HTML.
+		- XSLT is the W3C recommended style sheet language for XML.
+		- XSLT is akin but more sophisticated than CSS.
+		- XSLT can carry out the following common tasks:
+
+			1. Rearrange elements.
+			2. Sort elements.
+			3. Conditional logic on which elements to hide/show.
+
+		- XSLT has extensive usage of XPath to find information in an XML document.
+		- XSLT is a language structured in XML.
+		- XSLT is contained within separate stylesheet files:
+		- XSLT describe how an XML file should have its data parsed and organised within a HTML file
+
+			1. x1 XML Document:		XML document containing all data to be displayed.
+			2. x1 XSLT Document:		XML document containing the XSLT notation and syntax on how the data should be formatted and displayed within a HTML and browser.
+
+		- XSLT follows the same approach as CSS, whereby the XSLT is read and used to format and generate the corresponding HTML file.
+
+	XQuery:
+
+		- XQuery is to XML what SQL is to databases.
+		- XQuery is intended to query XML data/files, extracting:
+
+			1. Elements
+			2. Attributes
+
+		- XQuery is the cannonical language for querying XML data as recommended by W3C.
+		- XQuery is built on XPath expressions.
+		- XQuery is supported by all major databases.
+		- XQuery example:
+
+			for $x in doc("books.xml")/bookstore/book
+			where $x/price>30
+			order by $x/title
+			return $x/title
+
+		- XQuery 1.0 and XPath 2.0 share the same data model and contain the same functions/operators. 
+		- XQuery common use:
+
+			1. Information Extraction:		Extract information to use in a web service.
+			2. Report Generation:			Extract information to use in generating summary reports.
+			3. XHTML Generation:			Extract information to convert XML into XHTML.
+			4. Search:				Search for information in web documents.
+
+		- XQuery is compatible with many technologies and standards, including:
+
+			1. XML
+			2. Namespaces
+			3. XSLT
+			4. XPath
+			5. XML Schema
+
+	XLink:
+
+		- XLink is used to create hyperlinks within XML documents.
+		- XLink allows any element to behave as a link.
+		- XLink allows the links to be defined elsewhere other than the linked files.
+		- XLink example:
+
+			<?xml version="1.0" encoding="UTF-8"?>
+
+			<homepages xmlns:xlink="http://www.w3.org/1999/xlink">
+			  <homepage xlink:type="simple" xlink:href="https://www.w3schools.com" xlink:show="new">Visit W3Schools</homepage>
+			  <homepage xlink:type="simple" xlink:href="http://www.w3.org">Visit W3C</homepage>
+			</homepages>
+
+		- XLink requires special consideration unlike HTML which uses the element <a> to denote a hyperlink.
+
+			1. Declare XLink namespace:	"http://www.w3.org/1999/xlink"
+			2. Declare attributes:
+
+				xlink:type="simple":				Create a simple 'HTML-like' link.
+				xlink:href="https://www.w3schools.com":		URL of link.
+				xlink:show="new":				Open link in a new window.
+
+				NB: Both of these attributes derive from the XLink namespace.
+
+		- XLink attributes include:
+
+			Attribute		Value			Description
+			___________________________________________________________________________________________________________
+
+			xlink:actuate		onLoad			Define when the linked resource is read and shown:	
+						onRequest			onLoad:		Resource loaded and shown when the XML document loads
+						other				onRequest:	Resource loaded and shown when the link is clicked
+						none
+
+			xlink:href		URL			Specifies the URL link.
+
+			xlink:show		embed			Specifies where to open the link, default is "replace".
+						new
+						replace
+						other
+						none
+
+			xlink:type		simple
+						extended
+						locator
+						arc
+						resource
+						title
+						none
+
+		- XLink is not commonly supported in browsers directly, however browsers support XLinks within SVG.
+
+	XPointer:
+
+		- XPointer enables links to point to specific parts of another XML document.
+		- XPointer uses XPath expressions to navigate XML documents.
+		- XPointer is not supported by browsers but is used in many other XML languages.
+		- XPointers use the # to reference id attributes in other XML documents.
+		- XPointer example:
+
+			<?xml version="1.0" encoding="UTF-8"?>
+
+			<dogbreeds>
+
+			<dog breed="Poodle" id="Poodle">
+			  <picture url="https://dog.com/poodle.gif" />
+			  <history>...</history>
+			  <temperament>...</temperament>
+			</dog>
+
+			<dog breed="Retriever" id="Retriever">
+			  <picture url="https://dog.com/retriever.gif" />
+			  <history>...</history>
+			  <temperament>...</temperament>
+			</dog>
+
+			</dogbreeds>
+
+		- XPointer uses the id=<value> attribute as reference to be used within the xlink:href attribute:
+
+			<?xml version="1.0" encoding="UTF-8"?>
+
+			<mydogs xmlns:xlink="http://www.w3.org/1999/xlink">
+
+			<mydog>
+			  <description>...</description>
+			  <fact xlink:type="simple" xlink:href="https://dog.com/dogbreeds.xml#Poodle"></fact>
+			</mydog>
+
+			<mydog>
+			  <description>...</description>
+			  <fact xlink:type="simple" xlink:href="https://dog.com/dogbreeds.xml#Retriever"></fact>
+			</mydog>
+
+			</mydogs>
+
+		- XPointer can be used in x2 forms:
+
+			xlink:href="https://dog.com/dogbreeds.xml#xpointer(id('Poodle'))"
+			xlink:href="https://dog.com/dogbreeds.xml#Poodle"
+
+		- XPointer will cause the links to jump to the respective part of the XML document
+
+	Well Formed XML Documents:
+
+		- Well formed XML documents are those which utilise all correct and proper syntax, including:
+
+			- Root Element:			XML documents must have a root element.
+			- Closing Tags:			XML elements must have a closing tag.
+			- Case Sensitive:		XML tags are case sensitive.
+			- Element Nestng:		XML elements must be properly nested.
+			- Quoted Attribut Values:	XML attribute values must be quoted.
+			- Document Type Definition:	XML must conform to a DTD.
+
+		- Well formed XML document may be 'well formed' but not valid i.e. it may still have errors which cause program to stop (it is recommended that should a program parsing an XML file encounter an error to stop).
+
+			XML Document			XML Document State
+			__________________________________________________________________________
+
+			Well Formed			Correct syntax
+			Well Formed and Valid		Correct syntax and validated against a DTD
+			Well Formed and Valid		Correct syntax and validated against a XML Schema
+
+	Document Type Definition:
+
+		- DTD consist of the following x2 forms:
+
+			DTD:		Document Type Definition (The 'Original').
+			XML Schema:	XML based alternative to DTD.
+
+		- DTD defines the rules, legal elements and attributes for an XML document.
+		- DTD is declared using <!DOCTYPE ... which contains a reference to a *.dtd file:
+
+			<?xml version="1.0" encoding="UTF-8"?>
+			<!DOCTYPE note SYSTEM "Note.dtd">
+			<note>
+			<to>...</to>
+			<from>...</from>
+			<heading>...</heading>
+			<body>...</body>
+			</note>
+
+		- DTD "Note.dtd" file:
+
+			<!DOCTYPE note					//Root element of the document is note
+			[
+			<!ELEMENT note (to,from,heading,body)>		//Note element must contain the elements: "to, from, heading, body"
+			<!ELEMENT to (#PCDATA)>				//'to' element must be of type '#PCDATA' (Parseable character data)
+			<!ELEMENT from (#PCDATA)>
+			<!ELEMENT heading (#PCDATA)>
+			<!ELEMENT body (#PCDATA)>
+			]>
+
+		- DTD may be declared inline within the XML file and use entity references to define special characters or string constants within the document:
+
+			<?xml version="1.0" encoding="UTF-8"?>
+
+			<!DOCTYPE note [
+			<!ENTITY nbsp "&#xA0;">
+			<!ENTITY writer "Writer: Donald Duck.">
+			<!ENTITY copyright "Copyright: W3Schools.">
+			]>
+
+			<note>
+			<to>Tove</to>
+			<from>Jani</from>
+			<heading>Reminder</heading>
+			<body>Don't forget me this weekend!</body>
+			<footer>&writer;&nbsp;&copyright;</footer>
+			</note>
+
+			NB: Entities are referenced in the document as follows:
+
+				& <entity_name> ;
+
+		- DTD has many purposes including:
+
+			1. Data Standardisation:	Independent groups of people can agree to use a standard DTD for data interchange.
+			2. Data Verification:		Verification of own data and data received from an outside source.
+
+		- DTD should only be introduced when required and the project specification is stable.
+
+	XML Schema:
+
+		- XML schema describes the structure of an XML document, similar to DTD.
+		- XML schema is an XML based alternative to the original DTD.
+		- XML schema example:
+
+			<xs:element name="note">				//Element name
+
+			<xs:complexType>					//Element 'note's type is 'complexType'
+			  <xs:sequence>						//'complexType' is a sequence of elements
+			    <xs:element name="to" type="xs:string"/>		//Element 'to' is of stype string
+			    <xs:element name="from" type="xs:string"/>
+			    <xs:element name="heading" type="xs:string"/>
+			    <xs:element name="body" type="xs:string"/>
+			  </xs:sequence>
+			</xs:complexType>
+
+			</xs:element>
+
+		- XML schema is generally more powerful than DTD.
+		- XML schema is written in XML, therefore:
+
+			1. Ease:			Do not need to learn a new language to edit schema file.
+			2. XML Editing:			Can use existing XML editor to edit schema file.
+			3. XML Parsing:			Can use existing XML parser to parse schema file.
+			4. XML DOM:			Compatible with XML DOM for access/read/update.
+			5. XML XSLT:			Compatible with XML XSLT for transformation into HTML.
+
+		- XML schema is extensible to additions as per XML.
+		- XML schema support data types, therefore:
+
+			1. Description:			Easier to describe document content than using just primitives.
+			2. Data Restriction:		Easier to restrict data formats improving safety.
+			3. Data Validation:		Easier to ensure valid data.
+			4. Data Conversion:		Easier to convert between data types.
+
+		- XML schema support namespaces.
+		- XML schema have many purposes including:
+
+			1. Data Standardisation:	Independent groups of people can agree to use a standard DTD for data interchange.
+			2. Data Verification:		Verification of own data and data received from an outside source.
+			3. Convenience:			XML files can carry a description of its own format.
+
+HTTP
+
+	Overview:
+
+		- HTTP:		The foundation for data communication on the WWW since 1990.
+		- HTTP:		Multipurpose, generic, stateless protocol which can utlise exetensions of its request methods, error codes and headers.
+		- HTTP:		Application-level protocol for distributive, collaborative and hypermedia information systems.
+		- HTTP:		Based on TCP/IP.
+		- HTTP:		Transfer all types of data and files:
+
+					HTML/Text
+					Images
+					Query Results
+
+		- HTTP:		Default port is 80 but other ports can be used if required.
+		- HTTP:		Standardized means of computer communication.
+		- HTTP:		Specification describes how the client constructs its request and how the server should respond.
+
+	Basic Features:
+
+		Connectionless:
+
+			- Client initiates a connection
+			- Client initiates a request.
+			- Client maintains a connection and waits for a response.
+			- Server processes the request, constructs and returns a response.
+			- Client processes the response and disconnects.
+			- Client and server only know of each others presence during that connection.
+			- Any further request/response exchanges establish a new connection, no session data or rememberance is retain, it is as if the client and server are connecting again for the first time.
+
+		Media Independent:
+
+			- Data type may be of any kind sent via HTTP (as long as both the client and server are capable of processing such data).
+			- Data type must be specified by both the client and server using appropriate MIME-type.
+
+		Stateless:
+
+			- Client and server are only aware during a request/response exchange and not across connections.
+			- Client and server 'forget' each other between connections.
+			- State information is not perserved across connections.
+				
+		Versions:
+
+			- There are x2 main versions of HTTP:
+
+				HTTP/1.0:	Utilises a new connection for each request/response exchange.
+				HTTP/1.1:	Utilises a new connection for each request/response exchange or may retain the same connection.
+
+MIME Type (Media Type):
+
+	Overview:
+
+		- Multipurpose Internet Mail Extensions.
+		- Describes the type of media that is being transmitted.
+		- IANA (Internet Assigned Numbers Authority) standardise and publish the classifications of the types.
+		- Originally used to specify the content of an email message, now used for defining the content being transfered in general use e.g. HTTP.
+
+	Format:
+
+		type "/" [tree "."] subtype ["+" suffix]* [";" parameter]		//[] denotes optional
+
+		Components:
+
+			1. type
+			2. tree/subtype
+			3. suffix
+			4. parameters (name/value pair)
+
+			type:
+				May be one of the following:
+
+				application		multipart		example
+				audio			text			model
+				image			video			chemical (unoffically)
+				message			font
+
+			tree/subtype:
+
+				Describes a particular media format.
+
+			parameters:
+
+				Name/value pairs:
+
+					parameter names:	Case insensitive
+					parameter values:	Case sensitive
+
+		Example:
+
+			text/html; charset=UTF-8
+
+			type:		text
+			subtype:	html
+			parameter:	charset=UTF-8
+
+		Registration Trees:
+
+			May include prefix:
+
+				Standard:		No prefix
+				Vendor:			vnd.
+				Personal/Vanity:	prs.
+				Unregistered:		x.
+
+			Registration of trees may be created by the IETF Standards Action organisation.
+
+			Standards Tree:
+
+				Format:			type "/" subtype ["+" suffix] *[";" parameter]
+
+				Example:		application/javascript
+							image/png
+
+				Note:			Registrations in the standards tree must be either associated with IETF specifications approved directly by the IESG, or registered by an IANA recognized standards-related organization.
+
+			Vendor/Producer Tree:
+
+				Format:			type "/" "vnd." subtype ["+" suffix] *[";" parameter]
+
+				Example:		application/vnd.ms-excel
+							application/vnd.oasis.opendocument.text
+
+				Note:			Industry consortia as well as non-commercial entities can register media types in the vendor tree.
+							A registration in the vendor tree may be created by anyone who needs to interchange files associated with some software product or set of products.
+							However, the registration belongs to the vendor or organization producing the software that employs the type being registered, and that vendor or organization can at any time elect to assert ownership of a registration done by a third party.
+
+			Personal/Vanity Tree:
+
+				Format:			type "/" "prs." subtype ["+" suffix] *[";" parameter]
+
+				Example:		audio/prs.sid
+							image/prs.btif
+
+				Note:			The personal or vanity tree includes media types associated with non publicly available products or experimental media types.
+
+			Unregistered Tree:
+
+				Format:			type "/" "x." subtype ["+" suffix] *[";" parameter]
+
+				Example:		application/x.foo
+							video/x.bar
+
+				Note:			Media types intended exclusively for use in private environments and only with the active agreement of the parties exchanging them.
+							Media types in this tree cannot be registered.
+							Media types in the unregistered tree are strongly discouraged.
+							Media types that have been widely deployed (with a subtype prefixed with x- or X-) without being registered, should be if possible re-registered with a proper prefixed subtype.
+							If this is not possible the media type can after an approval by both the media types reviewer and the IESG, be registered in the standards tree with its unprefixed subtype.
+
+		Suffix:
+
+			- Suffix is an augmentation of the media type.
+			- Suffix provides additional information about the underlying structure of the media type.
+			- Suffix should be registered with IANA (unregistered should not be used).
+			- Suffix which have been registered include:
+
+				+xml
+				+json
+				+ber
+				+der
+				+fastinfoset
+				+wbxml
+				+zip
+				+gzip
+				+cbor
+				+json-seq
+				+cbor-seq
+
+		Mailcap:
+
+			- Mailcap is a meta file used to configure how MIME-aware applications (mail-clients or web browsers) should render files of differing MIME-types.
+			- Mailcap (Mail Capability).
+			- Mailcap is not an internet standard but supported by most Unix systems.
+
+		Mime.types
+
+			- 'Mime.types' is a file which associates filename extensions with a particular MIME type.
+			- 'Mime.types' used when MIME type is not properly set or set to a generic type e.g. application/octet-stream.
+			- 'Mime.types' used as a fall back if nothing appropriate assigned.
+			- 'Mime.types' frequently used by web servers to determine MIME type.
+			- 'Mime.types' associates an extension with a MIME type, while Mailcap associates a MIME type with a program.
+			- 'Mime.types' is typically space delimitted list of MIME types with zero or more file extensions:
+
+				text/html htm html	//HTML MIME type associated with the .htm and .html extensions.
+
+		Common Examples:
+
+			application/javascript
+			application/json
+			application/ld+json
+			application/msword (.doc)
+			application/pdf
+			application/sql
+			application/vnd.api+json
+			application/vnd.ms-excel (.xls)
+			application/vnd.ms-powerpoint (.ppt)
+			application/vnd.oasis.opendocument.text (.odt)
+			application/vnd.openxmlformats-officedocument.presentationml.presentation (.pptx)
+			application/vnd.openxmlformats-officedocument.spreadsheetml.sheet (.xlsx)
+			application/vnd.openxmlformats-officedocument.wordprocessingml.document (.docx)
+			application/x-www-form-urlencoded
+			application/xml
+			application/zip
+			application/zstd (.zst)
+			audio/mpeg
+			audio/ogg
+			image/avif
+			image/jpeg (.jpg, .jpeg, .jfif, .pjpeg, .pjp) [11]
+			image/png
+			image/svg+xml (.svg)
+			multipart/form-data
+			text/css
+			text/csv
+			text/html
+			text/xml
+
+REST API
+
+	- Overview
+
+		- REST:		REpresentational State Transfer
+		- REST:		Flexibilty provides a great deal of freedom and adapatability to many types of services.
+		- REST:		A common method for connecting components and applications within microservices architecture.
+		- REST:		An architectural stryle for designing distributed systems, with the following characteristics:
+
+					- Client/Server		Uniform Interface
+					- Stateless
+					- Highly-cohesive	Loosely Coupled Services
+
+		- REST:		Is not a standard, but a set of constraints.
+		- REST:		Originally described in post doctorate dissertation.
+		- REST:		Closely associated with HTTP but not tied to it, the dissertation does not explicitly reference or restrict to HTTP.
+
+	- Uniform Interface:
+
+		- REST has flexible principles but has the following broad aims:
+
+			1. Identify resources
+			2. Manipulate resources
+			3. Self-describing messages
+			4. Hypermedia as the engine of application state
+
+	- HTTP Uniform Interface
+
+		- Resource Identification:	URI (Universal Resource Identifier)
+		- Resource Manipulation:	GET, PUT, POST, DELETE...
+		- Resource Description:		Content-Type: application/json
+
+	- HTTP Manipulation Verbs
+
+		- GET:
+			- Purpose:	Retrieve information
+			- Requirement:	Safe and idempotent (does not alter any aspect on the server/system), however its flexible whereby side-effects are permissible but should not be critical to the operation of the system.
+
+		- DELETE
+			- Purpose:	Request that a resource be removed
+			- Requirement:	Resource does not need to be removed immediately but may be a long running task.
+
+		- PUT:
+			- Purpose:	Request that the entity passed be stored at the URI. Can be used to create a new entity or modify an existing one (however creation of new entities is uncommon given that it provides the client to select and set the ID of the new entity being created).
+
+		- POST:
+			- Purpose:	Request that the entity passed be used with the resource located at the URI.
+

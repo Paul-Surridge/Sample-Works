@@ -1,0 +1,514 @@
+Static
+
+	Overview:
+
+		- Components are characterised by x3 aspects with regards to non-Static/Static:
+
+			1. Composition:		Components memory composition:				Determines whether the component is able to house its own local non-static, static or both members: 
+
+							1. non-Static + Static:					Top Level Components:	Class, Abstract Class, Enum.
+							2. non-Static only:					Nested Components:	Any nested component not implicitly or explicitly placed into static memory.
+							3. Static only:						Top Level Components:	Interface.
+
+			2. Location:		Components location within its Top Level Form:		Determines what members it may access in Parental Chain and its Top Level Component:
+
+							1. non-Static:						non-Static + Static members
+							2. Static:						Static members (even if Parental Chain/Top Level contain non-Static members)
+
+			3. Default Location:	Components default location within its Top Level Form:	When declared a component will be defaulted to reside in static memory of its enclosing Top Level Component:
+
+														1. Interface
+														2. Enum
+
+			4. Association:		Components association:					Determines the physial location where the component is stored and whether its members can be access without instantiation:
+
+							1. non-Static:						Instances	(Heap)
+							2. Static:						Class		(Class Area)
+
+	Core Principles:
+
+		- Below are the mental steps to accessing the validity and accessibility of members contained in non-Static or Static memory:
+
+			1. static Keyword:
+
+				- The static keyword will attempt to place the subsequent component into the static memory of the immediate enclosing component (not the overall top level component).
+
+					class ClassA
+					{
+						static String sTest = new String("Test);		//Compiler will attempt to place sTest into the static memory of ClassA
+
+						class InnerClass
+						{
+							static String sTest1 = new String("Test);	//Compiler will attempt to place sTest1 into the static memory of immediate enclosing componet InnerClass.
+						}							//InnerClass does not have own static memory area therefore will throw a compile error.
+
+						static class StaticNestedClass
+						{
+							static String sTest1 = new String("Test);	//Compiler will attempt to place sTest1 into the static memory of immediate enclosing componet StaticNestedClass.
+						}							//Compiler will not attempt to place Test1 into the static memory of top level component ClassA
+													//StaticNestedClass has own static memory therefore success.
+					}
+
+			2. External Class Member Access:
+
+				- Given:
+
+					class ClassA
+					{
+						       ClassExternal objClassExternal1 = new ClassExternal();
+						static ClassExternal objClassExternal2 = new ClassExternal();	
+					}
+
+				- There is no restriction of access to the static or non-static members of ClassExternal even if the instantiation of ClassExternal is declared in either static or non-static memory of ClassA.
+
+					objClassExternal1.iNonStaticField		//OK
+					objClassExternal1.iStaticField			//OK
+
+					objClassExternal1.nonStaticMethod()		//OK
+					objClassExternal1.staticMethod()		//OK
+
+
+					objClassExternal2.iNonStaticField		//OK
+					objClassExternal2.iStaticField			//OK
+
+					objClassExternal2.nonStaticMethod()		//OK
+					objClassExternal2.staticMethod()		//OK
+
+				- It is always possible to access the static or non-static members of an object in all circumstances.
+
+					- The ability to access the static and non-static memory/members of ClassExternal will not depend upon whether the variable is declared in static or non-static memory of ClassA.
+					- The ability to access the variable from within ClassA will depend solely upon which ClassA memory it has been declared within as per the Internal Access principle below:
+
+				- In general:
+
+					- The static/non-static members of ClassExternal have no bearing nor implication on the ClassA memory an object of ClassExternal is instantiated within.
+					- The static/non-static memory of ClassA has no bearing nor implication on the internal memory of an object of ClassExternal.
+					- There is no restriction of access to the components stored in either static or non-static memory of an externally declared component regardless if that component is declared in either static or non-static memory of the encompassing class.				
+
+			3. Internal Access:
+
+				- Static areas/memory may only contain/reference internal members stored in static memory.
+				- Non-static areas/memory may contain/reference internal members stored in both non-static and static memory.
+
+					Class A			Permitted
+					Memory/Areas		Internal Members
+					________________________________________
+
+					non-Static		All		(both non-Static and Static members)
+					Static			Static Only	(static members only)
+
+			4. Nested Components:
+
+				- The principles associated with 'Internal Access' apply equally to nested components:
+
+					Nested Component	Permitted
+					Placement		Internal Members
+					________________________________________
+
+					non-Static		All		(both non-Static and Static members)
+					Static			Static Only	(static members only)
+
+			5. Nested Components:
+
+				- Nested Components placed in static memory are the only nested components permitted to have own separate static memory:
+
+					Nested Component	Own Separate		Own non-Static		Own Static
+					Placement		Static Memory		Members			Members
+					__________________________________________________________________________________
+
+					non-Static		No			Yes			No			//Therefore not possible to place own components non-static memory as it does not exist.
+					Static			Yes			Yes			Yes			//Nested components placed in static memory are essentially top level components in their own right.
+
+			6. Default Memory Composition:
+
+				- Interface by default only consists of static memory.
+				- All members are automatically/implicitly placed in static memory:
+
+					Top Level			Memory
+					Component			Composition
+					_____________________________________________________
+
+					Class/Abstract Class/Enum:	non-Static and Static		//Has both non-static and static memory areas.
+					Interface:			Static				//Has only static memory area.
+
+	Component Memory Composition:
+
+		non-Static + Static Memory
+
+			- Component contains both non-Static or Static memory.
+			- Component may declare/contain/place components in either memory.
+			- Component allowed to have its own Static members.
+			- Components:
+
+				1. Class		Top Level
+				2. Abstract Class	Top Level 
+				3. Enum			Top Level 
+
+				4. Class		Top Level - Static		[Effective Top Level Class]
+				5. Abstract Class	Top Level - Static 		[Effective Top Level Abstract Class]
+				6. Enum			Top Level - Static		[Effective Top Level Enum]
+
+				The concept or concern of non-Static/Static context is purely Top-Level centric i.e. solely relevant between a Top Level Component and its internal components.
+
+				|____________________________________________________________ Dual Memory Components ___________________________________________________________|
+				 _______________________________________________________________________________________________________________________________________________
+				|									|									|
+				|			Static Memory/Area				|			non-Static Memory/Area				|
+				|									|									|
+				|									|									|
+				|									|									|
+				|									|									|
+				|									|									|
+				|									|									|
+				|									|									|
+				|									|									|
+				|									|									|
+
+		Static Memory Only
+
+			- Component contains Static memory only.
+			- Component may declare/contain/place members in Static memory only
+			- Component allowed to have its own Static members.
+			- Components:
+
+				1. Top Level 		Interface
+				2. Nested		Interface
+				3. Initialisation 	Block			[within Static memory of Top Level]
+
+				Therefore all components within an interface are implicitly static (except Default Methods?)				
+
+		non-Static Memory Only
+
+			- Component contains non-Static memory only.
+			- Component may declare/contain/place members in non-Static memory only.
+			- Component not allowed to have its own Static members.
+			- Components:	Everything Else...
+
+				1. Nested		Class			[within non-Static memory of Top Level]
+				2. Nested		Abstract Class 		[within non-Static memory of Top Level]
+
+				3. Local 		Class
+				4. Local 		Abstract Class
+
+				5. Anonymous		Class
+				6. Lambda		Expression
+				7. Initialisation 	Block			[within non-Static memory of Top Level]
+				8. Block
+
+				9. ...
+
+			- Local/Inner Class
+
+				An exception where Local/Inner classes (not methods/blocks) may have their own Static Constants which are likely either:
+
+				1. Automatically imported into the Static memory of the Top Level Class.
+				2. Automatically imported into the Static memory of the Top Level Class via parental chain.
+
+	Component Placement:
+
+		A component may be placed within either memory via either:
+
+			1. Manually:
+
+				non-Static:		(via no 'static' keyword)
+				Static:			(via 'static' keyword)
+
+			2. Automatically/Implicitly (by compiler):
+
+				non-Static:		Type Variables
+				Static:			Interfaces
+							Enum
+
+		The 'static' keyword simply and soley means that:
+
+			1. Placement:		The subsequent declaration or instantiation will be placed in static memory of the enclosing top level component.
+			2. Association:		The subsequent declaration or instantiation will be associated with the class and not any instantiation of the top level component.
+			3. Referencing:		The subsequent declaration or instantiation will be only accessible or referenced via static syntax of the top level component.
+
+	Component Initialisation:
+
+					Default		Locations
+					______________________________________________________________________________________________________________________________________________
+		non-Static
+
+			Field		Y		Declared + Constructor + Initialisation Block			Can 	be initialised at any time otherwise remain at default
+			Constant	-		Declared + Constructor + Initialisation Block 			Must	be initialised when Class Form instantiated
+
+		Static
+
+			Field		Y		Declared + Constructor + Initialisation Block			Can 	be initialised at any time otherwise remain at default
+			Constant	-		Declared + Initialisation Block					Must	be initialised when Class Form loaded
+
+	Component Default Values:
+
+		non-Static:
+
+			Fields:				Are given default values and initialised at any time.
+			Constants:			Are not given default values and must be initialised when instantiated.
+
+		Static:
+
+			Fields:				Are given default values and initialised at any time.
+			Constants:			Are not given default values and must be initialised when loaded.
+
+			NB: Static Fields/Constants can not depend or be associated with Instances of class and only reference components also stored in Static memory.
+
+	Component Referencing/Usage:
+
+		Memory		May Reference
+		____________________________________________
+
+		non-Static	non-Static + Static members
+		    Static	Static members				Reason:	To ensure components in Static memory do not depend on any instantiation of class.
+
+
+		Member		May Be Referenced In
+		____________________________________________
+
+		non-Static	non-Static memory
+		    Static	non-Static + Static memory
+
+	Component Referencing Syntax:
+
+		Class:
+
+			Class.staticField;
+			Class.staticMethod();
+			Class.staticNestedClass
+			Class.staticNestedInterface
+			Class.staticNestedEnum
+
+		Instance::
+
+			Object.nonStaticField;
+			Object.staticField;
+			...
+
+			NB: IDE may show warning and try and change to Class referencing in order to improve readability.
+
+	'Just Components'
+
+		Components should be considered as 'Just Components' which are placed in either the non-Static or Static memory of its Top Level Form:
+
+			non-Static Memory:
+	
+				Inner Class:		Is just a Class 		within non-Static memory of Top-Level Class.
+				Method:			Is just a Method 		within non-Static memory of Top-Level Class.
+				Instance Variable:	Is just a Primitive/Object 	within non-Static memory of Top-Level Class.
+
+			Static Memory:
+					
+				Static Nested Class:	Is just a Class 		within Static memory of Top-Level Class.
+				Static Method:		Is just a Method 		within Static memory of Top-Level Class.	
+				Class Variable:		Is just a Primitive/Object 	within Static memory of Top-Level Class.
+
+				Nested Interface:	Automatically placed within the Static Context of the Top-Level Class i.e. implicitly Static.
+				Nested Enum:		Automatically placed within the Static Context of the Top-Level Class i.e. implicitly Static.
+
+		The only aspect which changes is the components own access to external members in the Parental Chain and Top Level Form.	
+
+	Component Depiction:
+
+						 _______________________
+						|  _____________	|				ClassA:		Top-Level Class
+						| |		|	|
+						| |    objB	|	|				objA:		non-Static Instantiation of Class A
+						| |_____________|	|				objB:		Static     Instantiation of Class A
+		 ____				|			|
+		|____|__________		|_______________________|_________________
+		|		|		|
+		|    ClassA	|		|	 _______________
+		|_______________|		|	|		|
+						|	|     objA	|
+						|	|_______________|
+						|
+						|
+						|				Class B
+
+
+		1. Identical Members:
+
+			Instances of a Class always have the 'same' set of own internal members, regardless if declared in the non-Static or Static memory of another class:
+
+			objA:		Access to ClassA Class Members.
+					Access to own Instance Members.
+
+			objB:		Access to ClassA Class Members.
+					Access to own Instance Members.
+
+			Instances do not 'lose' any members depending on the location it is placed.
+
+		2. Top Level Form Centric:
+
+			All considerations regarding memory are solely Top Level Form centric and between:
+
+				1. Top Level Form:		The Top Level Form itself.
+
+				[and]
+
+				2. Member:			The Top Level memory that that member has been placed within.
+
+			The internal memory allocations within components within the Top Level Form are irrelevant to the Top Level Form.
+
+		3. For Example:
+
+			class ClassA
+			{
+				int 		iField;
+				static int 	iStaticField;
+
+				void method()...
+				static void staticMethod()...
+			}
+			class ClassB
+			{
+				int 		i;
+				static int 	iStatic;
+
+				ClassA 		objA = new ClassA();
+				static ClassA 	objB = new ClassA();
+
+				non-Static
+				{
+					i = objA.iStaticField			//OK
+					i = objA.staticMethod			//OK
+
+					i = objA.iField				//OK
+					i = objA.method				//OK
+
+					i = objB.iStaticField			//OK
+					i = objB.staticMethod			//OK
+
+					i = objB.iField				//OK
+					i = objB.method				//OK
+
+					i = ClassA.iStaticField			//OK
+					i = ClassA.staticMethod			//OK
+
+
+
+					iStatic = objA.iStaticField		//OK
+					iStatic = objA.staticMethod		//OK
+
+					iStatic = objA.iField			//OK
+					iStatic = objA.method			//OK
+
+					iStatic = objB.iStaticField		//OK
+					iStatic = objB.staticMethod		//OK
+
+					iStatic = objB.iField			//OK
+					iStatic = objB.method			//OK
+
+					iStatic = ClassA.iStaticField		//OK
+					iStatic = ClassA.staticMethod		//OK
+				}
+				Static
+				{
+					i = objA.iStaticField			//Fail		'i' + 'objA'		are non-Static member of Class
+					i = objA.staticMethod			//Fail		'i' + 'objA'		are non-Static member of Class
+
+					i = objA.iField				//Fail		'i' + 'objA'		are non-Static member of Class
+					i = objA.method				//Fail		'i' + 'objA'		are non-Static member of Class
+
+					i = objB.iStaticField			//Fail		'i'			is a non-Static member of Class
+					i = objB.staticMethod			//Fail		'i'			is a non-Static member of Class
+
+					i = objB.iField				//Fail		'i'			is a non-Static member of Class
+					i = objB.method				//Fail		'i'			is a non-Static member of Class
+
+ 
+					iStatic = objA.iStaticField		//Fail		'objA'			is a non-Static member of Class
+					iStatic = objA.staticMethod		//Fail		'objA'			is a non-Static member of Class
+
+					iStatic = objA.iField			//Fail		'objA'			is a non-Static member of Class
+					iStatic = objA.method			//Fail		'objA'			is a non-Static member of Class
+
+					iStatic = objB.iStaticField		//OK		'iStatic' and 'objB'	are both static members of class (irrespective of what 'objB' is referring to)
+					iStatic = objB.staticMethod		//OK		'iStatic' and 'objB'	are both static members of class (irrespective of what 'objB' is referring to)
+
+					iStatic = objB.iField			//OK		'iStatic' and 'objB'	are both static members of class (irrespective of what 'objB' is referring to)
+					iStatic = objB.method			//OK		'iStatic' and 'objB'	are both static members of class (irrespective of what 'objB' is referring to)
+
+					iStatic = ClassA.iStaticField		//OK
+					iStatic = ClassA.staticMethod		//OK
+				}
+			}
+
+	'super' 'this':
+
+		Keywords may not be used in Static memory for they refer to Instances of the Top Level Class.
+
+			'super' 	May not be used in 'static' memory 
+			'this' 		May not be used in 'static' memory 
+
+	Static Imports:
+
+		It is possible to import just the static members of a class:
+
+			import static ClassA.staticMember;
+			import static ClassA.*
+
+	LValue/RValue:
+
+		Irrelevant when considering permitted members i.e. whether a member is an LValue or RValue does not affect whether that member is (or is not) permitted in that context.
+
+			non-Static
+			{
+				iNonStatic 	= iStatic;			//OK	It is irrelevant which way round the members go when determining if a member is permitted in a particular memory.
+				iStatic 	= iNonStatic;			//OK	It is simply determined by presence i.e. whether that member can be 'used' in that memory or not.
+			}
+
+			static
+			{
+				iNonStatic 	= staticMethod();		//Fail	Both LValue and RValue must be contained within the Static memory of the Top Level Form.
+				iStatic 	= method();			//Fail	Both LValue and RValue must be contained within the Static memory of the Top Level Form.
+			}
+
+	Locality:
+
+		Static members are members which have been placed in static memory of the top level component that they are declared.
+		Static members are 'only static' relative to the the Top Level Component it is contained within.
+		Whether a Nested Class was stored in non-Static or Static memory has no bearing when referenced by an external class i.e. it is simply treated like any other Top-Level class which happens to be placed in either the non-Static or Static memory of another class.
+
+	Layers:
+
+		class ClassA
+		{
+			int i;
+			static int iStatic;					//This is a field that is static within ClassA
+
+			static:							//Static Initialisation Block
+			{
+						
+			}
+
+			static int staticMethod()
+			{
+				return 10;
+			}
+
+			static class StaticNestedClass
+			{
+
+			}
+
+			static interface StaticNestedInterface
+			{
+
+			}
+
+			static enum StaticNestedEnum
+			{
+
+			}
+		}
+
+		class ClassB
+		{
+			static ClassA objClassA = new ClassA();			//This is a field that is static within ClassB
+
+			static int staticMethod()
+			{
+				return 10;
+			}
+		}

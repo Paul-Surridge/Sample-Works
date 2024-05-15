@@ -1,0 +1,148 @@
+Blocks
+
+	Blocks
+
+		- Blocks are a section of code containing 0 or more statements within {}:
+		
+			1. If Clause
+			2. Else Clause
+			3. Loop
+			4. ...
+
+			NB: A Class or Method is not a block, for the section between {} cannot be replaced with x1 single statement.
+
+	Block Members
+
+		- Blocks permitted members:
+
+			1. Fields			Local Variable
+			2. Constants			Local Variable
+			3. Class			Local Class
+			4. Abstract Class		Local Abstract Class
+			5. Block:			Local Block
+
+		- Blocks unpermitted members:
+
+			1. Local Static Members
+			2. Local Interfaces:		Implicit static
+			3. Local Enums:			Implicit static
+
+			Given Blocks do not contain static memory, therefore unable to declare/contain own static members.
+
+		- Blocks may exist within both non-Static and Static memory, the only differential is access to parental members.
+
+			Block Location in		Access To Members Of			Access To Members Of
+			Top Level Memory		Parental Chain				Top Level Class
+			____________________________________________________________________________________________
+
+			non-Static			non-Static 				non-Static + Static
+			Static				Static					Static
+
+			NB: Nested Parental Local Variables or Parameters must be 'final' | 'effectively final' i.e. not changed once initialised.
+
+		- Block Shadowing:
+
+			- Blocks do not permit shadowing.
+			- Blocks which declare variables with matching identifiers throw compile error.
+
+	Block Usage
+
+		- Blocks can only exist within:
+
+			1. Initialisation Blocks	[non-Static]
+			2. Initialisation Blocks	[Static]
+			3. Constructors
+			4. Methods			[non-Static | Static]
+			5. Other Blocks
+
+		- Blocks cannot be used to initialise variables for the RValue of an initialisation/assignment is not a full statement.
+
+			int i = 10;		//Full Statement
+			int i = {...}		//{...} is not a statement but the RValue of a statement.
+
+		- Blocks may exist anywhere a x1 single line statement may exist.
+
+	Labelled Blocks
+
+		- Blocks can be labelled and referenced from within the block to exit the block:
+
+			search:
+			{
+				if(iLocal > 0)
+			                break search;
+
+        			for (i = 0; i < 10 ; i++)
+            				for (j = 0; j < 10 ; j++)
+                				if( (i == 1) && (j == 2) )
+							break search;
+			}
+
+        		System.out.println("Found " + searchfor + " at " + i + ", " + j);
+
+		- Once 'break search' is encountered control does not 'goto' the labels position but exits and immediately continues execution after the label statement/block.
+
+	Initialisation Blocks:
+
+		non-Static Initialisation Blocks:
+
+			- A block not enclosed by 'static'.
+			- Associated with the contructors.
+
+				class ClassA
+				{
+					int i;
+					String sName;
+
+					{
+						...
+					}
+					ClassA(){...}
+					ClassA(int i){...}
+				}
+
+			- non-Static Initialisation Blocks are executed and automatically included within all contructors.
+			- non-Static Initialisation Blocks enable complex initialisation of non-Static fields.
+			- non-Static Initialisation Blocks are the same as standard Blocks except for:
+
+				1. Constructors:	Copied to all Constructors.
+				2. Shadowing:		Permitted. All Initialisation Blocks shadow/hide variables of enclosing scopes with matching identifiers.
+
+		Static Initialisation Blocks:
+
+			- A block enclosed by 'static'
+
+				class ClassA
+				{
+					static
+					{
+						...
+					}
+				}
+
+			- A class may have any number of Static Initialisation Blocks.
+			- Static Initialisation Blocks may appear anywhere within the code.
+			- Static Initialisation Blocks are executed in the order that they appear.
+			- Static Initialisation Blocks enable the use of complex initialisation of any static fields.
+			- Static Initialisation Blocks are the same as standard Blocks except for:
+
+				1. Class Loader:	Copied to all Class Loaders.
+				2. Shadowing:		Permitted. All Initialisation Blocks shadow/hide variables of enclosing scopes with matching identifiers.
+				3. Ordering:		Executed in order of appearance within Top Level Class
+
+				NB:
+
+					- If a Static Initialisation Block contains a variable which shadows a non-Static Variable.
+					- Static Initialisation Block does not shadow that variable it simply creates a Local Variable of matching name (which is likely placed in Static Memory of Top Level Class).
+
+			- Private Static Methods:
+
+				- An alternative to Static Initialisation Block is simply a private static method.
+				- These provide the additional functionality of being able to re-initialise static fields back to their default startup values.
+		
+
+
+
+		
+
+
+

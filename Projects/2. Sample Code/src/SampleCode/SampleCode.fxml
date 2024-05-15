@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.web.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="apGlobal" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SampleCode.SampleCode">
+   <children>
+      <SplitPane fx:id="spGlobal" dividerPositions="0.41397288842544316" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane fx:id="apLibrary" blendMode="DARKEN" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <TreeView fx:id="tvLibrary" editable="true" layoutX="36.0" layoutY="31.0" prefHeight="1047.0" prefWidth="752.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="44.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="31.0" />
+                  <Button fx:id="btnSearchByName" focusTraversable="false" layoutY="34.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="35.0" prefWidth="45.0" text="Name" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="9.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnSearchByCode" focusTraversable="false" layoutY="68.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="35.0" prefWidth="45.0" text="Code&#10;" textAlignment="CENTER" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="9.0" />
+                     </font>
+                  </Button>
+                  <TextField fx:id="tfSearch" prefHeight="35.0" prefWidth="791.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane fx:id="apViewer" blendMode="DARKEN" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <TabPane fx:id="tpViewer" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                      <Tab fx:id="tabCode" text="Code/Notes">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TextField fx:id="tfHeader" layoutY="-5.0" prefHeight="52.0" prefWidth="1389.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-5.0">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </TextField>
+                                    <ToolBar fx:id="tbBreadcrumbTrail" layoutY="47.0" prefHeight="35.0" prefWidth="1389.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="47.0" />
+                                    <ImageView fx:id="ivSaveIcon" fitHeight="35.0" fitWidth="28.0" layoutX="1359.0" layoutY="50.0" opacity="0.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="50.0">
+                                       <image>
+                                          <Image url="@../app/images/Icon%20-%20Content%20-%20Saved.png" />
+                                       </image>
+                                    </ImageView>
+                                    <TextArea fx:id="taCode" layoutY="81.0" prefHeight="967.0" prefWidth="1389.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="81.0">
+                                       <font>
+                                          <Font name="Monospaced Regular" size="14.0" />
+                                       </font>
+                                    </TextArea>
+                                    <Button fx:id="btnSearchPrevious" focusTraversable="false" layoutX="1079.0" layoutY="81.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="40.0" text="Prev" visible="false" AnchorPane.rightAnchor="18.0">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Button>
+                                    <Button fx:id="btnSearchNext" focusTraversable="false" layoutX="1065.0" layoutY="115.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="40.0" text="Next" visible="false" AnchorPane.rightAnchor="18.0">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Button>
+                                    <Label fx:id="labSearchNumberOfMatches" layoutY="55.0" AnchorPane.rightAnchor="32.0" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                      <Tab fx:id="tabAsciiTable" text="ASCII Table">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TextArea fx:id="taAsciiTable" editable="false" prefHeight="1047.0" prefWidth="1121.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Regular" size="14.0" />
+                                       </font>
+                                    </TextArea>
+                                 </children></AnchorPane>
+                        </content>
+                      </Tab>
+                        <Tab text="Escape Sequences">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TextArea fx:id="taEscapeSequences" editable="false" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Regular" size="14.0" />
+                                       </font>
+                                    </TextArea>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </Tab>
+                        <Tab text="Instructions / Shortcut Keys">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TextArea fx:id="taInstructions" editable="false" prefHeight="1047.0" prefWidth="1121.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <font>
+                                          <Font name="Monospaced Regular" size="14.0" />
+                                       </font>
+                                    </TextArea>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+      <AnchorPane fx:id="apFullScreen" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TextArea fx:id="taFullScreen" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font name="Monospaced Regular" size="14.0" />
+               </font>
+            </TextArea>
+            <Button fx:id="btnSearchPreviousFullScreen" focusTraversable="false" mnemonicParsing="false" prefHeight="35.0" prefWidth="40.0" text="Prev" visible="false" AnchorPane.rightAnchor="18.0">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnSearchNextFullScreen" focusTraversable="false" layoutY="34.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="40.0" text="Next" visible="false" AnchorPane.rightAnchor="18.0">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Button>
+            <Label fx:id="labSearchNumberOfMatchesFullScreen" textFill="WHITE" visible="false" AnchorPane.rightAnchor="65.0" AnchorPane.topAnchor="10.0" />
+            <ImageView fx:id="ivSaveIconFullScreen" fitHeight="35.0" fitWidth="28.0" layoutX="1868.0" layoutY="4.0" opacity="0.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../app/images/Icon%20-%20Content%20-%20Saved.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="ivSaveIconFullScreenWithSearch" fitHeight="35.0" fitWidth="28.0" layoutX="1868.0" layoutY="75.0" opacity="0.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../app/images/Icon%20-%20Content%20-%20Saved.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="apDeleteConfirmation" prefHeight="200.0" prefWidth="200.0" visible="false">
+         <children>
+            <ImageView fitHeight="1080.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <image>
+                  <Image url="@../app/images/Background%20-%20Translucent%20-%201920x1080.png" />
+               </image>
+            </ImageView>
+            <TitledPane animated="false" collapsible="false" layoutX="785.0" layoutY="468.0" minWidth="160.0" prefHeight="144.0" prefWidth="351.0" text="Delete Confirmation" AnchorPane.bottomAnchor="468.0" AnchorPane.leftAnchor="785.0" AnchorPane.rightAnchor="784.0" AnchorPane.topAnchor="468.0">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="110.0" prefWidth="447.0">
+                     <children>
+                        <Button fx:id="btnDeleteConfirm" layoutX="62.0" layoutY="65.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="103.0" text="Delete">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="btnDeleteCancel" layoutX="185.0" layoutY="65.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="103.0" text="Cancel">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Label layoutX="90.0" layoutY="27.0" text="Please confirm deletion of node" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="apContentExceedMaximum" prefHeight="200.0" prefWidth="200.0" visible="false">
+         <children>
+            <ImageView fitHeight="1080.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <image>
+                  <Image url="@../app/images/Background%20-%20Translucent%20-%201920x1080.png" />
+               </image>
+            </ImageView>
+            <TitledPane animated="false" collapsible="false" layoutX="674.0" layoutY="446.0" minWidth="160.0" prefHeight="188.0" prefWidth="573.0" text="Exceed Maximum Length" AnchorPane.bottomAnchor="446.0" AnchorPane.leftAnchor="674.0" AnchorPane.rightAnchor="673.0" AnchorPane.topAnchor="446.0">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="261.0" prefWidth="536.0">
+                     <children>
+                        <Label fx:id="labContentExceedMaximum" alignment="CENTER" layoutX="10.0" layoutY="23.0" prefHeight="71.0" prefWidth="552.0" textAlignment="CENTER" wrapText="true" />
+                        <Button fx:id="btnContentExceedMaximumClose" layoutX="454.0" layoutY="113.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="103.0" text="Close">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </TitledPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

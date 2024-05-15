@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="apApp" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BankAccountsManager.BankAccountsManager">
+   <children>
+      <SplitPane fx:id="spApp" dividerPositions="0.3420229405630866, 0.662148070907195" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane fx:id="apAccCat" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <SplitPane fx:id="spAccCat" dividerPositions="0.25, 0.62" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                      <AnchorPane fx:id="apAccounts">
+                           <children>
+                              <Label fx:id="labDateRange" alignment="CENTER" layoutY="7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                 <font>
+                                    <Font name="Calibri" size="16.0" />
+                                 </font>
+                              </Label>
+                              <ImageView fx:id="ivAdministration" fitHeight="25.0" fitWidth="25.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="3.0" AnchorPane.topAnchor="3.0">
+                                 <image>
+                                    <Image url="@../App/images/Icon%20-%20Database.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="ivDateRange" fitHeight="25.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="3.0">
+                                 <image>
+                                    <Image url="@../App/images/Icon%20-%20Calendar.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="ivInfoDashboard" fitHeight="25.0" fitWidth="38.0" layoutX="590.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
+                                 <image>
+                                    <Image url="@../App/images/Icon%20-%20Info%20-%20Large.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                      <AnchorPane fx:id="apCategoriesIn">
+                           <children>
+                              <Label fx:id="labCategoriesInHeader" alignment="CENTER" layoutY="7.0" text="Incoming" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                 <font>
+                                    <Font name="Calibri" size="16.0" />
+                                 </font>
+                              </Label>
+                              <CheckBox fx:id="cbCategoriesInViewAll" mnemonicParsing="false" text="View All" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="7.0" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="apCategoriesOut">
+                           <children>
+                              <Label fx:id="labCategoriesOutHeader" alignment="CENTER" layoutY="7.0" text="Outgoing" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                 <font>
+                                    <Font name="Calibri" size="16.0" />
+                                 </font>
+                              </Label>
+                              <CheckBox fx:id="cbCategoriesOutViewAll" mnemonicParsing="false" text="View All" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="7.0" />
+                           </children>
+                        </AnchorPane>
+                    </items>
+                  </SplitPane>
+               </children>
+            </AnchorPane>
+          <AnchorPane fx:id="apCharts" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <SplitPane fx:id="spCharts" dividerPositions="0.2803532008830022, 0.6490066225165563" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                      <AnchorPane fx:id="apStackedBarChart">
+                           <children>
+                              <Rectangle fx:id="recStackedBarChartNodeValue" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="21.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="36.0" />
+                              <Label fx:id="labStackedBarChartNodeValue" layoutX="5.0" layoutY="2.0" prefHeight="17.0" visible="false" />
+                           </children></AnchorPane>
+                      <AnchorPane fx:id="apPieChart">
+                           <children>
+                              <Rectangle fx:id="recPieChartNodeValue" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="21.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="36.0" />
+                              <Label fx:id="labPieChartNodeValue" prefHeight="17.0" visible="false" />
+                           </children></AnchorPane>
+                        <AnchorPane fx:id="apLineChart" SplitPane.resizableWithParent="false">
+                           <children>
+                              <Rectangle fx:id="recLineChartNodeValue" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="21.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="36.0" />
+                              <Label fx:id="labLineChartNodeValue" prefHeight="17.0" visible="false" />
+                           </children></AnchorPane>
+                    </items>
+                  </SplitPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apHistory">
+               <children>
+                  <Label alignment="CENTER" layoutY="7.0" text="History" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font name="Calibri" size="16.0" />
+                     </font>
+                  </Label>
+                  <ImageView fx:id="ivHistorySearch" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="4.0" AnchorPane.topAnchor="4.0">
+                     <image>
+                        <Image url="@../App/images/Icon%20-%20Search.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="ivHistorySearchClose" fitHeight="25.0" fitWidth="25.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
+                     <image>
+                        <Image url="@../App/images/Icon%20-%20Close%20-%20Inverted.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+      <Rectangle fx:id="recDialogBackground" arcHeight="5.0" arcWidth="5.0" height="1080.0" opacity="0.4" stroke="BLACK" strokeType="INSIDE" visible="false" width="1920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <ScrollPane fx:id="spAdministration" layoutX="329.0" layoutY="107.0" visible="false">
+        <content>
+          <AnchorPane>
+               <children>
+                  <TabPane fx:id="tpAdministration" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                      <Tab fx:id="tabStatement" text="Add Statement">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="713.0" prefWidth="1260.0">
+                                 <children>
+                                    <SplitPane fx:id="spStatementTables" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="20.0">
+                                       <items>
+                                          <AnchorPane fx:id="apStatementTable" prefHeight="243.0" prefWidth="1092.0" />
+                                       </items>
+                                    </SplitPane>
+                                    <RadioButton fx:id="rbStatementCurrent" layoutX="1130.0" layoutY="20.0" mnemonicParsing="false" text="Barclays Current" />
+                                    <RadioButton fx:id="rbStatementSaving" layoutX="1130.0" layoutY="50.0" mnemonicParsing="false" text="Barclays Saving" />
+                                    <RadioButton fx:id="rbStatementISA" layoutX="1130.0" layoutY="80.0" mnemonicParsing="false" text="Barclays ISA" />
+                                    <Button fx:id="btStatementOpenFile" layoutX="1130.0" layoutY="543.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Open *.csv" />
+                                    <Button fx:id="btStatementClear" layoutX="1130.0" layoutY="593.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Clear" />
+                                    <Button fx:id="btStatementAdd" layoutX="1130.0" layoutY="623.0" mnemonicParsing="false" prefWidth="86.0" text="Add" />
+                                    <Button fx:id="btStatementClose" layoutX="1130.0" layoutY="653.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Close" />
+                                    <RadioButton fx:id="rbStatementEntriesCategorised" layoutX="1130.0" layoutY="370.0" mnemonicParsing="false" />
+                                    <RadioButton fx:id="rbStatementEntriesUndefined" layoutX="1130.0" layoutY="400.0" mnemonicParsing="false" />
+                                    <RadioButton fx:id="rbStatementEntriesAll" layoutX="1130.0" layoutY="430.0" mnemonicParsing="false" />
+                                    <Label fx:id="labStatementStatusMessage" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="20.0" />
+                                    <ImageView fx:id="ivInfoStatement" fitHeight="20.0" fitWidth="20.0" layoutX="1248.0" layoutY="702.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="4.0">
+                                       <image>
+                                          <Image url="@../App/images/Icon%20-%20Info%20-%20Small.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                      </Tab>
+                        <Tab fx:id="tabRefunds" text="Refunds">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="713.0" prefWidth="1236.0">
+                                 <children>
+                                    <SplitPane fx:id="spRefundsTables" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="20.0">
+                                       <items>
+                                          <AnchorPane fx:id="apRefundsTable" prefHeight="243.0" prefWidth="1092.0" />
+                                       </items>
+                                    </SplitPane>
+                                    <RadioButton fx:id="rbRefundsCurrent" layoutX="1130.0" layoutY="20.0" mnemonicParsing="false" text="Barclays Current" />
+                                    <RadioButton fx:id="rbRefundsSaving" layoutX="1130.0" layoutY="50.0" mnemonicParsing="false" text="Barclays Saving" />
+                                    <RadioButton fx:id="rbRefundsISA" layoutX="1130.0" layoutY="80.0" mnemonicParsing="false" text="Barclays ISA" />
+                                    <Button fx:id="btRefundsClose" layoutX="1130.0" layoutY="653.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Close" AnchorPane.bottomAnchor="30.0" />
+                                    <ImageView fx:id="ivInfoRefunds" fitHeight="20.0" fitWidth="20.0" layoutX="1246.0" layoutY="690.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="4.0">
+                                       <image>
+                                          <Image url="@../App/images/Icon%20-%20Info%20-%20Small.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="tabWatches" text="Watches">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="713.0" prefWidth="1236.0">
+                                 <children>
+                                    <SplitPane fx:id="spWatchesTables" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="20.0">
+                                       <items>
+                                          <AnchorPane fx:id="apWatchesTable" prefHeight="243.0" prefWidth="1092.0" />
+                                       </items>
+                                    </SplitPane>
+                                    <RadioButton fx:id="rbWatchesCurrent" layoutX="1130.0" layoutY="20.0" mnemonicParsing="false" text="Barclays Current" />
+                                    <RadioButton fx:id="rbWatchesSaving" layoutX="1130.0" layoutY="50.0" mnemonicParsing="false" text="Barclays Saving" />
+                                    <RadioButton fx:id="rbWatchesISA" layoutX="1130.0" layoutY="80.0" mnemonicParsing="false" text="Barclays ISA" />
+                                    <RadioButton fx:id="rbWatchesIncoming" layoutX="1130.0" layoutY="200.0" mnemonicParsing="false" text="Incoming" />
+                                    <RadioButton fx:id="rbWatchesOutgoing" layoutX="1130.0" layoutY="230.0" mnemonicParsing="false" text="Outgoing" />
+                                    <Button fx:id="btWatchesClose" layoutX="1130.0" layoutY="653.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Close" AnchorPane.bottomAnchor="30.0" />
+                                    <Label fx:id="labWatchesStatusMessage" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="20.0" />
+                                    <ImageView fx:id="ivInfoWatches" fitHeight="20.0" fitWidth="20.0" layoutX="1246.0" layoutY="690.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="4.0">
+                                       <image>
+                                          <Image url="@../App/images/Icon%20-%20Info%20-%20Small.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="tabCategories" text="Categories">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="713.0" prefWidth="1236.0">
+                                 <children>
+                                    <SplitPane fx:id="spCategories" dividerPositions="0.3170731707317073" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="20.0">
+                                       <items>
+                                          <AnchorPane fx:id="apCategoriesInTable" prefHeight="243.0" prefWidth="1092.0" />
+                                          <AnchorPane fx:id="apCategoriesOutTable" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                                       </items>
+                                    </SplitPane>
+                                    <RadioButton fx:id="rbCategoriesCurrent" layoutX="1130.0" layoutY="20.0" mnemonicParsing="false" text="Barclays Current" />
+                                    <RadioButton fx:id="rbCategoriesSaving" layoutX="1130.0" layoutY="50.0" mnemonicParsing="false" text="Barclays Saving" />
+                                    <RadioButton fx:id="rbCategoriesISA" layoutX="1130.0" layoutY="80.0" mnemonicParsing="false" text="Barclays ISA" />
+                                    <Button fx:id="btCategoriesClose" layoutX="1130.0" layoutY="653.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Close" AnchorPane.bottomAnchor="30.0" />
+                                    <ImageView fx:id="ivInfoCategories" fitHeight="20.0" fitWidth="20.0" layoutX="1246.0" layoutY="690.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="4.0">
+                                       <image>
+                                          <Image url="@../App/images/Icon%20-%20Info%20-%20Small.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="tabAutoCategories" text="Auto Assign">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="713.0" prefWidth="1236.0">
+                                 <children>
+                                    <SplitPane fx:id="spAutoCategories" dividerPositions="0.3170731707317073" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="20.0">
+                                       <items>
+                                          <AnchorPane fx:id="apAutoCategoriesInTable" prefHeight="243.0" prefWidth="1092.0" />
+                                          <AnchorPane fx:id="apAutoCategoriesOutTable" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                                       </items>
+                                    </SplitPane>
+                                    <RadioButton fx:id="rbAutoCategoriesCurrent" layoutX="1130.0" layoutY="20.0" mnemonicParsing="false" text="Barclays Current" />
+                                    <RadioButton fx:id="rbAutoCategoriesSaving" layoutX="1130.0" layoutY="50.0" mnemonicParsing="false" text="Barclays Saving" />
+                                    <RadioButton fx:id="rbAutoCategoriesISA" layoutX="1130.0" layoutY="80.0" mnemonicParsing="false" text="Barclays ISA" />
+                                    <Button fx:id="btAutoCategoriesClose" layoutX="1130.0" layoutY="653.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Close" AnchorPane.bottomAnchor="30.0" />
+                                    <ImageView fx:id="ivInfoAutoCategories" fitHeight="20.0" fitWidth="20.0" layoutX="1246.0" layoutY="690.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="4.0">
+                                       <image>
+                                          <Image url="@../App/images/Icon%20-%20Info%20-%20Small.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="tabReminders" text="Reminders">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="468.0" prefWidth="852.0">
+                                 <children>
+                                    <SplitPane fx:id="spReminders" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="20.0">
+                                       <items>
+                                          <AnchorPane fx:id="apRemindersTable" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                                       </items>
+                                    </SplitPane>
+                                    <Button fx:id="btRemindersClose" layoutX="1130.0" layoutY="653.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Close" />
+                                    <ImageView fx:id="ivInfoReminders" fitHeight="20.0" fitWidth="20.0" layoutX="1246.0" layoutY="690.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="4.0">
+                                       <image>
+                                          <Image url="@../App/images/Icon%20-%20Info%20-%20Small.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="tabIntegrity" text="Integrity Checks">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <SplitPane fx:id="spIntegrity" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="20.0">
+                                      <items>
+                                          <AnchorPane fx:id="apIntegrityTable" prefHeight="243.0" prefWidth="1092.0" />
+                                      </items>
+                                    </SplitPane>
+                                    <RadioButton fx:id="rbIntegrityAccountHistory" layoutX="1130.0" layoutY="20.0" mnemonicParsing="false" text="Account History" />
+                                    <RadioButton fx:id="rbIntegrityAccountDatabase" layoutX="1130.0" layoutY="50.0" mnemonicParsing="false" text="Account Database" />
+                                    <RadioButton fx:id="rbIntegrityAccountHistoryAll" layoutX="1130.0" layoutY="110.0" mnemonicParsing="false" text="All" visible="false" />
+                                    <RadioButton fx:id="rbIntegrityAccountHistoryFrom" layoutX="1130.0" layoutY="140.0" mnemonicParsing="false" text="From" visible="false" />
+                                    <DatePicker fx:id="dpIntegrityAccountHistoryFrom" layoutX="1130.0" layoutY="174.0" prefHeight="25.0" prefWidth="119.0" visible="false" />
+                                    <Button fx:id="btIntegrityCheck" layoutX="1130.0" layoutY="593.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Run Checks" />
+                                    <Button fx:id="btIntegrityClear" layoutX="1130.0" layoutY="623.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Clear" />
+                                    <Button fx:id="btIntegrityClose" layoutX="1130.0" layoutY="653.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Close" />
+                                    <ImageView fx:id="ivInfoIntegrity" fitHeight="20.0" fitWidth="20.0" layoutX="1246.0" layoutY="690.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="4.0">
+                                       <image>
+                                          <Image url="@../App/images/Icon%20-%20Info%20-%20Small.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </Tab>
+                      <Tab fx:id="tabDatabase" text="Database">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="171.0" prefWidth="431.0">
+                                 <children>
+                                    <SplitPane fx:id="spDatabaseTables" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="20.0">
+                                      <items>
+                                        <AnchorPane fx:id="apDatabaseTable" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                                      </items>
+                                    </SplitPane>
+                                    <RadioButton fx:id="rbDatabaseCurrent" layoutX="1130.0" layoutY="20.0" mnemonicParsing="false" text="Barclays Current" />
+                                    <RadioButton fx:id="rbDatabaseSaving" layoutX="1130.0" layoutY="50.0" mnemonicParsing="false" text="Barclays Saving" />
+                                    <RadioButton fx:id="rbDatabaseISA" layoutX="1130.0" layoutY="80.0" mnemonicParsing="false" text="Barclays ISA" />
+                                    <Button fx:id="btDatabaseViewDate" layoutX="1130.0" layoutY="373.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="View From" />
+                                    <Button fx:id="btDatabaseViewAll" layoutX="1130.0" layoutY="403.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="View All" />
+                                    <Button fx:id="btDatabaseOverview" layoutX="1130.0" layoutY="453.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Overview" />
+                                    <Button fx:id="btDatabaseImport" layoutX="1130.0" layoutY="503.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Import" />
+                                    <Button fx:id="btDatabaseImportConfirm" layoutX="1130.0" layoutY="623.0" mnemonicParsing="false" prefWidth="86.0" text="Confirm" visible="false" />
+                                    <Button fx:id="btDatabaseImportClose" layoutX="1130.0" layoutY="653.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Close" visible="false" />
+                                    <Button fx:id="btDatabaseExport" layoutX="1130.0" layoutY="533.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Export" />
+                                    <Button fx:id="btDatabaseExportConfirm" layoutX="1130.0" layoutY="623.0" mnemonicParsing="false" prefWidth="86.0" text="Confirm" visible="false" />
+                                    <Button fx:id="btDatabaseExportClose" layoutX="1130.0" layoutY="653.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Close" visible="false" />
+                                    <Button fx:id="btDatabaseResetAccount" layoutX="1130.0" layoutY="593.0" mnemonicParsing="false" prefWidth="86.0" text="Reset Acc." textFill="RED" />
+                                    <Button fx:id="btDatabaseResetAll" layoutX="1130.0" layoutY="623.0" mnemonicParsing="false" prefWidth="86.0" text="Reset All" textFill="RED" />
+                                    <Button fx:id="btDatabaseClose" layoutX="1130.0" layoutY="653.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Close" />
+                                    <RadioButton fx:id="rbDatabaseTableEntries" layoutX="1130.0" layoutY="200.0" mnemonicParsing="false" text="Entries" />
+                                    <RadioButton fx:id="rbDatabaseTableCategories" layoutX="1130.0" layoutY="230.0" mnemonicParsing="false" text="Categories" />
+                                    <RadioButton fx:id="rbDatabaseTableAutoCategories" layoutX="1130.0" layoutY="260.0" mnemonicParsing="false" text="Auto Assigns" />
+                                    <RadioButton fx:id="rbDatabaseTableWatches" layoutX="1130.0" layoutY="290.0" mnemonicParsing="false" text="Watches" />
+                                    <RadioButton fx:id="rbDatabaseTableRefunds" layoutX="1130.0" layoutY="320.0" mnemonicParsing="false" text="Refunds" />
+                                    <Label fx:id="labDatabaseStatusMessage" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="20.0" />
+                                    <Label fx:id="labDatabaseStatusRange" alignment="CENTER_RIGHT" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="150.0" />
+                                    <ImageView fx:id="ivInfoDatabaseAdministration" fitHeight="20.0" fitWidth="20.0" layoutX="1246.0" layoutY="690.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="4.0">
+                                       <image>
+                                          <Image url="@../App/images/Icon%20-%20Info%20-%20Small.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <SplitPane fx:id="spDDSO" prefHeight="160.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <items>
+          <AnchorPane fx:id="apDDSO">
+               <children>
+                  <Rectangle fx:id="recDDSONodeValue" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="21.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="36.0" />
+                  <Label fx:id="labDDSONodeValue" prefHeight="17.0" visible="false" />
+                  <ImageView fx:id="ivInfoDDSO" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
+                     <image>
+                        <Image url="@../App/images/Icon%20-%20Info%20-%20Small.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+      <SplitPane fx:id="spFullScreen" prefHeight="160.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+      <Pane fx:id="pnPopup" layoutX="8.0" prefHeight="72.0" prefWidth="493.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="1080.0" opacity="0.4" stroke="BLACK" strokeType="INSIDE" width="1920.0" />
+            <AnchorPane fx:id="apDateRange" layoutX="46.0" layoutY="15.0" prefHeight="45.0" prefWidth="637.0" visible="false">
+               <children>
+                  <Rectangle fx:id="recDateRange" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="45.0" stroke="BLACK" strokeType="INSIDE" width="637.0" />
+                  <Label alignment="CENTER" layoutX="130.0" layoutY="14.0" prefHeight="17.0" prefWidth="17.0" text="-" />
+                  <DatePicker fx:id="dpDateRangeFrom" layoutX="10.0" layoutY="10.0" prefHeight="25.0" prefWidth="120.0" promptText="From Date" />
+                  <DatePicker fx:id="dpDateRangeTo" layoutX="147.0" layoutY="10.0" prefHeight="25.0" prefWidth="120.0" promptText="To Date" />
+                  <Button fx:id="btDateRangeQuickJump" layoutX="292.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="Month/Year" />
+                  <Button fx:id="btDateRangeMostRecent" layoutX="380.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="Most Recent" />
+                  <Button fx:id="btDateRangeAll" layoutX="468.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="53.0" text="All" />
+                  <Button fx:id="btDateRangeSet" layoutX="573.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="51.0" text="Set" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apDateRangeQuickJump" layoutX="46.0" layoutY="140.0" prefHeight="120.0" prefWidth="655.0" visible="false">
+               <children>
+                  <Rectangle fx:id="recDateRangeQuickJump" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="146.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" width="637.0" />
+                  <Button fx:id="btDateRangeQuickJump2010" layoutX="14.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2010" />
+                  <Button fx:id="btDateRangeQuickJump2011" layoutX="75.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2011" />
+                  <Button fx:id="btDateRangeQuickJump2012" layoutX="136.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2012" />
+                  <Button fx:id="btDateRangeQuickJump2013" layoutX="197.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2013" />
+                  <Button fx:id="btDateRangeQuickJump2014" layoutX="258.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2014" />
+                  <Button fx:id="btDateRangeQuickJump2015" layoutX="319.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2015" />
+                  <Button fx:id="btDateRangeQuickJump2016" layoutX="380.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2016" />
+                  <Button fx:id="btDateRangeQuickJump2017" layoutX="441.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2017" />
+                  <Button fx:id="btDateRangeQuickJump2018" layoutX="502.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2018" />
+                  <Button fx:id="btDateRangeQuickJump2019" layoutX="563.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2019" />
+                  <Button fx:id="btDateRangeQuickJump2020" layoutX="14.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2020" />
+                  <Button fx:id="btDateRangeQuickJump2021" layoutX="75.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2021" />
+                  <Button fx:id="btDateRangeQuickJump2022" layoutX="136.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2022" />
+                  <Button fx:id="btDateRangeQuickJump2023" layoutX="197.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2023" />
+                  <Button fx:id="btDateRangeQuickJump2024" layoutX="258.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2024" />
+                  <Button fx:id="btDateRangeQuickJump2025" layoutX="319.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2025" />
+                  <Button fx:id="btDateRangeQuickJump2026" layoutX="380.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2026" />
+                  <Button fx:id="btDateRangeQuickJump2027" layoutX="441.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2027" />
+                  <Button fx:id="btDateRangeQuickJump2028" layoutX="502.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2028" />
+                  <Button fx:id="btDateRangeQuickJump2029" layoutX="563.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="2029" />
+                  <Button fx:id="btDateRangeQuickJumpJan" layoutX="14.0" layoutY="81.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Jan" />
+                  <Button fx:id="btDateRangeQuickJumpFeb" layoutX="75.0" layoutY="81.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Feb" />
+                  <Button fx:id="btDateRangeQuickJumpMar" layoutX="136.0" layoutY="81.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Mar" />
+                  <Button fx:id="btDateRangeQuickJumpApr" layoutX="197.0" layoutY="81.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Apr" />
+                  <Button fx:id="btDateRangeQuickJumpMay" layoutX="258.0" layoutY="81.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="May" />
+                  <Button fx:id="btDateRangeQuickJumpJun" layoutX="319.0" layoutY="81.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Jun" />
+                  <Button fx:id="btDateRangeQuickJumpJul" layoutX="14.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Jul" />
+                  <Button fx:id="btDateRangeQuickJumpAug" layoutX="75.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Aug" />
+                  <Button fx:id="btDateRangeQuickJumpSept" layoutX="136.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Sept" />
+                  <Button fx:id="btDateRangeQuickJumpOct" layoutX="197.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Oct" />
+                  <Button fx:id="btDateRangeQuickJumpNov" layoutX="258.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Nov" />
+                  <Button fx:id="btDateRangeQuickJumpDec" layoutX="319.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Dec" />
+                  <Button fx:id="btDateRangeQuickJumpSet" layoutX="563.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Set" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apDateRangeMostRecent" layoutX="50.0" layoutY="335.0" prefHeight="154.0" prefWidth="111.0" visible="false">
+               <children>
+                  <Rectangle fx:id="recDateRangeMostRecent" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="154.0" stroke="BLACK" strokeType="INSIDE" width="111.0" />
+                  <Button fx:id="btDateRangeMostRecentMonth1" layoutX="12.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="Month" />
+                  <Button fx:id="btDateRangeMostRecentMonth3" layoutX="12.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="3 Months" />
+                  <Button fx:id="btDateRangeMostRecentMonth6" layoutX="12.0" layoutY="64.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="6 Months" />
+                  <Button fx:id="btDateRangeMostRecentMonth12" layoutX="12.0" layoutY="90.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="12 Months" />
+                  <Button fx:id="btDateRangeMostRecentMonth18" layoutX="12.0" layoutY="116.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="18 Months" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apHistorySearch" layoutX="856.0" layoutY="115.0" visible="false">
+               <children>
+                  <Rectangle fx:id="recHistorySearch" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="25.0" stroke="BLACK" strokeType="INSIDE" width="492.0" />
+                  <TextField fx:id="tfHistorySearch" layoutX="57.0" layoutY="7.0" prefHeight="25.0" prefWidth="420.0" promptText="Search Entry" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <AnchorPane fx:id="apHistorySearchListView" layoutX="5.0" layoutY="41.0" prefHeight="0.0" prefWidth="492.0" AnchorPane.bottomAnchor="303.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apStackedBarChartZoom" layoutX="671.0" layoutY="499.0" visible="false">
+               <children>
+                  <Rectangle fx:id="recStackedBarChartZoomAmount" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="55.0" stroke="BLACK" strokeType="INSIDE" width="127.0" />
+                  <Button fx:id="btStackedBarChartZoomSet" layoutX="79.0" layoutY="15.0" mnemonicParsing="false" text="Set" />
+                  <TextField fx:id="tfStackedBarChartZoomAmount" layoutX="14.0" layoutY="15.0" prefHeight="25.0" prefWidth="56.0" promptText="Max (£)" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apDDSOZoom" layoutX="661.0" layoutY="489.0" visible="false">
+               <children>
+                  <Rectangle fx:id="recDDSOZoomAmount" arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="55.0" stroke="BLACK" strokeType="INSIDE" width="127.0" />
+                  <TextField fx:id="tfDDSOZoomAmount" layoutX="14.0" layoutY="15.0" prefHeight="25.0" prefWidth="56.0" promptText="Max (£)" />
+                  <Button fx:id="btDDSOZoomSet" layoutX="79.0" layoutY="15.0" mnemonicParsing="false" text="Set" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apRefundCreateEdit" layoutX="622.0" layoutY="489.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="133.0" stroke="BLACK" strokeType="INSIDE" width="440.0" />
+                  <Label layoutX="10.0" layoutY="12.0" prefHeight="25.0" text="Name/Merchant" />
+                  <Label layoutX="10.0" layoutY="40.0" prefHeight="25.0" text="Keywords" />
+                  <Label layoutX="10.0" layoutY="68.0" prefHeight="25.0" text="Amount £" />
+                  <Label layoutX="168.0" layoutY="78.0" prefHeight="10.0" text="." />
+                  <Label layoutX="10.0" layoutY="96.0" prefHeight="25.0" text="Created" />
+                  <TextField fx:id="tfRefundCreateEditName" layoutX="109.0" layoutY="12.0" prefHeight="25.0" prefWidth="319.0" promptText="Name/Merchant Issuing Refund" />
+                  <TextField fx:id="tfRefundCreateEditKeywords" layoutX="109.0" layoutY="40.0" prefHeight="25.0" prefWidth="319.0" promptText="Keywords Expected" />
+                  <TextField fx:id="tfRefundCreateEditAmountPounds" alignment="CENTER_RIGHT" layoutX="109.0" layoutY="68.0" prefHeight="25.0" prefWidth="56.0" promptText="£" />
+                  <TextField fx:id="tfRefundCreateEditAmountPence" layoutX="174.0" layoutY="68.0" prefHeight="25.0" prefWidth="33.0" />
+                  <DatePicker fx:id="dpRefundCreateEdit" layoutX="109.0" layoutY="96.0" prefHeight="25.0" prefWidth="122.0" promptText="Refund Date" />
+                  <Button fx:id="btRefundCreateEdit" layoutX="385.0" layoutY="96.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="42.0" text="Add" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apRefundDeleteConfirm" layoutX="912.0" layoutY="68.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="208.0" />
+                  <Label layoutX="10.0" layoutY="11.0" prefHeight="17.0" prefWidth="133.0" text="Please confirm deletion" />
+                  <Button fx:id="btRefundDeleteConfirm" layoutX="150.0" layoutY="7.0" mnemonicParsing="false" text="Delete" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apWatchDeleteConfirm" layoutX="821.0" layoutY="150.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="208.0" />
+                  <Label layoutX="10.0" layoutY="11.0" prefHeight="17.0" prefWidth="133.0" text="Please confirm deletion" />
+                  <Button fx:id="btWatchDeleteConfirm" layoutX="150.0" layoutY="7.0" mnemonicParsing="false" text="Delete" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apCategoryCreate" layoutX="661.0" layoutY="614.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="55.0" stroke="BLACK" strokeType="INSIDE" width="469.0" />
+                  <TextField fx:id="tfCategoryCreate" layoutX="14.0" layoutY="15.0" prefHeight="25.0" prefWidth="394.0" promptText="Add Category" />
+                  <Button fx:id="btCategoryCreate" layoutX="419.0" layoutY="15.0" mnemonicParsing="false" text="Add" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apCategoryRename" layoutX="494.0" layoutY="404.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="55.0" stroke="BLACK" strokeType="INSIDE" width="492.0" />
+                  <TextField fx:id="tfCategoryRename" layoutX="14.0" layoutY="15.0" prefHeight="25.0" prefWidth="394.0" promptText="Rename Category" />
+                  <Button fx:id="btCategoryRename" layoutX="419.0" layoutY="15.0" mnemonicParsing="false" text="Rename" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apCategoryDeleteConfirm" layoutX="353.0" layoutY="75.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="211.0" />
+                  <Label layoutX="10.0" layoutY="11.0" prefHeight="17.0" prefWidth="136.0" text="Please confirm deletion" />
+                  <Button fx:id="btCategoryDeleteConfirm" layoutX="152.0" layoutY="7.0" mnemonicParsing="false" text="Delete" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apAutoCategoryDeleteConfirm" layoutX="661.0" layoutY="150.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="208.0" />
+                  <Label layoutX="10.0" layoutY="11.0" prefHeight="17.0" prefWidth="133.0" text="Please confirm deletion" />
+                  <Button fx:id="btAutoCategoryDeleteConfirm" layoutX="150.0" layoutY="7.0" mnemonicParsing="false" text="Delete" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apReminderCreateEdit" layoutX="632.0" layoutY="499.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="105.0" stroke="BLACK" strokeType="INSIDE" width="615.0" />
+                  <Label layoutX="10.0" layoutY="12.0" prefHeight="25.0" text="Name" />
+                  <Label layoutX="10.0" layoutY="40.0" prefHeight="25.0" text="Details" />
+                  <TextField fx:id="tfReminderCreateEditName" layoutX="80.0" layoutY="12.0" prefHeight="25.0" prefWidth="522.0" promptText="Reminder Name" />
+                  <TextField fx:id="tfReminderCreateEditDetails" layoutX="80.0" layoutY="40.0" prefHeight="25.0" prefWidth="522.0" promptText="Reminder Details" />
+                  <DatePicker fx:id="dpReminderCreateEdit" layoutX="80.0" layoutY="68.0" prefHeight="25.0" prefWidth="166.0" promptText="Reminder Date" />
+                  <Button fx:id="btReminderCreateEdit" layoutX="560.0" layoutY="68.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="42.0" text="Add" />
+                  <Label layoutX="10.0" layoutY="68.0" prefHeight="25.0" text="Remind On" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apReminderDeleteConfirm" layoutX="671.0" layoutY="160.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="208.0" />
+                  <Label layoutX="10.0" layoutY="11.0" prefHeight="17.0" prefWidth="133.0" text="Please confirm deletion" />
+                  <Button fx:id="btReminderDeleteConfirm" layoutX="150.0" layoutY="7.0" mnemonicParsing="false" text="Delete" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apRemindersAlert" layoutX="745.0" layoutY="450.0" prefHeight="60.0" prefWidth="429.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="60.0" stroke="BLACK" strokeType="INSIDE" width="429.0" />
+                  <Label fx:id="labRemindersAlertsStatus" layoutX="15.0" layoutY="16.0" prefHeight="27.0" prefWidth="252.0" text="You currently have x3 reminder alerts" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="162.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="btRemindersAlertSnooze" layoutX="283.0" layoutY="15.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="64.0" text="Snooze" />
+                  <Button fx:id="btRemindersAlertView" layoutX="351.0" layoutY="15.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="64.0" text="View" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apDatabaseDeleteConfirm" layoutX="883.0" layoutY="564.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="208.0" />
+                  <Label layoutX="10.0" layoutY="11.0" prefHeight="17.0" prefWidth="133.0" text="Please confirm deletion" />
+                  <Button fx:id="btDatabaseDeleteConfirm" layoutX="150.0" layoutY="7.0" mnemonicParsing="false" text="Delete" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apDatabaseDeleteAllConfirm" layoutX="628.0" layoutY="524.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="225.0" />
+                  <Label layoutX="10.0" layoutY="11.0" prefHeight="17.0" prefWidth="133.0" text="Please confirm deletion" />
+                  <Button fx:id="btDatabaseDeleteAllConfirm" layoutX="150.0" layoutY="7.0" mnemonicParsing="false" text="Delete All" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apDatabaseResetAccountConfirm" layoutX="489.0" layoutY="737.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="240.0" />
+                  <Label layoutX="10.0" layoutY="11.0" prefHeight="17.0" prefWidth="174.0" text="Please confirm account reset" />
+                  <Button fx:id="btDatabaseResetAccountConfirm" layoutX="188.0" layoutY="7.0" mnemonicParsing="false" text="Reset" textFill="RED" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apDatabaseResetAllConfirm" layoutX="479.0" layoutY="727.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="240.0" />
+                  <Label layoutX="10.0" layoutY="11.0" prefHeight="17.0" prefWidth="174.0" text="Please confirm database reset" />
+                  <Button fx:id="btDatabaseResetAllConfirm" layoutX="188.0" layoutY="7.0" mnemonicParsing="false" text="Reset" textFill="RED" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apDatabaseViewDate" layoutX="867.0" layoutY="721.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="180.0" />
+                  <DatePicker fx:id="dpDatabaseViewDate" layoutX="8.0" layoutY="8.0" prefHeight="25.0" prefWidth="120.0" promptText="From Date" />
+                  <Button fx:id="btDatabaseViewDateConfirm" layoutX="140.0" layoutY="7.0" mnemonicParsing="false" text="Set" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apDatabaseError" layoutX="193.0" layoutY="152.0" prefHeight="750.0" prefWidth="1578.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="750.0" stroke="BLACK" strokeType="INSIDE" width="1578.0" />
+                  <Label layoutX="15.0" layoutY="9.0" prefHeight="27.0" prefWidth="182.0" text="Database Error:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="15.0" layoutY="717.0" prefHeight="27.0" prefWidth="182.0" text="Double click on error for details" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="20.0" />
+                  <AnchorPane fx:id="apDatabaseErrorTable" layoutX="14.0" layoutY="36.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="72.0" AnchorPane.topAnchor="45.0" />
+                  <Button fx:id="btDatabaseErrorClose" layoutX="1519.0" layoutY="711.0" mnemonicParsing="false" text="Close" AnchorPane.bottomAnchor="20.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apDatabaseErrorDetails" layoutX="292.0" layoutY="349.0" prefHeight="231.0" prefWidth="1378.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="241.0" stroke="BLACK" strokeType="INSIDE" width="1378.0" />
+                  <Label layoutX="15.0" layoutY="17.0" prefHeight="20.0" prefWidth="75.0" text="Method:">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="labDatabaseErrorDetailsMethod" layoutX="95.0" layoutY="17.0" prefHeight="20.0" prefWidth="1208.0" />
+                  <Label layoutX="15.0" layoutY="54.0" prefHeight="20.0" prefWidth="45.0" text="SQL:">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextArea fx:id="taDatabaseErrorDetailsSQL" layoutX="94.0" layoutY="53.0" prefHeight="81.0" prefWidth="1208.0" wrapText="true" />
+                  <Label layoutX="15.0" layoutY="142.0" prefHeight="42.0" prefWidth="75.0" text="Exception&#10;Details:" wrapText="true">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextArea fx:id="taDatabaseErrorDetailsExceptionDetails" layoutX="94.0" layoutY="141.0" prefHeight="81.0" prefWidth="1208.0" wrapText="true" />
+                  <Button fx:id="btDatabaseErrorDetailsClose" layoutX="1315.0" layoutY="197.0" mnemonicParsing="false" text="Close" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apPleaseRestartProgram" layoutX="919.0" layoutY="694.0" prefHeight="28.0" prefWidth="110.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" stroke="BLACK" strokeType="INSIDE" width="140.0" />
+                  <Label layoutX="10.0" layoutY="11.0" prefHeight="17.0" prefWidth="126.0" text="Please restart program" />
+               </children>
+            </AnchorPane>
+         </children>
+      </Pane>
+      <Pane fx:id="pnInfo" prefHeight="72.0" prefWidth="493.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="1080.0" opacity="0.4" stroke="BLACK" strokeType="INSIDE" width="1920.0" />
+            <AnchorPane fx:id="apInfoDashboard" prefHeight="1080.0" prefWidth="1920.0" visible="false">
+               <children>
+                  <Line endX="60.0" endY="-70.0" layoutX="1283.0" layoutY="126.0" startX="25.0" startY="-90.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="1123.0" layoutY="471.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="1123.0" layoutY="471.0" startY="400.0" />
+                  <Line endX="-40.0" endY="-55.0" layoutX="65.0" layoutY="90.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="1123.0" layoutY="471.0" startY="-300.0" />
+                  <Line endX="120.0" endY="-70.0" layoutX="470.0" layoutY="90.0" />
+                  <Line endX="25.0" endY="-30.0" layoutX="270.0" layoutY="160.0" />
+                  <Line endX="25.0" endY="-97.0" layoutX="1612.0" layoutY="423.0" />
+                  <Line endX="25.0" endY="-97.0" layoutX="1572.0" layoutY="666.0" />
+                  <Line endX="-40.0" endY="-60.0" layoutX="370.0" layoutY="90.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="803.0" layoutY="929.0" startY="-300.0" />
+                  <Line endX="-150.0" endY="-70.0" layoutX="742.0" layoutY="929.0" startY="-300.0" />
+                  <Line endX="25.0" endY="-97.0" layoutX="216.0" layoutY="544.0" />
+                  <Line endX="25.0" endY="-97.0" layoutX="216.0" layoutY="544.0" startX="75.0" startY="300.0" />
+                  <Line endX="-40.0" endY="-20.0" layoutX="523.0" layoutY="202.0" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="60.0" layoutX="1439.0" layoutY="666.0" stroke="BLACK" strokeType="INSIDE" width="330.0" />
+                  <Label layoutX="1450.0" layoutY="677.0" prefHeight="38.0" prefWidth="319.0" text="Right click to set category, auto category, internal transfer&#10;or view/filter entries" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1343.0" layoutY="34.0" stroke="BLACK" strokeType="INSIDE" width="133.0" />
+                  <Label layoutX="1354.0" layoutY="45.0" prefHeight="17.0" prefWidth="119.0" text="Search within history" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="64.0" layoutY="70.0" stroke="BLACK" strokeType="INSIDE" width="156.0" />
+                  <Label layoutX="76.0" layoutY="81.0" prefHeight="17.0" prefWidth="136.0" text="Tools and administration" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="56.0" layoutX="1184.0" layoutY="380.0" stroke="BLACK" strokeType="INSIDE" width="287.0" />
+                  <Label layoutX="1196.0" layoutY="388.0" prefHeight="38.0" prefWidth="264.0" text="Right click charts to select views, context menus&#10;will dynamically change to contain views available" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="369.0" layoutY="70.0" stroke="BLACK" strokeType="INSIDE" width="101.0" />
+                  <Label layoutX="381.0" layoutY="81.0" prefHeight="17.0" prefWidth="87.0" text="Set date range" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="55.0" layoutX="101.0" layoutY="394.0" stroke="BLACK" strokeType="INSIDE" width="340.0" />
+                  <Label alignment="TOP_LEFT" layoutX="113.0" layoutY="403.0" prefHeight="42.0" prefWidth="332.0" text="Use Ctrl/Shift to select multiple categories/internal transfers&#10;Press enter or right click on any item to send to charts" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="729.0" layoutY="588.0" stroke="BLACK" strokeType="INSIDE" width="242.0" />
+                  <Label alignment="TOP_LEFT" layoutX="741.0" layoutY="599.0" prefHeight="22.0" prefWidth="225.0" text="Double click any table or chart to expand" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="55.0" layoutX="164.0" layoutY="161.0" stroke="BLACK" strokeType="INSIDE" width="246.0" />
+                  <Label alignment="TOP_LEFT" layoutX="176.0" layoutY="172.0" prefHeight="42.0" prefWidth="227.0" text="Use Ctrl/Shift to select multiple accounts&#10;Press enter or right click to send to charts" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="60.0" layoutX="1506.0" layoutY="424.0" stroke="BLACK" strokeType="INSIDE" width="246.0" />
+                  <Label alignment="TOP_LEFT" layoutX="1518.0" layoutY="435.0" prefHeight="42.0" prefWidth="227.0" text="Use Ctrl/Shift to select multiple entries&#10;Press enter or right click to send to charts" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="126.0" layoutX="1547.0" layoutY="12.0" stroke="BLACK" strokeType="INSIDE" width="357.0" />
+                  <Label alignment="TOP_LEFT" layoutX="1562.0" layoutY="22.0" prefHeight="111.0" prefWidth="73.0" text="Ctrl+A&#10;Ctrl+F&#10;Escape&#10;Enter&#10;Cursor left&#10;Cursor right" />
+                  <Label alignment="TOP_LEFT" layoutX="1661.0" layoutY="22.0" prefHeight="111.0" prefWidth="237.0" text="Select all in table&#10;Search history&#10;Close search history or any full screen chart&#10;Send selected table items to charts&#10;Jump to previous month/year&#10;Jump to next month/year" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="356.0" layoutX="520.0" layoutY="99.0" stroke="BLACK" strokeType="INSIDE" width="513.0" />
+                  <Label alignment="TOP_LEFT" layoutX="533.0" layoutY="111.0" prefHeight="336.0" prefWidth="110.0" text="Terminology&#10;&#10;&#9;Incoming:&#10;&#10;&#10;&#10;&#10;&#9;Outgoing:&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#9;Categories:" />
+                  <Label alignment="TOP_LEFT" layoutX="639.0" layoutY="111.0" prefHeight="336.0" prefWidth="385.0" text="&#10;&#10;All incoming entries into account:&#10;&#10;&#9;Income:&#9;&#9;&#9;All incoming entries from external sources&#10;&#9;Internal Transfer:&#9;All incoming entries from other own accounts&#10;&#10;All outgoing entries from account:&#10;&#10;&#9;Spend:&#9;&#9;&#9;All outgoing entries to external sources&#10;&#9;Internal Transfers:&#9;All outgoing entries to other own accounts&#10;&#10;Spend:&#9;&#9;&#9;&#10;&#10;&#9;Purchase:&#9;&#9;&#9;Entries of type VIS or )))&#10;&#9;DD/SO:&#9;&#9;&#9;Entries of type DD or SO&#10;&#9;Other:&#9;&#9;&#9;Entries which are neither purchse nor DD/SO&#10;&#10;All user defined and internal transfers" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apInfoDDSO" prefHeight="1080.0" prefWidth="1920.0" visible="false">
+               <children>
+                  <Line endX="60.0" endY="-70.0" layoutX="793.0" layoutY="467.0" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="58.0" layoutX="721.0" layoutY="348.0" stroke="BLACK" strokeType="INSIDE" width="281.0" />
+                  <Label alignment="TOP_LEFT" layoutX="734.0" layoutY="358.0" prefHeight="40.0" prefWidth="264.0" text="Right click and hide all values, click on individual&#10;bars to show individual bar value" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="72.0" layoutX="1706.0" layoutY="14.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+                  <Label alignment="TOP_LEFT" layoutX="1809.0" layoutY="24.0" prefHeight="55.0" prefWidth="87.0" text="Previous month&#10;Next month&#10;Close chart" />
+                  <Label alignment="TOP_LEFT" layoutX="1719.0" layoutY="24.0" prefHeight="58.0" prefWidth="73.0" text="Cursor left:&#10;Cursor right:&#10;Escape:" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apInfoStatement" prefHeight="1080.0" prefWidth="1920.0" visible="false">
+               <children>
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="220.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="500.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="680.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="310.0" layoutY="620.0" />
+                  <Line endX="60.0" endY="110.0" layoutX="307.0" layoutY="85.0" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="128.0" stroke="BLACK" strokeType="INSIDE" width="101.0" />
+                  <Label layoutX="1621.0" layoutY="139.0" prefHeight="17.0" prefWidth="87.0" text="Select account" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="408.0" stroke="BLACK" strokeType="INSIDE" width="135.0" />
+                  <Label layoutX="1621.0" layoutY="419.0" prefHeight="17.0" prefWidth="122.0" text="Select entries to view" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="588.0" stroke="BLACK" strokeType="INSIDE" width="162.0" />
+                  <Label layoutX="1621.0" layoutY="599.0" prefHeight="17.0" prefWidth="140.0" text="Open statement to import" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="70.0" layoutY="600.0" stroke="BLACK" strokeType="INSIDE" width="240.0" />
+                  <Label layoutX="81.0" layoutY="611.0" prefHeight="17.0" prefWidth="225.0" text="Double click any split windows to expand" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="83.0" layoutY="45.0" stroke="BLACK" strokeType="INSIDE" width="242.0" />
+                  <Label layoutX="94.0" layoutY="56.0" prefHeight="17.0" prefWidth="225.0" text="Import statement *.csv files into database" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apInfoRefunds" prefHeight="1080.0" prefWidth="1920.0" visible="false">
+               <children>
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="220.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="310.0" layoutY="620.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="970.0" layoutY="140.0" startY="55.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="310.0" layoutY="710.0" />
+                  <Line endX="60.0" endY="110.0" layoutX="335.0" layoutY="88.0" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="128.0" stroke="BLACK" strokeType="INSIDE" width="101.0" />
+                  <Label layoutX="1621.0" layoutY="139.0" prefHeight="17.0" prefWidth="87.0" text="Select account" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="70.0" layoutY="600.0" stroke="BLACK" strokeType="INSIDE" width="240.0" />
+                  <Label layoutX="81.0" layoutY="611.0" prefHeight="17.0" prefWidth="225.0" text="Double click any split windows to expand" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1030.0" layoutY="48.0" stroke="BLACK" strokeType="INSIDE" width="385.0" />
+                  <Label layoutX="1041.0" layoutY="59.0" prefHeight="17.0" prefWidth="369.0" text="Right click to add/edit and view potential refunds which have arrived" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="58.0" layoutX="14.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="346.0" />
+                  <Label alignment="TOP_LEFT" layoutX="27.0" layoutY="40.0" prefHeight="42.0" prefWidth="330.0" text="Keep track of refunds you may be expecting, create a refund&#10;reminder and view any potentailly matching refunds" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="73.0" layoutY="690.0" stroke="BLACK" strokeType="INSIDE" width="237.0" />
+                  <Label layoutX="84.0" layoutY="701.0" prefHeight="17.0" prefWidth="225.0" text="Right click on refund to confirm received" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apInfoWatches" prefHeight="1080.0" prefWidth="1920.0" visible="false">
+               <children>
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="220.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="310.0" layoutY="620.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="970.0" layoutY="140.0" startY="55.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="360.0" />
+                  <Line endX="60.0" endY="110.0" layoutX="310.0" layoutY="88.0" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="128.0" stroke="BLACK" strokeType="INSIDE" width="101.0" />
+                  <Label layoutX="1621.0" layoutY="139.0" prefHeight="17.0" prefWidth="87.0" text="Select account" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="70.0" layoutY="600.0" stroke="BLACK" strokeType="INSIDE" width="240.0" />
+                  <Label layoutX="81.0" layoutY="611.0" prefHeight="17.0" prefWidth="225.0" text="Double click any split windows to expand" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1030.0" layoutY="48.0" stroke="BLACK" strokeType="INSIDE" width="357.0" />
+                  <Label layoutX="1041.0" layoutY="59.0" prefHeight="17.0" prefWidth="342.0" text="Right click to add/update and view history of watched category" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="58.0" layoutX="14.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="332.0" />
+                  <Label alignment="TOP_LEFT" layoutX="27.0" layoutY="40.0" prefHeight="40.0" prefWidth="313.0" text="Keep track of targetted categories since 'Last Date', create&#10;a watch to monitor regular payments or subscriptions" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="268.0" stroke="BLACK" strokeType="INSIDE" width="105.0" />
+                  <Label layoutX="1621.0" layoutY="279.0" prefHeight="17.0" prefWidth="87.0" text="Select direction" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apInfoCategories" layoutX="10.0" layoutY="10.0" prefHeight="1080.0" prefWidth="1920.0" visible="false">
+               <children>
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="220.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="310.0" layoutY="620.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="970.0" layoutY="140.0" startY="55.0" />
+                  <Line endX="60.0" endY="110.0" layoutX="310.0" layoutY="88.0" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="128.0" stroke="BLACK" strokeType="INSIDE" width="101.0" />
+                  <Label layoutX="1621.0" layoutY="139.0" prefHeight="17.0" prefWidth="87.0" text="Select account" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="70.0" layoutY="600.0" stroke="BLACK" strokeType="INSIDE" width="240.0" />
+                  <Label layoutX="81.0" layoutY="611.0" prefHeight="17.0" prefWidth="225.0" text="Double click any split windows to expand" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1030.0" layoutY="48.0" stroke="BLACK" strokeType="INSIDE" width="225.0" />
+                  <Label layoutX="1041.0" layoutY="59.0" prefHeight="17.0" prefWidth="208.0" text="Right click to create, rename or delete" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="58.0" layoutX="14.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="448.0" />
+                  <Label alignment="TOP_LEFT" layoutX="27.0" layoutY="40.0" prefHeight="40.0" prefWidth="429.0" text="Create categories which can be assigned to entries when importing a statement&#10;or within history window" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apInfoAutoCategories" prefHeight="1080.0" prefWidth="1920.0" visible="false">
+               <children>
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="220.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="310.0" layoutY="620.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="970.0" layoutY="140.0" startY="55.0" />
+                  <Line endX="60.0" endY="110.0" layoutX="310.0" layoutY="88.0" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="128.0" stroke="BLACK" strokeType="INSIDE" width="101.0" />
+                  <Label layoutX="1621.0" layoutY="139.0" prefHeight="17.0" prefWidth="87.0" text="Select account" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="70.0" layoutY="600.0" stroke="BLACK" strokeType="INSIDE" width="240.0" />
+                  <Label layoutX="81.0" layoutY="611.0" prefHeight="17.0" prefWidth="225.0" text="Double click any split windows to expand" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1030.0" layoutY="48.0" stroke="BLACK" strokeType="INSIDE" width="127.0" />
+                  <Label layoutX="1041.0" layoutY="59.0" prefHeight="17.0" prefWidth="110.0" text="Right click to delete" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="58.0" layoutX="14.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="396.0" />
+                  <Label alignment="TOP_LEFT" layoutX="27.0" layoutY="40.0" prefHeight="40.0" prefWidth="377.0" text="Entries are automatically assigned a category or as an internal transfer&#10;as they are imported from statements" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apInfoReminders" layoutX="10.0" layoutY="10.0" prefHeight="1080.0" prefWidth="1920.0" visible="false">
+               <children>
+                  <Line endX="60.0" endY="-70.0" layoutX="970.0" layoutY="140.0" startY="55.0" />
+                  <Line endX="60.0" endY="110.0" layoutX="335.0" layoutY="88.0" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1030.0" layoutY="48.0" stroke="BLACK" strokeType="INSIDE" width="197.0" />
+                  <Label layoutX="1041.0" layoutY="59.0" prefHeight="17.0" prefWidth="180.0" text="Right click to add/edit reminders" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="58.0" layoutX="14.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="330.0" />
+                  <Label alignment="TOP_LEFT" layoutX="27.0" layoutY="40.0" prefHeight="42.0" prefWidth="310.0" text="Keep track of reminders, for example contract expirations,&#10;payments or your MOT" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apInfoIntegrity" prefHeight="1080.0" prefWidth="1920.0" visible="false">
+               <children>
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="220.0" startX="30.0" startY="-40.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="310.0" layoutY="620.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="970.0" layoutY="140.0" startY="55.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="310.0" layoutY="740.0" />
+                  <Line endX="60.0" endY="125.0" layoutX="310.0" layoutY="70.0" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="128.0" stroke="BLACK" strokeType="INSIDE" width="252.0" />
+                  <Label layoutX="1621.0" layoutY="139.0" prefHeight="17.0" prefWidth="240.0" text="Select to check account history or database" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="84.0" layoutY="600.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
+                  <Label layoutX="95.0" layoutY="611.0" prefHeight="17.0" prefWidth="211.0" text="Right click errors to view items in error" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1030.0" layoutY="48.0" stroke="BLACK" strokeType="INSIDE" width="310.0" />
+                  <Label layoutX="1041.0" layoutY="59.0" prefHeight="17.0" prefWidth="297.0" text="Double click or right click on checks to view any errors" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="14.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="461.0" />
+                  <Label alignment="TOP_LEFT" layoutX="27.0" layoutY="40.0" prefHeight="22.0" prefWidth="440.0" text="Run integrity check on either the history of the account or its contents in database" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="70.0" layoutY="720.0" stroke="BLACK" strokeType="INSIDE" width="240.0" />
+                  <Label layoutX="81.0" layoutY="731.0" prefHeight="17.0" prefWidth="225.0" text="Double click any split windows to expand" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apInfoDatabaseAdministration" prefHeight="1080.0" prefWidth="1920.0" visible="false">
+               <children>
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="220.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="310.0" layoutY="620.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="970.0" layoutY="140.0" startY="55.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="360.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="640.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="707.0" />
+                  <Line endX="60.0" endY="-70.0" layoutX="1550.0" layoutY="772.0" />
+                  <Line endX="60.0" endY="125.0" layoutX="310.0" layoutY="70.0" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="128.0" stroke="BLACK" strokeType="INSIDE" width="101.0" />
+                  <Label layoutX="1621.0" layoutY="139.0" prefHeight="17.0" prefWidth="87.0" text="Select account" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="117.0" layoutY="600.0" stroke="BLACK" strokeType="INSIDE" width="193.0" />
+                  <Label layoutX="128.0" layoutY="611.0" prefHeight="17.0" prefWidth="174.0" text="Right click any records to delete" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1030.0" layoutY="48.0" stroke="BLACK" strokeType="INSIDE" width="234.0" />
+                  <Label layoutX="1041.0" layoutY="59.0" prefHeight="17.0" prefWidth="217.0" text="Double click on line items to open table" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="14.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="349.0" />
+                  <Label alignment="TOP_LEFT" layoutX="27.0" layoutY="40.0" prefHeight="21.0" prefWidth="326.0" text="Full overview and review of contents in all tables of database" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="268.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
+                  <Label layoutX="1621.0" layoutY="279.0" prefHeight="17.0" prefWidth="68.0" text="Select table" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="548.0" stroke="BLACK" strokeType="INSIDE" width="166.0" />
+                  <Label layoutX="1621.0" layoutY="559.0" prefHeight="17.0" prefWidth="148.0" text="Show overview of all tables" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="615.0" stroke="BLACK" strokeType="INSIDE" width="250.0" />
+                  <Label layoutX="1621.0" layoutY="626.0" prefHeight="17.0" prefWidth="237.0" text="Import/export selected account for backup" />
+                  <Rectangle arcHeight="10.0" arcWidth="10.0" fill="WHITE" height="40.0" layoutX="1610.0" layoutY="680.0" stroke="BLACK" strokeType="INSIDE" width="225.0" />
+                  <Label layoutX="1621.0" layoutY="691.0" prefHeight="17.0" prefWidth="211.0" text="Reset and delete all tables in database" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="apInfoHide" prefHeight="1080.0" prefWidth="1920.0" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

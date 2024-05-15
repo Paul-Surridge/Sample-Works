@@ -1,0 +1,1189 @@
+Kotlin
+
+	Class:
+
+		- Class is declared simply:
+
+			class Customer
+
+		- Class contains x3 major components:
+
+			1. Constructor(s)
+			2. Properties i.e. a field with a get/set
+			3. Member Functions
+
+		- Class in Kotlin can have 'class modifiers' applied which cause the compiler to automatically add new methods or apply contraints e.g.
+
+			data class
+			enum class
+			sealed class
+			inner class
+
+		- Class constructors have a default no-argument constructor which is created automatically if no primary or secondary constructors exist:
+
+			class ClassA constructor()	//Default No-Argument Constructor
+			{
+
+			}
+
+			NB: Default constructor uses the 'constructor()' syntax and is automatically included, it can be omitted if no annotations or access modifiers are applied
+
+				class ClassA
+
+				val objA = ClassA()		//Object instantiation uses default constructor
+
+		- Class constructors are 'self contained' within the header:
+
+			class ClassA [constructor] (val sName: String, val iAge: Int)		//Parameters are automatically declared as properties when the class is instantiated and assigned the passed arguments 
+			{
+
+			}
+
+		- Class constructors can be Primary and Secondary:
+
+			Primary Constructor:		Defined within the class header
+			Secondary Constructor:		Defined within the class body, can call and initialise the Primary constructor or another Secondary constructor (which ultimately initialises the primary constructor)
+
+			class ClassA (val sName: String, val iAge: Int)								//Primary Constructor
+			{
+			    init
+			    {
+				//Initialisation logic which would normally represent the constructor body
+			    }
+
+			    constructor(val sName: String, val iAge: Int, String sAddress) : 	this(sName, iAge)		//Secondary Constructor 1
+			    {
+
+			    }
+			    constructor(val sName: String, val iAge: Int, Int iID) : 		this(sName, iAge)		//Secondary Constructor 2
+			    {
+
+			    }
+			}
+
+			NB: Use 'this' to call another constructor.
+			NB: Parameters which are not declared with a val or var are 'constructor properties' which (I presume) are only accessible within the init{} which need to be assigned to class properties in the conventional way as fields are assigned in java.
+			NB: Presume that the names of the parameters in secondary constructors do not matter as they are passed up to the primary constructor.
+
+		- Class constructors are called when the object is instantiated:
+
+			class ClassA
+			{...}
+
+			val a = ClassA()
+
+			NB: A constructor call is always denoted by a captial letter, whereas a normal function call is camelCase.
+
+		- Class constructors can have their visibility adjusted using corresponding access modifier inconjunction with 'constructor':
+
+			class ClassA internal constructor(sName: String, val iAge: Int)
+			{...}
+
+		- Class instantiaton is as follows:
+
+			class Contact(val id: Int, var email: String)
+
+			fun main()
+			{
+    			    val contact = Contact(1, "mary@gmail.com")
+			}
+
+			NB: Class instantiations which are assigned to a val are still mutable i.e. their properties can still be altered, it is only the reference which can not be altered i.e. another instantiation can not be assigned to the same variable.
+
+		- Class instantiaton employs the same sequencing of initialisation within a class heirachy:
+
+			open class ClassA
+			{
+			    init{println("Hello from ClassA")}
+			}
+
+			class ClassB : ClassA
+			{
+			    init{println("Hello from ClassB")}
+			}
+
+			fun main()
+			{
+			    ClassB()
+			}
+
+			Here:
+
+				1. All of the super classes are initialised in order prior to the extended class:
+
+					i. 	ClassA properties initialised.
+					ii. 	ClassA constructor called.
+					iii. 	ClassB properties initialised.
+					iv. 	ClassB constructor called.
+
+					All of the properties of ClassA are inherited by ClassB even if ClassB can not access them.
+
+				2. Resulting in the print out:
+
+					Hello from ClassA
+					Hello from ClassB
+
+		- Class extension and interface implementation is denoted using :
+
+			interface InterfaceA
+			class ClassA : InterfaceA
+
+			open class ClassB(val sName: String)
+
+			class ClassC(sName: String) : ClassB(sName)			//Place any necessary arguments within () which represents the constructor call of the super class
+			{
+			    constructor(sName: String, iAge: Int) : super(sName)	//Use super() to invoke the constructor of super class when called from a secondary constructor
+			}
+
+		- Class extension has the following effect on how properties are compiled:
+
+			open class ClassA
+			{
+			    open val foo = 1
+
+			    init{println(foo)}
+			}
+
+			Compiles in Java to:
+
+				public class ClassA
+				{
+				    private final int foo = 1;
+
+				    public ClassA()
+				    {
+					System.out.println(getFoo());		//Given that foo in ClassA is open any reference to foo is accessed via getFoo() when compiled, if it was closed it would simply be via the field foo. 
+				    }
+
+				    public int getFoo()
+				    {
+					return foo;
+				    }
+				}
+
+		- Class extension has the following consideration:
+
+			open class Parent {
+			    open val foo = 1
+			    init {
+				println(foo)		//3 4
+			    }
+			}
+
+			class Child: Parent() {
+			    override val foo = 2
+			}
+
+			fun main() {
+			    Child()			//1
+			}
+
+			Here:
+
+				1. An instance of Child is created.
+				2. Before the instance of the Child is created an instance of the Parent class is first instantiated (as the base) and then the extended Child class is instantiated (on top).
+				3. The 'init' of the Parent class is called before the instance of Child is created.
+				4. However at this point the getFoo() (which is created by the compiler) that is called when foo is referenced is already the overriden getFoo() that exists in the Child class.
+				5. However an instance of the Child class has not yet been created therefore the Child overridden version of getFoo() returns the value of the foo field within Child which has not yet been initialised to 2 but still at the default value of 0. 
+
+				Therefore it appears as if the 'overiding' aspect of class heirachies are completed before the initial super class is first instantiated i.e. any overidden methods are all defined but not property values.
+
+			Therefore caution should be had when using overriden fields in the initialisation/constructor body of super classes, for the compiler will use the final overriden function which may reference the value in a child class that does not exist yet.
+ 
+		- Class extension has considerations when overriding a property:
+
+			1. In Java it is not possible to override a field, this is naturally the same in Kotlin.
+			2. In Kotlin there are no explicit fields but instead properties which are ultimately methods of get()/set() which reference a backing field.
+			3. Below shows that if both super and extended classes have properties of the same name (which both have backing fields) then unexpected behaviour can occur which should be avoided:
+
+				Class			
+				---------------------------------------------------------------------------------------------------
+				super			property with no backing field			property with backing field
+				extended	 	property with backing field			property with backing field
+							------------------------------			---------------------------
+							Legal						Unexpected Behaviour
+
+				NB: I shall presume that unexpected behaviour only occurs if both properties have a backing field but is okay if one or none have a backing field.
+
+		- Class example:
+
+			class RandomEmployeeGenerator(var minSalary: Int, var maxSalary: Int)
+			{
+			    val iProperty1 = 10
+			    val sProperty1 = "Not Defined"
+			    var dProperty1 = 10.0											//Functions get()/set() automatically generated
+
+    			    names = listOf("John", "Mary", "Ann", "Paul", "Jack", "Elizabeth")						//Not accessible externally
+
+    			    fun generateEmployee() = Employee(names.random(), Random.nextInt(from = minSalary, to = maxSalary))		//Function which instantiates and returns an Employee
+			}
+
+		- Classes can not be extended, they are all declared final, only a relationship can be defined:
+
+			1. Declare a class as 'open':
+
+				open 	class ClassA(val sName: String, val iAge: Int)
+					{}
+
+			2. Extend this class:
+
+					class ClassB(sName: String, iAge: Int, val sAddress: String) : ClassA(sName, iAge)
+					{}
+
+				NB: Parameters which are immediately passed up to the parent class do not need to be declared val/var known as 'Constructor Parameters' (it is not possible to pass up Class Properties which are those defined/used locally within the class)
+
+		- Class relationships are defined as:
+
+			1. IS-A:	ClassB 'is a' extension of ClassA, ClassB is ultimately ClassA but with a bit added on.
+			2. HAS-A:	ClassB 'has a' instance of ClassA or uses an instance of ClassA also known as 'Composition'.
+
+		- Class variables are references which can be assigned extended instances:
+
+			var objClassA: ClassA = ClassB(...)
+
+			Consequently any calls to the objClassA will call the function in ClassB should that function be overriden i.e. Polymorphism
+
+	Extended Classes:
+
+		- Extended classes are classes which have had addition properties/methods applied to them.
+		- Extended classes are not inherited classes.
+
+	Properties:
+
+		- Properties can be declared either:
+
+			1. Header:	Within the header of the class declaration
+
+						class Contact(val id: Int, var email: String)
+
+			2. Body:	Within the body of the class declaration
+
+						class Contact(val id: Int, var email: String)
+						{
+    						    val category: String = ""
+						}
+
+			NB: It is recommended that properties be declared immutable (val) unless they need to be changed after instantiation
+			NB: The constructor is automatically created when the properties are declared within the header
+			NB: The name of the class must be in PascalCase (where each word is capitalised and no space between words)
+
+		- Properties are private by default.
+		- Properties create the following components automatically:
+
+			val:	Generates:	field + getter
+			var:	Generates:	field + getter + setter
+
+		- Properties are referenced using the . operator as if it was a public field (the compiler automatically invokes the corresponding getter/setter):
+
+			println(contact.address)
+			contact.address = "..."
+
+		- Properties can be accessed across/between Java and Kotlin files:
+
+			Java 	-> Kotlin class/object:		object/class.get<propertyName>()
+								object/class.set<propertyName>()
+
+			Kotlin 	-> Java class/object:		object/class.<propertyName>()		//If the Java class implements getter/setters for the field using the standard form get<Property>/set<Property>
+													//Otherwise need to reference the name of the method directly as normal
+
+		- Properties may not all have a specific backing field, a property may be a calculation of other properties whereby returning a result/state/status:
+
+			class Rectangle(val h: Int, val w: Int)
+			{
+			    val isSquare: Boolean get() {return h == w}		//getter is manually defined using get()
+			}
+
+			val r = Rectangle(2, 3)
+			println(r.isSquare)		//isSquare is a property which does not have a corresponding backing field but calcuates the returned property value when invoked (false)
+
+		- Properties getter/setter methods are called each time the property is referenced accordingly (this should not be confused with initialisation):
+
+			val foo1 = run {
+			    println("Initialising foo1")
+			    42
+			}
+
+			val foo2: Int
+			    get() {
+			    	println("Getting foo2")
+			    	42
+			    }
+
+			fun main()
+			{
+			    println("$foo1 $foo1 $foo2 $foo2")
+			}
+
+			Prints:
+
+				Initialising foo1		//foo1 is initialised only once
+				Getting foo2 Getting foo2	//foo2 is called x2, its corresponding getter() is called twice
+				42 42 42 42
+
+		- Properties are 'lazy' where the property value is only calculated and initialised when the property is first used (as also shown above):
+
+			val lazyValue: String by lazy
+			{
+			    println("init")
+			    "Hello"
+			}
+
+			fun main()
+			{
+			    println(lazyValue)
+			    println(lazyValue)
+			}
+
+			Here:
+
+				1. lazyValue is delegated to lazy.
+				2. lazy is a function that takes a lambda which is used to initialise the property.
+				3. Printing:
+
+					init		//Opposed to init twice
+					Hello
+					Hello
+
+		- Properties when declared must be assigned 'something', via either:
+
+			1. Initialised:		Assigned a value
+			2. Nullable:		Declared nullable and assigned null
+
+			Or use 'lateinit' where variable can remain as non-nullable and is assigned null implicitly by the compiler with the expectation that it will be assigned a value before it is used.
+
+		- Properties can be defined using late initialisation and the 'lateinit' keyword, which is useful when a property will be defined by a function at a later stage negating the need to assign the property nullable:
+
+			class KotlinActivity: Activity
+			{
+			    var objTest: ClassA				//Compile Fail: Property must be initialised or be assigned nullable and null:	var iTest: Int? = null
+
+			    override fun onCreate(...)
+			    {
+				objTest = ClassA(...)
+			    }
+			}
+
+			//Alteratively use lateinit
+
+			class KotlinActivity: Activity
+			{
+			    lateinit var objTest: ClassA		//Compile OK: Property will be initialised while being assigned null
+
+			    override fun onCreate(...)
+			    {
+				objTest = ClassA(...)
+			    }
+			}
+
+			Here:
+
+				1. A property value is unknown when it is declared.
+				2. If a property is not initialised when it is declared it must be defined nullable and assigned null.
+				3. If the property is defined nullable then that nullable aspect needs to be handled whenever the property is accessed using the safe call operator.
+				4. Using 'lateinit' enables a property to be declared as non-nullable and declared at a later stage within a function.
+
+				NB: If the property is declared lateinit and is used without being initialised then a runtime exeption is thrown:
+
+					'kotlin.UnitialisedPropertyAccessException: lateinit property iTest has not been initialised'
+
+				NB: lateinit can not be applied to 'val' only 'var'
+				NB: The type that is lateinit must be non-nullable:
+
+					lateinit var objTest: ClassA?		//Compile Fail
+
+				NB: The type that is lateinit must be non-primitive, only a reference type:
+
+					lateinit var iTest: Int			//Compile Fail
+
+					If primitive types are required then it is expected to simply use 'blank' trival values:
+
+					var iTest = 0
+					var bTest = false
+
+				NB: It is possible to check if a lateinit property has been initialised using .isInitialized:
+
+					lateinit var sName: String
+
+					println(this::sName.isInitialized)		//use property reference this:sName
+
+		- Properties must all be initialised and assigned a value when declared, otherwise it must be declared nullable and initialised as null:
+
+			var iTest: Int			//Compile Fail
+			var iTest: Int? = null		//Compile OK
+
+		- Properties not defined as val or var or as private are not accessible externally after an instance has been created.
+		- Properties can be overriden as expected:
+
+			Parent Class:		open val propertyName = "PropertyValue"
+			Extended Class:		override val propertyName = "OverridenPropertyValue"
+
+		- Properties replace fields in Java.
+		- Properties have a backing field which stores the actual data, this field is only accessible within the getter()/setter() via the default variables 'field' and 'value', these variables are not accessible by other aspects of the class.
+		- Properties do not generate a backing field if the custom getter()/setter() do not reference/contain variable 'field':
+
+			enum class State {ON, OFF}
+
+			class Logger
+			{
+			    private var bState = false
+
+			    var state: State						//Custom getter()/setter() do not make reference to 'field' therefore a backing field is not created
+				get() = if(bState) ON else OFF
+				set(value: State) {bState = value == ON}		//Boolean bState is set true if value == ON else false
+			}
+
+		- Properties should always be the direct source of reference, not indirectly via their getter()/setter() both from outside and from within the class i.e. do not manually call the getter()/setter() just call the property directly via the dot operator.	
+		- Properties when invoked via the dot operator the compiler accesses them as follows:
+
+			Inside Class:		via field directly ('this.field')
+			Outside Class:		via getter()/setter().
+
+		- Properties can adjust their accessibility/visibility:
+
+			class Counter
+			{
+			    private var iCounter: Int = 0
+				private set						//Set the default setter() private, therefore its value can only be changed within the class
+
+			    fun addWord(word: String)
+			    {
+				iCounter += word.length					//iCounter can only be changed within the class
+			    }
+			}
+
+		- Properties can be defined within an interface (given that a property is simply a getter()/setter())
+
+			interface User
+			{
+			    val userName: String
+			}
+
+			class WebsiteA (...) : User
+			{
+			    override val userName = [function to return value]		//Value of userName is calculated once and stored in a field when the object is instantiated
+			}
+
+			class WebsiteB (...) : User
+			{
+			    override val userName: String
+				get() = [function to return value]			//Value of userName is calculated each time the property is accessed, it does not therefore store in a field, if the 'field' variable is not referenced within the getter() 
+			}
+
+		- Properties which are the following can not be smart casted due to being unsafe:
+
+			1. Open:	Overridable e.g. those defined in an interface		Their getters() may have been overriden and/or be custom. Given that getters() are run each time the actual property is accessed therefore the value may change as the interface is implemented and the getter() is overriden in extended classes.
+			2. var:		Mutable							Their value (type) may be altered by another thread after it has been checked. NB: Smart casting may work in specific safe scenarios where the var is local.
+
+			interface Session
+			{
+			    val user: User
+			    var address: Address
+			}
+
+			class WebsiteA (session: Session)
+			{
+			    if(session.user is ClassA)
+				println(session.user.aPropertyOfUser)			//Compile error given that it is not possible to smart cast 'session.user' to an instance of ClassA
+
+			    if(session.address is ClassB)
+				println(session.address.aPropertyOfAddress)		//Compile error given that it is a var
+			}
+
+			class WebsiteA (session: Session)
+			{
+			    if(session.user is ClassA)
+			    {
+				val user = session.user
+				println(user.aPropertyOfUser)				//Compile OK, a means to implement a smart cast in this scenario is to assign to a val
+			    }
+
+			    if(session.address is ClassB)
+			    {
+				val address = session.address
+				println(address.aPropertyOfUser)			//Compile OK, a means to implement a smart cast in this scenario is to assign to a val
+			    }
+			}
+
+		- Properties contain:
+
+			1. Backing Field:	Class properties all contain a Backing Field which is created by the compiler which is another class which holds property value, this field is only accessible via the properties get/set()
+			2. Get/Set():		Get/Set methods are available to be custom defined for all properties:
+
+							var speakerVolume = 2
+    							    get()
+							    {
+								[body]
+								[return statement]
+							    }  
+    							    set(value)
+							    {	
+								[body]
+							    }    
+
+						If the get/set methods are not defined then the compiler creates the defaults as shown below:
+
+							var speakerVolume = 2
+    							    get() = field  		//Backing Field is only accessible via the 'field' identifer
+    							    set(value)			//Backing Field is only updated via the 'value' identifer
+							    {
+        							field = value    
+    							    }
+
+						These can be expanded as required
+
+							var speakerVolume = 2
+    							    get() = field  		//Backing Field is only accessible via the 'field' identifer
+    							    set(value)			//Backing Field is only updated via the 'value' identifer
+							    {
+        							if (value in 0..100)
+            							    field = value   
+    							    }
+
+						Class properties defined as val naturally do not get a set method:
+
+							val speakerVolume = 2
+    							    get() = field
+
+						If the setter is default:
+
+							var deviceStatus = "online"
+        						    set(value)
+							    {
+           							field = value
+       							    }
+
+			    				But it is desired to assign a particular access modifier to the setter, then the setter can be assigned as follows:
+
+							var deviceStatus = "online"
+        			 			   protected set
+
+						NB: Do not use the property name within the get/set methods for will enter infinite loop 
+
+		- Properties may also have Default Value (implemented in the same way when declaring a function):
+
+			class Contact(val id: Int, var email: String = "example@gmail.com")
+			{
+			    val category: String = "work"
+			}
+
+		- Properties and member functions are accessed via dot operator:
+
+			class Contact(val id: Int, var email: String)
+			{
+			    fun printID()
+			    {
+				println(id)
+			    }
+			}
+
+			fun main()
+			{
+    			    val contact = Contact(1, "mary@gmail.com")
+    
+    			    println(contact.email)
+    			    contact.email = "jane@gmail.com"
+    			    println(contact.email)
+
+			    println("Their email address is: ${contact.email}")
+
+			    contact.printID()
+			}
+
+		- Properties can use the 'by' keyword to have their get()/set() defined and delegated to separate classes which implement the required interface:
+
+			var <name> by <delegateObject>
+
+			Property Delegates can be created as follows:
+
+				1. Delegate Class implements ReadWriteProperty<Any?, Int>:
+
+					class RangeRegulator(initialValue: Int, private val minValue: Int, private val maxValue: Int ) : ReadWriteProperty<Any?, Int>		//Constructor inaccordance with the interface
+					{
+					    var fieldData = initialValue													//fieldData is the 'backing field' which holds the value of the property
+
+    					    override fun getValue(thisRef: Any?, property: KProperty<*>): Int									//Override methods as required
+    					    {
+						return fieldData
+					    }
+
+    					    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Int)								//KProperty<*> provides access to metadata about the property
+    					    {
+						if (value in minValue..maxValue)
+            					    fieldData = value
+					    }
+					}
+
+				2. Delegate Class is applied to the property:
+
+					private var speakerVolume by RangeRegulator(initialValue = 2, minValue = 0, maxValue = 100)
+
+			Property Delegates allow for the same criteria/behaviour to be assigned to the get()/set() methods without having to manually write/reproduce many times for all class properties.  
+
+	Extension Properties:
+
+		- Extension Properties can be created in the same way as Extension Functions (just omit the ()):
+
+			val String.lastIndex: Int
+			    get() = this.length - 1		//'this' is used to reference the receiver i.e. the particular instance of the class
+
+			val String.indices: IntRange
+			    get() = 0..lastIndex
+
+		- Extension Properties can be called just as if they were normal properties of a class:
+
+			"abc".lastIndex		//2
+			"abc".indices		//0..2
+
+		- Extension Properties execute their associated get() each time it is accessed (as per all custom getter()).
+		- Extension Properties are compiled to simply be static get() functions (just as Extension Functions are compiled to static functions):
+
+			val String.lastIndex: Int
+			    get() = this.length - 1
+
+			Compiles to:	static int getLastIndex() {return this.length - 1}
+
+		- Extension Properties can be assigned to var variable whereby both get() and set() can be defined:
+
+			var StringBuilder.lastChar: Char
+			    get() = get(length - 1)
+			    set(value: Char)
+			    {
+				this.setCharAt(length - 1, value)
+			    }
+
+			val sb = StringBuilder("Kotlin?")
+			sb.lastChar = '!'
+			println(sb)		// Kotlin!
+
+	Data Class:
+
+		- Data Classes are specialised classes used primarily for storing data:
+
+			data class User(val name: String, val id: Int)
+
+		- Data Classes have the same functionality as Classes but contain built-in implementations of useful Member/Extension Functions:
+
+			.toString()		
+			.equals or ==
+			.hashCode()
+			.copy()
+			.componentN(), component1(), component2() ...
+			.println() (equivalent to toString())
+
+		- Data Classes automatically override the equals(), therefore the contents are assessed rather than reference address:
+
+			     class Foo(val first: Int, val second: Int))
+			data class Bar(val first: Int, val second: Int))
+
+			val f1 = Foo(1,2)
+			val f2 = Foo(1,2)
+
+			val b1 = Bar(1,2)
+			val b2 = Bar(1,2)
+
+			println(f1 == f2)	//false		For == calls equals() which is the standard address check as per Java which is false
+			println(b1 == b2)	//true		For == calls equals() which for a data class is automatically overriden to check/compare the contents of the data class which are the same i.e. true 
+
+		- Data Classes overriden equals() only compares properties declared/defined within the primary constructor (not any of those declared within the body of the data class):
+
+			data class User(val email: String)
+			{
+			    val address: String? = null
+			}
+
+			val user1 = User("user1@gmail.com")
+			user1.address = "123"
+			println(user1)			//User(email=user1@gmail.com)
+
+			val user2 = User("user1@gmail.com")
+			user2.address = "456"
+			println(user1 = user2)		//true (given that only the email property is compared within equals()
+
+		- Data Classes print as follows:
+
+			data class User(val name: String, val id: Int)
+
+			fun main()
+			{
+    			    val user = User("Alex", 1)
+    
+    			    println(user)  	// User(name=Alex, id=1), human readable format for log/debug
+			}
+
+		- Data Classes can be copied while being supplied new property values:
+
+			data class User(val name: String, val id: Int)
+
+			fun main()
+			{
+    			    val user = User("Alex", 1)
+    
+    			    println(user.copy())       		// User(name=Alex, id=1)
+    			    println(user.copy("Max"))  		// User(name=Max, id=1)    
+    			    println(user.copy(id = 3))		// Creates a copy of user with id: 3
+			}
+
+		- Data Class automatically includes the conventions for enabling deconstruction declarations via .component1...n()
+
+			data class Contact(val name: String, val email: String, val phoneNumber: String)
+			{
+			    fun component1() = name		//x3 functions defined and added automatically to data class
+			    fun component2() = email
+			    fun component3() = phoneNumber
+			}
+
+			val (name, _, phoneNumber) = contact	//Ordering of the components is fixed as per the order of the parameters of the data class
+
+		- Data Class must have:
+
+			1. x1 Parameter:	At least x1 parameter in its constructor.
+			2. All val/var:		All parameters must be either val/var.
+			3. Conventional:	Cannot be abstract, open, sealed, inner.
+
+		- Data Class should ideally avoid declaring var properties for it can go against certain expectations and may lead to hard-to-find bugs:
+
+			data class Rational(var n: Int, var d: Int)
+
+			val half = Rational(2, 4)
+			half.n = 3
+
+			//Even though the object half is defined as val, its internal properties and its essential essence can be altered which goes against expectation and may lead to subtle bugs e.g.
+
+			val map = mapOf(
+			    half to "half",
+			    Rational(1,2) to "third")
+
+			half.n = 1
+			half.d = 2
+
+			println(map[half])		//null
+
+			Here:
+
+				1. Even though the key 'half' is still a half, it will no longer be found within the map for the map uses the hashcode of the 2 and 4.
+
+		- Data Class has consideration when using var:
+
+			1. Only when necessary:		Properties of var should only be deployed when absolutely necessary and no other alternatives are available e.g. for performance reasons.
+			2. Private:			If properties need to be deployed as var, consider making them private if possible to prevent them from being accidently changed at a later date.
+			3. hashCode()/equals():		If properties are changed ensure that the hashCode(), equals() and any other relevant functions are adjusted to ensure that the data class operates as expected in all circumstances e.g. when within a map.
+			4. Autogenerate:		IDE typically includes a short cut within context menu to autogenerate any necessary hashCode()/equals() functions.
+
+	Enum Class:
+
+		- Enum class operate as in Java but declared using a class modifier:
+
+			enum class Difficulty
+			{
+    			    EASY, MEDIUM, HARD
+			}
+
+			class Question<T>
+			(
+    			    val questionText: String,
+    			    val answer: T,
+    			    val difficulty: Difficulty		//Enum class declared as a property of Question<T>
+			)
+
+		- Enum class is typically used inconjunction with 'when' statements:
+
+			enum class Color
+			{
+    			    BLUE, ORANGE, RED
+			}
+
+			fun getDescription(color: Color) =
+			    when (color)
+			    {
+				BLUE -> "cold"
+				ORANGE -> "mild"
+				RED -> "hot"
+			    }
+
+		- Enum class requires full qualification of constants if the enum class is not imported:
+
+			fun getDescription(color: Color) =
+			    when (color)
+			    {
+				Color.BLUE -> "cold"
+				Color.ORANGE -> "mild"
+				Color.RED -> "hot"
+			    }
+
+		- Enum class can include properties and functions:
+
+			enum class Color(val r: Int, val g: Int, val b: Int)
+			{
+			    BLUE(0,0,255), ORANGE(255,165,0), RED(255,0,0);		//Constants List	NB: a semicolon is needed to separate the 'constants list' from the 'members list' i.e. all of the members of the class 
+
+			    fun rgb() = (r * 256 + g) * 256 + b
+			}
+
+			println(BLUE.r)		//0
+			println(BLUE.rgb())	//255
+
+	Sealed Class:
+
+		- Sealed Class appears to be a convenient replacement for an interface:
+
+			sealed class Expr
+
+			class Num(val value: Int) : Expr()
+			class Sum(val left: Expr, val right: Expr) : Expr()
+
+			fun eval(e: Expr): Int = when (e)			//1 2
+			{
+			    is Num -> e.value
+			    is Sum -> eval(e.left) + eval(e.right)
+			}
+
+			Here:
+
+				1. If Expr was an interface, then the above would not compile given that the 'when' would need a terminating 'else' statement.
+				2. However given that Num and Sum both extend the sealed class 'Expr', this guarantees that e can be none other than those classes which extend the sealed class Expr, hence the above now compiles.
+
+			NB: Further information/clarity into the purpose/logic and intended use of sealed classes required (training course only briefly explains them).
+
+		- Sealed class is suitable for constraining any simple heirachy.
+		- Sealed class is created/compiled with a private constructor therefore it can not be created from Java.
+		- Sealed class and any extended classes must all be contained within the same file.
+
+	Nested/Inner Class:
+
+		- Nested/Inner Class are defined as follows:
+
+							Java			Kotlin
+							-------------------------------------
+			static nested class		static class B		class B
+
+			local/inner class		class B			inner class B
+
+			NB:
+			    - The training course states that in Java it is possible for memory leaks to occur if internal classes are placed into non-static memory and the outer class is no longer needed.
+			    - Such that the reference from the internal class to the outer class does not (presumably) get garbage collected along with the outer class.
+			    - This is the reason why Kotlin by default places all internal classes into static memory.
+			    - This requires further investigation has to what this means and/or is accurate.
+
+		- Nested class in Kotlin in now the default i.e. simply defining a class within a class automatically places the internal class within static memory:
+
+			class A
+			{
+			    class B
+
+			    inner class C
+			    {
+				...this@A...		// use @<classname> to access member of outer class
+			    }
+			}
+
+	Class Delegation:
+
+		- Class Delegation is where:
+
+			1. A class implements an interface but also has that interface as a constructor property.
+			2. Instead of the class manually overriding and implementing the abstract methods of the interface itself.
+			3. The class just immediately delegates/uses/calls the implementations of the abstract methods defined within the supplied constructor property.
+
+			interface Repository
+			{
+			    fun getById(id: Int): Customer
+			    fun getAll(): List<Customer>
+			} 
+
+			interface Logger
+			{
+			    fun logAll()
+			} 
+
+			class controller(val r: Repository, val l: Logger) : Repository, Logger
+			{
+			    override fun getById(id: Int) = r.getById(id)
+			    override fun getAll(): List<Customer> = r.getAll()		//NB: Not sure why need to specify the return type (List<Customer>), it may be due to erasure. 
+
+			    override fun logAll() = l.logAll()
+			}
+
+		- Class Delegation can be simplified using the 'by' keyword:
+
+			class controller(val r: Repository, val l: Logger) : Repository by r, Logger by l		//Keyword 'by' reads 'implement an interface by delegating to'
+			{...}
+
+	Generics:
+
+		- Generics are applicable in Kotlin as they are in Java.
+		- Generics can be applied to classes, interfaces, regular functions and extension functions:
+
+			interface List<E>
+			{
+			    fun get(index: Int): E
+			}
+
+			fun foo(ints: List<Int>) {}
+			fun bar(strings: List<String>) {}
+
+		- Generics can be applied to functions and extension functions:
+
+			fun <T> List<T>.filter(predicate: (T) -> Boolean): List<T>
+			{
+			    val lstDest = ArrayList<T>()
+
+			    for(e in this)
+				if(predicate(element))
+				    lstDest.add(e)
+
+			    return lstDest			
+			}
+
+			fun filterInts(ints: List<Int>)				//non-Nullable Type Parameter
+			{
+			    ints.filter{it > 0}
+			}
+
+			fun filterStrings(strings: List<String>)		//non-Nullable Type Parameter
+			{
+			    strings.filter{it.isNotEmpty()}
+			}
+
+			fun filterIntsNullable(ints: List<Int?>)		//Nullable Type Parameter
+			{
+			    ints.filter{it != null && it > 0}
+			}
+
+			fun filterStringsNullable(strings: List<String?>)	//Nullable Type Parameter
+			{
+			    strings.filter{!it.isNullOrEmpty()}
+			}
+
+		- Generic Type Parameters can be nullable:
+
+			fun <T> List<T>.firstOrNull():T?			//Extension function returns nullable of T
+
+			val i: Int? = listOf(1,2,3).firstOrNull()		//1		non-nullable Type Argument for T is passed
+			val j: Int? = listOf<Int>().firstOrNull()		//null		nullable Type Argument for T is passed
+			val k: Int? = listOf(null,1).firstOrNull()		//null		nullable Type Argument for T is passed
+
+			It is therefore necessary to handle/check for null within the generic function, alternatively if it is desired to ensure that only non-nullable are passed as Type Arguments then an upper bound needs to be applied:
+
+				fun <T: Any> foo(list: List<T>)		//': Any' do not have nullable subtypes thereby ensuring all Type Arguments are non-nullable
+				{
+				    for (e in list)
+				    {...}
+				}
+
+		- Generic Type Parameters can be bounded:
+
+			fun <T: Number> oneHalf(value: T) : Double	//Ensure that T is of Number or any subtype
+			{
+			    return value.toDouble() / 2.0
+			}
+
+			fun <T: Number?> oneHalf(value: T) : Double?	//Ensure that T is of Number? or any subtype or null
+			{
+			    if (value == null)
+				return null
+
+			    return value.toDouble() / 2.0
+			}
+
+			fun <T: Comparable<T>> max(first: T, second: T) : T		//Type Parameter is restricted to being an implementation of Comparable<T> whereby the type T is immediately passed as a Type Argument to the interface Comparable<T>
+			{
+			    return if (first > second) first else second
+			}
+
+			fun <T> check(seq: T) where T: CharSequence, T: Appendable	//Use 'where' to apply mulitple bounds
+			{
+			    if(!seq.endsWith('.'))
+				seq.append('.')
+			}
+
+		- Generic Types are just as suspectible to erasure as in Java:
+
+			fun List<Int>.average(): Double {...}
+			fun List<Double>.average(): Double {...}
+
+			Here:
+
+				1. The above x2 functions if defined within the same class will cause a compile time error.
+				2. Both Type Arguments erase to the same type and become indistinguishable from the compilers perspective.
+
+			fun List<Int>.average(): Double {...}
+			@JvmName("averageOfDouble")
+			fun List<Double>.average(): Double {...}
+
+			Here
+
+				1. Use the @JvmName annotation to alter the compiled name of the function.
+				2. Compiler will use the alternate name.
+				3. Compiler will be able to infer the correct function to call when the type argument is passed.
+
+				NB: If called from Java the alternate name is used (given that this is the name used within the bytecode).
+
+	Generic Class:
+
+		- Generic class is implement as in Java:
+
+			class Question<T>(val questionText: String, val answer: T, val difficulty: String)
+			{...}
+
+			
+			fun main()
+			{
+    			    val question1 = Question<String>("Quoth the raven ___", "nevermore", "medium")
+    			    val question2 = Question<Boolean>("The sky is green. True or false", false, "easy")
+    			    val question3 = Question<Int>("How many days are there between full moons?", 28, "hard")
+			}
+
+			The argument passed into the Type Parameter T must be of the same data type as that defined for that class instantiation
+
+	Interface:
+
+		- Interface are declared as follows:
+
+			interface <name>
+			{...}
+
+	Operator Overloading:
+
+		- Operator Overloading can be applied to classes via either member or extension functions:
+
+			operator fun Point.plus(other: Point) : Point
+			{
+			    return Point(x + other.x, y + other.y)
+			}
+
+			Therefore it is now possible to add x2 points using +, without the need to explicitly call plus() making it more readable overall:
+
+				var a, b, c: Point
+
+				c = a.plus(b)
+				c = a + b	//Equivalent
+
+			NB: As shown the overloaded operator returns a new instance of the Receiver, this is the general approach to collections therefore care should be taken to ensure that this aspect is taken into account e.g.
+
+				val list1 = mutableListOf(1,2,3)
+				list1 += 4				//Returns a new list of [1,2,3,4]
+
+		- Operator Overloading must be used inconjunction with the following function names:
+
+			a + b		plus
+			a - b		minus
+			a * b		times
+			a / b		div
+			a % b		mod
+
+			+a		unaryPlus
+			-a		unaryMinus
+			!a		not
+			++a a++		inc
+			--a a--		dec
+
+			a += b		plusAssign
+			a -= b		minusAssign
+			a *= b		timesAssign
+			a /= b		divAssign
+			a %= b		modAssign
+
+		- Operator Overloading can use any parameter type, it is not necessary to only use the same type as the receiver:
+
+			operator fun Point.plus(other: Point) : Point		//Parameter Type is the same as the Receiver
+			operator fun Point.plus(other: Int) : Point		//Parameter Type is not the same as the Receiver but an Int
+
+		- Operator Overloading can be applied to unary operators whereby there are no parameters:
+
+			operator fun Point.unaryMinus() = Point(-x, -y)
+
+		- Operator Overloading can be applied to assignment operators:
+
+			operator fun Point.plusAssign(other: Point) : Point
+			{...}	
+				
+			NB: The training course appears to suggest that if the plusAssign() overload is not defined then the compiler will attempt to call the overloaded plus (presuming that overload is defined):	a = a.plus(b)
+
+		- Operator Overloading can be applied to square brackets [] via the get() and set() methods for accessing elements:
+
+			operator fun Board.get(x: Int, y: Int): Char {...}
+			operator fun Board.set(x: Int, y: Int, value: Char): Char {...}
+
+			board[1, 2] = 'z'
+			board[1, 2]	//Returns 'z'
+
+			Therefore get() and set() can be used to get/set values within the class e.g. a map. It is not necessary to defined both get() and set(), it is possible to just define only get() or only set() as required.
+
+			NB: The parameters of the overloaded operator functions can be any type via the use of 'any' should that be more useful:
+
+				operator fun Board.set(x: Any, y: Any, value: Char): Char {...}
+
+		- Operator Overloading can be applied to the keyword 'in' via .contains(), therefore if your custom class implements a method .contains() then it can be used in a 'in' statement:
+
+			a in c:		//Defers to c.contains(a)
+
+		- Operator Overloading can be applied to Ranges via .rangeTo(), therefore it is possible to allow your class to be used within statements that use '..' should that class have an implementation for rangeTo():
+
+			start..end:	//Defers to start.rangeTo(end)
+
+		- Operator Overloading can be applied to iterators via .iterator(), therefore it is possible to allow your class to be used within statements that use 'in' within an interation context:
+
+			operator fun CharSequence.iterator(): CharIterator
+
+			for(c in objMyClass)
+			{...}
+
+			(To be research/tested)
+
+			NB: In Java, java.lang.String can not be used within an iteration, but in Kotlin String has the above .iterator() defined as an extension therefore a String can be used in an iteration context.
+
+		- Operator Overloading can be applied to destructuring declarations:
+
+			val (a, b) = p
+
+			The above Pair p is deconstructed to (a, b) via the following:
+
+				val a = p.component1()
+				val b = p.component2()
+
+			During the deconstruction process where the contents of p are assigned to the variables a and b, the compiler calls .component1() ... .componentn() which are defined methods within the class of p.
+
+				for((key, value) in map)
+				{...}
+
+				Defers to:
+
+					for(entry in map)
+					{
+					    val key = entry.component1()
+					    val value = entry.component2()
+					}
+
+				map.forEach{(key, value) -> ...}
+
+				Defers to:
+
+					map.forEach { argument ->
+					    val key = argument.component1()
+					    val value = argument.component2()
+					}
+
+			Destructuring in Lambdas:
+
+				Parameters				Lambda
+				----------------------------------------------------------
+				1					{a -> ...}
+				2					{a, b -> ...}
+				Destructured Pair			{(a, b) -> ...}
+				Destructured Pair + Parameter		{(a, b), c -> ...}
+
+			Naturally the number of variables within the () must equal the number of .component() definitions within the class.
+
+		- Operator Overloading can have access modifiers applied in order to restrict accessibility to extensions that are only applicable to your part of the program and/or algorithm:
+
+			private operator fun Point.compareTo(other: Point): Int {...}
+
+		- Operator Overloading is all implemented via conventions, conventions are the general term applied to this process of applying functions of a predefined name so that your class can be used within certain contexts within Kotlin.
+
+		- Operator Overloading should be used with care to only ensure that readability of source code is improved rather than to obscure syntax.
+
+		- Operator Overloading is particularly useful if it is desired to add additional functionality to classes which you do not have control over e.g. those from a library, where it may be very useful to add the ability to use in a for loop.
+
+	
+
+	

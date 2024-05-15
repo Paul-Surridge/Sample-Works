@@ -1,0 +1,774 @@
+Cloud Native Development
+
+	Overview:
+
+		- Cloud native development is a broad field.
+		- Cloud native development involves the following broad evolution where the management of the infrastructure is commoditised, 'abstracted away' or 'unknown' and managed by other dedicated 3rd party cloud service providers.
+		- Cloud native development involves a number of spectrums:
+
+			1. Location:				On-Premise | Cloud | Hybrid
+			2. Infrastructure Management:		Compute model describes the extent infrastructure and resources outside the application are managed by cloud service provider
+			3. Architecture:			Monolith | Microservices
+
+		- Cloud native development can be completed using differing compute models these include:
+
+			1. Traditional IT (On-Prem)
+			2. IaaS
+			3. PaaS
+			4. Serverless/FaaS
+			5. SaaS
+
+			These compute models encompass a varying degree of the management by the cloud service providers:
+
+							Traditional IT	IaaS		PaaS		Serverless	SaaS
+							(On-Prem)					FaaS
+							____________________________________________________________________________________
+
+				Applications		-		-		-		-		C				C: Cloud Service Provider
+				Data			-		-		-		C		C
+				Runtime			-		-		C		C		C
+				Middleware		-		-		C		C		C
+				OS			-		C		C		C		C
+				Virtualisation		-		C		C		C		C
+				Servers			-		C		C		C		C
+				Storage			-		C		C		C		C
+				Networking		-		C		C		C		C
+
+		- Cloud native development has the following major cloud service providers: 
+
+			Cloud Service Providers				IaaS		 		PaaS					Serverless/FaaS
+			______________________________________________________________________________________________________________________________________________
+
+			Amazon						AWS				AWS Elastic Beanstalk			AWS Lambda
+			Microsoft 					Azure				Microsoft Windows Azure			Azure Functions
+			Google 						Google Cloud/GCP		Google App Engine			Google Cloud Functions
+			Oracle 						Oracle Cloud
+			IBM 						IBM Cloud								IBM Cloud Code Engine
+			Heroku
+			VMWare
+
+	Monolith:
+
+		Overview:
+
+			- Monolith is a server-side system based on a single application.
+			- Monolith components are tightly coupled.
+
+		Advantages:
+
+			- Development:			Monoliths tend to be easier to develop, deploy and maintain e.g. a Java executable is encapsulated within a single *.jar file.
+			- Non-Distributed:		Monoliths are not 'spread out' or distributed over a number of servers.
+
+		Disadvantages:
+
+			- Technology Stack:		Monoliths can become limited and restricted to a specific technology stack, data model and database.
+			- Growth:			Monoliths can become diffcult to grow.
+			- Maintain:			Monoliths can become diffcult to maintain, making a single change can lead to having to understand all of the components that are effected and also need to be updated.
+			- Tight Coupling:		Monoliths can contain components which are tightly coupled.
+			- Dependency:			Monoliths can contain components which are highly dependent on one another e.g. sharing data stores and libraries.
+
+	Microservices:
+
+		Overview:
+
+			- Microservices are a cloud based, cloud native architecture.
+			- Microservices are distinct from Monolith and SOA architectures.
+			- Microservices are where a single application is implemented through many loosely coupled and independently deployable smaller components or services.
+
+		Characteristics:
+
+			- Own Process:				Microservices are independent executables which run in their own container/process.
+			- Intercommunication:			Microservices communicate between eachother typically via REST API, event streaming and message brokers.
+			- Components:				Microservices are functionality 'componententised' via services.
+			- Business Domain:			Microservices are organised and orientated using a bounded context around the individual domain, department, responsibility and functions which relate to particluar areas of the business.
+			- Responsibility:			Microservices are organised such that each component is responsible for the correct operation of a particular aspect of the overall application.
+			- Products:				Microservices are considered as 'products' rather than 'projects'.
+			- Smart Endpoints and Dumb Pipes:	Microservices do not ultilise an intelligent ESB (Enterprise Service Bus) but pushes more of the intelligence to be within the microservice endpoints themselves.
+			- Decentralised Governance:		Microservices do not have to implement an overarching governance but conponents operating independently. 
+			- Decentralised Data Management:	Microservices have their own database and data management.
+			- Infrastructure Automation:		Microservices utlilise heavy automation of integration, testing and deployemnt.
+			- Code Base:				Microservices may all share the same code base via a shared repository but remain entirely independent when running.
+
+			NB: Common characteristics but not universal nor a pre-requisite:
+
+		Advantages
+
+			- Code Update:				Microservices enable code to be updated more easily, new features and functionality can be added (via DevOps pipeline) without touching the entire application.
+			- Speed:				Microservices allow for updates to be applied more quickly given the reduced potential for disruption and need for comprehensive managerial authorisation/bureaucracy.
+			- Value:				Microservices enable value to be delivered to the customer more quicker and easier.
+			- Specific Data Models:			Microservices enable each component to have its own optimised data store, minimising frustration of developers having to continually work with shared inferior/non-optimal implementations. 
+			- Independent Technology Stacks:	Microservices are each able to have their own independent technology stack, enabling certain functionality to be implemented in the most appropriate technology.
+			- Independent Capacity/Scaling:		Microservices enable scaling and increasing the capacity of individual components without need to horizontally scale the whole application.
+			- Independent Deployment:		Microservices can be deployed independently with minimal affect on the rest of the application.
+			- Lightweight:				Microservices are lightweight and do not carry their own OS compared to VM, which can be spun up alot more quickly should demand increase on a particular aspect or service of the application.
+			- Efficiency:				Microservices allow for rapid increase in capacity to meet demand as it peaks and rapidly decrease when demand reduces.
+			- Maintainability:			Microservices enable the software to grow and evolve organically.
+ 			- Redundancy:				Microservices inherent design allows for and expects failure, encorporating heavy redundancy providing seamless, graceful and unnoticed failure.
+			- Cost:					Microservices allow for more granular pricing and not needing to scale up the whole application if demand on a single aspect becomes overloaded. 
+			- Risk:					Microservices significantly reduce risk for should a server running a single component fail, it does not pull down the entire application.
+			- Expertise:				Microservices allow for cross departmental teams to be created with specialised knowledge and concentrate on that specfic domain.
+			- Teams:				Microservices allow for cross departmental teams to concentrate on the development of one or more services around their specific domain. 
+			- Conways Law:				Microservices allow for closer and purer adherence to Conways Law whereby software architecture can more closely emulate the architectural structure of the organisation.
+			- Robustness:				Microservices allow for more enforced segregation and isolation of operations, forcing communication via API and reducing potential for faults.
+			- Comprehension:			Microservices with clear boundaries and communication patterns are easier and quicker to comprehend and contribute when onboarding new employees.
+
+		Disadvantages
+
+			- Complexity:				Microservices distributed nature increase inherent complexity.
+			- Network:				Microservices distributed across multiple physical servers introduce need to manage a complex network and connections.
+			- Latency:				Microservices distributed nature introduce an underlying latency between services.
+			- RPC:					Microservices utilise remote procedure call to invoke methods within other services, however means and techniques exist which provide the ability to call a remote method as if it is an inline call.
+ 			- Moving Parts:				Microservices architecture has many moving parts.
+			- Consistency:				Microservices tend to have their own data store, consequently there is potential for inconsistent data to arise.
+			- Fault Propagation:			Microservices distributed nature may allow a fault in one service to popagate and effect numerous other services.
+			- Monitoring:				Microservices distributed nature reduce and sometimes prevent altogether the ability to monitor activity.
+			- Debugging:				Microservices distributed nature reduce and sometimes prevent altogether the ability to debug using current debugging tools. Alternative mechanisms are required to monitor activity and debug.
+			- Logging:				Microservices logging can help in monitoring and debug but it can be voluminous and inconsistent across services.
+			- Backward Compatibility:		Microservices can introduce backward compatibility issues.
+
+			- While Microservices do contain disadvantages:
+
+				1. Mitigation:			They can be mitigated through careful and considered design.
+				2. Value:			They are insignificant compared to the benfits in particular in promoting scalability, reliability, maintainability and extensibility.
+
+		Component
+
+			- Microservices concentrate upon the idea of a component:
+
+				- An entity that can be replaced independently.
+				- An entity that can be upgraded independently.
+
+		Service Inter-Communication
+
+			- Microservices should ideally be stateless, however establishing and 'knowing' the state of other services is still required.
+			- Microservices being composed of smaller services are easier and cheaper to be updated when better inter-communication technology becomes available.
+			- Microservices communicate using REST within x2 architectures:
+
+				1. Request/Response
+				2. Event Driven
+
+				Request/Response:
+
+					- RESTful API's are used to communicate between services using synchronous communication.
+					- API calls are inefficient/impractical when trying to poll or subscribe to the state of a particular service. 
+
+				Event Driven
+
+					- Event driven architecture provides the ability to subscribe and 'listen' for events or state changes in other services.
+
+						- Events are a catch all term for user clicks, events or triggers.
+						- Events are anything which require the cloud service provider to 'do something'.
+
+					- Event driven architecture utilises a message broker which manages the transmission of event messages between producers and consumers.
+					- Event driven architecture is an ecosystem of services provided by the Cloud Service Provider which may include:
+
+						Database
+						IoT
+						...
+						(Any services required by the application)		
+
+					- Event driven architecture has x2 paradigms:
+
+						1. Event Messaging:
+
+							- Producer/Consumer
+							- Listen/Subscribe
+							- Message Broker:
+
+								1. Receives the message.
+								2. Translates the message (if necessary).
+								3. Maintains the order of received messages.
+								4. Makes it available for consumption by the consumers.
+								5. Deletes message.
+
+						2. Event Streaming:
+
+							- Producer create 'streams' of events.
+							- Consumers can choose when to 'step into' i.e. starting listening to the events.
+							- Message Broker:
+
+								1. Receives the message.
+								2. Translates the message (if necessary).
+								3. Maintains the order of received messages.
+								4. Makes it available for consumption by the consumers.
+								5. Does not delete message.
+								6. Stores all messages for a configurable period (from mS to infinity).
+						 
+					- Event driven architecture core difference is that in event streaming the event persists.
+					- Event driven arhcitecture may utilise Apache Kafka, which can handle enormous volumes of events at very high throughput with minimal/no performance lag (whereby presume remote calls to services become close to local calls).
+					- Event driven architecture is still a nascent technology/design techniques and has a number of meanings/interpretations.
+			
+						1. Event Notification:
+
+							- Simple pipeline of events:
+
+								1. UI:					Customer updates their address.
+								2. Customer Management System:		Updates the address.
+								3. Insurance Quoting:			Generates a new insurance quote in accordance with the new address.
+								2. Communications:			Sends out a new quote in the mail.
+
+							- Alternatively:
+
+								1. UI:					Contains objects which are triggered by the user.
+								2. Source Code:				Listeners for and processes events driven by the user via the UI.
+
+								However becomes a highly coupled system/process, there are techniques in order to reverse the dependencies between stages/systems.
+
+							- There are x2 types of object/action that can occur within this paradigm:
+
+								1. Event:	An event object is generated and the actual process which generated that event object 'does not know what to do with that event object', it simply produces and presents the event object for consumption of any other systems that may require or be expecting it.
+								2. Command:	An event object is generated and the actual process which generated that event object 'knows what to do with that event object' and signify/command the appropriate systems that required or expect such notifications.
+
+							- When to use:
+
+								1. Event:	When the programmer does not care nor know how the event will be consumed.
+								2. Command:	When the programmer does care, know or stipulating how the event should be consumed.
+
+								Appropriate and careful decision making should be deployed to ensure that the purpose of the object is properly and fully conveyed.
+
+							- Disadvantage:
+
+								Clarity:	Event driven architecture becomes more difficult to have an overall state and knowledge of the system.
+										Event driven architecture can lead to an input triggering a number of subsystems.
+										Event driven architecture logging and tracing mechanism may be required.
+										Event driven architecture has no linear source code that lists and describes with precise detail of the current state at any one time, only opton is to use a debugger.
+
+						2. Event-Carried State Transfer:
+
+							- Event driven architecture prohibits intercommunication between subsystems.
+							- Event-carried state transfer packages the whole state of the subsystem 1 which has been altered by an event and transfered to the next subsystem 2.
+							- Event-carried state transfer ensures that the next subsystem holds its own copy of the modified state of the current subsystem.
+
+							- Advantages:
+
+								1. Decoupling:		Increases decoupling
+								2. Workload:		Reduce load on supplier
+
+							- Disadvantages:
+
+								1. Replication:		Replicated data in multiple locations
+								2. Consistency:		Consistency between data sources of all subsystems requires time to synchronise.
+
+						3. Event Sourcing:
+
+							1. State is initially defined.
+							2. State is modified where all modifications are stored in logs.
+							3. State is rebuilt by 'summing' up all of the stored logs rather than store and pull from a database e.g.:
+
+								Banking
+								Accounting
+								Git
+ 
+						4. CQRS:
+
+							- Command Query Responsibility Segregation
+							- Separate models/areas are allocated for the 'Query' (get) and 'Command' (set) functionality of a database.
+
+		SOA
+
+			- Microservices and SOA (Service Orientated Architecture) are both concerned with creating reusable individual building blocks which can be consumed by other applications.
+			- Microservices and SOA differ in the following aspects:
+
+				1. ESB:		SOA utilise a Enterprise Service Bus
+				2. Scope:	SOA attempts to standardise the inter-communication and integration of all IT services within an organisation i.e. at enterprise level. Microservice are at the application level.
+
+		Core Technologies
+
+			- Microservice core technologies are:
+
+				1. Containers
+				2. Docker
+				3. Kubernetes
+
+		API Gateways
+
+			- API Gateways enable microservices to communicate in particular when establishing state.
+			- API Gateways form a useful intermediary layer allowing new services to be added/removed over time.
+			- API Gateways act as reverse proxies for the services, where client requests are routed and fanned out to available services (presumably they operate as a load balancer?)
+			- API Gateways provide an additional layer of security and authentication.
+			- API Gateways can be implemented using multiple technologies and API management platforms, however if using containers/Kubernetes then typically:
+
+				1. Ingress
+				2. Istio
+
+		Organisation
+
+			- Microservices describes the organisation of the development teams as well as the technological aspects.
+			- Microservices suggest rather than having separate silos of expertise, but having multi-disciplined teams organised into groups that follow a business logic and are 'customer focused'.
+
+				Monolith:
+
+					Team 1:		UI
+					Team 2:		Server
+					Team 3:		Database
+
+				Microservices:
+
+					Team Orders:		A team of UI, Server and database expertise.
+					Team Shipping:		A team of UI, Server and database expertise.
+					Team Catalog:		A team of UI, Server and database expertise.
+
+			- Microservices is a purer form of Conways Law:
+
+				'Any organization that designs a system (defined broadly) will produce a design whose structure is a copy of the organization's communication structure'
+
+		DevOps
+
+			- Microservices both enable and require DevOps.
+			- Microservices involve small services being updated and deployed frequently, which lends itself to the DevOps culture.
+
+			History:
+
+				- DevOps originally consisted of x2 area:
+
+					Department		Responsibility
+					__________________________________________________________
+
+					Development:		Features, Functionality and Defect Resolution
+					Operations:		Stability and Availability
+
+				- These x2 departments have conflicting responsibilities i.e. Development wishing to make changes and Operations wishing to maintain stability.
+
+			Pipeline:
+
+				- DevOps core objectives are to provide the following benefits which need to be balanced and measured:
+
+					1. Velocity:		What is the speed of delivery through pipeline?
+					2. Quality:		What is the quality of delivery through the pipeline?
+
+				- DevOps utilises a pipeline of delivering value:
+
+					Idea > Code > Build > Deploy > Manage > Learn > Idea...
+
+				- DevOps sections are as follows:
+
+					Idea:		User Stories
+							Ideation
+							New Features
+							What would add value to the business and consumers?
+
+					Code:		Production of the software as described in the Idea
+
+					Build:		Unit Test Case
+							Packaging of code into executables and runtimes
+
+					Deploy:		Executable is deployed onto a runtime environment:
+
+								1. Bare Metal
+								2. VM
+								3. Cloud
+
+					Manage:		Assessment of executable within production environment.
+
+					Learn:		Continuous improvement
+
+				- DevOps should ensure that the x2 core objectives are continually being achieved at the end of this pipeline.
+
+				- DevOps smaller iterative cycles provides the ability to:
+
+					1. Assess:
+
+						Application:	Continually assess the current state of the application.
+						Objectives:	Continually assess and ensure that the above two objectives are being met and improved.
+
+					2. Course Correction:	Continually make subtle course corrections of the direction of the application.
+					3. Deployment:		Continaully have an application that is more readily to be deployed.
+
+			Benefits:
+
+				- DevOps improves the businesses ability to be agile to market trends, consumer demands and time to market.
+
+		Pipes
+
+			- Microservices place 'the smarts' within the endpoints rather than rely upon the ESB (Enterprise Servce Bus) i.e. smart middleware plumbing.
+			- Microservices suggest that the network is 'dumb' whose only role is to ensure that a message gets to its required destination.
+
+		Data Storage
+
+			- Microservices suggest that each services gets its own data storage and not shared with anyone else.
+
+		Design Patterns
+
+			- Microservices contain a number of common and useful design, communication and integration patterns.
+
+				Backend-for-frontend (BFF)
+
+					- A layer is between the UI and resources.
+					- A unique type is allocated for each interface rather than x1 large generic backend for all interface.
+					- This allows for optimisation towards individual UI's
+
+						Desktop		Tablet		Mobile
+						| | | |		| | | |		| | | |
+						 _____		 _____		 _____
+						|_____|		|_____|		|_____|
+						   |		   |		   |
+						 __|_______________|_______________|__
+						|				      |
+						|	       Resources	      |
+
+				Entity and Aggregate
+
+					- An entity is an object distinguished by its identity e.g. a Product object can be distinguished by name, type or price.
+					- An aggregate is a collection of related entities that should be treated as x1 unit.
+					- For example:
+
+						Order = Aggregate of Products
+
+				Service Discovery
+
+					- Service discovery is used by an application to find services on a distributed system.
+					- Service may move or dynamically change due to scaling, upgrades, service failure or service termination.
+					- Service discovery manages these transitions ensuring continuity of service.
+					- Service discovery may typically be used by Load Balancers inconjunction with service health checks and other techniques to efficiently direct and redirect incoming traffic.
+
+				Adapter
+
+					- Adapter microservice pattern is similar to the Adapter Pattern in the Java.
+					- Adapter microservice pattern provides the ability for incompatible 3rd party API's to become interoperable and communicate.
+					- Adapter microservice pattern should be simply thought of as an electrical plug adapter required when travelling to other countries.
+
+				Strangler Application
+
+					- Strangler application help manage the refactoring from monolith to microservices architecture.
+					- Strangler application reflects how a strangler vine (microservices) slowly overtime takes over a monolithic tree.
+
+		Design Anti-Patterns
+
+			- Microservices contain a number anti-patterns or 'what not to do'.
+
+				'The first rule of microservices is, don't build microservices'
+
+					- Do not start with microservices.
+					- Do not start out with the intention of immediately implementing a microservice architecture.
+					- Microservices introduce significant complexity overhead.
+					- Microservices are a means of managing complexity once an application has become too large, complex and cumbersome.
+					- Do not implement microservices until the application has reached a level of complexity that justifies microservices.
+					- Personal caveat
+
+						- If the functional scope of the application is expected to be large, complex and cumbersome.
+						- Surely it would make sense to implement microservices architecture straight off, rather than building a monolith to only then refactor.
+
+				'Don't do microservices without DevOps or cloud services'
+
+					- Microservices require distributed systems, distributed system are complex and can become even more complex if poor design decisions are made.
+					- Microservices should only be implemented with:
+
+						1. Deployment, monitoring and automation:	Implementation contains appropriate deployment, monitoring and automation tools.
+						2. Cloud services				Implementation is within a suitable and appropriate cloud service provider, not DIY.
+
+					- Microservices should ideally enable the developers to concentrate on state rather than infrastructure.
+
+				'Don't make too many microservices by making them unnecessarily small'
+
+					- Microservices should only be implemented when necessary (as with all development techniques).
+					- Microservices should not be made too small, otherwise the complexity overhead outweighs any benefit.
+					- Microservices should only be broken apart when:
+
+						1. Updates:		Implementation of updates become difficult or slow.
+						2. Data Model:		Implementation of a general data model and database becomes difficult to work with and/or overly complex.
+						3. Scaling:		Implementation of differing areas of the application are beginning to acquire differing load expectations and need to be independently scaled.
+
+				'Don't turn microservices into SOA'
+
+					- Microservices is not SOA.
+					- Microservices are primarily at the application level, SOA is at the enterprise level.
+					- Microservices should not be implemented at the enterprise level for the complexity will become unwieldly and would buckle under its own weight.
+
+				'Don't try to be Netflix'
+
+					- Microservices were adopted early by Netflix (given that it accounted 1/3 of internet traffic).
+					- Microservices should follow basic rules when starting out:
+
+						1. Simplicity:		Microservices should be kept as simple as possible.
+						2. Tools:		Microservices should aim to utilise as many off-the-shelf tools as possible.
+
+		Monolith v Microservices
+
+			Monolith		Microservice
+			____________________________________
+
+			Simple			Complex			//Distributed systems and asyncrohnous messaging is significant increase in complexity
+						Partial Deployment
+						Availability		//Monolith breaks, everything breaks.
+			Consistency					//Microservices reduce consistency and increases the effort to maintain consistency
+			Refactor					//Monolith allow for overall easier means of refactoring or moving around sections of code, if the service boundaries are wrong or ill-defined early on then makng changes later on can be more challenging
+						Modularity		//Microservices enforce modularity much more than language i.e. given a language it is much more easy to 'cut corners' and 'workaround' any modularity constraints.
+						Multiple Platforms	//Microservices do provide flexibility in choice of language to implement some particular functionality, however should ideally be kept to a minimum where any deviation or addition of another language should be fully justified.
+
+			- Microservices are not completely an improvement upon a monolith architecture.
+			- Microservices should only be deployed when fully confident that they are approproiate, if in doubt stick with the monolith.
+
+		Provisions:
+
+			- Microservices environment should ensure the following:
+
+				Rapid Provisioning:		Ability to rapidly increase capacity (hours not days to provision another machine)
+				Rapid Deployment:		Ability to rapidly deploy within microservice/containerised environments (including the ability to roll back if need be).
+				Monitoring:			Ability to accurately monitor state of all services and overall system.
+				DevOps:				Complexity of microservices requires close co-ordination and a strong DevOps culture.
+
+	Serverless/FaaS:
+
+		Overview:
+
+			- Serverless is a cloud execution model.
+			- Serverless is a set of characteristics or 'a general approach' rather than a specific technology, where:
+
+				1. Infinite Resource:		An infinite pool of resources can be delivered to the client.
+				2. Continuous Scaling:		Rather than allocating/purchasing individual instances of resources with defined capacity, connection or query limits it just scales linearly.
+				3. Infrastructure:		Minimal or no management of backend cloud infrastructure.
+
+			- Serverless is the 'next level up' after Containers.
+			- Serverless is where the cloud provider manages all aspects of backend infrastructure, including:
+
+				1. Containers.
+				2. Container orchestration.
+				3. Provisioning
+				4. Scheduling
+				5. Patching
+				...
+
+			- Serverless:
+
+				1. Automatically provisions computing resources on demand in response to a specific event.
+				2. Automatically scales resource in response to events.
+				3. Automatically scales to zero when application is not running.
+
+			- Serverless provides developers more time to be allocated building applications by removing the need to manage infrastructure.
+			- Serverless describes the customers perception and experience, in that they are invisible, do not need to interact nor manage.
+			- Serverless describes that the customer does not need to think about nor manage the server behind their application.
+
+		Purpose
+
+			- Cost:		Provide a simpler, more cost-effective way to build and operate cloud native applications.
+			- Management:	Offload more of the management of infrastructure to the cloud service provider. 
+
+		Advantages
+
+			1. Simplicity:			Simpler architecture
+			2. Cost:			More cost effective
+			3. Billing:			Effcienct billing, no idle time and customers only pay for execution time, unlike IaaS where customers pay for VM's and is stopped being charged once these resource are decommissioned.
+			4. Scaling:			Scales resources in response to demand, scales to zero when application is not running.
+			5. Demand:			Automatically provisions computing resources on demand in response to a specific event.
+			6. Management:			Offloads all management responsibility for backend cloud infrastructure/operations tasks (provisioning, scheduling, scaling, patching...) to the cloud provider.
+			7. Development:			Allows developers to concentrate, develop and optimise their application development, rather than spend time managing infrastructure, increasing:
+
+								Productivity
+								Time to Market
+								Security
+								User Experience
+								Application Quality
+								Operational Overhead
+								Flexibility
+
+			8. Deployment:			Simplifies deployment.
+			9. DevOps:			Simplifies DevOps cycles given that developers do not need to describe the infrastructure needed to integrate, test, deiver and deploy code builds into production.
+			10. Polyglot:			Environment supports and allows for the use of any language or platform.
+			11. Parallel Processing:	Tasks that require parallel processing can be completed faster and more cost effective.
+			12. Operational Management:	Near total visibility of sytem provides monitoring/logging of system/user activity and consumption.
+			13. Expertise Concentration:	Reducing the need for personel to be a jack of all trades rather than a master of a few.		
+
+		Disadvantages
+
+			1. Delay:			Delay in response for the containers need to 'spin up' before completing any work, hence serverless maynot be appropriate for time critical applications e.g. trading.
+			2. Workloads:			Stable and predictable workloads may not be cost effective compared to traditional server environment. Serverless is ideal for spikey variable demand.
+			3. Monitoring/Debugging:	The increased complexity of serverless/microservice environments reduces the ability to debug and monitor using existing tools and procedures.
+			4. Vendor Lockin:		Deep integration with a cloud service providers ecosystem can provide significant value but other companies will need to mitigate any material lock-in risks. 
+
+		Serverless Stack:
+
+			The core components of a system that would be considered as having a 'serverless' architecture:
+
+			- FaaS:				Central/foundational computation and processing engine in serverless architectures.
+			- DB/Storage:			SQL, NoSQL and Object Storage are the foundation of the Data Layer. The 'serverless' approach involves transitioning away from provisions of 'instances' with defined capactity, connection and query limits towards models that scale linearly with demand in both infrastructure and pricing.
+			- Events/Streams:		Events-driven, streaming and messaging are particularly suited for serverless environments most notably Apache Kafka event streaming platform.
+			- API Gateways:			Proxies to web actions and provide HTTP method routing, client ID/secrets, rate limits, CQRS, viewing API usage, viewing response logs and API sharing polices.
+
+		FaaS
+
+			- FaaS (Function as a Service)
+			- FaaS is a central paradigm of Serverless
+			- FaaS is often conflated with Serverless.
+			- FaaS is a subset of Serverless.
+			- FaaS is characterised as:
+
+				1. Application code that only runs in response to events/requests.
+				2. Containers that only run in response to events/requests.
+
+				For example:
+
+					1. User opens client and uploads an image.
+					2. Function (or functionality) sizes and stores the image.
+					3. Processing ceases and customer is only charged for the period of active processing.
+
+			- FaaS is provided by all major Cloud Service Providers.
+			- Serverless encompasses:
+
+				1. FaaS
+				2. All other associated resources and cloud services:
+
+					- Storage
+					- Databases
+					- Networks
+					- API Gateways
+					- Authentication
+					- Configuration
+					- Management
+					- Billing
+
+		Abstraction Chain
+
+			- Serverless is a continuation of abstraction of the underlying technology, where abstraction refers to the notion that the underlying technology becomes abstract i.e. in that the implementation of the technology becomes irrelevant/unknown as long as it meets its functional contract.
+			- This is summarised:
+
+				Serverless
+				^
+				Containers (Kubernetes/Docker)
+				^
+				Virtual Machines
+				^
+				Bare Metal
+
+		Serverless Applications
+
+			- Serverless architecture may be applied in numerous fields, including:
+
+				1. Microservices
+				2. Mobile Backends
+				3. Data and Event Streaming
+
+	Cloud Native Technologies/Vendors:
+	
+		Google Cloud
+
+			gRPC
+			GKE	
+			Angular
+			Anthos Service Mesh
+
+		Containerisation
+
+			Kubernetes
+			Docker
+			CR-IO
+			Containerd
+
+		Framework
+
+			Spring
+
+		Operating System
+
+			Linux: Over 90% of public cloud instances are running on Linux.
+
+		Development Methodology/Culture:
+
+			DevOps
+			CI/CD
+				Jira
+				Sonar
+				GIT
+				Confluence
+			Scrum
+
+			BDD: Behavioural Driven Development
+			TDD: Test Driven Development
+			DDD: Domain Driven Design
+
+		Foundations
+
+			CNCF (Cloud Native Computing Foundation)
+
+		Languages
+
+			Java
+			Kotlin
+			Go
+			C#
+			YAML
+			Node.js
+			ReactJS
+			Angular
+			HTML 5
+			REST
+			JSON
+			XML
+			SOAP
+
+		Java Frameworks
+
+			Spring		
+
+		Microservice Communication Technologies (via API)
+
+			Synchronous
+				REST
+				gRPC
+				SOAP
+
+			Asynchronous
+				AMQP (Messaging)
+
+		Databases
+
+			Hibernate
+			SQL
+				SQL Server
+				Azure SQL Database
+
+			NoSQL:
+				Mongo DB
+				Azure CosmosDB
+			Spanner
+			PostgreSQL
+
+		API Design and Documentation
+
+			Swagger
+
+		Build Tools
+
+			Camunda
+			Drools
+			Maven
+			Gradle
+			Make
+			Meister
+			Ant
+			Rake
+			SCons
+			Phing
+			Jenkins
+			Nexus
+
+		Testing 
+
+			Flux
+			Istio
+			JUnit
+
+		Logs Aggregation
+
+			Splunk
+			Kibana
+			Papertrail
+			Semo Logic
+
+		Statistics
+
+			Graphite
+			Prometheus (if self hosting)
+			New Relic
+			App Dynamics
+
+		Event Streaming Platform
+
+			Kafka
+
+		Monitoring
+
+			Prometheus
+
+		Source Code Assessment
+
+			SonarQube

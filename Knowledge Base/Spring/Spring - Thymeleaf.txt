@@ -1,0 +1,84 @@
+Spring
+
+	ThymeLeaf:
+
+		- ThymeLeaf is a modern server-side Java template engine used in web and standalone environments.
+		- ThymeLeaf is an extensible template engine framework that enables the creation, processing and customisation of templates.
+		- ThymeLeaf purpose is to provide a simple and easy way to create templates.
+		- ThymeLeaf supports the processing of HTML, XML, JavaScript, CSS and plain text.
+		- ThymeLeaf is able to display HTML in browsers as a static prototype i.e. HTML can be previewed without processing a template.
+		- ThymeLeaf integrates well with Spring and Java EE.
+		- ThymeLeaf templates are simply HTML files with ThymeLeaf attributes therefore they work just like regular HTML.
+		- ThymeLeaf integrates with Spring 3, 4, 5 and Boot.
+		- ThymeLeaf can be a replacement technology to JSP/JSTL.
+		- ThymeLeaf supports 'fragments' i.e. smaller templates that can be reused across an application e.g. a header or footer.
+		- ThymeLeaf supports 'Decoupled Template Logic' where the Template Engine is able to separate the ThymeLeaf tags from HTML.
+		- Thymeleaf supports preprocessing of expressions.
+
+			- Preprocessing enables the modification of an expression that will be executed.
+			- Preprocessed expressions are surrounded by double underscores:
+
+				${__${resultMessage}__}
+				${__${T(academy.learnprogramming.util.AttributeNames).MAIN_MESSAGE}__}
+
+				//The inner expression surrounded by double underscores are evaluated first followed by any outer expression.
+				//T(JavaClass) operator denotes an instance of Type (or class), in the above case MAIN_MESSAGE is a static member of that class.
+
+			- Preprocessing enables:
+
+				1. Constants:			Use of constants within template.
+				2. Multiple Languages:		Use of multiple languages within template.
+
+		- Thymeleaf fragments:
+
+			- Fragments are parts of other templates which can be be shared/imported into other templates e.g. footers, menu's...
+			- Fragments are represented via the attributes:
+
+				th:fragment
+
+			- Fragments are inserted via the following expression:
+
+				~{templatename::fragmentname}
+
+			- Fragment example:
+
+				<footer th:fragment="footerFragment">				//Fragment creation
+        			    <p>This text is created for reuse</p>
+    				</footer>
+
+				<footer th:replace="~{fragments/footer::footerFragment}">	//Fragment insertion
+            			    <p>-</p>
+        			</footer>
+
+		- Thymeleaf decoupled template logic:
+
+			- Thymeleaf attributes can be defined and implemented via the x2 following means:
+
+				1. Direct:		Attributes are defined directly in the html file.
+				2. Decoupled:		Attributes are defined in a separate file (decoupled logic).
+
+			- Thymeleaf attributes which are decoupled are stored in a separate file which has the following characteristics:
+
+				- Location:		Stored in the same location as the corresponding templates e.g. typically within a dedicated Templates directory.
+				- File Name:		Stored with the same name as the corresponding template file.
+				- Extension:		Stored with the following extension:	th.xml
+
+			- Thymeleaf decoupled templates have the following benefits:
+
+				1. Dependency:		Templates are not dependent on Thymeleaf.
+				2. Clean:		Templates can remain cleanly written in HTML, with only Thymeleaf insertion tags.
+				3. Maintain:		Templates are easier to maintain.
+
+			- Thymeleaf reads in the template file and the separate th.xml file to generate the final html file.
+
+		- Thymeleaf Internationalisation (i18n):
+
+			- Locale data is stored in the resources directory using *.properties:
+
+				Default:		messages.properties
+				Locale:			messgaes_XX.properties
+
+				French:			messgaes_fr.properties
+				Spanish:		messgaes_es.properties
+
+			- The # is used to reference locale keys.

@@ -1,0 +1,1330 @@
+Nested Types - Overview
+
+	Java Program Nesting Model
+
+		Top Level Class			(A)
+		{
+
+
+							
+
+	    	    non-Static Memory
+	    	    {
+			field
+			constant
+
+			//From within all components in top level non-Static memory
+			//
+			//	Composition:		non-Static memory only
+			//	Block/Method Access:	Everything within scope of block	[Access to everything permitted]	[Access to only non-Static Members in block/method, but only non-Static are permitted in block/method anyway]
+			//	Parental Access:	Everything 				[Access to everything permitted]	[Access to only non-Static Members in parental chain, but only non-Static are permitted in parental chain anyway]
+			//	Top Level Access:	Everything				[Access to everything permitted]	[Access to both/all non-Static + Static members in top level]
+
+							[Permitted Members]
+			initialisation block	(1)
+			    field
+		    	    constant
+			    class			//Goto (4)
+		    	    abstract class		//Goto (5)
+
+			constructor
+			    field
+		    	    constant
+			    class			//Goto (4)
+		    	    abstract class		//Goto (5)
+
+	    		method			(2)
+		    	    field
+			    constant
+		    	    class			//Goto (4)
+		    	    abstract class		//Goto (5)
+
+			block			(3)
+			    field
+		    	    constant
+			    class			//Goto (4)
+		    	    abstract class		//Goto (5)
+
+			class			(4)
+		    	    field
+		    	    constant
+		    	    static constant
+		    	    method			//Goto (2)
+		    	    class			//Goto (4)
+		    	    abstract class		//Goto (5)
+
+			abstract class		(5)	//Goto (4) + abstract methods
+	    	    }
+	    
+
+
+
+	    	    Static Memory
+	    	    {
+			field
+			constant
+
+			//From within a method/block:
+			//
+			//	Composition:		non-Static memory only
+			//	Block/Method Access:	Everything within scope of block	[Access to everything permitted]	[Access to only non-Static Members in block/method, but only non-Static are permitted in block/method anyway]
+			//	Parental Access:	Static members only								[Access to only Static Members in parental chain, even though both non-Static and static members maybe in any effective top level forms in parental chain]	[as any non-static components in parent chain may not have always been instantiated]
+			//	Top Level Access:	Static members only								[Access to only Static Members in top level, even though both non-Static and static members maybe in any top level]						[as any non-static components in top level may not have always been instantiated]
+
+			initialisation block		//Goto (1)
+	    		method				//Goto (2)
+			block				//Goto (3)
+
+
+			//From within a top level component:
+			//
+			//	Composition:		non-Static + Static memory		[class/abstract class/enum]		[given they are effective Top Level]
+			//				Static memory only 			[interface]				[given interface are only of static composition and automatically placed in static memory of its enclosing class]
+			//
+			//	Parental Access:	Static members only								[Access to only Static Members in parental chain, even though both non-Static and static members maybe in any effective top level forms in parental chain]	[as any non-static components in parent chain may not have always been instantiated]
+			//	Top Level Access:	Static members only								[Access to only Static Members in top level, even though both non-Static and static members maybe in any top level]						[as any non-static components in top level may not have always been instantiated]
+
+			class				//Goto (A) - Top Level Restart
+			abstract class			//Goto (B) - Top Level Restart
+			interface			//Goto (C) - Top Level Restart
+			enum				//Goto (D) - Top Level Restart
+	    	    }
+
+
+
+
+		}
+
+		Top Level Abstract Class	(B)
+		{
+	    	    //Top Level Class + Abstract Methods
+		}
+
+		Top Level Enum			(C)
+		{
+	    	    //Top Level Class + Enum Constants
+		}
+
+		Top Level Interface		(D)
+		{
+	    	    //Top Level Class + 1. Memory:		Static memory composition only
+					2. Constants:		Static constants only
+					3. Extra Methods:	Abstract/Default Methods
+					4. No Instantiation:
+						5. No Initialisation Blocks
+						6. No Constructor
+					
+		}
+
+	Java Program 'Purpose' Model
+
+		Top Level Class
+		{
+	    	    non-Static Memory
+	    	    {
+			//Purpose:	Providing functionality and state associated with instances of the Class
+			//Access: 	Top Level:		Everything in either non-static or static memory.					(including private members)
+			//		Parental Chain:		Everything that is permitted to be declared/created in those outer scope components.	(including private members)
+			_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+			field(s)
+			constant(s)
+			
+			initialisation block
+			method(s)
+			block(s)
+			class(es)
+			abstract class(es)
+			_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+		    }
+
+		    Static Memory
+		    {
+
+
+
+			//Purpose:	Providing functionality and state associated with the Class itself.
+			//Access: 	Top Level:		Only static members.					(including private members)
+			//		Parental Chain:		Only static members.					(including private members)
+			_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+			field(s)
+			constant(s)
+			
+			initialisation block
+			method(s)
+			block(s)
+			_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+
+
+
+
+			//Purpose:	'Free Space' for the development of new Top Level Forms.
+			//Access: 	Top Level:		Only static members.					(including private members)
+			//		Parental Chain:		Only static members.					(including private members)
+			_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+			class(es)
+			abstract class(es)
+			enum(s)
+			interface(s)
+			_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+		    }
+		}
+
+	Concise Principles
+
+		Encapsulation:			Nested components or methods/blocks are 'black boxes', external program has no knowledge nor access to the internal components therefore may have its own new namespace.
+
+		Composition:			Top Level Class, Abstract Class or Enum:		non-static + static
+						Interface:						static
+						Everything Else:					non-static
+
+		Access:				Access to outer components is dependent soley on location and which side of memory in top level component it is being attempted:
+
+							non-Static:	May access:
+
+										Parental Chain:		Everything that is permitted to be declared/created in those outer scope components.
+										Top Level:		Everything in either non-static or static memory.
+
+							Static:		May access:
+
+										Parental Chain:		Only static members.
+										Top Level:		Only static members.
+
+		Naming:				Inner Class:		A class directly within the non-static memory of enclosing class.
+						Static Nested Class:	A class directly within the static memory of enclosing class.
+						Local Class:		A class directly within a method.
+
+						The above are all classes, the name is simply indicates where they have been placed.
+
+		Static Constants:		Any non-Top Level class (which does not have its own static memory) may declare 'static final' constants e.g. Inner Class, Anonymous Class, Lambda Expression.
+
+		Effective Final or Final:	Any field referenced by a nested component must be either 'final' or 'effectively final'.
+
+		Shadowing:			If an inner member has the same name/iidentifer as an outer member, the compiler will always refer to the inner member and shadow the outer member.
+
+		'private' Irrelevant:		Access modifiers are irrelevant to nested components i.e. private members in Top Level Form are accessible by nested components.
+
+
+
+	Core Pinciples:
+
+		1. Mental Approach:
+
+			- What is permitted to be declared/created?
+
+				Is it a Top Level Form?
+
+					Yes:		Static | non-Static
+					No:		non-Static only		
+
+			- What is accessible from outer scope?
+
+				Where am I currently with respect to the top-level?
+
+					non-Static
+
+						I wish to access something in:
+
+							Parental Chain:		Everything:	Everything that is permitted to be declared/created in those outer scope components.
+							Top Level:		Everything: 	Everything in either non-static or static memory.
+
+					Static
+
+						I wish to access something in:
+
+							Parental Chain:		Only static members
+							Top Level:		Only static members
+
+
+		2. Accessibility:
+
+			Blocks/Methods: [Initialisation Blocks, Block][Constructors, Methods]
+
+				- Black Boxes:
+
+					- Anything which is declared within a block/method is within the scope of the block/method and forever 'lost' to the outside world.
+					- Anything which is declared within a block/method is essentially irrelevant, inaccessible and does not exist from perspective of outside program.
+					- Blocks/methods are essentially black boxes from the perspective of the external program.
+
+				- Non-Accessibility:
+
+					- Blocks/methods internals are never accessible by any external part of program.
+					- Components within a block/method are only accessible by components within the scope of the block itself.
+
+				- Namespace within a block/method restarts i.e. any components within the scope of the block/method may have the same names as compoents outside the scope of the block.
+
+			Top Level Form: [class, abstract class, interface, enum]
+
+				- Anything which is declared/created outside of a block/method is accessible by outside world as per its access modifier.
+
+		3. Memory Designation:
+
+			class TopLevel
+			{
+			    static class StaticNestedClass
+			    {
+				class InnerClass
+				{
+
+				}
+			    }
+			}
+
+			- InnerClass: 			Is in the non-static memory of StaticClass.
+			- StaticNestedClass:		Is in the static memory of TopLevel.
+			- StaticNestedClass and Inner Class are both in the static memory of TopLevel.
+
+	 			NB In IDE, if hide all static memory both StaticNestedClass and InnerClass dissapear.
+
+			- Therefore even if nested members within nested members do not specifiy the static keyword they are still physically placed in the overall static memory of any enclosing class, the keyword 'statis' is of course only applicable to the immediate enclosing top level form.
+
+		4. Component Uniformity:
+
+			1. Uniform:		All components are 'just components' and have inherent identical properties and behaviour.
+			2. Top Level Memory:	The only variable is which side of the top level memory are they reside within which effects:
+
+							- Memory Composition:		Whether they can themselves place any subsequent components in:
+
+												- non-Static Memory
+												- Static Memory
+												- Both non-Static and Static Memory
+
+							- Access:			What members in the parental chain or top level component can they reference:
+
+												Top Level
+												Memory [When within]	Access							Composition
+												______________________________________________________________________________________________________________________________________
+
+												non-Static:		Top Level:		non-Static + Static		[non-Static + Static]	//i.e. Everything
+															Parental Chain:		non-Static			[non-Static]		//Everything - Only non-static memory anyway
+															Method/Block:		non-Static			[non-Static]		//Everything - Only non-static memory anyway
+
+												Static:			Top Level:		Static				[non-Static + Static]			//Therefore not able to access non-static memory
+															Parental Chain:		Static				[non-Static  | non-Static + Static]	//Therefore not able to access non-static memory if it exists within an parental chain component
+
+			NB:
+				- Access is irrespective of any parental/intermediary effective top level components that they may also be placed within.
+				- Do not think in terms of Inner Class, Static Nested Class and their behaviour associated with their immediate enclosing component.
+
+		5. Component Composition:
+
+			Top Level					Composition
+			___________________________________________________________________________
+
+					field				n/a
+					constant			n/a
+					initialisation block		non-Static
+					constructor			non-Static
+					method				non-Static
+					block				non-Static
+					anonymous class			non-Static
+					lambda expression		non-static
+	
+			non-Static:	class				non-Static		[except for static constants]
+					abstract class			non-Static		[except for static constants]
+
+			Static:		class				non-Static + Static
+					abstract class			non-Static + Static
+					interface			Static
+					enum				non-Static + Static
+
+		6. The permitted nested components of components:
+
+				Top Level Class:
+
+						Component			May Contain Its Own		Known As			
+					____________________________________________________________________________________________________________________________________________
+
+					[non-static memory]
+
+						Constructor:			class(1)			Local Class
+										abstract class(2)
+
+						Initialisation Block:		class(1)			Local Class
+										abstract class(2)
+
+						Method:				class(1)			Local Class
+										abstract class(2)
+
+						Class:(1)			class(1)			Inner Class of the Inner Class of Top Level Class
+										abstract class(2)		Inner Abstract Class of the Inner Class of Top Level Class
+
+						Abstract Class:(2)		class(1)			Inner Class
+										abstract class(2)		Inner Abstract Class of the Inner Abstract Class of Top Level Class
+
+					[static]
+
+						Initialisation Block:		class(1)			Local Class
+										abstract class(2)
+
+						Method:				class(1)			Local Class
+										abstract class(2)
+
+						Class:(3)			non-static			Static Nested Class		[effective top level class]
+											class(1)
+											abstract class(2)
+										static
+											class(3)
+											abstract class(4)
+											interface(5)
+											enum(6)
+
+						Abstract Class:(4)		non-static			Static Nested Abstract Class	[effective top level class]
+											class(1)
+											abstract class(2)
+										static
+											class(3)
+											abstract class(4)
+											interface(5)
+											enum(6)
+
+						Interface:(5)			static				Nested Interface		[effective top level interface] 	[interfaces are of static memory entirely and can only be placed in any static memory]
+											class(3)
+											abstract class(4)
+											interface(5)
+											enum(6)
+
+						Enum:(6)			static				Nested Enum			[effective top level enum] 		[enums are of static memory entirely and can only be placed in any static memory]
+											class(3)
+											abstract class(4)
+											interface(5)
+											enum(6)
+
+				Top Level Abstract Class:
+
+					As as:	Top Level Class + Abstract Methods
+
+				Top Level Enum:
+
+					As as:	Top Level Class + Enum Constants
+
+				Top Level Interface:
+
+					As as:	Top Level Class + 1. Memory:		Static memory composition only
+								  2. Constants:		Static constants only
+								  3. Extra Methods:	Abstract/Default Methods
+								  4. No Instantiation:
+									5. No Initialisation Blocks
+									6. No Constructor
+
+		7. Shadows/Hides:
+
+			Any nested members which have the same name/identifer as an outer member, automatically hides/shadows the outer component. The compiler will automatically refer to the inner most/closest indentifer.
+
+		8. Uniformity:
+
+			All components e.g. method, init block, classes are inherently the same component they are just placed into either non-static or static memory of the top level component. 
+
+		9. Static Memory:
+
+			Only Class Forms (Class, Abstract Class, Interface or Enum) at either Top Level or within Static memory may have static members.
+
+		10. Access: Top Level/Parental Chain:
+
+			Top Level Class:
+				_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+				non-Static Memory
+
+					constructor			All nested components:
+				    	    class				Access: 	non-Static + Static	[Everything]
+										Description:	All nested components have full access to all non-static and static memory in all parental components and top level.
+					initialisation block			Reason:		All of the nested components get instantiated when the top level is instantiated.
+				    	    class
+
+					class
+				    	    class
+						class
+
+				...
+				_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+				Static Memory	
+
+					initialisation block		All nested components:
+				    	    class				Access: 	Static Only
+										Description:	All nested components only have access to static memory in all parental components and top level (even if the Parental Classes contain their own local non-Static members).
+					class					Reason:		Top level or intermediary parental classes may not have been instantiated therefore cannot be accessed from a static component.
+				    	    class
+													i = toplevel.class1.class2...staticComponent;
+				...
+												e.g. an external part of program may attempt to directly access an internal/nested static component without instantiating the top level component first.
+
+			The top level memory i.e. where a component is placed with respect to the top level, is all that matters when determining the access of nested components to other nested components in top level and parental chain.  
+
+		11. 'final' 'effectively final'
+
+			Any field referenced by a nested components must be either 'final' or 'effectively final'.
+
+		12. Anything which is nested is as follows: (ignoring nested Top Level Forms)
+
+			Composition:		non-Static					[except Classes may contain Static Constants]
+			Parental Access:	non-Static members + Static Members 		[everything]
+			Top Level Access:	Depend on where it is located in Top Level memory:
+
+				Top Level		Parental		Top Level
+				Location		Access			Access
+				_________________________________________________________________________________________________________
+
+				non-Static Memory:	Everything		Everything		[all non-Static + Static Members]
+				Static Memory:		Static Members		Static Members
+
+		13. non-Static Composition:
+
+			The below components are always in all circumstances of non-Static composition regardless of where they are located:
+
+			Initialisation Block
+			Constructor		
+			Method
+			Block
+
+		14. Static Constants:
+
+			Only nested classes contain Static Constants, not nested methods.
+
+		15. Association:
+
+						Association With
+						Top-Level Form
+			___________________________________________________________________
+
+			Static Memory:		Top-Level Form Only
+						Nothing to do with Instances
+
+			non-Static Memory:	Instance + Top-Level Form
+						May refer back to Top-Level Form memory if necessary i.e. has access to static memory naturally.
+
+		16. 'private' Irrelevant:
+
+			Access modifiers are irrelevant to nested components i.e. private members in Top Level Form are accessible by nested components.
+
+		17. Naming Convention:
+
+			Top Level Class				Description
+			{					______________________________________________
+				constructor/method()
+				{
+					Local Class		//nested class within a method
+				}
+
+				static method()
+				{
+					Local Class		//nested class within a method
+				}
+
+				Nested Class			//nested class within a class a.k. Inner Class
+
+				Static Nested Class		//nested class within a class
+			}
+
+			Local Class: 			'Local' is anything in a block.
+			Inner Class:			'Inner' is associated with anything directly within a class.
+			Static Nested Class:		'Static Nested' is associated with anything directly within a class.
+
+			The naming is confusing, Local Class or Inner Class suggests a difference in behaviour, however:
+
+				- They are all just classes.
+				- The only aspect that determines any difference is whether they are in top level non-static or static memory, which only has implications for access to members of parental chain and top level.
+
+		
+
+		
+			
+	Top Level Forms:
+
+		Class Forms:
+
+			The x4 components which include the class and its x3 extended/modified forms:
+
+			1. class
+			2. abstract class
+			3. enum
+			4. interface
+
+		Class Extended Forms:
+
+			The x3 components which are derived/extended/modified from class:
+
+			1. abstract class
+			2. enum
+			3. interface
+
+		Dual Memory Components
+
+			The x6 components which support/contain dual non-Static and Static memory:
+
+			1. Class		Top Level
+			2. Abstract Class	Top Level 
+			3. Enum			Top Level 
+
+			4. Class		Top Level - Static		[Effective Top Level Class]
+			5. Abstract Class	Top Level - Static 		[Effective Top Level Abstract Class]
+			6. Enum			Top Level - Static		[Effective Top Level Enum]
+
+		Top Level:
+
+			A Class Form which is not nested but declared, defined at the 'File Level'.
+
+		Top Level Form:
+
+			The x4 possible components which may exist at Top Level within a file, synonymous with Class Forms:
+
+			1. class
+			2. abstract class
+			3. enum
+			4. interface			
+
+		Static Memory:
+
+			The Static Memory of any Class Form which contains its own static memory:
+
+			Top Level		Static Memory
+			______________________________________
+
+			1. class		5. class
+			2. abstract class	6. abstract class
+			3. enum			7. enum			[static by default]
+			4. interface		8. interface		[static by default]
+
+		non-Static Memory:
+
+			The non-Static Memory of any Class Form which contains its own non-Static memory:
+
+			Top Level		Static Memory
+			______________________________________
+
+			1. class		4. class
+			2. abstract class	5. abstract class
+			3. enum			6. enum
+
+	FAQ's:
+
+		1. Can a component have Static Members?
+
+			Ans: Only if component is a Class Form situated at either Top Level or recursively within Static Memory of Class Form:
+
+				Top Level		Static Memory
+				______________________________________
+
+				1. class		5. class
+				2. abstract class	6. abstract class
+				3. enum			7. enum			[static by default]
+				4. interface		8. interface		[static by default]
+
+		2. Can a component access Top Level Members:
+
+			Ans: Depends on which Top Level memory it is located:
+
+				Top Level		Top Level
+				Memory			Access
+				___________________________________________________
+
+				non-Static:		non-Static + Static members
+				Static:			Static members
+
+		3. Can a component access members in Parental class/methods/blocks which are inbetween current scope and Top Level:
+
+			Ans: Depends on which Top Level memory it is located:
+
+				Top Level					Parental
+				Memory						Access
+				__________________________________________________________________
+
+				non-Static:					non-Static members		(as only non-Static Members exist) + ('final' or 'effective final')
+				Static:
+				    Init Block/Method				non-Static members 		(as only non-Static Members exist) + ('final' or 'effective final')
+				    Nested Class Form				Static members 			(may only access Static members in parental class/methods even if non-Static members exist)
+
+	Class Extended Forms
+
+		- Class is the primary construct within Java.
+
+			Class
+			|_______________________________
+			|		|		|
+			Abstract	Interface	Enum
+			Class
+
+		- Class is extended/modified to produce the following x3 Class Extended Forms:
+
+			Component		Add/Modified Functionality
+			____________________________________________________________
+
+			1. Abstract Class	Class with
+
+							1. Abstract Methods
+							2. No Instantiation
+							3. Extended class must override all abstract methods or be abstract itself
+
+			2. Enum			Class with:
+
+							1. Enumerated Constant List
+							2. Enumerated Constructor
+							3. No Instantiation
+							4. No Extension
+
+			3. Interface		Class with:
+
+							1. All fields Static Constants
+							2. All components public
+							3. Abstract/Default Methods			
+							4. No non-Static memory	
+							5. No Final Methods.						
+							6. No Instantiation
+
+		- 'Everything else' exists within the confines of these x4 Top Level Forms.
+
+	Key Principles:
+
+		Location:
+
+			The primary consideration for any component is its location, there are x4 distinct locations:
+
+				0. Top Level
+				1.     non-Static
+				       Static
+				2.         Init Block/Method
+				3.         Nested Top Level Form
+
+			Location determines:
+
+				1. Composition:		Whether the component has only non-Static, Static or both memory areas.
+				2. Parental Access:	What members it has access to in parental chain back to Top Level.
+				3. Top Level Access:	What members it has access to in Top Level.
+
+			Composition:
+
+							Top Level 
+				Component		Memory Location				Composition
+				___________________________________________________________________________
+
+				Class			-			(0)		non-Static + Static
+							Static			(3)		non-Static + Static
+							non-Static		(1)		non-Static
+
+				Abstract Class		-			(0)		non-Static + Static
+							Static			(3)		non-Static + Static
+							non-Static		(1)		non-Static
+
+				Enum			-			(0)		non-Static + Static
+							Static			(3)		non-Static + Static
+
+				Interface		-			(0)		Static
+							Static			(3)		Static
+
+				Everything else: 				 		non-Static		[irrespective of where it is located]
+					
+					e.g. The below components are always in all circumstances of non-Static composition regardless of where they are located.
+
+					Initialisation Block
+					Constructor		
+					Method
+					Block
+
+				Therefore:
+
+					- non-Static + Static members:
+
+						Only x6 components support both non-Static + Static members:
+
+						1. Class		Top Level
+						2. Abstract Class	Top Level 
+						3. Enum			Top Level 
+
+						4. Class		Top Level - Static		[Effective Top Level Class]
+						5. Abstract Class	Top Level - Static 		[Effective Top Level Abstract Class]
+						6. Enum			Top Level - Static		[Effective Top Level Enum]
+		
+					- Static Members:
+
+						Only x8 components support Static Members only:
+
+						1. The above x6
+						2. Interface		Top Level
+						3. Interface		Top Level - Static [By Default]
+
+					- All other components regardless of where they are can only have:
+
+						non-Static members
+
+					- The Static memory of the Top Level Class can be considered an environment that is identical to the Top-Level 'File' environment.
+
+		Top Level + Parental Access:
+
+			Nested components have access to the members of the enclosing parental chain back to the Top Level Class:
+
+				Top-Level Memory			Access To Members Of			Access To Members Of
+				Branch					Parental Chain				Top Level Class
+				____________________________________________________________________________________________________
+
+				1. non-Static				non-Static 				non-Static + Static			//Parental Chain only possible to contain non-Static members
+
+				   Static				
+				2.     Init Block/Method		non-Static				Static					//Parental Chain only possible to contain non-Static members
+				3.     Nested Top Level Form		Static					Static
+
+				NB: Parental members must be 'final' | 'effectively final' i.e. not changed once initialised.
+
+			Top Level Memory
+			Branch
+
+				1. non-Static:
+
+					- Nested components have access to following members:
+
+						TopLevelClass			All 		(non-Static and Static)
+						|
+						Parent Nested Classes		non-Static	(non-Static only members permitted)
+						|
+						Parent Methods			non-Static	(non-Static only members permitted)
+						|
+						Parent Blocks			non-Static	(non-Static only members permitted)
+						|
+						.
+						|
+						Class/Method/Block
+
+					NB: Nested Local Variables | Parameters must be 'final' | 'effectively final'.
+
+				2. Static - Init Block/Method:
+
+					- Nested components have access to following members:
+
+						TopLevelClass			Static Only
+						|
+						Parent Nested Classes		non-Static	(non-Static only members permitted)
+						|
+						Parent Methods			non-Static	(non-Static only members permitted)
+						|
+						Parent Blocks			non-Static	(non-Static only members permitted)
+						|
+						.
+						|
+						Class/Method/Block
+
+					NB: Parent Local Variables | Parameters must be 'final' | 'effectively final'.
+
+				3. Static - Nested Top Level Form:
+
+					- Nested components have access to following members:
+
+						TopLevelClass			Static Only
+						|
+						Parent Nested Classes		Static Only
+						|
+						Parent Methods			non-Static	(non-Static only members permitted)
+						|
+						Parent Blocks			non-Static	(non-Static only members permitted)
+						|
+						.
+						|
+						Class/Method/Block
+
+					NB: Parent Local Variables | Parameters must be 'final' | 'effectively final'.
+
+		Parental Members:
+
+			Parental Chain may consist of nested Classes/Methods/Blocks containing their own local members/parameters back to Top Level Class:
+
+				Top-Level Memory			Parental Chain Members
+				___________________________________________________________________________________________________
+
+				1. non-Static				non-Static				[except Classes may contain Static Constants]
+
+				   Static
+				2.     Init Block/Method		non-Static				[except Classes may contain Static Constants]
+				3.     Nested Top Level Form		non-Static + Static
+
+		Local Variables:
+
+			Only nested classes contain Static Constants, not nested methods:
+
+			Nested Class:		1. Field
+						2. Constant
+						3. Static Constant
+
+			Nested Method: 		1. Field
+						2. Constant
+	
+		Branching:
+
+			All components in the Top Level can branch in depth:
+
+				initialisation block
+				method
+				class
+				abstract class
+				enum
+				interface
+				block
+
+			- All components have a means of branching, there are no componets which branch and those which 'stub'.
+
+		non-Static Memory:
+
+			Components which do not contain Static memory therefore not able to support:
+
+				1. No Static Fields
+				2. No Static Initialisation Blocks
+				3. No Static Methods
+				4. No Static Classes
+				5. No Enums		[Default automatically placed in Static memory]
+				6. No Interfaces	[Default automatically placed in Static memory]
+				7. ...
+
+		Abstract Class:
+
+			A 'Bluprint' for full class with holes missing i.e. missing concrete methods replaced with Abstract Methods.
+
+			An Abstract Class can be:
+
+				1. Mirror:	Abstract Class may be declared wherever a Class may be declared with mirrored traits.
+				2. non-final:	Abstract Class can be never be made 'final', given that they are intended to be extended.
+
+		Shadowing:
+
+			Shadowing only occurs between:
+
+				Top Level Form
+				|
+				...
+				|
+				Nested Component
+
+				Class
+				|
+				Extended Class
+
+				Interface
+				|
+				Extended Interface
+
+				Class
+				|_______________________________________________________
+				|				|			|
+				Init Block [non-Static]		Init Block [Static]	Method [non-Static]
+
+			NB: this: References the immediate class, not parental or Top Level Class.
+
+	Permitted Members
+
+		Top Level
+									|_________________________________ Top Level Forms _______________________________________|
+	
+			Memory		Member				Class			Abstract		Enum			Interface
+												Class			
+			___________________________________________________________________________________________________________________________________________
+
+			non-Static	Field				Y			Y			Y			-
+					Constant			Y			Y			Y			-
+					Initialisation Block		Y			Y			Y			-
+
+					Constructor			Y			Y			Y			-
+					Method				Y			Y			Y			Abstract + Default
+
+					Nested Class			Y			Y			Y			Y
+					Nested Abstract Class		Y			Y			Y			Y
+
+			Static		Field				Y			Y			Y			-
+					Constant			Y			Y			Y			Y
+					Initialisation Block		Y			Y			Y			-
+
+					Method				Y			Y			Y			Y
+
+					Nested Class			Y			Y			Y			Y
+					Nested Abstract Class		Y			Y			Y			Y
+					Nested Interface		Y			Y			Y			Y
+					Nested Enum			Y			Y			Y			Y
+
+			Shadowing:					-			-			-			-
+
+			Final Apply-able:				Y			-			-			-
+
+
+
+
+		
+		Top Level Class - non-Static Memory
+												    Top Level
+									|______________________ non-Static Memory ______________________|
+	
+			Memory		Member				Method			Inner			Inner
+												Class			Abstract Class
+			_________________________________________________________________________________________________________________			
+
+			non-Static	Field				Y			Y			Y
+					Constant			Y			Y			Y
+					Initialisation Block		-			Y			Y
+
+					Constructor			-			Y			Y
+					Method				-			Y			Y
+
+					Nested Class			Y			Y			Y
+					Nested Abstract Class		Y			Y			Y
+
+			Static		Field				-			-			-
+					Constant			-			Y			Y
+					Initialisation Block		-			-			-
+
+					Method				-			-			-
+
+					Nested Class			-			-			-
+					Nested Abstract Class		-			-			-
+					Nested Interface		-			-			-
+					Nested Enum			-			-			-
+
+			Shadowing:					Y			-			-
+
+			Final Apply-able:				Y			Y			-
+	
+
+
+
+					(1) Method - Members
+												|____________ Method Members ____________|
+	
+						Memory		Member				Nested (Local)		Nested (Local)		
+												Class			Abstract Class
+						__________________________________________________________________________________________
+
+						non-Static	Field				Y			Y
+								Constant			Y			Y
+								Initialisation Block		Y			Y
+
+								Constructor			Y			Y
+								Method				Y			Y
+
+								Nested Class			Y			Y
+								Nested Abstract Class		Y			Y
+
+						Static		Field				-			-
+								Constant			Y			Y
+								Initialisation Block		-			-
+
+								Method				-			-
+
+								Nested Class			-			-
+								Nested Abstract Class		-			-
+								Nested Interface		-			-
+								Nested Enum			-			-
+
+						Shadowing:					-			-
+
+						Final Apply-able:				Y			-
+
+
+
+
+		Top Level Class - Static Memory
+													     Top Level
+									|__________________________________ Static Memory ________________________________________|
+	
+			Memory		Member				Nested			Nested			Nested			Nested
+									Class			Abstract Class		Enum			Interface
+			___________________________________________________________________________________________________________________________________________
+
+			non-Static	Field				Y			Y			Y			-
+					Constant			Y			Y			Y			-
+					Initialisation Block		Y			Y			Y			-
+
+					Constructor			Y			Y			Y			-
+					Method				Y			Y			Y			Abstract + Default
+
+					Nested Class			Y			Y			Y			Y
+					Nested Abstract Class		Y			Y			Y			Y
+
+			Static		Field				Y			Y			Y			-
+					Constant			Y			Y			Y			Y
+					Initialisation Block		Y			Y			Y			-
+
+					Method				Y			Y			Y			Y
+
+					Nested Class			Y			Y			Y			Y
+					Nested Abstract Class		Y			Y			Y			Y
+					Nested Interface		Y			Y			Y			Y
+					Nested Enum			Y			Y			Y			Y
+
+			Shadowing:					-			-			-			-
+
+			Final Apply-able:				Y			-			-			-
+
+
+
+		Expression Components
+									|______ Expression Components ______|
+	
+			Memory		Member				Anonymous		Lambda
+									Class			Expression	
+			_____________________________________________________________________________________
+
+			non-Static	Field				Y			Y
+					Constant			Y			Y
+					Initialisation Block		-			-
+
+					Constructor			-			-
+					Method				Y			-
+
+					Nested Class			Y			Y
+					Nested Abstract Class		Y			Y
+
+			Static		Field				-			-
+					Constant			Y			Y
+					Initialisation Block		-			-
+
+					Method				-			-
+
+					Nested Class			-			-
+					Nested Abstract Class		-			-
+					Nested Interface		-			-
+					Nested Enum			-			-
+
+			Shadowing:					-			-
+
+			Final Apply-able:				-			-
+
+
+
+
+		Blocks
+									|______________________________ Blocks ______________________________|
+	
+			Memory		Member				non-Static		Static			non-Static | Static
+									Initialisation Block	Initialisation Block	Block
+			______________________________________________________________________________________________________________________
+
+			non-Static	Field				Y			Y			Y
+					Constant			Y			Y			Y
+					Initialisation Block		-			-			-
+
+					Constructor			-			-			-
+					Method				Y			-			-
+
+					Nested Class			Y			Y			Y
+					Nested Abstract Class		Y			Y			Y
+
+			Static		Field				-			-			-
+					Constant			-			-			-
+					Initialisation Block		-			-			-
+
+					Method				-			-			-
+
+					Nested Class			-			-			-
+					Nested Abstract Class		-			-			-
+					Nested Interface		-			-			-
+					Nested Enum			-			-			-
+
+			Shadowing:					Y			Y			-
+
+			Final Apply-able:				-			-			-
+
+	Permitted Use:
+
+		Components permitted use in other components:
+
+						Within Component:			As				Functional Purpose
+						_______________________________________________________________________________________________________________________________________________
+
+		Anonymous Class:		Class/Method/Block/Init Block:		Instance/Class Variable 	Initialisation
+						Method:					Invocation/Argument		e.g. Returning an unnamed object within a method invocation being passed as an argument:
+
+							The unnamed object maybe either of the following which:
+
+							1. Interface:	An Anonymous Object which implements the Interface as specifed in the invoked methods parameter list.
+							2. Subclass:	An Anonymous Object which extends the Class as specifed in the invoked methods parameter list.
+
+		Lambda Expression:		Class/Method/Block/Init Block:		Functional Interface 		Variable Initialisation
+						Class/Method/Block/Init Block:		Functional Interface 		Variable Assignment
+						Method:					Return Statement
+						Method:					Conditional Expression		?:
+						Method:					Invocation/Argument 		e.g. Returning an unnamed object implementing the expected Functional Interface within a method invocation being passed as an argument
+						Class/Method/Block/Init Block:		Array 				Element Initialisation
+						Class/Method/Block/Init Block:		Cast				Cast Expressions
+
+		Block:				Anywhere where a x1 single statement is permitted.
+
+
+
+
+	Top Level Form - Memory Allocation
+
+		|_______________________________________________________________ Top Level Form ________________________________________________________________________|
+		 _______________________________________________________________________________________________________________________________________________________________________________________________________________
+		|									|										|				|			|
+		| Top Level						Own Internal	| Top Level						Own Internal		| Identical			|			|
+		| non-Static Memory					Composition	| Static Memory						Composition		| Except			| Top Level Consistent	|
+		|_______________________________________________________________________|_______________________________________________________________________________|_______________________________|_______________________|
+		|									|										|				|			|
+		| Type Parameter					n/a		| 										|				|			|
+		|									|										|				|			|
+		| Field							n/a		| Field							n/a			| Initialisation		|			|
+		|									|										|				|			|
+		| Constant						n/a		| Constant/Enum Constants				n/a			| Initialisation		|			|
+		|									|										|				|			|
+		| Initialisation Block					non-Static	| Initialisation Block					non-Static		| Initialisation Block		|			|
+		|									|										|				|			|
+		| Constructor						non-Static	|										|				|			|
+		| 									|										|				|			|
+		| Method						non-Static	| Method						non-Static		| Access			|			|
+		|   Class						non-Static	|   Class						non-Static		| Access			|			|
+		|   Block						non-Static	|   Block						non-Static		| Access			|			|
+		|									|										|				|			|
+		| Class							non-Static	| Class							non-Static + Static	| Access + Composition		| Y			|
+		|									| Interface						non-Static + Static	|				| Y			|
+		|									| Enum							non-Static + Static	|				| Y			|
+		|_______________________________________________________________________|_______________________________________________________________________________|_______________________________|_______________________|
+
+		Identical Exception Rules:
+
+			1. Access:
+					
+				Top-Level Memory			Access To Members Of			Access To Members Of
+									Parental Chain				Top Level Class
+				____________________________________________________________________________________________________
+
+				1. non-Static				non-Static 				non-Static + Static			//Parental Chain only possible to contain non-Static members
+
+				   Static				
+					2. Init Block/Method		non-Static				Static					//Parental Chain only possible to contain non-Static members
+					3. Nested Top Level Form	Static					Static
+
+				NB: Parental members must be 'final' | 'effectively final' i.e. not changed once initialised.
+
+			2. Composition:
+						
+				- Components in Top Level non-Static memory may only be composed of non-Static memory.
+				- Components in Top Level non-Static memory do not have their own additional separate Static memory, therefore may not declared/contain their own components within its own Static memory.
+
+			3. Top Level Consistent:
+
+				- Component does not alter behaviour in any way regardless if it is either:
+
+					1. Top-Level.
+					2. Within static memory of a top level form.
+
+				- Component is entirely consistent irrespective of where it is situated between the x2 above locations.
+
+			4. Initialisation:
+
+				Top Level Memory	Component must be initialised when:
+				_______________________________________________
+
+				non-Static:		Class Instantiated	e.g. Constructor, Initialisation Block
+			    	Static:			Class Loaded		e.g. Declared, Static Initialisation Block
+
+			5. Initialisation Block:
+
+				Top Level Memory	Component behaviour:
+				_______________________________________________
+
+				non-Static:		Class Instantiated	All blocks added to all Constructors.
+			    	Static:			Class Loaded		All blocks are ran as they appear from top to bottom.
+	
+	Top Level Class Growth Map:
+
+		Top Level Class	(0)
+		{
+			//non-Static Memory _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+				//Fields
+
+				//Constants
+
+				//Initialisation Block
+				{
+
+				}
+
+				Constructor
+				{
+
+				}
+
+				Method
+				{
+            	    	    	    Local Class
+                        		Method
+                    	   	    	    Local Class
+                                		Method
+                            	    	    	...
+                        	 		Inner Class
+                			Inner Class
+         			}
+
+            	  		Class
+                		{
+			    	    ...
+				}
+
+			//Static Memory _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+				//Fields
+
+				//Constants
+
+				//Initialisation Block
+				{
+
+				}
+
+                        	Static Method
+				{
+            	    	    	    Local Class
+                        		Method
+                    	   	    	    Local Class
+                                		Method
+                            	    	    	    Local Class
+				    	    	    ...
+                        			Inner Class
+                			Inner Class
+				}
+    
+        			Static Nested Class
+        			{
+			    	    Method
+	    	    	    	    {
+                			Local Class
+                    	    	    	    Method
+                        			Local Class
+                            	    	    	    Method
+                                			Local Class
+							...
+						    Inner Class
+                    	    		    Inner Class
+	    	    	    	    }
+
+	    	    	    	    Static Method
+	    	    	    	    {
+                			Local Class
+                    	    	    	    Method
+                        			Local Class
+                            	    	    	    Method
+                                			Local Class
+							...
+						    Inner Class
+                    	    		    Inner Class
+				    }
+
+            	    	    	    Inner Class
+	    	    	    	    {
+                			Method
+                    	    	    	    Local Class
+                        			Method
+                            	    	    	    Local Class
+                        			Inner Class
+                			Inner Class
+	    	    	    	    }
+
+	    	    	    	    Static Nested Class
+	    	    	    	    {
+					...
+	    	    	    	    }
+        			}
+
+
+
+
+
+
+

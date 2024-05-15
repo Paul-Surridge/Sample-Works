@@ -1,0 +1,463 @@
+Kotlin
+
+	Ranges:
+
+		- Ranges can be built using multiple configurations:
+
+			1..4			1-4
+			1..<4			1-3
+			1 until 4		1-3
+			4 downTo 1		4-1
+			1..5 step 3		1, 3, 5
+			9 downTo 1 step 2	97531
+			'a'..'d'		a-d
+			'z' downTo 's' step 2	z, x, v, t
+
+		- Ranges can be applied/used upon any Comparable types:
+
+			1..4			IntRange
+			1 until 10		IntRange
+			'a'..'z'		CharRange
+			'ab'..'az'		ClosedRange<String>
+			startDate..endDate	ClosedRange<MyDate>
+
+		- Ranges can be assigned to variables:
+
+			val i: IntRange 		= 1..9
+			val s: CharRange 		= 'a'..'z'
+			val dates: ClosedRange<MyDate> 	= startDate..endDate
+
+		- Ranges can be applied to strings:
+
+			println("Kotlin" in "Java".."Scala")		//true
+
+			Here:
+
+				1. Strings are compared lexicographically (alphabetical order as would appear in a dictionary) where each letter is checked in turn.
+				2. When 'in' is used it is compared using the standard form:
+
+					"ball" in "a".."k"
+
+					Goes to:	"a" <= "ball" && "ball" <= "k"
+
+				3. Compiler uses the below:
+
+					"a".compareTo("ball") <= 0 && "ball".compareTo("k") <= 0
+
+		- Ranges can be applied to any instances which implement Comparable interface:
+
+			Given:	MyDate implements Comparable interface, to check if a date is within the range of startDate/endDate it can be simplified as follows:
+
+				1. if(myDate.compareTo(startDate) >= 0 && myDate.compareTo(endDate) <= 0)		//Long hand
+				2. if(myDate >= startDate && myDate <= endDate)
+				3. if(myDate in startDate..endDate)							//Shortest hand
+
+		- Ranges are objects:
+
+			println((1..5).sumOf { id -> salaryById(id) })
+
+			Here:
+
+				1. (1..5) is a range object with a member function of sumOf().
+				2. sumOf() accepts a lambda which accepts an Int and returns an Int which is the salary of the employee.
+				3. The salary of employees with ID 1 through 5 are returned and summed. 
+
+		- Ranges use the 'in' convention which defers to .contains():
+
+			if(key in map) {}
+			if(element in list) {}
+
+			The keyword 'in' uses .contains():
+
+				a in c compiles to:	c.contains(a)
+
+		- Ranges use of '..' is a convention which defers to .rangeTo() of the Range class:
+
+			start..end compiles to:		start.rangeTo(end)
+
+	Pairs:
+
+		- Pairs allow for the declaration and initialisation of x2 variables within the same statement:
+
+			val (description: String, colour: Colour) =			//colour is an Enum
+		    	    if(degrees < 10)		Pair("cold", BLUE)
+		    	    else if(degrees < 25)	Pair("mild", ORANGE)
+		    	    else			Pair("hot", RED)
+
+		- Pairs can be replaced with a 'when' inconjunction with 'to' (which is an operator overload defined for Pairs):
+
+			val (description, colour) =
+			    when
+			    {
+				degrees < 10	-> "cold" to BLUE
+				degrees < 10	-> "cold" to BLUE
+				else		-> "hot" to RED
+			    }
+
+	in:
+
+		- in can be used within x2 cases:
+
+			1. Loop 	(iterating within a range or collection)
+			2. Belonging 	(belonging within a range or collection)
+
+		- in can be used to check belonging:
+
+			fun isLetter(c: Char) =	c in 'a'..'z' || c in 'A'..'Z' 		//Check if c belongs withon specified ranges i.e. is a letter
+
+		- in is interpreted by the compiler as follows:
+
+			1. Source Code:		c in 'a'..'z'
+			2. Compiled as:		'a' <= c && c <= 'z'
+
+			If items being compared are objects, then they must implement the Comparable interface to enable comparison i.e. implement compareTo():
+
+			1. Source Code:		"ball" in "a".."k"
+			2. Interpreted as:	"a" <= "ball" && "ball" <= "k"
+			3. Compiled using:	"a".compareTo("ball") <= 0 && "ball".compareTo("k") <= 0
+
+		- in has complement !in:
+
+			fun inNotDigit(c: Char) = c !in '0'..'9'
+
+		- in can be appled to collection:
+
+			1. Source Code:		if(element in list)
+			2. Compiled as:		if(list.contains(element))
+
+	require:
+
+		- require is a library function which appears as a language construct.
+		- require is a function that can be used to check a state and throw an exception:
+
+			private fun normalise(n: Int, d: Int): Rational
+			{
+			    require(d != 0){"Denominator is zero"}		//throws IllegalArgumentException
+			}
+
+	run:
+
+		- run is library function (which appears to be a language construct):
+
+			val foo = run {
+			    println("Calculating foo...")
+			}
+
+		- run accepts a lambda and returns the last expression as the value.
+		- run is defined as follows:
+
+			inline fun <R> run (block: () -> R): R = block()
+
+			Reads:
+
+				1. Type Parameter R is the type that is returned by the lambda.
+				2. Parameter 'block' is a function type of '() -> R' i.e. a lambda of no arguments that returns an instance/result/value of type R.
+				3. The name 'block' is presumed to mean 'block of code'.
+				4. The result/value of the function contained within 'block' is returned and assigned (in the case above, the return of println() is assigned to val foo).
+
+	let:
+
+		- let is library function (which appears to be a language construct).
+		- let is used inconjunction with nullable types.
+		- let is a follows:
+
+			1. Check if a receiver is non-null.
+			2. If so run the associated/passed lambda.
+			3. The lambda has only x1 parameter which is the receiver itself.
+			4. This parameter can be represented using a suitable identifier or using 'it' (as of normal lambda convention).
+			5. If the receiver is null then nothing occurs.
+
+		- let example:
+
+			interface Session
+			{
+			    val user: User
+			}
+
+			fun analyseUserSession(session: Session)
+			{
+			    val user = session.user			//1
+
+			    if(user is WebsiteUser)			//2
+				println(user.accountID)
+
+			    //Alternatively
+
+			    (session.user as? WebsiteUser)?.let {	//3 4 5 6
+				println(it.accountID)
+			    }
+			}
+
+			Here:
+
+				1. Given that 'user' is a property of an interface and is therefore open, 'user' can not be smart casted to 'WebsiteUser' and needs to be assigned to a local variable.
+				2. 'user' is checked if is an instance of 'WebsiteUser', if so print the property 'accountID' of 'WebsiteUser'.
+				3. Alternatively 1 and 2 can be combined into a single let expression.
+				4. The property 'user' of session is 'safe cast' to 'WebsiteUser', if it is not an instance of 'WebsiteUser' nothing occurs.
+				5. If 'session.user' is a null then nothing occurs.
+				6. If 'session.user' is an instance of 'WebsiteUser' then the accompanying lambda passed to 'let' is executed whereby the receiver 'session.user' is referenced via 'it'.
+
+		- let allows you to pass an argument to a function but only if the argument is non-null:
+
+			fun getEmail(): Email?
+
+			val email = getEmail()			//8
+
+			if(email != null)			//1 2
+			    sendEmailTo(email)
+
+			//Alternatively
+
+			email?.let{e -> sendToEmail(e)}		//3 4 5
+
+			getEmail()?.let {sendToEmail(it)}	//6 7 8
+
+			Here:
+
+				1. email needs to be checked if null before it is sent to the sendEmailTo().
+				2. email is check for null via a standard if statement.
+				3. Alternatively let() can be used to check inconjunction with the 'safe call' operator.
+				4. The receiver (email) is passed as an argument (e) to become accessible within the lambda.
+				5. The 'let' lambda is only performed if receiver (email) is non-null.
+				6. Alternatively an expression which returns a value (in this case simply the function call getEmail() - which returns an instance of Email?) takes the place as the receiver which can be safe called inconjunction with let.
+				7. No longer requiring the inclusion of an argument within the lambda whereby the receiver can be represented simply using 'it', 'it' is the return from getEmail() which is confirmed as being non-null via the safe call.
+				8. No longer requiring the need to place the return of the expression into a separate variable 'email'.
+
+		- let is defined as:
+
+			inline fun <T, R> T.let(block: (T) -> R): R = block(this)
+
+			Reads:
+
+				1. Extension Function .let() is defined for type T.
+				2. T is the type having the extension function applied while R is the type that is returned by the lambda.
+				3. Parameter 'block' is a function type of '(T) -> R' i.e. a lambda with x1 argument of type T (which is the actual instance of T having the .let() extension function applied) and that returns an instance/result/value of type R.
+				4. The name 'block' is presumed to mean 'block of code'.
+				5. The result/value of the function contained within 'block' (which is of type R) is returned to original calling code.
+				6. It is presumed that of course it is not possible to create an extension function for an instance of T which is null, in which case nothing happens, which is the observed behaviour of .let().
+
+	takeIf:
+
+		- takeIf is library function (which appears to be a language construct).
+		- takeIf is as follows:
+
+			1. takeIf() is applied to a receiver.
+			2. takeIf() accepts a predicate as a lambda.
+			3. The lambda returns a boolean, if the boolean is true then the expression returns the receiver, alternatively if false then null is returned. 
+
+			Predicate		Return
+			-------------------------------------------------------------------------------
+			Satisfied:		Receiver calling .takeIf is returned in unaltered state
+			Not Satisfied:		null
+
+		- takeIf is useful for checking a predicate within a chained statement, such that if the predicate is not satisfied then the takeIf() returns null and the whole chained statement is ignored.
+
+			issue.takeIf {it.status == FIXED}
+
+				Here:
+
+					1. .takeIf() accepts a lambda with x1 argument (therefore 'it' can be used).
+					2. .takeIf() checks the status if 'it' and if the overall lambda returns true then .takeIf() returns the instance of 'issue' unaltered else null.
+
+			person.name.takeIf {String::isNotEmpty}
+
+				Here:
+
+					1. .takeIf() accepts a lambda with x1 argument which is checked if not empty.
+					2. .takeIf() checks the status of the string 'name' returning either 'name' unaltered or null.
+
+			issues.filter {it.status == OPEN }
+			    .takeIf(List<Issue>::isNotEmpty)?			//1
+			    .let {println("There are some open issues")}
+
+				Here:
+
+					1. .takeIf() is null then this collapses the whole statement and nothing occurs
+
+					NB: Need to further research/clarify the distinction (if any) between:
+
+						.takeIf{String::isNotEmpty}
+						.takeIf(List<Issue>::isNotEmpty)?
+
+						Both supply method references as the body of the lambdas, I presume that it needs to be done in the format using () in order to utilise the safe call, to be investigated.
+
+		- takeIf() is as follows:
+
+			inline fun <T> T.takeIf(predicate: (T) -> Boolean): T? = if(predicate(this)) this else null
+
+			Reads:
+
+				1. Extension Function .takeIf() is defined for type T, where this extension function returns a nullable T.
+				2. Parameter 'predicate' is a function type of '(T) -> Boolean' i.e. a lambda with x1 argument of type T (which is the actual instance of T having the .let() extension function applied) and that returns a Boolean.
+				3. The extension function runs the lambda contained within predicate while passing in the actual instance of T that is having the extension function .takeIf() applied to.
+				4. If the lambda function returns true then the unaltered value of the instance of T is returned else null
+
+	takeUnless:
+
+		- takeUnless() is library function (which appears to be a language construct).
+		- takeUnless() operates as the opposite of takeIf, where:
+
+			Predicate		Return
+			-------------------------------------------------------------------------------
+			Satisfied:		null
+			Not Satisfied:		Receiver calling .takeIf is returned in unaltered state
+
+		- takeUnless() is as follows:
+
+			inline fun <T> T.takeIf(predicate: (T) -> Boolean): T? = if(!predicate(this)) this else null
+
+			Reads the opposite to takeIf() as described above.
+
+	repeat:
+
+		- repeat() is library function (which appears to be a language construct).
+		- repeat() allows to quickly define a repeating action without need to manually create for loop with index:
+
+			repeat(10) {println("Welcome")}
+
+		- repeat() is as follows:
+
+			inline fun repeat(times: Int, action: (Int) -> Unit)
+			{
+			    for(index in 0 until times)
+				action(index)
+			}
+
+			Reads:
+
+				1. repeat() is passed in x2 arguments, 'action' is of the function type '(Int) -> Unit' which is a lambda which accepts x1 argument (Int) and returns nothing/void/unit.
+				2. repeat() simply runs by declaring a local variable 'index' within a loop.
+				3. The lambda contained within action is run 'times' number of times while being passed the index of the current iteration.
+
+	withLock:
+
+		- withLock() is library function (which appears to be a language construct).
+		- withLock() is an alternative to using synchronization where you simply call .withLock() on a Lock object.
+
+			val l: Lock = ...
+
+			l.withLock {
+			    // access a resource protected by this lock
+			}
+
+		- withLock() is as follows:
+
+			inline fun <T> Lock.withLock(action: () -> T): T {
+			    lock()
+			    try {
+				return action()
+			    } finally {
+				unlock()
+			    }
+			}
+
+	use:
+
+		- use() is library function (which appears to be a language construct).
+		- use() is an equivalent to try-with-resources in Java:
+
+			Java:
+
+				static String readFirstLineFromFile(String sPath) throws IOException
+				{
+				    try(BufferedReader br = new BufferedReader(new FileReader(sPath)))
+				    {
+					return br.readLine();
+				    }
+				}
+
+			Kotlin:
+
+				fun readFirstLineFromFile(sPath: String): String
+				{
+				    BufferedReader(FileReader(sPath)).use {
+					return br.readLine()
+				    }
+				}
+
+		- use() handles all of the try-with-resources logic e.g. closing all resources if there is an issue and/or throwing/propagating an exception.
+		- use() is inline therefore does not impose overhead when running the lambdas.
+
+	it:
+
+		- it represents the current instance within the particular context.
+		- it can be replaced with a lambda equivalent when appropriate:
+
+			val mainWindow = windowById["main"]?.apply {
+			    ...
+			}?.also {
+			    showWindow(it)
+			}
+
+			val mainWindow = windowById["main"]?.apply {
+			    ...
+			}?.also {
+			    window -> showWindow(window)
+			}
+
+	with()/run():
+
+		- with()/run() are both interchangable:
+
+			run():		run() is an extension function therefore can be called on a nullable using safe access whereby if the receiver is null the whole statement is ignored (and return is null).
+			with():		with() is an extension lambda therefore can be called on a nullable but all implicit references to 'this' must be checked within the lambda body.
+
+		- with()/run() both return the last expression as their result, apply() however (as described below) returns the receiver.
+
+	apply()/also():
+
+		- apply() is similar to with()/run() (which return the value of ther last expression within their lambda bodies) but instead returns the whole receiver:
+
+			val mainWindow = windowById["main"]?.apply {
+			    width = 300
+			    height = 200
+			    isVisible = true
+			} ?: return
+
+			Here:
+
+				1. If 'windowById["main"]' returns a non-null value then it is immediately applied the lambda body.
+				2. If 'windowById["main"]' returns a null then it exits enclosing function
+
+			Given that apply() returns the receiver it is useful to use within a chained call.
+
+		- also() is used when the instance of the receiver via 'it' needs to be accessed or passed to a further function:
+
+			val mainWindow = windowById["main"]?.apply {
+			    width = 300
+			    height = 200
+			    isVisible = true
+			}?.also {			//also() is passed a regular lambda (not extension lambda)
+			    showWindow(it)
+			}
+
+	Comparison:
+
+		- Table shows the relationship between common functions:
+
+								{...this...}			{...it...}
+							 ---------------------------------------------------------------
+			Return: Result of Lambda	|	with()/run()		|	let()			|
+			Return: Receiver		|	apply()			|	also()			|
+							|				|				|
+							|	receiver.apply {	|	receiver.also {		|
+							|   	    this.actions()	|	    moreActions(it)	|
+							|	}			|	}			|
+							|				|				|
+			Parameter:			|	Extension Lambda	|	Regular Lambda		|
+
+		- Table shows x4 functions which have mirroring/symmetrical relationships:
+
+			inline fun <T, R> T.run(block: T.() -> R): R		{return this.block()}			//Return result of lambda
+			inline fun <T, R> T.let(block: (T) -> R): R		{return block(this)}			//Return result of lambda
+
+			inline fun <T> T.apply(block: T.() -> Unit): T		{this.block(); return this}		//Return the receiver once the lambda has been applied
+			inline fun <T> T.also(block: (T) -> Unit): T		{block(this); return this}		//Return the receiver once the lambda has been applied
+
+			Here:
+
+				1. 'block' is either a lambda or extension lambda.
+				2. If 'block' is called as an extension then the lambda parameter must be an extension lambda.
+				3. If 'block' is called in the same way as a regular lambda then the parameter would be a regular lambda as defined within the parameter list of let() and also().
+
+	

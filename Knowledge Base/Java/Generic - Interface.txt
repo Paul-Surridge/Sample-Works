@@ -1,0 +1,596 @@
+Generic - Interface
+
+	Applicable:
+
+		- Generic are only applicable to:
+
+			1. Class:		Top Level, Nested or Local
+			2. Abstract Class:	Top Level, Nested or Local
+			3. Enum:		Constructor
+			4. Interface:		Top Level, Nested
+			5. Constructor
+			6. Method	
+
+		- Generics may be declared, assigned or used within:
+
+			Interface
+
+			Memory		Member				Interface		Class				Local		Shadow
+									Type Parameter		Type Parameter			Type Parameter
+			______________________________________________________________________________________________________________________________
+
+			non-Static	Method - Abstract		Y			n/a				Y		Y
+					Method - Default		Y			n/a				Y		Y
+					    Local Class			Y			Y				n/a		Y
+					
+					Anonymous Class			n/a			n/a				n/a		Y
+					Lambda Expression		n/a			n/a				n/a		Y
+					Block				n/a			n/a				n/a		Y
+
+			Static		Constant			-			n/a				n/a		n/a
+			
+					Method - Static			-			n/a				Y		-
+					    Local Class			-			Y				n/a		-
+
+					Class				-			Y				n/a		n/a
+					Abstract Class			-			Y				n/a		n/a
+					Enum				n/a			n/a				n/a		n/a
+					    Constructor			-			n/a				Y		-
+					Interface			-			n/a				Y		-
+
+					Anonymous Class			n/a			n/a				n/a		-
+					Lambda Expression		n/a			n/a				n/a		-
+					Block				n/a			n/a				n/a		-
+
+			NB: Interfaces do not contain non-Static memory, however Abstract/Default Methods support Interface Type Parameters therefore presumably Interfaces have a form of non-Static memory.
+
+	Building:
+
+		Overview:
+
+			- Generics 'lays on top' of non-generic elements.
+			- Generics is a layer of extra syntax allowing for generic algorthims for varying data types.
+
+		Key Rules:
+
+			1. Constants:
+
+				- All fields are constants.
+				- All implicit 'public', 'static', 'final'.
+
+			2. 'final':
+
+				- No method may be declared 'final'.
+
+			3. Generics/Type Parameters:
+
+				Interface<T>
+				{
+					Class Variable		Not Permitted
+
+					Abstract Method:	Interface and Local
+					Default Method:		Interface and Local
+					Static Method:		Local Only
+				}
+
+		Header:
+
+			[Access Modifier] interface [Identifier/Name] [Type Parameter List] <T, V> extends [Extended Interfaces [Comma Separated List]]
+
+				[Access Modifier]:
+
+					public:			Must be the name of the file.
+					blank:			Package only.
+
+					private/protected:	Compile Fail
+
+				[Identifier/Name]:
+
+					- Must not match any enclosing class or interface.
+
+				[Extended Interfaces [Comma Separated List]]:
+
+					- ...extends Interface1<T>, Interface2, Interface3<T,V>
+
+				T V:	Interface Type Parameters
+				<T, V>:	Interface Type Parameter List
+
+		Body:
+
+			interface Interface<T, V>
+			{
+				int i 		= 1;					//Fields are all Class Variables and implicit 'public', 'static', 'final' constants.
+				String s	= "Test";				//Fields must be instantiated/initialised when declared.
+											//All types are permitted except an Interface Type Parameter.
+
+						T abstractMethod (T t, int i);		//Class
+					<K, V> 	K abstractMethod (V v, int i);		//Local
+					<K, V> 	T abstractMethod (K k, V v, int i);	//Class and Local
+					<K, T> 	T abstractMethod (K k, int i);		//Local (with Class Override)
+
+				default        	T defaultMethod (T t, int i){}		//Class
+				default <K, V> 	K defaultMethod (V v, int i){}		//Local
+				default <K, V> 	T defaultMethod (K k, V v, int i){}	//Class and Local
+				default <K, T> 	T defaultMethod (K k, int i){}		//Local (with Class Override)
+
+				static 	<K, V> 	K staticMethod (V v, int i){}		//Local
+				static	<K, T> 	T staticMethod (K k, int i){}		//Local (with Class Override)
+
+				Inner Class						//Nested Types e.g. Helper Classes
+				Inner Interface
+				Inner Enum
+			}
+
+			Compile Fail:
+
+				interface Interface<T>
+				{
+							T objT;						//Compile Fail		Instance Variables are implicit 'public', 'static', 'final'	Interface Type Parameter used in static context
+					final 		T objT;						//Compile Fail		Instance Variables are implicit 'public', 'static', 'final' 	Interface Type Parameter used in static context
+					static 		T objT;						//Compile Fail		Class Variable							Interface Type Parameter used in static context
+					static final 	T objT;						//Compile Fail		Class Variable (Final)						Interface Type Parameter used in static context
+
+						final 	T abstractMethod 	(T t, int i);		//Compile Fail		'final' not permitted anywhere in interface.
+					static 	final 	T staticMethod 		(T t, int i);		//Compile Fail		'final' not permitted anywhere in interface.
+					default final 	T defaultMethod 	(T t, int i);		//Compile Fail		'final' not permitted anywhere in interface.
+
+					static 		T staticMethod 		(T t, int i){}		//Compile Fail		Interface Type Parameter used in static context
+				}
+
+			Static/Non-Static Environments:
+
+				Everything within the interface is a 'Static-Context' except Abstract/Default Methods:
+
+					Static Context:
+
+						Fields: 		
+						Static Methods:		
+
+					Non-Static Context:
+
+						Abstract Methods:
+						Default Methods:
+
+			Fields:
+
+				Instance Variables:	Not Permitted
+				Class Variables:	Permitted
+
+					All fields are:
+
+					1. A Class Variable.
+					2. A Constant.
+					3. Implicit 'public', 'static' and 'final' i.e. a Constant (modifiers can be omitted).
+					4. Static context.
+					5. Must be initialised/instantiated when declared.
+
+						Primitive:	Must be initialised when declared.
+						Class:		Must be instantiated when declared.
+						Interface:	Must be instantiated when declared.
+
+					6. All types are permitted except an Interface Type Parameter, given:
+
+						i.   Static context.
+						ii.  All fields are Class Variables.
+						iii. Unknown at compile time.
+
+				Overload:	N/A	[Only methods can be overloaded]
+        			Override:    	N/A 	[All fields are static constants specific to the interface]
+
+			Methods:
+
+				Abstract:	Placeholder			[Method Signature]	
+				Static:		Utility Method:			[Accessible via interface: 		Interface.staticMethod();]
+				Default:	Core Method:			[Accessible via interface variable: 	InterfaceVariable.defaultMethod();]
+
+				Overload:    	Yes				[All method types can be overloaded either locally within the interface or via inheritance]
+        			Override:    	Yes				[Default Only]
+
+				'public':	Yes				[All methods are implicitly public, can be omitted]
+				'final':	No				[All methods cannot be final]
+
+				Local Type Parameters:				[All methods may have their own Local Type Parameters]
+
+        		Nested:
+
+				1. Inner Classes
+				2. Inner Interfaces
+				3. Inner Enums
+
+			Components Not Permitted:
+
+				1. Instance Variables.
+				2. Concrete Abstract Methods.
+				3. Final Methods.
+
+			Overriding:
+
+				Overriding can only be carried out during extension:
+
+					Fields:			Fail		Static Context:		Fields are all static therefore specific to the interface only and not accessible from extended interface.
+
+					Abstract Methods:	Fail		Non-Effectual:		Abstract placeholders does not produce any material difference in the extended interface.
+					Default  Methods:	OK
+					Static 	Methods:	Fail		Static Context:		Static Methods are specific to the interface only and not accessible from extended interface.
+
+			Overloading:
+ 
+				Overloading can be carried out either locally or via extension:
+
+					Fields:			OK		Overload via Extension only
+
+					Abstract Methods:	OK		Overload via Local and Extension
+					Default  Methods:	OK		Overload via Local and Extension
+					Static 	Methods:	OK		Overload via Local and Extension
+
+				Same name different signature.
+
+
+		Extending:
+
+			Key Rules:
+
+				1. Inherit from:
+
+					i.   Single or multiple superinterface(s).
+					ii.  Generic and non-generic superinterface(s).
+		
+				2. Type Arguments:
+
+					i. Must supply 'feed' any Type Arguments to any generic superinterface(s) via either:
+
+						a. Type Parameter	(Local Interface Header)
+						b. Hardcode		(Class/Interface)
+						c. Blank/None 		(Object)
+
+				3. Aggregation:
+
+					i.   All Non-Static Members are combined and aggregated:
+
+						a. Abstract Methods
+						b. Default Methods
+
+					ii.  Any ambiguous members within multiple superinterface(s) must be overriden.
+
+				4. Override:	
+
+					i.   Default Methods Only.
+
+				5. Overload:	
+
+					i.   Abstract Methods
+					ii.  Default Methods				
+
+			Aggregation, Override and Overload:
+
+				Subinterface inherits, combines and aggregates all non-static members:
+			
+					1. Abstract Methods
+					2. Default Methods
+
+					Not:
+
+						Fields			[static constants]
+						Static Methods
+
+        			Subinterface may override:
+
+					1. Default Methods
+
+					Not:
+
+						Fields			[static constants]
+						Abstract Methods	[does not make sense given that abstract methods are empty placeholders]
+						Static Methods		[static methods are specific to interface]
+
+				Subinterface may overload:
+
+					1. Abstract Methods
+					2. Default Methods
+
+					Not:
+					
+						Fields			[does not make sense given that constants are not methods nor could share different values]
+						Static Methods		[static methods are specific to interface]
+
+			Multiple Inheritance:
+
+				Subinterface can inherit from single or multiple superinterface [separated using a comma separated list].
+
+					interface Interface<T> extends Interface1, Interface2<T>, Interface3
+
+			Generic/Non-Generic Inheritance:
+
+				Subinterface may inherit from both generic and non-generic interfaces:
+
+					SuperInterface
+					|
+					Interface
+
+					SuperInterface
+					|
+					Interface<T>
+
+					SuperInterface<T>
+					|
+					Interface		//Interface must supply T as either:		Hardcode or Blank/None (Object)
+
+					SuperInterface<T>
+					|
+					Interface<T>		//Interface must supply T as either:		T, Hardcode or Blank/None (Object)
+
+			SuperInterface Type Argument:
+
+				Subinterface must supply 'feed' any generic superinterface(s) with any required Type Argument(s), either:
+
+					1. Type Parameter	(Local Interface Header)
+					2. Hardcode		(Class/Interface)
+					3. Blank/None 		(Object)
+
+				Examples:
+									SuperInterface1		SuperInterface2			SuperInterface3
+									|			|				|
+				interface Interface 	extends 	Interface1, 		GenericInterface1<Integer>, 	GenericInterface2<Integer>
+				interface Interface<T> 	extends 	Interface1, 		GenericInterface1<Integer>, 	GenericInterface2<T>
+				interface Interface<T> 	extends 	Interface1, 		GenericInterface1, 		GenericInterface2<T>
+				interface Interface<T> 	extends 	Interface1, 		GenericInterface1, 		GenericInterface2<InterfaceB>
+
+			Consolidation of Interfaces:
+
+				A number of interfaces maybe collated via either:
+
+					1. Multiple Inheritance/Extension:
+
+						interface Interface<T> 	extends 	NonGenericInterface1, GenericInterface1<Integer>, GenericInterface2<T>
+						class ClassA 		implements 	Interface<Integer>
+
+					2. Multiple Implementation:
+
+						class ClassA 		implements 	NonGenericInterface1, GenericInterface1<Integer>, GenericInterface2<Integer>
+						or
+						class ClassA<T> 	implements 	NonGenericInterface1, GenericInterface1<Integer>, GenericInterface2<T>
+
+				Ultimately providing all of the interfaces to the class (either way).
+
+			Ambiguity:
+
+				If extending multiple interfaces, any ambiguous or duplicate members which are declared in the separate interface(s) or superinterface(s) must be overriden:
+
+					1. Duplicate Constants:					Must be overriden.
+					2. Duplicate Default Methods 	[Identical signatures]:	Must be overriden.
+					3. Duplicate Abstract Methods	[Identical signatures]:	Must have @override annotation
+
+				Duplicate Abstract/Static Methods are naturally unable to cause any ambiguity.
+
+			Comparison [Non-Generic Interface]
+
+				Exending/inheritance is the same for both generic and non-generic interfaces, the only difference:
+
+				Type Argument:	Must be supplied to any extended generic interface which may be of the standard x3 options:
+
+					1. Type Parameter	(Local Interface Header)
+					2. Hardcode		(Class/Interface)
+					3. Blank/None 		(Object)
+
+
+
+
+
+
+
+
+
+	Class Implementation (of Interface):
+
+		Key Rules:
+
+			In order for a class to implement a Generic Interface:
+
+			Class Header:
+
+				1. Type Arguments:		Class must supply 'feed' any necessary Type Arguments to generic interface(s).
+
+									1. Type Parameter	(Local Class Header)
+									2. Hardcode		(Class/Interface)
+									3. Blank/None 		(Object)
+
+				2. Duplicate Declaration:	Class Type Parameter bounds must be defined only once in class declaration rather then again when passed to implementing generic interface.
+
+									class MyClass<T extends ClassA> implements InterfaceA<T>
+									class MyClass<T extends ClassA> implements InterfaceA<T extends ClassA>		//Incorrect
+			Class Body:
+
+				Abstract Methods:
+
+					1. Override:		Class must implement all abstract methods declared in the interface(s) and superinterface(s).
+					2. @Override:		Class must add @Override annotation to all implemented methods.
+					3. 'public'		Class must declare all implemented methods as 'public'.
+
+					class MyClass<T extends ClassA> implements InterfaceA<T>
+					{
+						@Override
+						public T abstractMethod(T t)
+						{}
+
+						@Override
+						public T defaultMethod(T t)
+						{}
+					}
+			
+		Aggregation:
+
+			The class must implement all aggregated abstract methods that are declared within its implemented interface(s) and any respective superinterface(s) combined.
+
+								SuperInterface1		SuperInterface2		SuperInterface3
+								|			|			|
+				class Class<T> implements 	Interface1, 		Interface2<Integer>, 	Interface3
+
+			Class:
+
+				1. Abstract Methods:	Must override all abstract methods in all x6 interfaces.
+				2. Default Methods:	May override any default methods in any of the x6 interfaces.
+				
+			Superclass:
+			
+				- If a superclass of Class have already implemented any of x6 interfaces.
+				- Then Class:
+
+					Must:		Override the abstract methods which are not implemented.	(The abstract methods in the newly added interfaces)
+					May Choose:	Override the abstract methods which are already implemented.	(The abstract methods in the interfaces implemented by the superclass)
+
+		Ambiguity:
+
+			If implementing multiple interfaces, any ambiguous or duplicate members which are declared in separate interface(s) or superinterface(s) must be overriden:
+
+				1. Default Methods (identical signatures):	Must be overriden.
+
+			Not applicable to duplicate:
+
+				1. Constants		[static]
+				2. Abstract Methods	[n/a]
+				3. Static Methods	[static]
+
+				Naturally unable to cause any ambiguity.
+
+		Abstract Class:
+
+			If the class does not override and implement all abstract methods then the class must be declared abstract.
+
+		Extend and Implement:
+
+			It is possible to both extend and implement at the same time within the same class declaration:
+
+				class Class<T> extends SuperClass<T> implements Interface1, Interface2<T>, Interface3<Integer>
+
+		Type Arguments:
+
+			If a class implements a generic interface, then that class must supply 'feed' the Type Argument to the generic interface that it will use via x3 options:
+
+									Type Argument(s)
+
+                		1. Type Parameter:  	 		Defined in the class header and 'passed' to the interface.				(Class must be generic)
+
+					class GenericClass<T> implements GenericInterface<T>
+					{
+						T abstractMethod1(T t){};
+
+
+
+                		2. Hardcode:            		Hardcoded in the classes overriden abstract methods and 'passed' to the interface.	(Class need not be generic)
+
+					class GenericClass implements GenericInterface<Integer>
+					{
+						Integer abstractMethod1(Integer i){};
+
+
+
+				3. Nothing/blank:			Object hardcoded in the classes overriden abstract methods. No type safety.		(Class need not be generic)
+
+					class GenericClass implements GenericInterface
+					{
+						Object abstractMethod1(Object o){};
+
+
+    		Examples:
+
+			Single Implementation:
+
+				- The Type Parameters of the class follow the standard set of rules for Type Parameters.
+				- Ultimately a generic interface needs 'to know' what Type Arguments it will use within its abstract/default methods.
+
+                		1. Unbounded:               		class GenericClass<T>                                                       	implements GenericInterface<T>
+                		2. Upper Bounded:           		class GenericClass<T extends Comparable<T>>                                 	implements GenericInterface<T>
+                		3. Multiple Unbounded:      		class GenericClass<T, V>                                                    	implements GenericInterface<T, V>
+                		4. Multiple Upper Bounded:  		class GenericClass<T extends Comparable<T>, V extends Comparable<V>>        	implements GenericInterface<T, V>
+                		5. Hardcode:                		class GenericClass<T>                                                       	implements GenericInterface<Integer>
+                		6. Combination:             		class GenericClass4<T extends Comparable<T>, V>                             	implements GenericInterface4<T, V, Integer>
+                		7. Object:     				class GenericClass<T>                                                       	implements GenericInterface			//Object:	Used within abstract/default methods
+                		8. Non-Generic Class - Object: 		class NonGenericClass                                                 		implements GenericInterface			//Object:	Used within abstract/default methods
+               			9. Non-Generic Class - Hardcode: 	class NonGenericClass                                                       	implements GenericInterface<Integer>		//Integer: 	Used within abstract/default methods
+
+			Multiple Implementation:
+
+				- A class may implement a combination of multiple generic and non-generic interfaces.
+				- Any generic interfaces must have the Type Argument defined via one of the standard x3 means above.
+
+				1. Non-Generic:				class ClassA 			implements Interface1, Interface2, Interface3
+				2. Generic:				class ClassA<T> 		implements Interface1<T>, Interface2<Integer>, Interface3<Object>
+				3. Mixed:				class ClassA<T> 		implements Interface1<T>, Interface2, Interface3<Integer>
+
+	
+    	
+
+
+
+
+
+
+
+
+
+
+    	Interface Variables:
+
+        	An interface variable of (InterfaceA) may reference and be assigned:
+
+			1. Any Interface Variable 	of 			InterfaceA (or any subinterface).
+			2. Any Object 			which implements 	InterfaceA (or any subinterface).
+
+			Given:
+
+				- Superinterface Extension:	Any subinterface is simply an extension of the superinterface therefore naturally containing the superinterface and all its abstract methods.
+				- Superclass Implementation:	Any superclass which already implements the interface (or subinterface) will automatically be inherited and contained in the any subclass.
+
+			Compatibility:
+
+				- Compatibility exists when the an interface or object can be assigned to an Interface Variable.
+				- The Interface Variable is 'only interested' or 'able to provides access' to the abstract methods itself declares.
+
+		Superinterface Extension:
+
+			Interface is provided 'access' to InterfaceA via:
+
+				1. An interface extending InterfaceA.
+
+					InterfaceA
+					|
+					Subinterface
+
+		Superclass Implementation:
+
+			Class is provided 'access' to InterfaceA via:
+
+				1. A superclass implementing InterfaceA directly:
+
+					Superclass......InterfaceA
+					|
+					Class
+
+				2. A superclass implementing a subinterface of InterfaceA:
+
+							InterfaceA
+							|
+					Superclass......SubInterface
+					|
+					Class 
+
+				3. Implementing InterfaceA directly:
+
+					Class..........InterfaceA
+
+				4. Implementing a subinterface of InterfaceA:
+
+							InterfaceA
+							|
+					Class..........SubInterface
+
+		Parlance:
+
+       			When describing invoked Parameterised Types, it should always be considered a whole entity:
+
+                		ObjectA<ObjectB>:           	"An Object A of Object B"
+				List<String>:           	"A List of String"
+
+                		InterfaceA<ObjectB>:        	"An Interface A of Object B"
+                		InterfaceA<InterfaceB>:     	"An Interface A of Interface B"
+

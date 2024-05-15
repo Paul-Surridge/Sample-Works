@@ -1,0 +1,516 @@
+Generic - Class
+
+	Purpose:
+
+		- To enable same algorithm to be used on differing objects.
+        	- To enable type safety.
+        	- Increase code reuse, reliability and robustness.
+
+	Applicable:
+
+		- Generic are only applicable to:
+
+			1. Class:		Top Level, Nested or Local
+			2. Abstract Class:	Top Level, Nested or Local
+			3. Interface:		Top Level, Nested
+			4. Enum:		Constructor
+			5. Constructor
+			6. Method	
+
+		- Generics may be declared, assigned or used within:
+
+			Class
+
+			Memory		Member				Class				Local		Shadow
+									Type Parameter			Type Parameter
+			_________________________________________________________________________________________________________
+
+			non-Static	Field				Y				n/a		n/a
+					Constant			Y				n/a		n/a	//Constant must be initialised within Constructor.
+					Initialisation Block		Y				n/a		n/a	//Limited use given any Type Variables within the Initialisation Block can only be initialised via Type Arguments passed in Constructor.
+			
+					Constructor			Y				Y		Y
+					Method				Y				Y		Y
+			
+					Class				Y				Y		Y
+					Abstract Class			Y				Y		Y
+					Local Class			Y				Y		Y
+
+					Anonymous Class			n/a				n/a		Y
+					Lambda Expression		n/a				n/a		Y
+					Block				n/a				n/a		Y
+
+	  		Static		Field				-				n/a		n/a			
+	    				Constant			-				n/a		n/a			
+	    				Initialisation Block		-				n/a		n/a			
+
+	    				Method				-				Y		-
+
+	   				Class				-				n/a		n/a
+	    				Abstract Class			-				n/a		n/a
+	   				Enum				n/a				n/a		n/a
+					    Constructor			-				Y		-
+	    				Interface			-				n/a		n/a
+
+					Anonymous Class			n/a				n/a		-
+					Lambda Expression		n/a				n/a		-
+					Block				n/a				n/a		-
+
+		- Generics may be applied equally to components in either non-Static and Static, however given that Type Parameters are inherently non-Static, only Local Type Parameters may be used in Static memory:
+
+			Component	Type Parameter
+			Location
+			_______________________________
+
+			non-Static:	Class + Local
+			Static:		Local			//Static Method is the only place where Type Parameters may be used.
+
+	Building:
+
+		Key Rules:
+
+			1. Generics 'lays on top' of non-generic components.
+			2. Generics is a layer of extra syntax allowing for generic algorthims for varying data types.
+			3. Generics/Type Parameters:
+
+				Class<T>
+				{
+					Field:			Class
+					
+					Constructor:		Class or Local
+					Method:			Class or Local
+					Static Method:		Local
+				}
+
+		Header/Body:
+
+			[Access Modifier] class	[Identifier/Name] [Type Parameters] <T, V> extends [Extended Class] implements [Implementing Interfaces [Comma Separated List]]
+
+			class Class<T>
+			{
+				T objT;						//Class		Instance Variable must be initialised via an argument passed to the Constructor or Method.
+				final T objT;					//Class		Instance Variable (Final) must be initialised via an argument passed to the Constructor only.
+
+					Class (T t, int i){}			//Class
+				<K, V> 	Class (V v, int i){}			//Local
+				<K, V> 	Class (K k, V v, int i){}		//Class and Local
+				<K, T> 	Class (K k, int i){}			//Local (with Class Override)
+
+					T method (T t, int i){}			//Class
+				<K, V> 	K method (V v, int i){}			//Local
+				<K, V> 	T method (K k, V v, int i){}		//Class and Local
+				<K, T> 	T method (K k, int i){}			//Local (with Class Override)
+
+				<K, V> 	K staticMethod (V v, int i){}		//Local
+				<K, T> 	T staticMethod (K k, int i){}		//Local (with Class Override)
+			}
+
+			Compile Fail:
+
+				class Class<T>
+				{
+					static T objT;				//Compile Fail		Class Variable:		Class Type Parameter used in static context	
+					static final T objT;			//Compile Fail		Class Variable (Final)	Class Type Parameter used in static context
+
+					T staticMethod (T t, int i){}		//Compile Fail		Class Type Parameter used in static context	
+				}
+
+		Constructor:
+
+			- Constructor may be overloaded with non-Generic and Generic versions.
+
+		Comparison [Non-Generic Class]:
+
+			- Identical except for the introduction of Class and Local Type Parameters.
+
+	Extending:
+
+		Class Type		Permitted Extended Types
+		______________________________________________
+
+		non-Generic:		non-Generic or Generic
+		    Generic:		non-Generic or Generic		//Generic Parent may produce non-Generic extended class as long as pass 'hardcoded' Type Arguments to Parent class.
+
+            	'Passup':
+
+			- Any extended class whose parent was generic, must 'pass up' and define the Type that the parent class must use:
+
+				1. Hardcode:			'Integer'
+				2. Class Type Parameter:	Relay and pass up the Type that gets passed to the extended class.
+				3. Blank/Object:
+
+		'super':
+
+			- The constructor of the extended class must contain super(...) as the first statement.
+			- 'super' must initialise any fields of the Parent Class in accordance with any Type passed up to Parent Class.
+
+		Permutations
+
+			class Superclass<T>
+
+				class Subclass<T> 		extends 	Superclass<T>
+				class Subclass<T> 		extends 	Superclass<Integer>
+				class Subclass<T> 		extends 	Superclass
+				class Subclass<T, V> 		extends 	Superclass<T>
+				class Subclass<T, V> 		extends 	Superclass<V>
+				class Subclass<T, V> 		extends 	Superclass<Integer>
+				class Subclass<T, V> 		extends 	Superclass
+
+			class Superclass<T, V>
+
+				class Subclass<T> 		extends 	Superclass<T, Integer>
+				class Subclass<T> 		extends 	Superclass<Integer, String>
+				class Subclass<T> 		extends 	Superclass
+				class Subclass<T, V> 		extends 	Superclass<T, V>
+				class Subclass<T, V> 		extends 	Superclass<T, Integer>
+				class Subclass<T, V> 		extends 	Superclass<Integer, String>
+				class Subclass<T, V> 		extends 	Superclass
+				class Subclass<T, V, U> 	extends 	Superclass<T, V>
+				class Subclass<T, V, U> 	extends 	Superclass<T, Integer>
+				class Subclass<T, V, U> 	extends 	Superclass<Integer, String>
+				class Subclass<T, V, U> 	extends 	Superclass
+	
+			class Superclass<T>
+
+				class Subclass<T> extends Superclass<T>
+	
+					Subclass<Integer>		is compatible with	Superclass<T>			//Subclass will always be compatible for Superclass
+	
+				class Subclass<T> extends Superclass<Integer>
+	
+					Subclass<Integer>		is compatible with	Superclass<Integer>		//Subclass will only be compatible if Type Argument is Integer i.e. matches that defined for the superclass.
+					Subclass<String>		is not compatible with	Superclass<Integer>
+
+				class Subclass<T> extends Superclass
+	
+					Subclass<Integer>		is not compatible with	Superclass			//Subclass will not be compatible with the superclass in any case given the Type Arguemnt in Superclass is Object.
+					Subclass<String>		is not compatible with	Superclass		
+
+			Additional Type Parameter (Irrelevant):
+
+				class Subclass<T, V> extends Superclass<T>
+	
+					Subclass<Integer, String>	is compatible with	Superclass<T>			//Subclass will always be compatible for Superclass
+	
+				class Subclass<T, V> extends Superclass<Integer>
+	
+					Subclass<Integer, String>	is compatible with	Superclass<Integer>		//Subclass will only be compatible if Type Argument is Integer i.e. matches that defined for the superclass.
+					Subclass<String, String>	is not compatible with	Superclass<Integer>
+
+				class Subclass<T, V> extends Superclass
+	
+					Subclass<Integer, String>	is not compatible with	Superclass			//Subclass will not be compatible with the superclass in any case given the Type Arguemnt in Superclass is Object.
+					Subclass<String, String>	is not compatible with	Superclass		
+
+			class Superclass<T, V>
+
+				class Subclass<T> extends Superclass<T, Integer>
+	
+					Subclass<Integer>		is compatible with	Superclass<T, Integer>		//Subclass will always be compatible for Superclass
+					Subclass<String>		is compatible with	Superclass<T, Integer>
+	
+				class Subclass<T> extends Superclass<Integer, String>
+	
+					Subclass<Integer>		is compatible with	Superclass<Integer, String>	//Subclass will only be compatible if Type Argument is Integer i.e. matches that defined for the superclass.
+					Subclass<String>		is not compatible with	Superclass<Integer, String>
+
+				class Subclass<T> extends Superclass
+	
+					Subclass<Integer>		is not compatible with	Superclass			//Subclass will not be compatible with the superclass in any case given the Type Arguemnt in Superclass is Object.
+					Subclass<String>		is not compatible with	Superclass			
+
+			Equal Number of Type Parameters
+
+				class Subclass<T, V> extends Superclass<T, V>
+	
+					Subclass<Integer, String>	is compatible with	Superclass<T, V>		//Subclass will always be compatible for Superclass
+					Subclass<String, Integer>	is compatible with	Superclass<T, V>
+	
+				class Subclass<T, V> extends Superclass<T, Integer>
+	
+					Subclass<Integer, String>	is not compatible with	Superclass<T, Integer>		//Compatible only where the Type Parameter matches any hardcoded.
+					Subclass<String, Integer>	is compatible with	Superclass<T, Integer>
+	
+				class Subclass<T, V> extends Superclass<Integer, String>
+	
+					Subclass<Integer, String>	is compatible with	Superclass<Integer, String>	//Compatible only where the Type Parameter matches any hardcoded.
+					Subclass<String, Integer>	is not compatible with	Superclass<Integer, String>
+
+				class Subclass<T, V> extends Superclass
+	
+					Subclass<Integer, String>	is not compatible with	Superclass			//Subclass will not be compatible with the superclass in any case given the Type Arguemnt in Superclass is Object.
+					Subclass<String, Integer>	is not compatible with	Superclass			
+
+
+		Compatibility:
+
+			- Compatibility exists when it is possible to assign a subclass object to a superclass reference variable.
+			- Compatibility only exists between related generic classes.
+			- Compatibility does not exist between generic types which only have related Type Arugments:
+
+				GenericClass<SuperClass> 	is not compatible with 		GenericClass<SubClass>
+				GenericClass<Number> 		is not compatible with 		GenericClass<Integer>
+
+			- Compatibility between generic types only exists if:
+
+				1. The generic class has been extended AND has the same (not related) Type Argument(s).
+				2. The Type Argument(s) defined for the superclass must match that defined for the subclass.	
+			
+				NB: Any additional Type Parameters in the subclass are irrelevant given that they are not passed to the superclass
+
+	Generic Interface
+
+		- Any implementing class must become Generic.
+		- Any implementing class must declare the same number of Type Parameters.
+		- Extending:
+
+			- Additional Type Parameters can be added:
+
+				interface GenericSubInterface<T, V> extends GenericSuperInterface<T>
+
+			- If the type parameters are not passed to the super then Object is used.
+
+	Generic Constructor
+
+		- Constructor may have a local Type Parameter distinct from the class Type Parameter.
+		- Constructor will follow the same syntax as any other generic method.
+
+			class GenericClass<T>
+			{
+				<V extends Number> GenericClass<V v>	{...}}
+
+		- Generic Constructor can be implemented in a generic or non-generic class.
+
+	Generic non-Static/Static Method
+
+		- Generic Method can be implemented in a generic or non-generic class.
+		- The Type Parameters permitted maybe:
+
+			Local Scope Only
+
+	Declaration and Instantiation:
+
+		Declaration:		class Box<T extends Comparable<T>> implements MinMax<T>
+					{
+						Box(T t)
+						{}
+					}
+
+		Instantiation:		Box<Number> MyBox = new MyBox<>(1);		// "A Box of Number"
+
+	Type Inference:
+
+		- Applicable to:
+
+			Generic Class Instantiation
+			Generic Method Invocation
+			Generic Static Method Invocation
+
+		- Class
+
+			- Diamond Operator
+
+				GenericClass<Integer, String> 	objGenericClass		= new GenericClass<Integer, String>(1, "Test");		//Full Qualification
+				GenericClass<Integer, String> 	objGenericClass		= new GenericClass<>(1, "Test");			//Inferred.
+				GenericClass 			objGenericClass		= new GenericClass<>(1, "Test");			//Unknown - Complies but not known what gets created (might be raw type)?
+
+			- Raw Type
+
+				GenericClass 			objGenericClass		= new GenericClass(1, "Test");				//Raw Type - Object used (Types not inferred).	
+
+		- Methods
+
+			- Type Witness Omission
+
+				bReturn = GenericClass.<Integer, String>genericMethod1(1, "Argument");
+        			bReturn = GenericClass.genericMethod1(1, "Argument");
+
+				bReturn = GenericClass.<Integer, String>staticGenericMethod1(1, "Argument");
+        			bReturn = GenericClass.staticGenericMethod1(1, "Argument");
+
+		- Target Types
+
+			- Target Type is the Type that the compiler 'expects' it needs to return:
+
+				static <T> List<T> emptyList();
+				
+				List<String> list1 = Collections.emptyList();
+
+			- The compiler infers that the Type Parameter is String, given that it is returning to a List<String>.
+			- Type Witness can be used if need be:
+
+				List<String> list1 = Collections.<String>emptyList();
+
+			- In general the compiler starts with List<Object> and then tries to workout what may actually be required.
+
+	Erasure:
+
+		- All Type Parameters are replaced with their bounds or Object.
+		- Bytecode only contains non-generic classes, interfaces and methods.
+		- Type casts are inserted to preserve type safety.
+		- Bridge Methods preserve polymorphism in extented generic types.
+		- No new classes are created for Parameterised Types therefore not incurring any additional runtime overhead.
+
+
+	Varargs:
+
+		- Care is needed when using Varargs declarations of Generic Types.
+		- For Varargs are converted to arrays and arrays of Parameterised Types are not permitted, therefore converted to an array of Object.
+		- Array of Object can lead to Heap Pollution.
+		- Compiler warnings can be suppressed but further investigate should it occur.
+
+	Restrictions:
+
+		1. Primitive Types:
+
+			- Cannot instantiate generic types with primitive types:
+
+				class GenericClass<K, V>
+
+				GenericClass<int, double> 	objGenericClass = new GenericClass<>();		//Compile Error.
+				GenericClass<Integer, Double> 	objGenericClass = new GenericClass<>();		//OK, given using autoboxing.
+
+		2. Instantiate:
+
+			- Cannot create instances of type parameters within the Generic Class:
+
+				class GenericClass<K, V>
+				{
+					K obj = new K();							//Compile Error, given K is not known at compile time.
+				}
+
+			- Possible to create instances within methods using Reflection:
+
+				public static <E> void append(List<E> list, Class<E> cls) throws Exception
+				{
+    					E elem = cls.newInstance();   						//OK to instantiate via Reflection
+    					list.add(elem);
+				}
+
+			- Invoked as follows:
+
+				List<String> ls = new ArrayList<>();
+				append(ls, String.class);
+
+		3. Static Field:
+
+			- Cannot declare static fields whose types are type parameters within the Generic Class:
+
+				class GenericClass<K, V>
+				{
+					private static K obj;							//Compile Error, given K is not known at compile time.
+				}
+
+			- All Generic Types are implicitly non-static.
+
+		4. instanceof():
+
+			- Cannot use casts or instanceof with parameterized types:
+
+				public static <E> void method(List<E> list) {
+    					if (list instanceof ArrayList<Integer>) {  				//Compile Error, given that it is unknown what list is a list of.
+
+			- Due to erasure all type information is lost.
+			- instanceof() requires a reifiable type.
+			- Use unbounded wildcard:
+
+				public static void method(List<?> list) {
+    					if (list instanceof ArrayList<?>) {  					//OK, given ArrayList<?> is a reifiable type.
+
+			- ArrayList<?> has a relationship with all permutations:	ArrayList<Integer>, ArrayList<Double>...
+
+		5. Casting:
+
+			- Cannot cast to Parameterised Type unless using unbounded wildcard:
+
+				List<Integer> li = new ArrayList<>();
+				List<Number>  ln = (List<Number>) li;  						//Compile Error
+
+			- Unless the Type Paramter is always valid:
+
+				List<String> 		l1 = ...;
+				ArrayList<String> 	l2 = (ArrayList<String>)l1;  				//OK, given Type Argument is consistent
+
+			- Unless using unbounded wildcard but further investigate should it occur.
+
+		6. Arrays:
+
+			- Cannot Create Arrays of Parameterized Types:
+
+				List<Integer>[] arrayOfLists = new List<Integer>[2];  				//Compile Error
+
+			- Due to potential issues with throwing ArrayStoreExceptions.
+
+		7. Catch/Throwable/Throw:
+
+			- Generic class cannot extend directly (or indirectly) Throwable.
+			- Generic class cannot extend Throwable or a subclass of Throwable.
+			
+				class QueueFullException<T> 	extends Throwable { /* ... */ }			//Compile Error, unable to extend Throwable directly.
+				class MathException<T> 		extends Exception { /* ... */ }    		//Compile Error, unable to extend Throwable indirectly.
+
+			- A method cannot catch an instance of a Type Parameter:
+
+				public static <T extends Exception, J> void execute(List<J> jobs)
+				{
+    					try {}
+					catch (T e) {}   							//Compile Error
+				}
+
+			- However it is possible to throw a Type Parameter in a Throws clause:
+
+				class Parser<T extends Exception> {
+    					public void parse(File file) throws T {}				//OK
+				}
+
+		8. Overload:
+
+			- Cannot overload methods within the Generic Class where the Type Parameters erase to the same raw type:
+
+				public class Example {
+    					public void print(Set<String> strSet) 	{}
+    					public void print(Set<Integer> intSet) 	{}
+				}
+
+			- It would not be possible to distinguish the x2 methods, given they would have the same signature after erasure.
+
+		9. Relational Operators:
+
+			- Cannot use relational operators on Parameterised Types:
+
+				public static <T> T max(T x, T y) {
+        				return x > y ? x : y;							//Compile Error, unable to compare Parameterised Type using >
+    				}
+
+	Naming Conventions
+
+		Class Type Parameter: 		T			class GenericSuperClass1<T, V>	
+		Class Type Parameter List: 	<T, V>			class GenericSuperClass1<T, V>
+
+		Method Type Parameter: 		T			T genericMethod1(T t, V v)	
+		Method Type Parameter List: 	<T, V>			T genericMethod1(T t, V v)	
+
+		E:		Element (Collections)
+		K:		Key
+		N:		Number
+		T:		Type
+		V:		Value
+
+		S, U, V:	Additional Types...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

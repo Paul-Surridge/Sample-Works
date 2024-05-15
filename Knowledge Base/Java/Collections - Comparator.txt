@@ -1,0 +1,126 @@
+Collections - Comparators:
+
+	Overview:
+
+		- Object Ordering is via x2 interfaces:
+
+			1. [Interface] Comparable<T>:
+
+				public interface Comparable<T> {
+    			    	    public int compareTo(T o);
+				}
+
+				- x1 Argument for comparing a supplied argument with the invoking object.
+
+			2. [Interface] Comparator<T>:
+
+				public interface Comparator<T> {
+			    	    int compare(T o1, T o2);
+				}
+
+				- x2 Arguments for comparing x2 objects irrespective of teh invoking object.
+
+	Comparison Table:
+
+		Comparable<T>:
+
+			Example:
+
+				iResult = objInvoking.compareTo(objSupplied);
+
+			iResult		Condition
+			_________________________________________
+
+			Positive:	objSupplied > objInvoking
+			0:		objSupplied = objInvoking
+			Negative:	objSupplied < objInvoking
+
+			The result is centric on the Supplied object i.e. if Supplied is larger then result is positive.
+
+		Comparator<T>:
+
+			Example:
+
+				iResult = obj.compare(obj1, obj2);
+
+			iResult		Condition
+			_________________________________________
+
+			Positive:	obj1 > obj2
+			0:		obj1 = obj2
+			Negative:	obj1 < obj2
+				
+			The result is centric on the first argument i.e. if first is larger then result is positive.
+
+		ClassCastException:
+
+			If any of the supplied arguments are inappropriate then a ClassCastException is thrown.
+	
+	Constructor:
+
+		- Argument Validation.
+		- Classes that implment either interface, recommend:
+
+			1. Ensure that any supplied arguments are as required and non-null.
+			2. It is good practice that Classes check validity when being instantiated, rather than when calling a method at a later date.
+
+	equals(), hashCode():
+
+		- Comparable<T> and Comparator<T> requires the modification of .equals().
+		- Any changes to .equals() requires refinement of .hashCode().
+		- Equal object must have equal hash codes.
+
+
+	compareTo() and compare()
+
+		- The online Java API documentation list x4 restrictions applicable to the implementation of .compareTo() and .compare().
+		- These restrictions should be adhered to in order to ensure that any sorting of objects is well defined.
+		- These restrictions ensure that the natural ordering of the class is 'Total Order' i.e. that all possible permutations can be ordered.
+
+	Equality:
+
+		- Comparators should be 'Compatible/Consistent with equals()' i.e. Comparators should not generate a different result than .equals(), therefore:
+
+			1. Compared elements should only be deemed equal if e1.equals(e2).
+			2. Compared elements should not just consider only one field of the Elements and mistakenly consider them equal when there may be other subtle differences.
+
+		- For example, this is to prevent differing Elements from mistakenly being blocked joining a Set.
+
+	Do Not:
+
+		1. Manually Negate the Return:
+
+			static final Comparator<Employee> SENIORITY_ORDER = new Comparator<Employee>()
+				{
+            				public int compare(Employee e1, Employee e2)
+					{
+                				return e2.hireDate().compareTo(e1.hireDate());
+
+						//return -e2.hireDate().compareTo(e1.hireDate());	Do not simply negate the return in order to 'flip' the ordering
+            				}
+    				};
+
+			- This is not always guaranteed to work in all circumstances.
+			- For example:
+
+				-Integer.MIN_VALUE == Integer.MIN_VALUE		//The negated MIN_VALUE of Integer remains negative.
+
+		2. Cut-Corners:
+
+			- Always ensure that whatever quick changes are applied to a Comparator, that it will work and cover all comparison permutations.
+
+	Examples:
+
+		- Anonymous object is instantiated inline, implementing the Comparator functional interface.
+		- Anonymous object overrides the single abstract method which is passed as an argument to the .sort().
+
+			Arrays.sort(iNegativeValues, new Comparator<Integer>()
+        		{
+            			public int compare(Integer e1, Integer e2)
+            			{
+                	    	    if      (e2 == e1)     return 0;
+                	    	    else if (e2 > e1)      return 1;
+                	    	    else                   return -1; 
+            			}
+        		});
+

@@ -1,0 +1,492 @@
+Big O Notation
+
+	- Big O is a representation of the behaviour or 'what the algorithm does' in terms of time/space relevant to one of its iterative terms/arguments if ran an infinite number of times.
+	- Big O provides an indication of the speed or amount of memory of the algorithm consumes when the input tends to infinity or worse case scenario:
+
+		Time Complexity:
+
+			- The number of operations the algorithm requires and how this grows with respect to the input.
+			- Therefore these operations must be dependent on the input.
+			- Operations not dependent on the input are ultimately considered constant time O(1) (for these would become insignificant as n => infinity).
+
+				for(int i = 0 ; i<40 ; i++)		Time: O(40) => O(1)
+				...
+
+		Space Complexity:
+
+			- The amount of memory the algorithm requires and how this grows with respect to the input.
+			- Memory allocation must be dependent on the input.
+			- Memory allocation not dependent on the input are ultimately considered constant space O(1) (for these would become insignificant as n => infinity).
+
+				int[] array = new int[40];		Space: O(40) => O(1)
+				
+
+	- Big O corresponds to the 'Order of a function'.
+	- Big O represents the 'upper bound' of the asymptotic growth rate of the algorithm.
+	- Bog o represents the 'worse case' scenario of input e.g. if a sorting algorithm was passed a collection of data not a single element initially sorted.
+
+		- Hence the comparison table contains Big O notation that represents the absolute worse case scenarios that those data structre/algorithms may need to deal with e.g.
+
+			Finding all subsets of a set:		O(2^n)
+			Finding all permutations of a string:	O(n!)
+			Mergesort:				O(nlog(n))
+			Iterating all over cells of a matrix:	O(mn)
+
+	- Big O provides a means to describe how an algorithm grows as the size of the input grows.
+	- Big O is used for it is not possible to accurately and consistently state the actual runtime in seconds of an algorithm in all environments given numerous factors e.g. language, computer speed etc...  
+	- Big O is also known as Landau's symbol.
+	- Big O representation of a function is determined via x2 general rules:
+
+
+		Rules							Term(s) Which Are Kept
+		___________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+		1. f(x) = Sum 		(of Several Terms):		Largest Growth Rate		The term with the highest growth rate is kept and all others can be ignore given that they become insignificant at large n.
+		2. f(x) = Product 	(of Several Factors):		Non-Constants			All constants can be ignored given that they become insignificant at large n.
+
+	- In general when reducing a Big O expression:
+
+		1. Consider n as being infinity.
+		2. What would naturally occur to the relevant significance of various terms and coefficents. 
+		
+		O(n + c) 		= O(n)		 	//Constant becomes insignificant when n tends towards infinity
+		O(cn)			= O(n) (c > 0)		//Constant becomes insignificant when n tends towards infinity
+		O(c/n)			= O(n) (c > 0)		//Constant becomes insignificant when n tends towards infinity
+		O(n/c)			= O(n) (c > 0)		//Constant becomes insignificant when n tends towards infinity
+		O(n^2 + n + c)		= O(n^2)		//Constant and n becomes insignificant when n tends towards infinity
+
+		f(n) = 7log(n)^3 + 15n^2 + 2n^3 + 8		//n^3 is the largest term in function
+		O(f(n)) = O(n^3)
+
+	Example:
+
+		- Given:
+
+			f(x) = 6x^4 - 2x^3 + 5
+
+		- Apply Rule 2:		f(x) -> 6x^4 - 2x^3
+		- Apply Rule 1:		f(x) -> 6x^4
+		- f(x) is now considered a product of 6 and x^4.
+		- Apply Rule 2:		f(x) -> x^4	(the 6 which is a constant on its own is omitted)
+		- Finally		O(x^4)
+
+		- Therefore the Big O representation of f(x) is O(x^4).
+		- When x tends to infinity the value of f(x) is x^4.
+
+	- Multiple Iterative Variables:
+
+		- Each iterative variable is treated separately and reduced down separately using the x2 rules above:
+
+		 	for i = 0 to A.length
+				for j = 0 to B.length
+					print A[i] + B[i]
+
+		- O(A * B)	//The x2 iterative variables are treated separately and cannot be reduced any further.
+				//If you were informed that A and B were of the same length, the it would be permissible to use O(N^2).
+
+		NB:
+
+			- Big O does not need to exclusively contain/reference N.
+			- Big O can use any iterative variable that is applicable in the process in this case A and B.
+			- N is just a default iterative variable representing the number of times the process is run (as it tends to infinity).
+			- N should ideally only be used if there is absolutely no ambiguity about what N is, it is generally clearer to use the applicable variable used in the algorithm.
+
+	- N Meaning:
+
+		- N need not specifically represent an iterative variable.
+		- N may represent other variables/quantities applicable to the specific algorithm in question e.g
+
+			1. Number of Nodes in a tree
+			2. Depth of a tree  
+
+	- Big O gives an idea of the speed/effiency of the algorithm whereby:
+
+		O():	Number of operations to perform specified action
+		n:	Number of elements in data structure
+
+	- Scale:		
+
+		Constant	O(1):		Quickest:	Action always takes only x1 operation (can't get any quicker than that)
+		Logarithmic	O(Log n)			Divide and conquer algorithms which reduce/discard the input by half each time e.g. Binary Search
+		Linear		O(n)
+		Linerithmic	O(nLog n)			Divide and conquer algorithms which reduce/discard the input by half each time but with accompanying constant multiplier e.g. MergeSort
+		Quadratic	O(n^2)
+		Cubic		O(n^3)
+		Exponential	O(2^n)				Recursive algorithms
+				O(3^n)
+				O(4^n)
+				O(5^n)
+				O(b^n) (b > 1)
+		...
+		O(n!)		Factorial	Slowest:
+
+	- The higher the value slower the algorithm.
+
+	- To gain a sense of the number of steps that partiuclar algorithms requires given a particular input:
+
+		Algorithm		Input			Approximate Number
+								Of Steps
+		__________________________________________________________________
+
+		O(1)			1			1
+					10			1
+
+		O(n^2)			1			1
+					10			100
+
+		O(2^n)			1			2
+					10			1024
+					50			1.12 e+15
+
+	- Logarithms
+
+		- Logarithms are the inverse of exponentiation:
+
+			2^3 = 8:		2: Base
+						3: Exponent
+
+			Base^Exponent = 8	Exponent is the power that a base needs to be riased to reach a value.
+
+		- Logarithms are the value of the exponent i.e. the power that that particular base needs to be raised by to reach a particular value:
+
+			log[base 2] 8 		= 3	The logarithm of 8 to the base 2 is 3.
+			log[base 10] 10000 	= 4	The logarithm of 8 to the base 2 is 3.
+
+		- Loagrithms in general are:
+
+			if 	x^z = y
+			then	log[base x] y = z	
+
+		- Logarithms in computing are naturally base 2 i.e. wherever nlog(n) is used in Big O notation it is referring to:
+
+			O(log[base 2](n)) = Number of Operations (given a particular input of n)
+			O(log(n))
+
+			Therefore if n:
+
+				n = 8:		Number of operations:	3
+				n = 16:		Number of operations:	4
+				n = 1024:	Number of operations:	10
+
+			Therefore:
+
+				1. Double n:	Number of operations increase by 1
+				2. If n becomes very large number of operations remains comparatively small.
+
+			Therefore O(log(n)) is very good for very large sorted datasets.
+
+	- O(log(n))
+
+		- O(log(n)) is derived for certain algorithms which are:
+
+			1. Divide and Conquer e.g. Binary Search.
+			2. Recursive.
+			3. Reduce the input n by half each time.
+
+		- O(log(n)):
+
+			Input Array Size = n
+
+			n = 128		Recursive Call 1
+			n = 64		Recursive Call 2
+			n = 32		Recursive Call 3
+			n = 16		Recursive Call 4
+			n = 8		Recursive Call 5
+ 			n = 4		Recursive Call 6
+			n = 2		Recursive Call 7
+			n = 1
+
+			- Divide and conquer e.g. Binary Search discards a half of the array each recursive call.
+			- Therefore:
+
+				- In worse case scenario the number of (recursive) operations is log(128) = 7 i.e. the amount of time required is x7 compared to if n = 1.
+				- If n were to fall somewhere inbetween an exact power of 2 e.g.
+
+					If:	n = 24
+					Then:	Number of operations would actually be a maximum of x4 i.e. the actual value of log[base 2](24) = 4.120.... is rounded down. 
+	- Combining
+
+		O(1) + O(1) = O(1 + 1) = O(1);
+
+	- Examples
+
+		MergeSort:	O(n Log(n))		Therefore MergeSort takes nLog(n) operations to complete the action of sorting.
+
+		1. for i = 0 to N		O(N)
+			print i
+
+		2. for i = 0 to N		O(N^2)	N*N executions
+			for j = 0 to N
+				print i
+
+		3. for i = 0 to N		O(N)	Still N executions irrespective of only even elements are printed
+			if i % 2 == 0
+				print i
+
+		4. for i = 0 to N		O(N)
+			if i % 2 == 0
+				print i
+
+		   for i = 0 to N		O(N)	Even though both are x2 separate processes of O(N), it is not O(2N) given that the '2' becomes insignificant at infinity and the overall is still O(N)
+			if i % 2 != 0
+				print i
+
+		5. for i = 0 to N		O(N^2)	Compared to example 1 above, only prints half of all possible combinations, therefore O(N^2 / 2), however the '/2' becomes insignificant at infinity and the overall is still O(N^2)
+			for j = i to N
+				print i, j
+
+		6. for i = 0 to A.length	O(N)
+			for j = 0 to B.length
+				print A[i] + B[i]
+
+		7. for(Person person : people)					O(P)		P = Number of people
+			last_death = max(last_death, person.death)
+
+		   for(Person person : people)					O(P * L)	L = Lifespan
+			for(int year = person.birth; year < person.lifespan)
+				counter++;
+
+		   for(int year = 0 ; year < Y ; year++)			O(Y)		Y = Number of years
+			func();
+
+			- Evaluate the Big O of each individual process.
+			- In this case do not use N but applicable iterative variable.
+			- Combine Big O notation:
+
+				O(P) + O(P * L) + O(Y)	->   O(P + P*L + Y)  ->   O(P*L + Y)	//Not sure why the Y does not dissapear along with P as would have thought the largest term P*L would dominate at infinity.
+												//It may be because only terms containing the same variable have rule 1 applied?
+
+		8. int fib(int n)
+			if (n == 0) || (n == 1)		return 1;
+			else				return fib(n-1) + fib(n-2);
+
+			- Recursion requires the creation of a 'call tree' to ascertain the number of times that the function fib() will be called in order to calculate a given position in the fibonacci sequence.
+			- In this instance the variable of interest is not an iterative variable but the number of times that the function must be called in order to calculate the finonacci value at a particular stage.
+			- Create a 'Call Tree' if to find the 6th value of the fibonacci sequence:
+
+				fib(6)
+				fib(5)								fib(4)
+				fib(4)				fib(3)				fib(3)				fib(2)
+				fib(3)		fib(2)		fib(1)		fib(0)		fib(2)		fib(1)		fib(1)		fib(0)
+				...		...						...		
+
+			- The call tree doubles the number of nodes for each level, therefore the total number of times fib() is called is (given a height K) O(2^k).
+			- NB: O(2^k) is close enough as shown the last level does not contain a further doubling of calls, but for any interveiw that is close enough.
+
+			- Recursion Reduction:
+
+				- In recursive problems, the computation can normally be drastically reduced via memoization, or placing previously calculated values into memory array.
+				- This can reduce the necessary computation down to traditionally O(k).
+				- Or use my own solution of:
+
+					1. Placing the calculated values into an array of x5 elements.
+					2. Use modulous to find the value once reach end.
+
+		9. while i < n			O(n)
+			while j < 3*n		O(3n)
+			{}
+			while j < 2*n		O(2n)
+			{}
+
+			1. Count up the number of 'steps' invloving n.
+			2. Nested loops are multipled (naturally)
+			3. Sequential loops/processes are added (naturally)
+			4. Produce equation					O(n(3n + 2n))
+			5. Simplify equation					O(5n^2)
+			6. Find the most dominant term.				O(n^2)
+
+		10. i = 0
+			while i < 3n				O(3n)
+				j = 10
+				while j <= 50			O(40)
+				{
+					j++
+				}
+				j = 0
+				while j < n^3			O(n^3 / 2)
+				{
+					j = j + 2;
+				}
+				i++
+
+			Combining:	O(3n(40 + (n^3 / 2)))
+					O(3n(n^3))
+					O(3n^4)
+					O(n^4)
+
+		11. Recursive Evaluation:
+
+			- Given:
+
+				void method(int n)
+				{
+					if(n<=1)
+				   	    return;
+
+					method(n - 1);
+					method(n - 1);
+				}
+
+			- In order to evaluate its time complexity it is necessary to:
+
+				1. Assess and appreciate the number of times that the method will be called (by itself).
+
+			- In this instance, for each call to method() it will spin off x2 additional calls to method(), therefore:
+
+				2 x 2 x 2 x 2 ... (n times) = O(2^n).
+
+			- This can be visualised using a Call Tree i.e. 'if in doubt draw it out'.
+
+			- NB: The above is brute force, with use of memoisation: O(n)
+
+		12. Recursive Evaluation:
+
+			- Given:
+
+				int method(int n, int m)
+				{
+					if(n==0 || m==0)
+				   	    return 0;
+					if(n==1 && m==1)
+				   	    return 1;
+
+					method(n - 1, m) + method(n, m - 1);
+				}
+
+			- In order to evaluate its time complexity it is necessary to:
+
+				1. Assess and appreciate the number of times that the method will be called (by itself).
+
+			- In this instance, for each call to method() it will spin off x2 additional calls to method(), therefore:
+
+				n, n-1, n-2 ... 1 (n times)
+				m, m-1, m-2 ... 1 (m times)
+			
+				= O(2^(n+m))
+
+			- NB: The above is brute force, with use of memoisation: O(n+m)
+
+	Recursive Time/Space Complexity:
+
+		- The time/space complexity of a recursive algorithm is best (most confidently) evaluated from the call tree:
+		- Given particular input(s) to a recursive algoirthm:
+
+			Time Complexity:
+
+				Associated with the amount of branching:
+
+					1. What is the increase rate in the function calling itself?
+					2. What is the size of the base of the call tree once the recursion has finished and the condition has been met?
+
+				For this will correspond to the worse case scenario for the amount of times the method will call itself.
+
+			Space Complexity:
+
+				Associated with the maximum height.
+
+					1. What is the maximum height of the tree?
+					2. What memory does each iteration of the recursive method use e.g. does it allocate it own memory each time, if so then that must also be taken into consideration.
+
+				For this will correspond to the worse case scenario for the amount of memory used on the call stack.
+
+		- For example, given the fibonacci sequence, the recursive implementation calls itself x2 per iteration.
+
+							fib(7)
+					 _______________|_______________
+					|				|
+			n = 1		fib(5)				fib(6)			Calls: 2
+					|_______			|_______
+					|	|			|	|
+			n = 2		fib(3)	fib(4)			fib(4)	fib(5)		Calls: 4
+					|	|			|	|
+
+		- Therefore as shown:
+
+			Time: 	O(2^n)
+			Space: 	O(n * m)	m: Memory used by the recursive method (if any)
+
+		- The time/space complexities can be derived by evaluating the algorithm but if in doubt draw it out (the call tree) to get a better idea.
+
+	Source Code Evaluation:
+
+		Process:
+
+			1. Observe the source code.
+			2. Next to each statement:
+
+				Sequential:			Time:	O(n+m)	n: Number of particular operations in a statement
+										m: Number of particular operations in a statement
+
+				Loop:				Time: 	O(n)	n: Number of iterations
+								Space:	O(m):	m: Amount of memory allocated within the loop (NB: It is not 'im' given that new is called each iteration disgarding any previous memory allocation).
+
+				Loop (Sequential):		Time:	O(n+m)	n: Number of iterations in loop 1
+										m: Number of iterations in loop 2
+
+											for(int i = 0 to n)
+											{...}
+
+											for(int i = 0 to m)
+											{...}
+
+				Loop (Nested):			Time:	O(nm)	n: Number of outer loop
+										m: Number of inner loop
+								Space:	O(m):	m: Amount of memory allocated within the loop (NB: It is not 'ijm' given that new is called each iteration disgarding any previous memory allocation).
+
+											for(int i = 0 to n)
+											    for(int j = 0 to m)
+											    {...}
+
+				Memory Allocation (new):	Space: 	O(m)	m: Amount of memory allocated
+
+				Recursive Method Call:		Time:	O(b)	b: Base of call tree in worse case scenario
+								Space:	O(bm)	m: Amount of memory allocated within the recursive method
+
+			3. Combine:
+
+				while i < 3n				O(3n)
+					j = 10
+					while j <= 50			O(40)
+					{
+						j++
+					}
+					j = 0
+					while j < n^3			O(n^3 / 2)
+					{
+						j = j + 2;
+					}
+					i++
+
+				Combining:	O(3n(40 + (n^3 / 2)))		//Add the x2 loop operations which are sequential to eachother, multiplied by the outer loop.
+						O(3n(n^3))			//Identify the dominant term as tend to infinity.
+						O(3n^4)
+						O(n^4)				//Remove any constants
+
+			4. In general:
+
+				- Only consider how many discrete executions of n (irrespective of how long the actual individual execution takes, for this quantity likely becomes irrelevant at infinity)
+				- Big O is a measure of the number of discrete executions as time tends to infinity.			
+
+	Equal Complexity
+
+		- When time or space complexity becomes equal between compared algorithms, it may then be appropriate to begin considering the average, likely or best case complexity.
+		- Where arguments can be made for what the more optimal complexity may be in a 'real world' situation.
+		- What is the probability distribution of the characteristics of the input and how this determine the most optimal algorithm.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

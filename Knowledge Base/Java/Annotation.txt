@@ -1,0 +1,558 @@
+Annotations
+
+	Overview:
+
+		- Annotations are metadata i.e. data about data.
+		- Annotations are entirely for external use and do not effect the running of a program in anyway. 
+		- Annotations may be applied when a component is declared or used:
+
+			1. Declarative Annotation:	An Annotation that is applied when a component is declared.
+			2. Type Annotation:		An Annotation that is applied when a component is used within the Java program.
+
+		- Annotation may be applied to all components:
+
+			1. Classes
+			2. Fields
+			3. Methods
+			4. Types
+			5. Annotations
+			6. ...
+
+		- Annotations appear by convention on its own line (except for inline Annotation introduced by Java 8).
+		- Annotations are not statemnets therefore are not terminated with a ;.
+		- Annotations can not be extended.
+
+	Annotating Scope:
+
+		- Annotations soley apply to the next component, not group. block or otherwise:
+
+			public class MyHouse implements House
+			{ 
+    				@SuppressWarnings("deprecation")
+    				public void open() {} 
+    				public void openFrontDoor() {}
+    				public void openBackDoor() {}
+			}
+
+		- @SuppressWarnings is only applied to open();			
+
+	@:
+
+		- The @ indicates to complier that what follows is an Annotation.
+		- The @ (AT for Annotation Type).
+
+	Elements:
+
+		- Elements are named/value pairs.
+
+			1. Annotation Declaration:
+
+				@interface Author
+				{
+   				    String Name();			//Element 'Name'
+   				    String Date();			//Element 'Date'
+				}
+
+			2. Annotation Deployment:
+
+				@Author(
+   				    Name = "Benjamin Franklin",		//Elements assigned within a comma separated list.
+   				    Date = "3/27/2003"
+				)
+				class MyClass() { ... }
+
+		- Annotations may contain 0, 1 or more Elements:
+
+			1. Elements: 0
+
+				@Override
+				void superMethod()
+
+			2. Elements: 1
+
+				@interface Author
+				{
+   				    String Value
+				}
+
+				@interface ID
+				{
+   				    int Value
+				}
+
+				NB: Annotations with only x1 Element named 'value' can omit the name when annotation is deployed:
+
+						@Author(value = "John Doe")
+						void myMethod() { ... }
+
+					Alternatively:
+
+						@Author("John Doe")
+						void myMethod() { ... }	
+
+			3. Elements: Multiple
+
+				@Author(
+   				    Name = "Benjamin Franklin",
+   				    Date = "3/27/2003"
+				)
+				class MyClass() { ... }
+
+	Declaration:
+
+		- Annotations are forms of Interface hence are declared:
+
+			@interface [Annotation Name]
+			{
+			  ...
+			}
+
+		- But are deployed using parenthesis containing a comma separated list of Element Values:
+
+			@[Annotation Name]
+			(
+			    Element1 = "Value 1",
+			    Element2 = "Value 1",
+			    Element3 = "Value 1",
+			    Element4 = 1,
+			    Element5 = 2,
+			    Element6 = 3,
+			)
+			class MyClass { ... }
+
+		- Importation:
+
+			- Annotations within the Java API maybe imported or fully qualified:
+
+				1. Imported:
+
+					import java.lang.annotation.*;			//Wildcard, fully import all annotations within the package.
+					import java.lang.annotation.Repeatable;		//Import just specified annotation.
+			
+					@Repeatable(MealContainer.class)
+					public @interface Meal
+					{ ... }
+
+				2. Fully Qualified:
+
+					@java.lang.annotation.Repeatable(MealContainer.class)
+					public @interface Meal
+					{ ... }
+
+	Deployment:
+
+		- Annotations can be deployed:
+
+			1. Singular:
+
+				1. x0 Elements:
+
+					@Override
+					void superMethod()
+
+				2. x1 Element - Default Element 'value':
+
+						@Author(value = "Jane Doe")
+						class MyClass { ... }
+
+					Or
+
+						@Author("Jane Doe")
+						class MyClass { ... }
+
+				3. xN - MultiElements:
+
+					@Author(
+   				    	    Name = "Benjamin Franklin",
+   				    	    Date = "3/27/2003"
+					)
+					class MyClass { ... }
+
+			2. Multiple:
+
+				@Author(name = "Jane Doe")
+				@EBook
+				class MyClass { ... }
+
+			3. Repeated:
+
+				@Author(name = "Jane Doe")
+				@Author(name = "John Smith")
+				class MyClass { ... }
+
+	Extenstion:
+
+		- Annotations cannot be extended:
+
+			@interface Annotation1
+			{
+    				String Name();
+			}
+			@interface Annotation2 extends Annotation1
+			{
+    				String Name();
+			}
+
+		- Compile Fail for Annotation Types cannot be extended nor form part of a hierachy.
+
+	Types:
+
+		- Annotations may be of following x5 types:
+
+			1. Annotation:
+
+				- Pre-Defined.
+				- Contained within the Java API packages:
+
+					1. java.lang
+					2. java.lang.annotation
+
+			2. Annotation Types:
+
+				- Custom.
+				- Annotation Types are useful alternative to comments.
+				- Annotation Types require x2 stages:
+
+					1. Declaration:		Annotation Type is declared and the internal Elements are defined.
+					2. Deployment:		Annotation Type is deployed and annotated to an applicable component within the Java program and Elements given values.
+
+			3. Meta-Annotations:
+
+				- Annotations applied to Annotations i.e. data about metadata.
+				- Contained within the Java API packages:
+
+					1. java.lang.annotation
+
+			4. Type Annotations:	
+
+				- Annotations that can be applied to anywhere a Type is used rather than just declared.
+
+			5. Container Annotation Type:
+
+				- Annotation Types which are repeated must be placed within a 'Container Annotation Type'.
+
+		- In order to easily distinguish/remember the difference between 'Annotation Types' and 'Type Annotations':
+
+			Annotation Types:
+
+				- Same as 'Generic Types' where the 'type of the Type' goes before the term 'Type'.
+				- Therefore 'Annotations Types' are custom types of annotations.
+
+			Type Annotations:
+
+				- Annotations applied to types inline.
+
+	1. Annotations
+
+		- Annotations are 'Pre-Defined Annotations'.
+		- Java API contains many pre-defined annotation types stored within x2 packages:
+
+			1. java.lang
+
+				1. @Drecprecated
+				2. @FunctionalInterface
+				3. @Override
+				4. @SafeVarargs
+				5. @SupressWarnings
+
+			2. java.lang.annotation
+
+				1. @Documented
+				2. @Inherited
+				3. @Native
+				4. @Repeatable
+				5. @Retention
+				6. @Target
+
+				NB: java.lang.annotation primarily contain Meta-Annotations
+
+		- JavaDoc Tags:
+
+			- JavaDoc Tags are related to Annotations and conceptually similar.
+			- JavaDoc Tags are of similar syntax but with lower case initial lettering.
+
+				// Javadoc comment follows
+    				/**
+     				* @deprecated
+     				* Explanation of deprecation...
+     				*/
+    				@Deprecated
+    				static void deprecatedMethod()
+				{...}
+
+		- Compiler Warnings Catagories:
+
+			All compiler warnings are of x2 catagories:
+
+				1. 'deprecation'
+				2. 'unchecked'
+
+		- For Example:
+
+			@Deprecated:		Compiler generates a warning if the program uses any component which has been deprecated.
+
+							public interface House { 
+    							/**
+     							* @deprecated use of open 
+     							* is discouraged, use
+     							* openFrontDoor or 
+     							* openBackDoor instead.
+     							*/
+    							@Deprecated
+    							public void open();
+							}
+
+							NB: Deprecated components should have an accompanying explanation and recommended alternative.
+
+			@Override:		Compiler generates a warning if methods fails to correctly override a superclass method.
+			@SupressWarnings:	Compiler ceases generating warning associated with 'deprecation' of the associated component:
+
+							@SuppressWarnings("deprecation")
+    							void useDeprecatedMethod()
+							{...}
+
+			@SafeVarargs:		Compiler ceases generating any 'unchecked' warnings associated with the Varargs Parameter, the programmer asserts that the usage of Varargs is safe.
+			@FunctionalInterface:	Compiler ceases generating any warning associated with the Functional Interface i.e. the Interface is intended to be Functional.
+
+	2. Annotation Types:
+
+		- Annotation Types are 'Custom Annotations'.
+		- Annotation Types are forms of Interface.
+		- Annotation Types contain 'Annotation Type Element Declarations'.
+		- Annotation Type Element Declarations declare and define the elements contained with an Annotation Type.
+		- Annotation Type Element Declarations are terminated with a ;.
+
+			Expected-Type	Name()	Default Value;
+
+		- Declaration:
+
+			@interface ClassPreamble
+			{
+			    //'Annotation Type Element Declarations'
+
+   			    String 	Author();
+   			    String 	Date();
+   			    int 	CurrentRevision() 	default 1;
+   			    String 	LastModified() 		default "N/A";
+   			    String 	LastModifiedBy() 	default "N/A";
+   
+			    // Array
+   			    String[] Reviewers();
+			}
+
+		- Deployment:
+
+			@ClassPreamble
+			(
+   			    Author 		= "John Doe",
+   			    Date 		= "3/17/2002",
+   			    CurrentRevision 	= 6,
+   			    LastModified 	= "4/12/2004",
+   			    LastModifiedBy 	= "Jane Doe",
+   			
+			    // Array
+   			    Reviewers 		= {"Alice", "Bob", "Cindy"}
+			)
+			public class Class
+			{...}
+
+		- JavaDoc:
+
+			Annotation Types can be made to appear in Javadoc generated doumentaton when declared with additional @Documented via import java.lang.annotation.*;
+
+				import java.lang.annotation.*;
+
+				@Documented
+				@interface ClassPreamble
+				{...}
+
+	3. Meta Annotations:
+
+		- Meta-Annotations are annotations about annotations.
+		- Meta-Annotations are contained within 'java.lang.annotation'.
+		- Meta-Annotations are specification of the behaviour of Annotations.
+
+			@Retention:
+
+				- Annotation is retained up to the specified point.
+				- Annotation contains an Enum [RetentionPolicy]:
+
+					RetentionPolicy.SOURCE:		Annotation is only retained by the source code and ignored by the compiler.
+					RetentionPolicy.CLASS:		Annotation is only retained by the compiler and ignored by the JVM.
+					RetentionPolicy.RUNTIME:	Annotation is only retained by the JVM so can be used by the runtime environment.
+
+				- For Example:
+
+					@Retention(CLASS)
+    					@interface ClassPreamble
+					{...}
+
+					NB: If not specified then defaults to CLASS.
+
+			@Documented:
+
+				- Annotation will be included within JavaDoc Tool.
+				- Annotation are by default not included within JavaDoc Tool.
+
+			@Target:
+
+				- Annotation is only permitted to be associated with the specified component.
+				- Annotation contains an Enum [ElementType]:
+
+					ElementType.ANNOTATION_TYPE:	Annotation may only be applied to (custom) Annotation Types.
+					ElementType.CONSTRUCTOR:	Annotation may only be applied to a Constructor.
+					ElementType.FIELD:		Annotation may only be applied to a Field.
+					ElementType.LOCAL_VARIABLE:	Annotation may only be applied to a Local Variable.
+					ElementType.METHOD:		Annotation may only be applied to a Method.
+					ElementType.PACKAGE:		Annotation may only be applied to a Package.
+					ElementType.TYPE:		Annotation may only be applied to any component within a Class.
+
+			@Inherited:
+
+				- Annotation maybe inherited from the Superclass.
+				- For Example:
+
+					1. Class:	It is queried for an Annotation Type
+					2. Class:	It has no matching Annotation Type.
+					3. Superclass:	If specified the Superclass will be referenced automatically to check if it has matching Annotation Type.
+
+				- @Inherited is not enabled by default.
+				- @Inherited is only applicable to class declarations.
+
+			@Repeatable:
+
+				- Annotation may be a 'Repeatable Annotation', repeated multiple times on the same component e.g. if wanting to assign multiple differing Element values.
+
+	4. Type Annotations:
+
+		- Type Annotations are annotations that can be applied anywhere a component is used/deployed (rather than just when it was declared).
+		- Type Annotations are only introduced from Java SE 8:
+
+			Java SE 8 (Pre):	Annotations can be applied to: 		Component Declaration.
+			Java SE 8 (Post):	Annotations can be applied to:		Component Declaration and Use.
+
+		- Type Annotations are inline rather than on own line.
+		- Type Annotations occur directly behind the component being annotated:
+
+			For Example:
+
+				1. Instantiation:
+
+					- Type Annotation associated with the instantiation of an object.
+
+	    					new @Interned MyObject();
+
+				2. Type Casting:
+
+					- Type Annotation associated with the Type Casting of an object.
+
+						myString = (@NonNull String) str;
+
+				3. Interface Implementation:
+
+					- Type Annotation associated with the Interface implemented by a Class.
+
+						class UnmodifiableList<T> implements @Readonly List<@Readonly T> { ... }
+
+				4. Thrown Exception Declaration:
+
+					- Type Annotation associated with the throwing of an Exception.
+
+						void monitorTemperature() throws @Critical TemperatureException { ... }
+
+		- External Analysis Tools:
+
+			- Type Annotations work in conjunction with external analysis tools.
+			- Type Annotations enable external analysis tools to check:
+
+				1. NullPointer
+				2. Regular Expression Operation
+				3. Mutex Locks
+				4. Stronger Type Checking
+
+			- Java SE 8 does not contain its own built in tools that enable a program to be analysed externally.
+			- Java SE 8 enables the download and install of plugin frameworks that can be used inconjunction with the compiler and Type Annotations.
+			- Java SE 8 enables the layering of multiple plugins to check for various kinds of error.
+
+				For Example:
+
+					1. A Variable Declaration may be assigned a Type Annotation:
+
+				  	    @NonNull String sTest;
+
+					2. The program is run.
+					3. The framework monitors sTest and should it ever be assigned a Null, the compiler will prints a warning/notice.
+			
+	Repeating Annotations:
+
+		- Repeating Annotations are the same Annotation being applied multiple times to the same component:
+
+			@Schedule(dayOfMonth="last")
+			@Schedule(dayOfWeek="Fri", hour="23")
+			public void doPeriodicCleanup() { ... }
+
+			- The Custom Annotation (Annotation Type) 'Shedule' has been declared and annotated upon the method 'doPeriodicCleanup'.
+			- The Custom Annotation (Annotation Type) 'Shedule' sets the method to run on last day of month at 23:00.
+			- NB:
+
+				- Admittedly it could have been annotated as follows:
+
+					@Schedule(dayOfMonth="last", dayOfWeek="Fri", hour="23)
+					public void doPeriodicCleanup() { ... }
+
+				- But for demonstration purposes, it was necessary to spilt across Repeated Annotations.
+
+		- Repeating Annotation may be used wherever standard Annotations (Type 1 - Above) may be deployed.
+		- Repeating Annotation are stored within x1 'Container Annotation' (which is automatically generated by the complier).
+		- Repeating Annotation require a 2-Step process:
+
+			1. Declare 'Annotation Type' to be repeated.
+			2. Declare 'Container Annotation Type' to hold the repeated Annotation Type.
+
+		- In Detail:
+
+			1. Declare 'Annotation Type' to be repeated:
+
+				1. Annotate the Annotation Type with the Meta-Annotation 'Repeatable':
+
+					import java.lang.annotation.Repeatable;
+
+					@Repeatable(Schedules.class)
+					public @interface Schedule {
+  				    		String dayOfMonth() default "first";
+  				    		String dayOfWeek() default "Mon";
+  				    		int hour() default 12;
+					}
+
+				2. The value passed to Repeatable is the 'Container Annotation' that will hold the repeating 'Annotation Type'.
+				3. The 'Container Annotation Type' must be declared separately and its Class class must be passed as the value of the Element 'value', as specified by the Java API for @Repeatable
+
+					Class<? extends Annotation>
+
+			2. Declare 'Container Annotation Type':
+
+				1. The 'Container Annotation' is declared by being given a suitable name to the Annotation Type that it will hold:
+
+					public @interface Schedules {
+    						Schedule[] value();
+					}
+
+				2. The only single Element of the 'Container Annotation' must be an array of the Annotation Type that it will hold.
+				3. The class of this 'Container Annotation' is then passed as an 'argument' to the @Repeatable Annotation.
+
+		- Reflection:
+
+			- Annotations are used throughout the Reflection package.
+			- Methods within this package return specified Annotation Types.
+			- On occasion it may be necessary to obtain the 'outer' Container Annotation Type' prior to be able to obtain the repeated Annotation Types.
+
+	Enabling Annotation Processing:
+
+		- Annotations may not be enabled by default when compiling/building a program.
+		- Annotations may need to be enabled within the IDE e.g. IntelliJ:
+
+			1. Settings | Build, Execution, Deployment | Annotation Processors.
+			2. 'Enable annotation proccessing':			Check
+			3. 'Obtain processors from project classpath'		Check
+
+

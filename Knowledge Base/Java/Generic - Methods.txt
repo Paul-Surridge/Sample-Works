@@ -1,0 +1,152 @@
+Generic - Methods
+
+	Key Rules:
+
+		1. All:			Any method can be made generic.
+		2. Discrete:		Any method can be made generic but the 'outer' class or interface does not need to be generic.
+		3. Type Parameters:	Any method can be made generic and choose to use either Local or Class/Interface Type Parameters.
+
+	Generic methods can be applied to:
+
+		1. Class
+		2. Interface
+		3. Generic Class
+		4. Generic Interface
+
+	Agnostic:
+
+		- A class or interface does not need to be generic in order to implement generic method.
+		- A generic method can be introduced at anytime.
+
+	All Method Forms:
+
+		Any method forms can be made generic:
+
+		1. Class:		(Generic or Non-Generic)
+
+			Constructor
+			Method
+			Static Method
+
+		2. Interface:		(Generic or Non-Generic)
+
+			Abstract Method
+			Static Method
+			Default Method
+	
+	Local Type Parameters:
+
+		Generic methods can choose to use either:
+
+			1. Class/Interface 	Type Parameters (if present/available).
+			2. Local 		Type Parameters.
+
+		Declaration:
+
+			- Local Type Parameters are always declared and defined before the Return Type:
+
+				<K, T extends Number> int staticMethod(T t, K k, int i)
+
+			- Local Type Parameters adhere and operate in the same way as Interface/Class Type Parameters.
+
+		Scope:
+
+			- Local Type Parameters can only be used within the method.
+			- Local Type Parameters can only be used in the same x3 roles as the Class/Interface Type Parameters:
+
+				1. Parameter
+				2. Local Variable	
+            			3. Return Type:
+
+					<K, T extends Number> K staticMethod(T t, K k, int i)
+					{
+						T objT = t;
+					}
+
+		Identifiers:
+
+			- Local Type Parameter identifiers are discrete from Class/Interface Type Parameters.
+			- Local Type Parameter identifiers may choose to use or override the same identifiers as the class/interface Type Parameters.	
+
+				class Class<T, V>
+				{
+					<K, V extends Number>	void method(T t, K k, V v, int i);		//T is Class Type Parameter, K and V are Local Type Parameter
+					<K, T extends Number>	void method(T t, K k, int i);			//T is Local Type Parameter
+
+					<K, T extends Number>	int staticMethod(T t, K k, int i)
+					{}
+				}
+
+				interface Interface<T>
+				{
+					<K, V extends Number>	void abstractMethod(T t, K k, V v, int i);	//T is Interface Type Parameter, K and V are Local Type Parameter
+					<K, T extends Number>	void abstractMethod(T t, K k, int i);		//T is Local Type Parameter
+
+					<K, T extends Number>	int staticMethod(T t, K k, int i)
+					{}
+
+					<K, T extends Number>	K defaultMethod(T t, K k, int i)
+					{}
+				}
+
+		Order of Precedence:
+
+			- Compiler first refers to local Type Specification to find any matching Type Parameter identifer, if not found then refers and checks the 'outer' class/interface declaration.
+			- For example:
+
+				1. If both the class/interface and method declare the Type Parameter T.
+				2. The compiler will refer to the Local Type Specification.
+				3. If no matching Type Parameter identifer exists then refers to the 'outer' class/interface declaration.
+
+	Invocation:
+
+		- Generic methods are invoked in the same way as non-generic methods.
+		- Generic methods however need to be supplied or infer the Type Arguments via x2 options:
+
+			1. Type Witness:
+
+				- Explicitly define the types being passed via a Type Witness which is defined just before the method name:
+
+					String sString = Interface.<String, Integer>staticMethod("Test", 1);
+
+			2. Type Inference:
+
+				- Compiler infer what is being passed via the arguments:
+
+					String sString = Interface.staticMethod("Test", 1);
+
+	Examples:
+
+		class Class<T, V>
+		{
+			Local Type Parameters				Return Type
+
+									int 	genericMethod(T t)
+									T 	genericMethod(int i)		//Possible as long as the T can be obtained via Class Variable of T or other local method which returns T.
+									T 	genericMethod(T t, V v)
+									T 	genericMethod(T t, V v, int i)
+
+			<K> 						K 	genericMethod(K k, T t)
+			<K extends Number> 				K 	genericMethod(K k, T t)		//K must be of Number (or subclass)
+			<K extends Comparable<K>> 			K 	genericMethod(K k, T t)		//K must either:
+
+															1. Class which implement Comparable<K>		(or subinterface)
+															2. Interface Comparable<K>			(or subinterface)	(To be tested)?
+
+			<K extends Number & Comparable<K> & ...> 	K 	genericMethod(K k, T t)		//Class and Interface upper bounded type parameter, it must be a Number or below and implement Comparable or below.
+														//The Class must go first and able to implement multiple interfaces using &
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

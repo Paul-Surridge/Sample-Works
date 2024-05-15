@@ -1,0 +1,460 @@
+Maven
+
+	Overview:
+
+		- Maven is a software project management and build automation tool.
+		- Maven is essentially a large plug-in which is encorporated and supported by the IDE e.g. there are specific windows, buttons and paraphernalia for using Maven.
+		- Maven is written in java and developed by the Apache Foundation in 2004.
+		- Maven is based on the concept of the Project Object Model (POM).
+		- Maven can manage a projects build, reporting and documentation from a central information source.
+		- Maven primary goal is to allow the developer to understand the complete state of a project in the shortest period of time.
+		- Maven provides:
+
+			- Easy build process.
+			- Uniform build system.
+			- Consistent usage.
+			- Quality dependency management e.g. automatic updating of dependencies.
+			- Quality project information.
+			- Guidelines for best practices development.
+			- Transparent migration to new features.
+
+		- Maven typically builds outputs of *.jar or *.war files.
+		- Maven utilises a pom.xml in the root folder of a project.
+		- Maven utilises convention over configuration.
+		- Maven has alternatives:
+
+			Apache Ant:
+
+				- Cumbersome to use, not used much anymore.
+				- Released in 2000 and written in java.
+
+			Gradle:
+
+				- Easy to use.
+				- Spring framework implements.
+				- Released in 2007 and written in java and groovy.
+
+	Maven Project Structure:
+
+							 _______________________
+							|			|
+							| Frameworks		|
+							|_______________________|
+							 _______________________
+					Dependencies	|			|
+					Plugins	--------| Libraries		|
+					|		|_______________________|
+					|		 _______________________
+					|		|			|
+					|		| Compilers		|
+					|		|_______________________|
+					|
+		 _______________	|
+		| pom.xml	|	|
+		| (root)	|	|			...
+		|		|-------|
+		|		|	|
+		|		|	|		 _______________________
+		|_______________|	|		| Module 1		|
+					|		|			|
+					|		| psvm (String args[])	|
+					|		| {			|
+					|		|  ...			|
+					|		| }			|
+					|		|			|
+					|		| _____________________	|
+					|		|| pom.xml	       ||
+					|		||_____________________||
+					|		|_______________________|
+					Modules -------- _______________________
+							| Module 2		|
+							|			|
+							| 			|
+							|			|
+							|			|
+							|			|
+							|			|
+							| _____________________	|
+							|| pom.xml	       ||
+							||_____________________||
+							|_______________________|
+
+	Maven Project Standardised Directory Structure and Naming:
+
+		- Maven projects will specify within the online documentation the names and structure of directories/files that the Maven build process will use (it is recommended to maintain this structure for consistency between projects).
+			
+	Maven Workflow:
+
+		- Overall Maven operates as follows:
+
+			1. IDE:			Press Play
+			2. IDE:			Passes the pom.xml in the root folder to Maven.
+			3. Maven - Build:	Parses the pom.xml file:
+
+							- Downloads and caches all listed from mvnrepository.com that are used within the overall java application:
+
+								- Dependencies
+								- Plugins
+								- Libraries
+								- Frameworks
+								...
+
+							- All build file outputs are located within the 'target' directory in the root.
+							- All build status outputs are located and listed within the 'build' tab of the IDE.
+							- If the pom.xml specifies that it is a multi-module project then Maven will be directed and continue to parse the pom.xml files within the respective module subdirectories.
+
+			4. Maven - Compile:	Compiles the *.java files to bytecode (typically using a downloaded Maven compiler plugin).
+			5. Maven - JVM:		Once built and compiled:
+
+							- JVM is instantiated.
+							- JVM is pointed to the psvm wherever that may be.
+							- JVM runs the java application as normal (using all of the dependencies listed in the pom.xml).
+
+		- Maven purpose is the removal of the need to manually complete the build process each time:
+
+			- Manually having to download dependencies/libraries/frameworks that are used within a project.
+			- Manually having to manage dependencies/libraries/frameworks that are used within a project e.g. ensuring that they are up to date.
+
+		- Maven automation of the build process ensures consistency and portability of the build process.
+
+	Maven Clean Build and Compile:
+
+		- Maven may require a 'mvn clean install' CLI command to be ran to ensure that running the current state of the program.
+		- Maven may not necessarily run the current state of the program but run a cached version. It should not be assumed that simply pressing the 'play' button on IDE will automatically rebuild and recompile the whole project.
+
+	Maven Plugins:
+
+		- Maven is essentially a core collection of Maven Plugins.
+		- Maven plugins are the actual components that complete the work e.g.
+
+			- Generate *.jar files
+			- Compile programs
+			- Unit test programs
+			- Generate project documentation
+
+		- Maven plugins complete all of the actions during the build process.
+		- Maven plugins have x2 forms:
+
+			1. Build Plugins:
+
+				- Build plugins execute during the build of the project.
+				- Build plugins are configured within the <build/> element.
+
+			2. Reporting Plugins:
+
+				- Reporting plugins execute during the site lifecycle of the project.
+				- Reporting plugins are configured within the <reporting/> element.
+
+		- Maven plugins should all have the following minimal information which is used to identify and reference the POM:
+
+			1. groupid
+			2. artifactid
+			3. version
+
+			NB: There appears to be less empathsis on the versioning of the pom.xml, but rather handled via the x3 elements above i.e. all files are called pom.xml not pom-v1.xml etc...
+
+		- Maven customisation is achieved by add/remove of plugins.
+		- Maven plugins are artifacts that provide goals to Maven.
+		- Maven plugins may have x1 or more goals which represent a capability of that plugin, e.g. Compiler plugin has the following x2 goals:
+
+			1. compile
+			2. testCompile
+
+		- Maven plugins contain a configuration, which can be discretly configured.
+		- Maven plugins are software downloaded by Maven from mvnrepository.com.
+		- Maven plugins are external to the application.
+		- Maven plugins are not directly used by the application.
+		- Maven plugin examples:
+
+			- Compiler
+			...
+
+		- Maven plugins include:
+
+			Maven WAR:
+
+				- Maven WAR (Web Application Archive).
+				- Maven WAR files contain the resources required for developing web applications.
+				- Maven WAR collects all artifact dependencies, classes and resources of the web application into a single *.war file.
+				- Maven WAR plugin installation:
+
+					1. pom.xml:		Add element:		<packaging>war</packaging>		Maven will package the application as a WAR i.e. web application archive within a *.war file.
+					2. Project Structure:	Add directory:		webapp					Directory contains all files associated with the web application e.g. *.css, *.js files.
+					3. Project Structure:	Add directory:		WEB-INF					Directory contains all files which cannot be served directly to a client of the container but are accessible to the servlet, therefore these files can be used but not sent to client. WEB-INF is not part of the public document tree.
+																Directory contains *.jsp, thymeleaf templates and configuration files.
+					4. webapp:		Add index.html:							Enter basic html to display for testing purposes.
+					5. pom.xml		Add dependency:		
+
+									<plugin>
+                				    			    <groupId>org.apache.maven.plugins</groupId>
+                				    			    <artifactId>maven-war-plugin</artifactId>
+                				    			    <version>${maven-war.version}</version>
+                				    			    <configuration>
+                    								<failOnMissingWebXml>false</failOnMissingWebXml>	//Required in order to prevent build failure due to missing webxml.xml in WEB-INF.
+                				    			    </configuration>
+                							</plugin>
+
+					6. Maven:		mvn clean install						Maven will download and confirm the installation of the WAR plugin.
+					7. target:										Final outputted *.war file will appear within the target directory within the project root.
+
+			Maven Cargo:
+
+				- Maven Cargo enables the ability to use Maven goals to manipulate WAR projects running within the Apache Tomcat Servlet container.
+				- Maven Carge enables the ability to run Tomcat in embedded mode (which therefore does not require Tomcat to be manually and explicitly installed on local machine).
+				- Maven Cargo enables the ability to quickly get a web application running without the need to install a separate instance of Tomcat (which can be troublesome).
+
+			NB: Plugin full documentation is located on the Apache Maven website.
+
+	Maven Dependencies:
+
+		- Maven allows for separate dependencies to be downloaded from a central Maven repository and included within the build process.
+		- Maven central repository:
+
+			mvnrepository.com
+
+		- Maven dependency download:
+
+			1. Go to mvnrepository.com.
+			2. Search for dependency.
+			3. The dependency is not separately downloaded but a tag included in the POM.xml file to instruct the download.
+			4. Select the latest stable dependency.
+			5. The dependency page contains the text to be added to the POM.xml file:
+
+				<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+				<dependency>
+    				    <groupId>ch.qos.logback</groupId>
+    				    <artifactId>logback-classic</artifactId>
+    				    <version>1.2.11</version>
+    				    <scope>test</scope>
+				</dependency>
+
+			6. IntellJ will initially show the values of the above text extract in red, refresh the maven page and after a short while once they are found they will appear white:
+
+							Dependencies Location
+				_____________________________________________
+
+				- Maven Window:		Dependencies
+				- Project Window:	External Libraries
+
+			7. Run 'mvn clean install' to fully download all dependencies and confirm operational.
+
+			Manual Dependency Install:
+
+				- Maven dependency which cannot be downloaded from the mvnrepository but may need to be separately downloaded as a *.jar file from the original project website, can be imported and declared as an external library as follows:
+
+					1. Library Download:		Download the library from original project website, typically contained as a x1 *.jar file.
+					2. Project Root:		Create a directory called: 'libs' within the root directory.
+					3. libs:			Paste *.jar into libs.
+					4. mvnrepository.com:		Still go to remote repository and search for the dependency.
+					5. mvnrepository.com:		Copy the latest XML extract for this project as detailed above.
+					7. Project pom.xml:		Add the dependency by pasting XML extract into the project pom.xml file (using a separate property for the version number).
+					7. Module pom.xml:		Add the dependency as normal however with following additional tags:
+
+ 										<scope>system</scope>
+ 										<systemPath>${basedir}/../libs/libraryfilename.jar</systemPath>
+
+		- Maven dependencies are all downloaded into a local maven repo which is dependent upon the OS. Location paths found under Settings | Build Execution Deployement | Build Tools | Maven:
+
+			C:\Users\Paul Surridge\.m2\repository
+
+		- Maven dependency source and documentation can be downloaded from the Maven window icons.	 
+
+	Maven Plugins v Dependencies:
+
+		- Plugins:		'Used' by the Build Tool e.g. Maven.
+		- Dependencies:		'Used' by the application.
+
+	Maven Build Lifecycle:
+
+		- Maven is built around the central concept of a Build Lifecycle.
+		- Maven build lifecycle is clearly defined therefore:
+
+			- Minimal Command Set:		Only need to learn/use a minimal set of commands to build any artifact/project.
+			- Consistency:			POM will ensure that all projects are built consistently.
+
+		- Maven has the following x3 built-in lifecycles:
+
+			1. Default:			Project deployment.
+			2. Clean:			Project cleaning.
+			3. Site:			Project documentation.
+
+		- Maven lifecycles contain phases/stages, the complete listing of all phases is:
+
+			maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference
+
+			Default lifecycle:
+
+				Contains the following phases:
+
+				1. validate:		Validate that the project is correct and all necessary information is present.
+				2. compile:		Compile source code of the project.
+				3. test:		Test the compiled source code using a unit test framework e.g. JUnit.
+				4. package:		Package code into a distributable form e.g. *.jar.
+				5. install:		Install the package to the local repository for use by other local projects.
+				6. deploy:		Deploy the project by copying package to the remote repository for sharing with other developers and projects 
+
+	POM: Adding a Plugin:
+
+		- Maven by default compile .java files to bytecode v5, if using later JDK's then need to alter the 'compile' plugin via the POM:
+
+			<build>
+			  <plugins>
+			    <plugin>
+			      <groupid>org.apache.maven.plugins</groupid>		//Specify the x3 core identifers of the plugin
+			      <artifactid>maven-compiler-plugin</artifactid>
+			      <version>3.7.0</version>
+			      <configuration>						//Configure the configuration of the plugin to use version 10
+				<target>10</target>
+				<source>10</source>
+				<release>10</release>
+			    </plugin>
+			  </plugins>
+			</build>
+
+	IntelliJ IDEA:
+
+		Maven Project Window:
+
+			- Maven project specifiers e.g. artifactid cannot contain spaces.
+			- Maven project window:
+
+				- Lifecycle Folder:	Contains all respective goals of the lifecycle.
+				- Lifecycle Folder:	Double click on individual goals to run that goal.
+
+			- Maven build outputs to the 'target' folder in root.
+
+		Run Multiple Goals:
+
+			- Maven can run x1, multiple or all goals.
+
+				1. Maven Window:		Click on M
+				2. Open Command Line:		Enter:	'mvn <goal1> <goal2> ...'
+									'mvn clean install'
+
+
+	Maven Multi-Module Project
+
+		- Maven enables the development of multi-module projects (MMP).
+		- MMP consists of:
+
+			Parent Project:
+
+				- x1 parent project in overall application.
+				- POM Project.
+				- Empty wrapper project for the application which contains just a pom.xml.
+				- Project does not contain any code, it is just a project that specifies the modules.
+				- Delete the src folder (for only need the pom.xml).
+				- Dependencies used throughout the project/modules are all declared, defined and stored in x1 location within the parent project.
+				- Dependencies contained within the dependency management of the parent project are automatically inherited in all module projects.
+
+			Child Project:
+
+				- Modules project.
+				- Modules are contained within sub-directories within the parent project.
+				- Modules need only reference the artifactid and groupid of any dependencies situated in the parent project. 
+
+		- Parent and child project each contain their own pom.xml files which reference and communicate between.
+		- Setup Sequence:
+
+			1. Create parent project.
+			2. Parent project:	Delete src folder
+			3. pom.xml:		Add <packaging>pom</packaging>
+			4. Parent project:	Add module
+
+	Maven Properties:
+
+		- Maven properties are placeholders e.g. constants.
+		- Maven properties can hold key information e.g. version numbers in x1 place and can be referenced anywhere within the pom.xml.
+		- Maven properties help to eliminate magic strings:
+
+			<properties>
+        		  <logback.version>1.2.11</logback.version>
+    			</properties>>
+
+			<version>${logback.version}</version>		//Referenced using ${property_name}
+
+Gradle
+
+	Overview:
+
+		- Gradle is an open source build automation system that builds upon the concepts of Apache Ant and Apache Maven.
+		- Gradle introduces a Groovy based domain specific lanaguage (DSL) instead of an XML based configuration file (as per Maven).
+		- Gradle is intended for multi-project builds typically large complex projects.
+		- Gradle implements incremental builds which intelligently determine which parts of the build tree are up to date and those which require rebuilding.
+		- Gradle generally enables much faster build times.
+		- Gradle was released in 2007 and written in Java and Groovy.
+		- Gradle is the official build tool for Android applications due to its flexibility and ability to accommodate future extensibility.
+		- Gradle is the official and exclusive build tool within Android Studio.
+		- Gradle is optimal for unit testing and continuous integration.
+
+	Gradle within Spring:
+
+		- Spring Framework uses Gradle.
+		- Spring Framework supplies a Gradle Spring Boot plugin (much like that availiable for Maven), allowing the creation of *.jar and *.war files and run Spring Boot Applications.
+
+	Gradle Project Structure:
+
+		- Gradle project strcture example:
+
+			build.gradle
+			src
+		  	  main
+		    	    java
+		      	      //Java Source Code
+		    	    resources
+		      	      //Images etc...
+		    	    webapp
+		      	      WEB-INF
+		        	web.xml
+		      	      index.jsp
+		      	        //Web Application Source Code
+		  	test
+		    	    java
+		      	      //Java Test Source Code
+		    	    resources
+		      	      //Test Images etc...
+
+		- The structure is very similar to Maven except:
+
+			1. pom.xml:		No pom.xml file.
+			2. build.gradle:	pom.xml is replaced with the build.gradle file (Build Configuration Script).
+			3. Tasks:		Gradle utilises 'tasks' opposed to 'goals'.
+
+		- The structure of a Gradle is based upon x2 basic concepts:
+
+			1. Projects:		Projects may include library *.jar or web application.
+			2. Tasks:		Tasks are atomic piece of work which a build performs e.g. compiling classes, creating a *.jar, generating a javadoc.
+
+		- The structure of a Gradle build consists of x1 or more projects.
+
+	Grade Lifecycle and Tasks:
+
+		- Gradle has the following build phases:
+
+			1. Initialisation:		Determine which projects are going to form a part of the build.
+			2. Configuration:		Projects are configured.
+			3. Execution:			Determine and execute all tasks constituting the build.
+
+	Gradle Plugin:
+
+		- Gradle Plugin collates and packages up reusable pieces of build logic which can be reused in other projects and builds.
+		- Gradle Plugin can be implemented in any suitable language which compiles to bytecode e.g. Groovy, Java, Kotlin.
+		- Gradle defines a Base Plugin:
+
+			- Provides tasks and conventions which are common to most builds.
+			- Adds structure to the build.
+			- Promotes consistency.
+
+		- Java Plugin serves as the basis for many other Gradle plugins.
+		- Java Plugin assumes the same project layout as Maven e.g.
+
+			src/main/java
+			src/main/resources
+
+	build Directory:
+
+		- build directory is the output directory.
+		- build directory is equivlent to the 'target' directory in Maven.
+
+
+		

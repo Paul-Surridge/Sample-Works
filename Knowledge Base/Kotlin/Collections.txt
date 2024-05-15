@@ -1,0 +1,377 @@
+Kotlin
+
+	Collections:
+
+		- Collections contain the following x3 entities:
+
+			List:		Ordered collections of items.
+			Set:		Unique unordered collections of items.
+			Map:		Sets of key-value pairs where keys are unique and map to only one value.
+
+		- Collections have the following general aspects:
+
+			1. Mutable/Immutable:		May be mutable or read only:
+
+						Extension Function	Example
+				----------------------------------------------------------------------------------------------------------------------------------------------
+				Immutable:	.listOf()		val shapes 				= listOf("triangle", "square", "circle")
+				Mutable:	.mutableListOf()	val shapes: MutableList<String> 	= mutableListOf("triangle", "square", "circle")
+
+				Immutable:	.setOf()		val shapes 			   	= setOf("triangle", "square", "circle")
+				Mutable:	.mutableSetOf()		val shapes: MutableSet<String> 		= mutableSetOf("triangle", "square", "circle")
+
+				Immutable:	.mapOf()		val fruit 			   	= setOf("apple" to 100, "orange" to 200, "pear" to 500)
+				Mutable:	.mutableMapOf()		val fruit: MutableMap<String, Int> 	= mutableSetOf("apple" to 100, "orange" to 200, "pear" to 500)
+
+			2. Casting:			Mutable maybe cast as immutable:
+
+				val shapes: MutableList<String> = mutableListOf("triangle", "square", "circle")
+				val shapesLocked: List<String> = shapes
+
+			3. Extension Functions:		All have many/relevant extension functions:
+
+				.count()
+				.add()/remove()
+				.containsKey
+
+			4. Properties:			All have relevant properties:
+
+				.keys
+				.values
+
+			5. Type Inference:		Type Inference can be applied or the type parameters can be explicitly defined.
+
+			6. in:				in operator can be used to check whether the collection contains an element:
+
+				val shapes = listOf("triangle", "square", "circle")
+
+				println("circle" in shapes)	//true
+
+				NB: Appears that literal strings are not all unique objects i.e. the above would return false in Java (to be investigated), perhaps contents of String are automatically compared.
+
+		- Collections have the following common operations/extension functions:
+
+			.filter(predicate)
+
+				- filter() applies the predicate to all elements within the collection.
+				- filter() returns only those which satisfy the predicate i.e. those which when passed as an argument to the predicate return true:
+
+					1, 2, 3, 4	.filter{it % 2 == 0}		2, 4 ...
+
+			.map(transform)
+
+				- map() transforms or applies the transform/mutation mpa() function to each of the elements within the collection.
+				- map() returns a new list (it does not apply the transformation in place)
+
+					1, 2, 3, 4	.map{it * it}			1, 4, 9, 16 ...
+
+			.any(predicate)
+			.all(predicate)
+			.none(predicate)
+
+				- any()/all()/none() returns a boolean depending upon whether the corresponding elements in the collection satisfy the predicate.
+
+					.any{it % 2 == 0}		Returns true if at least x1 element is even
+					.all{it % 2 == 0}		Returns true if all elements are even
+					.none{it % 2 == 0}		Returns true if no elements are even
+
+				- any()/all()/none() returns a boolean therefore can be preceeded by ! in order to negate the behaviour:
+
+					!any{it % 2 == 0}		Returns true if no elements ar even
+
+				- any()/all()/none() have the following complementary relationships:
+
+					any{} == !none{}
+					!any{} == none{}
+
+					all{!} == none{}		all{it == 0} 	equivalent to 		none{it != 0}
+					none{!} == all{}		none{it == 0} 	equivalent to 		all{it != 0}
+
+									!all{it == 0} 	equivalent to 		!none{it != 0}
+									!none{it == 0} 	equivalent to 		!all{it != 0}
+
+					NB: Given that the functions are interchangable it is recommended to refrain from using ! prefix to negate a function, simply just use the complement without the !.
+
+			.find(predicate)
+			.first(predicate)
+			.firstOrNull(predicate)
+
+				- find() returns the first element (not the index) which satisfies the predicate.
+				- find() returns null if no element is found.
+				- first() throws an exception if no element is found.
+				- firstOrNull() is the same as find().
+
+			.count(predicate)
+
+				- count() returns the number of elements which satisfy the predicate.
+
+			.partition(predicate)
+
+				- partition() divides the collection into x2 collections.
+				
+					Collection 1:	All elements which do satisfy predicate
+					Collection 2:	All elements which do not satisfy predicate
+
+					1, 2, 3, 4, 5, 6	.partition{it % 2 == 0}		2, 4, 6
+												1, 3, 5
+
+				- partition() differs from .filter() in that it keeps the elements which do not satisfy the predicate.
+
+					val (youngest, oldest) = people.partition{it.age < 30}		//Means of separating a list of people using property age
+
+			.groupBy(key)
+
+				- groupBy() uses a key to group all of the elements into more than x2 groups:
+														K	V
+														----------------------------
+					Alice, 31		.groupBy{it.age}		Group 1:	29	Bob, 29
+					Bob, 29							Group 2:	31	Alice, 31, Carol, 31
+					Carol, 31						...
+
+				- groupBy() typically parses a list to a map using the argument passed to the groupBy() as the key:
+
+					val people = listOf(Person1, Person2 .. PersonN)
+
+					val mapByAge: Map<Int, List<Person>> 	= people.groupBy{it.age}				//Returns a map where K = Age and V = List of Person(s) with that age
+					val (age, group) 			= mapByAge.maxBy{(_, group) -> group.size}!!		//Returns a Pair containing the group which has the largest list along with the corresponding age of that group 
+
+			.maxBy(property)
+			.minBy(property)
+
+				- maxBy()/minBy() return the first min/max element when the elements are not Comparable (i.e. do not implement Comparable directly) but their internal properties can be compared.
+
+					val sYoungest = people.minBy{it.age}?.name
+					val sOldest = people.maxBy{it.age}?.name
+
+					Here:
+
+						1. people is a list of Persons which do not implement Comparable.
+						2. However the internal property .age is an Int which can be compared.
+						3. Returning the youngest/oldest people (or null if list is empty).
+
+			.associateBy(property)
+
+				- associateBy() produces a map from a list of elements using a particular property from within that element:
+
+												K	V
+												-----------------
+					Alice, 31		.associatedBy{it.name}		Alice	Alice, 31
+					Bob, 29							Bob	Bob, 29
+					Carol, 31						Carol	Carol, 31
+
+				- associateBy() is the same as groupBy() but removes duplicate keys.
+				- associateBy() is the same as groupBy() which should be used when your keys are unique.
+
+			.associate(Pair)
+
+				- associate() is used to generate a map when each element in list is used to generate the key/value pairs of a map:
+
+													K	V
+													----------
+					1, 2, 3, 4		.associate('a' + it to 10 * it)		a	10
+													b	20
+													c	30
+													d	40
+
+				- associate() can be used inconjunction with getOrElse(){}
+
+					val mapByName = people.associate{it.name to it.age}		//Returns a map K = (String) Name and V = (Int) Age
+					mapByName.getOrElse("Paul"){0}					//Returns the value to the key "Paul", if "Paul" does not exist then return 0
+
+				- associate() should be used when your keys are unique.
+
+			.zip(transform)
+
+				- zip() combines/zips together x2 lists into a single list of Pairs:
+
+					1 2 3 4			.zip()				Pair(1, a)
+					a b c d							Pair(2, b)
+												Pair(3, c)
+												Pair(4, d)
+
+				- zip() only returns matching pairs, if the x2 lists are of differing lengths then the elements in the longers list are ignored.
+				- zip() takes an argument which allows to specify how the elements should be transformed when the output is created.
+
+			.zipWithNext()
+
+				- zipWithNext() combines neighbouring elements within x1 list into a list of Pairs:
+
+					1 2 3 4 5 6		.zipWithNext()			Pair(1, 2)
+												Pair(2, 3)
+												Pair(3, 4)
+												Pair(4, 5)
+												Pair(5, 6)
+
+				- zipWithNext() takes an argument which allows to specify how the elements should be transformed when the output is created.
+
+			.flatten()
+
+				- flatten() operates on a list of lists, combining all of their elements into x1 list.
+
+					a b c d			.flatten()			a b c d e f g h i j
+					e f g
+					h i j
+
+			.flatMap(transform)
+
+				- flatMap() combines map() and flatten().
+				- flatMap() initially applies a transformation to each element producing a list of lists.
+				- flatMap() finally applies the flatten operation to combine the list of lists into a single list.
+
+					"abc" -> a b c		.flatMap()			a b c d e f		
+					"def" -> d e f
+
+				- flatMap() converts the x2 strings "abc" and "def" into x2 lists which are then flattened into x1 list 'a b c d e f'.
+
+		- Collections in Kotlin are extension functions applied on top of standard Java Collections:
+
+			val set = hashSetOf(1, 7, 53)
+
+			println(set.javaClass)			//Print: 'class java.util.HashSet'
+
+		- Collections in Kotlin untilise x1 instance of the corresponding Java collection regardless if the instance is declare mutable/readonly:
+
+			kotlin.collections.List			//Both List and Mutable List are interfaces within the kotlin.collections package. 
+			|
+			kotlin.collections.MutableList		//MutableList extends List
+
+			NB: The default List is described as 'Read Only' not 'immutable' given that the actual underlying list can be changed via another reference. The read-only List is simply an interface which lacks the mutating methods.
+
+				val mutableList = mutableListOf(1,2,3)
+				val list: List<Int> = mutableList
+
+				mutableList.add(4)
+				println(list)		//[1,2,3,4] is still printed as the underlying list was altered via the mutable reference
+
+				The default 'read-only' interfaces are introduced into Kotlin to help reduce accidently modifying a collection, where the only way to modify a collection is if you go out of your way to purposefully cast it to a mutable collection.
+
+			Both List<> and MutableList<> both compile to the same instance of Java List (where in the case of List, the compiler uses an instance of ArrayList):
+
+				fun getNames(): List<String>
+				fun getNames(): MutableList<String>
+
+				Both compile to:	java.util.List<String> getNames();
+
+			NB: Kotlin compiler 'pretends' that java.util.ArrayList 'implements' the Kotlin interfaces of List<> and MutableList<>, some compiler 'magic' allows for a Java interface to be substituted by a Kotlin interface and for this to work overall.
+
+		- Collections simplify common tasks:
+
+			1. Use count() combined with predicate:
+
+				people.filter{it.age < 21}.size
+				people.count{it.age < 21}
+
+			2. Use sortByDescending():
+
+				people.sortedBy{it.age}.reversed()
+				people.sortedByDescending{it.age}
+
+			3. Use mapNotNull():
+
+				people
+				    .map {person -> person.takeIf {it.isPublicProfile}?.name}
+				    .filterNotNull()
+
+				//This can be simplified to:
+
+					people.mapNotNull {person -> person.takeIf {it.isPublicProfile}?.name}		//Ensure to use safe access
+
+				people
+				    .filterNotNull()
+				    .map {it.name}
+
+				//This can be simplified to:
+
+					people.mapNotNull {it?.name}							//Ensure to use safe access
+
+			4. Use getOrPut() which reads 'get entry from collection, if it does not exist put this lambda':
+
+				val map = mutableMapOf<Int, MutableList<Person>>()
+
+				for (person in people)
+				{
+				    if(person.age !in map)
+					map[person.age] = mutableListOf()
+
+				    val lstGroup = map.getValue(person.age)
+				    lstGroup += person
+				}
+
+				//This can be simplified using getOrPut():
+
+					for (person in people)
+					{
+					    val lstGroup = map.getOrPut(person.age) {mutableListOf()}
+					    lstGroup += person
+					}
+
+				//This whole body of code can be further simplified if use groupBy():
+
+					people.groupBy{it.age}		//This will return read only map with read only values/lists (I believe)
+
+			5. Use groupingBy() in order to implement groupBy() but in a lazy manner suitable for a sequence:
+
+				people
+				    .asSequence()
+				    .groupBy {it.age}
+				    .mapValues {(_, group) -> group.size}
+
+				//This can be implemented in a lazy manner using groupingBy()
+
+					people
+					    .asSequence()
+					    .groupingBy {it.age}
+					    .eachCount()
+
+	List:
+
+		- List may be mutable or immutable (NB: Immutable collections are not technically immutable but are read only for they can still be modified if cast to mutable interface, all Kotlin collections are mutable Java collections behind interfaces defined in Kotlin):
+
+					Extension Function	Example
+			-------------------------------------------------------------------------------------------------------------------------------
+			Immutable:	.listOf()		val shapes 				= listOf("triangle", "square", "circle")
+			Mutable:	.mutableListOf()	val shapes: MutableList<String> 	= mutableListOf("triangle", "square", "circle")
+
+		- List may be cast to assigned/casted to an immutable (and vice versa):
+
+			val shapes: MutableList<String> = mutableListOf("triangle", "square", "circle")
+			val shapesLocked: List<String> = shapes
+
+		- List items are referenced/assigned using [] or the various extension functions available:
+
+			val shapes = listOf("triangle", "square", "circle")
+
+			println("The first item in the list is: ${shapes[0]}")
+			println("The first item in the list is: ${shapes.first()}")
+			println("The first item in the list is: ${shapes.last()}")
+
+	Set:
+
+		- Set may be mutable or immutable (read only):
+
+					Extension Function	Example
+			-------------------------------------------------------------------------------------------------------------------------------
+			Immutable:	.setOf()		val shapes 			   	= setOf("triangle", "square", "circle")
+			Mutable:	.mutableSetOf()		val shapes: MutableSet<String> 		= mutableSetOf("triangle", "square", "circle")
+
+		- Set contain unique unordered items therefore:
+
+			val readOnlyFruit = setOf("apple", "banana", "cherry", "cherry")		//2nd "cherry" will be dropped
+
+		- Set does not support indexing or []
+
+	Map:
+
+		- Map may be mutable or immutable (read only):
+
+					Extension Function	Example
+			-------------------------------------------------------------------------------------------------------------------------------
+			Immutable:	.mapOf()		val fruit 			   	= setOf("apple" to 100, "orange" to 200, "pear" to 500)
+			Mutable:	.mutableMapOf()		val fruit: MutableMap<String> 		= mutableSetOf("apple" to 100, "orange" to 200, "pear" to 500)
+
+			println(fruit)	//{apple=100, kiwi=190, orange=100}
+
+		- Map elements can be accessed via x2 means:
+
+			[]		mapByName["Paul"]?.age				//Returns null if map does not contain Paul
+			.getValue()	mapByName.getValue("Paul").age			//Throws NoSuchElementException if map does not contain Paul

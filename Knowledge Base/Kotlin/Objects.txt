@@ -1,0 +1,139 @@
+Kotlin
+
+	Objects:
+
+		- Objects are singletons created using the 'object' keyword.
+		- Objects can be declared within classes or other objects.
+		- Objects declare, defined and instantiate the singleton all in x1 place:
+
+			object StudentProgress
+			{
+    			    var total: Int = 10
+    			    var answered: Int = 3
+
+			    fun foo(){...}
+			}
+
+			The equivalent Java is generated follows:
+
+				public class StudentProgress
+				{
+				    public final static StudentProgress INSTANCE = new StudentProgress();	//x1 instance of this class is only ever created when the classes are loaded 
+
+				    private StudentProgress(){}							//private constructor
+
+				    public int total = 10;
+				    public int answered = 3;
+
+				    public void foo(){...}
+				}
+
+			Access is via dot operator:
+
+				fun main()
+				{
+    			    	    println("${StudentProgress.answered} of ${StudentProgress.total} answered.")
+				}
+
+			Properties within objects are private and can only be referenced from Java using the INSTANCE field and the corresponding getter():
+
+				public static void main(...)
+				{
+				    StudentProgress.INSTANCE.getAnswered();
+				    StudentProgress.INSTANCE.foo();
+				}	
+
+		- Objects are compiled and created with a private constructor therefore another instance cannot be created elsewhere.
+		- Objects properties are all defined and initialised within the body.
+		- Objects defined within a class have access to all of the private members of that class.
+
+	Object Expressions:
+
+		- Object Expressions are the Kotlin equivalent/replacement of anonymous classes.
+		- Object Expressions allow for the ability to create a class which extends another class or implements an interface which does not need to be named (which is typically passed as an argument).
+		- Object Expressions are when it is necessary to override multiple methods (not just x1 - in which case just use a lambda):
+
+			window.addMouseListner(
+			    object : MouseAdapter()
+			    {
+				override fun mouseCliked(e: MouseEvent){...}
+				override fun mouseEntered(e: MouseEvent){...}
+			    }
+			)
+
+			Here:
+				1. Anonymous class represented by 'object' which extends MouseAdapter.
+				2. Anonymous class overrides the x2 methods it needs to override.
+				3. Anonymous class is instantiated and passed as an argument to .addMouseListner().
+
+		- Object Expressions are interpreted and instantiated each time given that they may depend on external aspects/inputs.
+		- Object Expressions are not singletons.
+		- Object Expressions are not Objects.
+
+	Companion Objects:
+
+		- Companion Objects are Objects defined/nested within a class just as inner/nested classes are defined within a class.
+		- Companion Objects are Objects defined/nested within a class however this object can be accessed via the class name (similar to as if it was a 'nested static object'):
+
+			class A
+			{
+			    companion object [name]
+			    {
+				var i1: Int = 10
+    			    	var i2: Int = 3
+				fun foo() = 1
+			    }
+			}
+
+			fun main(args: Array<String>)
+			{
+			    A.foo()					//Companion Object members can be accessed as if it was static member of A
+			    println("${A.i1} of ${A.i2}")		//Companion Object members can be accessed as is members of the class allowing for more concise syntax
+			}
+
+		- Companion Objects are a replacement for static members of a class within Kotlin.
+		- Companion Objects have access to all private members of the class.
+		- Companion Objects can implement an interface (however static methods in Java could not overide methods in an interface)
+
+			interface Factory<T>
+			{
+			    fun create(): T
+			}
+
+			class A
+			{
+			    private constructor()
+
+			    companion object : Factory<A>		//Companion Object implements interface and overrides abstract method
+			    {
+				override fun create() = A()
+			    }
+			}
+
+			fun <T> createNewInstance(factory: Factory<T>)
+			{...}
+
+			createNewInstance(A)				//1 2 3
+			A.create()					//4
+
+			Here:
+
+				1. The Companion Object implements the interface Factory<T>.
+				2. Give that all of the members of the Companion Object are accessible via the class name (just like a static entity) therefore means that the class A also naturally implements the interface Factory<T> itself.
+				3. Therefore the class name A can be passed as an argument which contains the necessary interface to the function createNeInstance(...).
+				4. Members of the Companion Object can be accessed and invoked directly via the class name (just like a static entity).
+
+		- Companion Objects can be the receiver of an extension function:
+
+			fun A.Companion.fromJSON(json: String): A	//Companion Object has extension function applied 'fromJSON' using the '.Companion' suffix
+			{...}
+
+			val a = A.fromJSON(json)			//Companion Object has extension function invoked (just as if it was a class member of A)
+
+		- Companion Objects were added to Kotlin due to:
+
+			- In Java there are situations where you just had a class full of statics i.e. a class which only uses static memory and does not ever get instantiated.
+			- It was decided to move away from this and simply place all such functionality (e.g. utilities) within the Top-Level.
+			- Companion Objects still provide the ability to append a singleton of some sort to a class which is intended to be instantiated. For that is ultimately what static memory does and is for i.e. creating a singleton of entities associated with the class. 
+			- Companion Objects can also be extended and/or implement an interface allowing for better code reuse.
+			- Companion Objects is a type therefore can have extension functions appended to it.

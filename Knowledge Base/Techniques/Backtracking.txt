@@ -1,0 +1,410 @@
+Backtracking:
+
+	Overview:
+
+		- Backtracking is a technique for finding solution(s) within a wider environment.
+		- Backtracking is:
+
+			1. Given an environment which may be either:
+
+				Graph:		An existing graph of some sort composed of nodes.
+				Call Tree:	There is no pre-existing graph structure but the question would involve the generation of a call tree composed of possible mutations that could be applied at each recursive call as specified in the problem.
+
+			2. Start at a particular point/node within that environment.
+			3. Explore that environment using DFS.
+			4. Upon reaching a 'dead-end' backtrack to the previous node/rc() and continue DFS from any remaining unexplored nodes/rc()'s.
+			5. At each stage or 'move' to a new position or environmental state where a test is carried out to evaluate if the overall solution has been found. 
+			6. Continue until either:
+
+				Solution Found:		Base case is encountered and overall solution is found.
+				Solution Not Found:	Base case is not encountered and the environment does not contain a valid overall solution.
+
+			NB: Backtracking 'prunes' the call tree once it finds a dead end.
+
+		- Backtracking is:
+
+			1. DFS (the generated call tree is generated as if traversing an existing tree using DFS) combined with either:
+
+				2. Validation:
+
+					- Validation involves systematically trying to 'feel its way' in trying to find an overall solution
+					- Validation involves proceeding down to the a child node only if the input that would be passed to that child node is valid in working towards the overall solution.
+
+				3. No Validation:
+
+					- No validation simply tries all possible routes in trying to find the overall solution.
+					- No validation involves proceeding down to the a child node at all times, explore all child nodes and the whole tree.
+
+		- Backtracking problems are normally characterised/contain:
+
+			1. Recursive: 		Is recursive in nature
+			2. Candidates:		Fixed environemnt/context where each position/state/stage has a number of possible options or potential 'ways forward' which may or may not be valid and can be check ahead of time.
+			3. Constraints:		Rules/insights or means of restricing your progress which need to be checked ahead of time before moving to that state, thereby pruning the call tree.
+
+		- Backtracking is a technique that is applied to any stateful environment:
+
+			Elements:		Environment consists of a number of individual elements 			e.g. elements in array/grid/string/path (within another environment).
+			Elements State:		Environment elements can each take on a range of values 			e.g. 0-9, a-z
+
+			Environment:		Environment is the entity that is constituted by the elements (context)		e.g. array/grid/string
+			Environment State:	Environment overall state is defined by the combination of the element states 	e.g. a 3-digit value is as follows:
+
+							000
+							001
+							...
+							099
+							100
+							101
+							102
+
+							- Environment can take on 1000 states (000 - 999).
+							- Environment contains x3 elements which can each take on a state/value of 0-9.
+							- Altering the individual elements alters the overall environment state.
+
+		- Backtracking is a brute force technique for finding the correct overall environment state:
+
+			Environment	Element:		Target Environment State (Base Case)
+			_________________________________________________________________________________________________
+
+			1D Array:	Element			Find a particular sequence of values which satisfy a criteria.
+			2D Array:	Coordinate		Find a particular grid of values which satisfy a criteria.
+			String:		Character		Find a particular sequence of characters which satisfy a criteria.
+			Path:		Coordinate/Node		Find a particular path through another 2D array or graph which satisfy a criteria.
+
+			Path may be the following:
+
+				1D Array:		1D array which contains the individual coordinates/elements/information of a valid path through the environment e.g. 2D array or graph.
+				Environment State:	Environment is being continually mutated until it finds a valid path (i.e. state).
+
+			Validity check may be the following:
+
+				Immediate Vicinity:	The immediate elements are checked as to whether they work toward the overall solution e.g. path finding
+				Global:			All elements are checked as to whether they work toward the overall solution e.g. soduku solver
+
+			Backtracking may appear inefficient but is normally the most and only way to solve a dynamic programming problem.
+
+		- Backtracking can be implemented via a standard form with standard functional components/terms:
+
+			findCompleteSolution(environment e, element eCurrent)
+			{
+	    			if(isSolutionComplete(e))					//Base Case == Path Found (Input/environment is in completed target state which represented the overall solution)
+					process/add/copy environment to results
+					return
+
+				eNext = findNextElement(eCurrent)
+
+	    	    	    	for(Value i = (mutator[0] -> mutator.n))			//Iterate through all of the possible ways forward from this particular environment state
+	    	    	    	{
+					if(isModificationValid(eNext, i))			//Check if the environment were to be modified by the ith mutator that it would be a valid way forward.
+					{
+						//Apply modification i:				//Apply modification to the environment by setting element eNext to i
+
+						findCompleteSolution(modified_Environment[i], eNext);
+
+						//Unapply the modification i			//Unapply the modification to the environment by removing i from element eNext
+					}
+	    	    	    	}
+			}
+
+			Environment:
+
+				- Environment is the input to the problem.
+				- Environment is mutated until the base case is found.
+
+			Base Case:
+
+				- Base case is when the environment state meets a specific target combination or criteria (typically the overall question being asked).
+				- Base case should be tested at the top of each recursive call as with all recursive structures.
+				- Backtracking contains only one base case which is the overall solution, there may be more than x1 overall solutions to the problem but backtracking is normally used to find and return the first.
+
+			Invalid Case:
+
+				- Invalid case is when all mutators have been tried and none of them are valid.
+				- Invalid case is necessary to go back to the previous recursive call (i.e. previous element/state) and try further values in the range of values of the previous mutator.
+				- Invalid case allows execution to go back to the previous element or parent node to hopefully find another valid value which is the correct path leading to the base case.
+
+			Node:
+
+				- Node represents an element or a particular environment state.
+				- Node represents a particular recursive call on the call stack.
+
+
+					Recursive Call n	Node n 	(Final Valid Element n)		Base Case (Complete solution found)
+					...
+					Recursive Call 3	Node 3	(Valid Element 3) 		Environment State 3
+					Recursive Call 2	Node 2	(Valid Element 2) 		Environment State 2
+					Recursive Call 1	Node 1	(Valid Element 1) 		Environment State 1
+					Recursive Call 0	Root	(Valid Element for root) 	Environment State 0
+					|______________|
+						|
+					   Call Stack
+
+					- Recursive call 2 is the parent node of recursive call 3
+			Mutator:
+
+				- Mutator is the range of values/mutations that can be applied to individual elements or environment e.g. 0-9 or a-z.
+				- Mutator is applied to each element 'pre-emptively'.
+				- Mutator is applied to each element to check if it would be valid before proceeding onto the next element.
+
+			Recursion (Ongoing):
+
+				- Recursion is only performed should a valid value i or valid mutation be found for the next element.
+				- Recursion is only performed should i work towards and not break the overall target environment criteria.
+
+		- Backtracking involves:
+
+			1. Look Ahead:		Pre-emptively 'looking ahead' to the next element.
+			2. Propose Value:	'Trying' a particular range/sequence of proposed values.
+			3. Valid:		If one of the proposed values would be valid in working toward the base case then move onto that element.
+			4. Invalid:		If none of the proposed values yield a valid movement towards the base case then that means we a reached a 'dead end' and time to revert/backtrack to the previous/parent element/node.
+			5. Further Values:	Within the parent node/recursive call continue trying all of the remaining potential values.
+			6. Base Case:		If another value is found to be valid continue down that path hopefully reaching the base case.  
+
+		- Backtracking 'Pre-emptive validation':
+
+			With Pre-emptive Validation
+
+				Base Cases:
+
+					- Find x1 base case, x1 solution, x1 environment state which satisfies a criteria that needs to be applied to the whole environment.
+					- Find more than x1 base case may also be applicable if the problem requires finding multple enivronment states which satisfy the criteria.
+
+				Environmental Referencing:
+
+					- Computation continually refers/checks progress against the wider criteria that needs to be found for the environment.
+					- Computation requires checking/ensuring that the next 'step'/node/element is always valid, that the input to the next recursive call is always valid.
+					- Computation determines that if there are no further valid 'steps' and it has reached the end of a branch in which needs to retrace back up (backtrack) the tree and try going down another branch that has not yet been explored.
+
+				Path:
+
+					- Computation tries to 'feel its way in the dark' by accessing all of the available options to stay on the 'right path' that would yield a complete solution.
+					- Computation constricts the path of execution to only those nodes which would ultimately yield a complete solution.
+					- Computation will only traverse a partial amount of the possible call tree i.e. those paths which end up yeilding the first complete solution.
+
+				Mutators:
+
+					- Mutators are not all valid and discarded accordingly.
+					- Mutators are all sequentially pre-emptively assessed and validated at each node before entering the next node.
+					- Mutators are checked to confirm if they adhere to the overall criteria and would reach a complete solution.
+
+				Call Tree:
+
+					- Call tree is only partially traversed.
+					- Call tree is only traversed/reproduced down paths which may potentially lead to a complete solution.
+					- Call tree may stop at a particular node if that node has no valid mutators, at which point execution retraces/backtracks up the current branch to try and find another potential branch.
+
+			Without Pre-emptive Validation
+
+				Base Cases:
+
+					- Find x1, n or all base cases that are possible.
+
+				Environmental Referencing:
+
+					- Computation 'does not care' about the wider environment state.
+
+				Path:
+
+					- Computation does not try to cautiously try to 'feel its way in the dark' by accessing all of the available options to stay on the 'right path' that would yield a complete solution.
+					- Computation simply tries all paths hoping to find a single/multiple/all base cases.
+
+				Mutators:
+
+					- Mutators are all considered valid.
+					- Mutators are all applied at each node.
+
+				Call Tree:
+
+					- Call tree is fully traversed.
+					- Call tree is fully reproduced all possible paths are traced.
+
+		- Backtracking with:
+
+			1D Array
+
+
+			2D Array/Grid
+
+				   0  1  2  3  4  5  6  7  8
+				0 [ ][ ][ ][ ][ ][ ][ ][ ][ ]
+				1 [ ][ ][ ][ ][ ][ ][ ][ ][ ]
+				2 [ ][ ][ ][ ][ ][ ][ ][ ][ ]
+				3 [ ][ ][ ][ ][ ][ ][ ][ ][ ]
+				4 [ ][ ][ ][ ][ ][ ][ ][ ][ ]
+				5 [ ][ ][ ][ ][ ][ ][ ][ ][ ]
+				6 [ ][ ][ ][ ][ ][ ][ ][ ][ ]
+				7 [ ][ ][ ][ ][ ][ ][ ][ ][ ]
+				8 [ ][ ][ ][ ][ ][ ][ ][ ][ ]
+
+				Problem:
+
+					Please fill/complete board in accordance with a criterion.
+
+				Standard Approach:
+
+					1. Start at [0,0]
+					2. Move from left-right, top-bottom.
+					3. Pre-emptively check which of the available mutator values m1...mn would be valid move forward.
+					4. If a mutator values is valid i.e. maintains the necessary criterion then move onto the next square/node.
+					5. Continue until all of the squares have been completed and overall solution has been found.
+
+				Each square represents a node:
+
+					     	     [ ]
+					 _____________|_________
+					|	|	|	|
+					[m1]	[m2]	[m3]	[m4]
+					|_____________________
+							      |
+							    [0,0]
+						 _____________|_________
+						|	|	|	|
+						[m1]	[m2]	[m3]	[m4]
+								|
+							      [0,1]
+							 _______|_______________
+							|	|	|	|
+							[m1]	[m2]	[m3]	[m4]
+										|
+									      [0,2]
+							 		 _______|_______________
+									|	|	|	|
+									[m1]	[m2]	[m3]	[m4]
+									|
+									...
+
+		- Backtracking can be used for:
+
+			1. Find Paths:			Find all paths in the call tree which produce a base case?
+			2. Find Number of Paths		Find total number of paths which produce a base case?
+
+		- Backtracking involves unique inputs that are passed into each recursive call therefore memoisation may not always be appropriate/applicable.
+
+		- Backtracking has the following general form:
+
+			No Pre-Emptive Validation:
+
+				Call Tree:
+
+										       (input0)
+				    		    _______________________________________|_______________________________________
+				  		   |					   |					   |
+				   		   | e0					   | e1					   | e2
+				   		   |					   |					   |
+			   		   (input1) = (i0*e0)		   	   (input2) = (i0*e1)		     	   (input3) = (i0*e2)
+			    		    _______|_______			    _______|_______			    _______|_______
+			   		   |	   |	   |			   |	   |	   |			   |	   |	   |
+					(i1*e0)	(i1*e1)	(i1*e2)			(i2*e0)	(i2*e1)	(i2*e2)			(i3*e0)	(i3*e1)	(i3*e2)	
+
+				Source Code:
+
+					rm(input)
+					{
+	    	    	    			if(input == base case)					//Base case
+							process
+							return
+
+	    	    	    			for(i -> mutator.n)
+	    	    	    			{
+							//Apply the modification
+							alPath.add(i)
+							rm(modifiedInput[i])
+							alPath.remove(i)
+							//Unapply the modification
+	    	    	    			}
+					}
+
+			[OR]
+
+			Pre-Emptive Validation:
+
+				Source Code:
+
+					rm(input)
+					{
+	    	    	    			if(input == base case)
+							process
+							return
+
+	    	    	    			for(i -> mutator.n)
+	    	    	    			{
+							if(modifiedInput[i]/environment[i] == valid)	//PreCheck - The invalidity check is done before hand i.e. before moving into the next recursive call
+							{
+								//Apply modification
+								alPath.add(i)
+								rm(modifiedInput[i]/environment[i])
+								alPath.remove(i)
+								//Unapply the modification
+							}
+	    	    	    			}
+					}
+
+			[Or]
+
+			Post-Emptive Validation:
+
+				Source Code:
+
+					rm(input)
+					{
+	    	    	    			if(input == base case)
+							process
+							return
+
+						if(input == invalid case)				//PostCheck - The invalidity check is done after moving into the next recursive call whereby it immediately returns
+
+	    	    	    			for(i -> mutator.n)
+	    	    	    			{
+							//Apply modification
+							alPath.add(i)
+							rm(modifiedInput[i]/environment[i])
+							alPath.remove(i)
+							//Unapply the modification
+	    	    	    			}
+					}
+
+			Call Tree:
+
+				- Assess the overall question being asked and draw out the corresponding call tree that would successfully find the necessary base cases.
+
+			Initial Input/State:
+
+				- Initial input or environment state (Input0) is explicitly defined within the initial rm(Input0) call within the initial method.
+
+			Mutator:
+
+				- Mutator is the range/collection of mutation elements [e0, e1, e2 ...] that can be applied to the initial and recursive inputs.
+				- Mutator may not necessarily be an array but is a representation of the range/collection of mutations/options that can be applied to the initial and recursive inputs. 
+
+			Path Legs:
+
+				- Path legs represent a valid mutation of the parent rm() calls input.
+				- Path legs values represent the individual mutator elements which generate valid subsequent rm() calls.
+
+			Nodes:
+
+				- Nodes represent the 'existence' of a valid rm() call.
+				- Nodes value is the particular input/state which was passed to that instance of rm(input) call e.g. (i0*e0) input is the result of input0 being mutated by mutator element 0.
+				- Nodes signify that the particular input/state for that rm(input) is a valid mutation of the input/state in the previous rm() call.
+				
+			Check Ahead:
+
+				- Nodes are checked for validity by 'checking ahead' before making and entering a subsequent rm() rather than check once within the rm() and return.
+
+			Path:
+
+				- Path will consist of the individual combinations of mutator elements which will combine and reach the base cases.
+				- Path is built up and stored within the List<Mutator_Element> ArrayList<>();
+
+		- Backtracking general approach:
+
+			1. Call Tree:		Draw it out
+			2. Environment:		Identify the broad general environment in which constitutes the environment/context of the question being asked and what will form the answer(s) i.e. Base Cases.
+			3. Base Case:		Identify the specific situation/states/conditions which will constitute a success i.e. the answer to the question.
+			4. Invalid Case:	Identify the specific situation/states/conditions which will constitute an immediate fail/impossible state.
+			5. Ongoing Case:	Identify the specific situation/states/conditions which will constitute a valid state but not a success.
+			6. Insights:		Identify any careful/delicate insights which may help to discern the x3 cases.
+			7. Standard Form:	Plumb all of the above into the standard form(s) above in order to find all base cases.
+
+			 
+					

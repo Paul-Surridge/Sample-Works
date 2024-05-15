@@ -1,0 +1,177 @@
+Collections - Iterators:
+
+	Overview:
+
+		- Iterators are Interfaces contained within the Java API:
+
+			public interface Iterator<E>
+			{
+    			    boolean 	hasNext();		//True if the Iterator has more elements i.e. it has not reached the end of the Collection.
+    			    E 		next();			//Returns the next element in the Collection.
+    			    void 	remove(); 		//Removes the last Element returned by .next(), may only be called x1 per call to .next() (or throws an Exception).
+			}
+
+		- Iterators are typically returned by calling .iterator() on the object which implements Iterator<T>;
+
+	Collections:
+
+		- Iterators are typically used for:
+
+			1. Traversal.
+			2. Removal.
+
+		- Iterators should be used instead of For-Each when:
+
+			- Removal:		Removing elements from a Collection.
+
+							1. .remove() is the only safe way to modify a Collection during an interation process.
+							2. .remove() may only be called x1 per call to .next() (or throws an Exception).
+							3. Should it be attempted to remove Elements from a Collection other than using .remove() while the iteration is in progress, the behaviour is unspecified.
+
+			- Multithreading:	Iterating multiple Collections within a multithreaded environment.
+
+		- For Example:
+
+			static void filter(Collection<?> c)
+			{
+    				for (Iterator<?> it = c.iterator(); it.hasNext(); )
+        			    if (!cond(it.next()))
+            				it.remove();
+			}
+
+			This algorithm is polymorphic i.e. same algorithm that can be used with more than x1 data type.
+
+	For-Each
+
+		- For-Each can only be used on objects which implement the Iterable<T> interface.
+		- Collection<E> is an extended interface of Iterable<E>, therefore can be used within a For-Each:
+
+			for(E e : c)
+			    System.out.println(e);
+
+		- The Iterator<E> is 'hidden' within the For-Each construct i.e. its methods are not exposed for use.
+
+	ListIterators
+
+		Overview:
+
+			- ListIterators are an extended Iterator.
+			- ListIterators contain more enhanced features, typically suitable for Lists.
+
+				1. Traversal:	Backward and forward.
+				2. Modify:	Modify the List during the iteration.
+				3. Cursor:	Obtain current position of cursor during iteration.
+
+		Features:
+
+			- Add/Remove:		Add/Remove Elements at the current cursor position.
+			- Traversal/Get/Set:	Get/Set an adjacent Element and move cursor.
+			- Query:		Query whether there is another Element or at start/end of List.
+			- Cursor Position:	Get the current cursor position.
+
+		API:
+
+				Return Type			Method						Description
+			____________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+			Add/Remove:
+
+				void				add​(E e)					Insert Element into list immediately before the cursor position.
+				void				remove()					Remove last Element that was returned by next() or previous().
+
+			Traversal/Get/Set:
+
+				E				next()						Return next Element and move cursor forward.
+				E				previous()					Return previous Element Element and move cursor backward.
+				void				set​(E e)					Replace the last Element returned by next() or previous().
+
+			Query:
+
+				boolean				hasNext()					Return true if this ListIterator has more Elements in the forward direction i.e. not at end.
+				boolean				hasPrevious()					Return true if this ListIterator has more Elements in the reverse direction i.e. not at start.
+		
+			Cursor Position:
+
+				int				nextIndex()					Return the index of the Element that would be returned by a subsequent call to next(). Return -1 if cursor already at end of List.
+				int				previousIndex()					Return the index of the Element that would be returned by a subsequent call to previous().  Return -1 if cursor already at start of List.		
+			
+			Misc:
+
+				default void			forEachRemaining​(Consumer<? super E> action)	Performs the given action for each remaining Element until all Elements have been processed or the action throws an exception.
+
+		Structure:
+
+			- The cursor exists 'inbetween' the Elements at the index positions:
+
+					|   Element(0)	|   Element(1)	|   Element(2)	|   Element(3)	|   Element(4)	|
+					|		|		|		|		|		|
+					|		|		|		|		|		|
+				Index:	0		1		2		3		4		5
+
+			- The cursor starts at 0.
+			- The cursor can be shifted forward/backward.
+			- Methods are based around the notion of a cursor and its position.
+
+		next()/previous():
+
+			- Care should be taken when using next() and previous() given that the cursor moves when the methods are called:
+
+				Call:			previous()	previous()	previous()	next()
+
+				Returns Element:	5		4		3		3 (not 4)
+
+			- Simarly:
+
+				Call:			next()		next()		next()		previous()
+
+				Returns Element:	3		4		5		5 (not 4)
+
+		nextIndex()/previousIndex():
+
+			- Methods are typcailly used to either:
+
+				1. Report the index where an Element was found.
+				2. Record the index of the ListIterator so another ListIterator can be created with its cursor at the same position.
+
+		remove()/set():
+
+			- Removes/sets the Element last returned by either next() or previous() (not the Element that would be about to returned by next()/prevous()).
+
+		add():
+
+			- Inserts a new Element immediately before the cursor position (not after it).
+			- Therefore:
+
+				1. ListIterator<E> it = list.listIterator();
+
+						|   Element(0)	|   Element(1)	|   Element(2)	|   Element(3)	|   Element(4)	|
+						|		|		|		|		|		|
+						|		|		|		|		|		|
+					Index:	0		1		2		3		4		5 
+
+				2. it.add(e);
+
+						|   Element(e)  |   Element(0)	|   Element(1)	|   Element(2)	|   Element(3)	|
+						|		|		|		|		|		|
+						|		|		|		|		|		|
+					Index:	0		1		2		3		4		5
+
+			- All Elements are shifted forward and new Element e is added to start of List.
+
+		Iterating backward/forward through List:
+
+			for (ListIterator<Type> it = list.listIterator(list.size()); it.hasPrevious(); )
+			{
+    				Type t = it.previous();
+    				...
+			}
+
+			for (ListIterator<Type> it = list.listIterator(list.size()); it.hasNext(); )
+			{
+    				Type t = it.next();
+    				...
+			}		
+
+
+
+

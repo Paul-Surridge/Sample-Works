@@ -1,0 +1,286 @@
+Enum
+
+	Overview:
+
+		- Enum are a form of class.
+		- Enum are a form of class with modifications:
+
+			1. Enum Constants
+			2. Enum Constructor
+			3. Enum Variables may not be instantiated.
+
+		- Enum are implicitly extended from java.lang.enum.
+		- Enum may not be extended.
+		- Enum are implicitly/automatically placed in the static memory of the Top-Level Class that they are declared.
+		- Enum are not terminated with a ; given that they are forms of a class not statements.
+		- Enum Variables may only be assigned an Enum Constant from the list of Enum Constants defined within the Enum itself.
+		- Enum Constants are a list of recursive Instances of the Enum itself.
+		- Enum Constants are declared with UPPER_CASE identifiers.
+
+	Typical Use:
+
+		- Fixed set of constants.
+		- Command Flags.
+		- Menu Choices.
+
+	Implicitly Placed in Static Memory:
+
+		- Enums are implicitly declared/placed in the Static memory of the enclosing class.
+		- Enums are only therefore permitted in class forms which have static memory:
+
+			1. Top Level:		Permitted
+			2. Static Nested:	Permitted
+
+	Access Modifier:
+
+		When:
+
+			- Top Level:
+
+				1. Public:		Must be name of file.
+				2. None/Default:	Package-Private.
+
+			- Nested:
+
+				1. Public
+				2. Protected
+				3. Package-Private
+				4. Private
+
+		- Constructor:
+
+			1. Private
+			2. Package-Private
+
+
+	Top Level Class Form
+
+		- Enum are a form of class.
+		- Enum contain the full set of components as any other standard Top Level Class.
+		- Enum contain the following additional components/features:
+
+			1. No Instantiation:		Enum Variables maybe declared but unable to Instantiate via 'new'.
+			2. Enum Constants:		Collection (small 'c') of instances of the Enum that can be assigned to an Enum Variable.
+			3. Enum Constructor:		Constructor which is called for each of the Enum Constants.
+
+	Examples:
+
+		Exmaple 1:
+
+			enum Enum1
+			{
+				DAY1,
+				DAY2,
+				DAY3,
+				DAY4,
+				DAY5
+			}
+
+			- Enum is populated with Enum Constants.
+
+		Example 2:
+
+			enum Enum1
+			{
+				DAY1,
+				DAY2,
+				DAY3,
+				DAY4,
+				DAY5;				//Semicolon needed if have following/additional statements
+
+				//Fields			[non-Static | Static]
+				//Constants			[non-Static | Static]
+				//Methods			[non-Static | Static]
+				//Nested Classes		[non-Static | Static]
+				//Nested Abstract Class		[non-Static | Static]
+				//Nested Enum			[Static]
+				//Nested Interfaces		[Static]
+			}
+
+			- Enum is a form of class.
+			- Enum may contain all of the components of a Top-Level Class.
+			- Enum Constants are comma separated list terminated with ;
+			- Enum Constants must be at start/top of Enum.
+
+		Example 3:
+
+			enum Enum1
+			{
+				DAY1("Monday", 101),
+				DAY2("Tuesday", 102),
+				DAY3("Wednesday", 103),
+				DAY4("Thursday", 104),
+				DAY5("Friday", 105);
+
+				//Enum Constructor:
+					Enum1(String sName, int iID)
+					{
+				 	    this.sName 	= sName;
+				    	    this.iID 	= iID;
+					}
+
+				//Fields			[non-Static | Static]
+
+					String 	sName;
+					int 	iID;
+
+				//Constants			[non-Static | Static]
+				//Methods			[non-Static | Static]
+				
+					String getName()
+					{
+					    return sName;
+					}
+					int getID()
+					{
+					    return iID;
+					}
+
+				//Nested Classes		[non-Static | Static]
+				//Nested Abstract Class		[non-Static | Static]
+				//Nested Enum			[Static]
+				//Nested Interfaces		[Static]
+			}
+
+			- Enum Constants may be instantiated by passing arguments to the Enum Constructor.
+			- Enum Constants are recursive instances of the enum itself:
+
+				DAY1("Monday", 101):	An instance of Enum1 which was passed x2 arguments to the constructor.
+				DAY2("Tuesday", 102):	An instance of Enum1 which was passed x2 arguments to the constructor.
+				...
+
+			- Enum Constructor:
+
+				Access Modifiers:
+
+					1. Private
+					2. Package-Private
+
+			- Enum Constructor is only invoked when the Enum is created and instantiates the Enum Constants.
+			- Enum Constructor may not be invoked discretely.
+			- Enum should be thought as:
+
+				1. A collection (with a small 'c') of objects of the same class Enum1.
+				2. A collection of static objects which are 'instantiated' at the top of the enum type.
+				3. A collection of static objects which are accessed via the . dot operator as normal.
+
+				class Class
+				{
+					Enum1 enEnum1;					//Enum Variable is not instantiated
+
+					void method()
+					{
+				    	    enEnum1 = Enum1.DAY1;			//Enum Variable 'enEnmu1' is assigned the object associated with the Enum Constant DAY1;
+
+				    	    System.out.print(enEnum1.getName());	//Enum Variable returns the name associated with the currently assigned object that is referenced by enEnum1
+					}
+				}
+
+			- NB: switch statements:
+
+				switch(enEnum1)
+				{
+				    case DAY1:	... break;
+				    case DAY2:	... break;
+				    case DAY3:	... break;
+				}
+
+				- Enum Constants are inferred from the Enum in the conditional statement.
+				- Enum Constants do not need to be explicitly qualified.
+
+	Enum Variables:
+
+		- Enum Variables may not be instantiated.
+		- Enum variables may be assigned any of the Enum Constants defined within the Enum:
+
+			enEnum1 = Enum1.DAY1;
+			enEnum1 = Enum1.DAY2;
+			enEnum1 = Enum1.DAY3;
+			...
+
+		- Enum Variables may only be assigned any of the Enum Constants defined within the Enum.
+
+	java.lang.enum
+
+		- Enum extend java.lang.enum.
+		- Enum receive a number of inherited methods, including:
+
+			1. values():			Return a array of Enum1 objects as defined within the enum, which may then be used in any traditional array handling processing.
+			2. compareTo(enEnum2):		Return comparison between x2 Enum Variables as to whether they contain the same Enum Constant.
+			3. name():			Return the name of the Enum Constant as exactly declared within the Enum Declaration.
+			4. ordinal():			Return position of the currently assigned Enum Constant within the list of Enum Constants.
+
+		- values() typically used in conjunction with for-each:
+
+			for(Enum1 e : enEnum1.values())
+			    e.toString();
+
+	public static void main(String[] args)
+
+		- Enum are a form of Top Level Class.
+		- Therefore may contain entry point from OS as per any other standard Top Level Class:
+
+			public static void main(String[] args)
+			{
+			   ...
+			}		
+	Exmaple:
+
+		Definition:
+
+			enum Week { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY }
+
+		Declaration:
+
+			Week enWeek;
+
+		Initialisation/Assignment:
+
+			enWeek = Week.MONDAY;
+			enWeek = Week.TUESDAY;
+			enWeek = Week.WEDNESDAY;
+			...
+
+		Variable:
+
+			- The variable of the enum is used to:
+
+				1. Store:	Store any of the constants defined within the enum.
+				2. Assign:	Assign any of the constant defined within the enum.
+				3. Recall:	Recall the currently assigned value of the enum.
+
+		class Class
+		{
+			Week enWeek;
+
+			void method()
+			{
+				switch(enWeek)
+				{
+					case SUNDAY:	break;
+					case MONDAY:	break;
+					case TUESDAY:	break;
+					...
+				}
+			}
+		}
+
+	Non-Local:
+
+		Enums cannot be used locally:
+
+		class Class
+		{
+			void method()
+			{
+				Week enWeek;				//Compile Fail, enums can only be declared at class level
+
+				switch(enWeek)
+				{
+					case SUNDAY:	break;
+					case MONDAY:	break;
+					case TUESDAY:	break;
+					...
+				}
+			}
+			

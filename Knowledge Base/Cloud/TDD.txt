@@ -1,0 +1,644 @@
+TDD
+
+	Overview:
+
+		- TDD is a development methodology/practice.
+		- TDD is the incremental process of deriving algorithms.
+
+	Laws:
+
+		1:	Write no production code until you have written a test that fails due to the lack of production code.
+		2:	Write no more of a test than is sufficent to fail or fail to compile. Resolve this failure by implementing the production code what will make the test pass.
+		3:	Write no more production code than will resolve the current failing test. Once the test passes write more test code.
+		4:	Refactor: 'Make it work, then make it right' (Kent Beck)
+
+	Rules:
+
+		1:	Write the test that forces you to write the code you already know that you want to write.
+
+		2:	Make it, make it pass, clean it up.
+
+		3:	Don't go for gold.
+
+				- This is so that all of the edge cases are identified and found before the main body/functionality of the particular component/entity.
+				- This is to prevent or reduce risk of overlooking particular aspects.
+
+		4:	Write the simplest, most specific and most degenerate test that will fail.
+
+				- This is given that the most degenerate tests typically form the 'base cases' of the wider more complex tests.
+				- This is so that the most degenerate tests are the easiest to pass tests.
+
+		5:	Generalise where possible.
+
+				- This promotes the 'Generalisation Mantra' below.
+
+		6:	When the code feels wrong, fix the design flaw before proceeding.
+
+		7:	Exhaust the current simpler case before moving onto the more complex case.
+
+				- This is to ensure that the full range of scenarios, cases and permutations of use are fully identified, explored and tested before moving onto the next more complex/broader scope.
+				- For example if testing an array of x3 elements, ensure that it works for all combinations of that array before moving onto an array of x4 elements.
+
+		8:	If you must implement too much to get the current test to pass, delete that test and write a simpler test that you can more easily pass.
+
+				- This is in the situation where it would effectively require writing the whole algorithm to pass the current test.
+				- This is where the current test is too complex, consequently break it down into simpler, smaller more degenerate tests.
+
+		9:	Follow a deliberate and incremental pattern that covers the test space.
+
+				- When deciphering tests, attempt to identify any incremental patterns which can be utilised and expanded.
+
+		10:	Do not include components/aspects in unit tests that are not needed.
+
+		11:	Do not use production data in unit tests.
+
+				- This can lead to dependencies e.g. if a database changes will cause the tests to no longer operate correctly.
+
+		12. 	Decouple the structure of your tests from the structure of the production code.
+
+	Cycle:
+											Compiles		Pass Test/Assertions
+		1. 	Nothing:		No test code and no production code.
+		2.	Test Code:		Write test code:			Fails 			-				Compile fails due to there being no production code.
+		3. 	Production Code:	Write production code:			Ok			Fail				Test fails in order to confirm that the test works.
+		4. 	Production Code:	Modifiy production code:		Ok			Ok				Confidence that the test code and production code works as required.
+		5. 	Production Code:	Refactor				Ok			Fail
+		6. 	Production Code:	Refactor				Ok			Pass
+
+		Red -> Green -> Refactor -> Red ...
+
+		Example:
+
+			When starting out the approach would be considered as:
+
+			1.	Test Class:						Compiles		Pass Test/Assertions
+
+				@Test
+				public void nothing() throws Exception			Ok			-				Compliation is to test the actual environment
+				{}
+
+			2. 	Test Class:
+
+				@Test
+				public void createInstance throws Exception {
+					Entity objEntity = new Entity();		Fail			-				Entity does not exist
+				}
+
+			3. 	Entity/Production Class:
+
+				public class Entity{
+					Entity(){};					Ok			Ok				Entity now exists
+				}
+
+			4. 	Continue with most degenerate tests and Red -> Green -> Refactor -> Red...
+
+			5. 	Continue and build up the complete solution.
+
+			This approach leads to:
+
+				- Continually trying to think of all test cases, edge cases and permutations of use prior to writing the production code.
+				- Continually ensuring that the production entity will be able to handle them appropriately when they are encountered.
+
+	General Approach:
+
+		The broad intention is to find the complete solution as follows:
+
+		1. 	Start with the most degenerate test(s).
+		2. 	Continue to build up solutions x1 step at a time.
+		3. 	Each step produces more specific tests, larger test suite and more generic code.
+		4. 	Eash step naturally discovers all of the edge cases and possible permutations of use.
+		5. 	Once no more tests can be 'thought of' or found then the solution is considered complete.
+
+	Aims:
+
+		- TDD should aim to identify and test the whole scope/range of the component/entity being tested, including:
+
+			1. Edge Case:		All edge cases.
+			2. Permutations:	All permutations of use.
+			3. Testable:		All testable aspects.
+
+		- TDD should aim to have production code which:
+
+			1: Ready:		Always or as close to being considered 'working' and ready to be deployed as quickly as possible.
+			2: Confidence:		Always be able to have absolute confidence in the test suite, such that if it passes then that code could be deployed.  
+
+		- TDD should aim to continually increase the size and specificity of the test code as the production code is constructed and evolves.
+
+	Generalisation Mantra:
+
+		- 'As the tests become more specific the code becomes more generic.'
+		- 'The test suite becomes larger as the code becomes more generic.'
+		- This phenomenon is critical in preventing fragile tests. 
+
+	Algorithm Derivation:
+
+		- TDD is a general technique for deriving and finding algorithms through the process of starting with the most degenerate test and building it up from there.
+		- TDD allows the algorithm to emerge through its constructs and iterative process of establishing a test suite.
+
+	Stairstep Tests:
+
+		- Stairstep tests are intermittent tests which are so degenerate that they only serve as being useful for a short period of time.
+		- Stairstep tests are typically used to test the creation of classes, functions and other constructs that are going to be required.
+		- Stairstep tests may contain or assert nothing, be very naive which will be superceded by more comprehensive tests and maybe subsequently deleted.
+		- Stairstep tests allow the complexity to be incrementally increased to an appropriate level. 
+
+	Human Random Testing:
+
+		- The preoccupation of discrete tests should not become a substitute of good old fashioned human testing and trying to randomly test software by emulating a non-technical user.
+		- The best tests that have been found in the past are those which attempt to emulate a 'non-technical user'.
+		- Tests which randomly attempt to 'use' the software, harshly, haphazardly as someone would who is not famailiar with the software would.
+
+	Self Test Bias:
+
+		- When testing own software a natural bias can emerge.
+		- Testing can become tentative and more careful due to 'not wanting to break it', an almost involuntarily hesitancy of not wanting to push it as it may find a bug and be a bad reflection of self.
+		- Need to step out of that mindset or let someone with no association with the software nor its development to test it.
+
+	Arrange, Act, Assert (AAA or 3A):
+
+		- TDD follows the basic pattern:
+
+			Arrange:	Arrange the data/system to be tested.
+			Act:		Act by invoking the function/aspect to be tested.
+			Assert:		Assert that the system has reached the expected state.
+
+		- This can be applied as follows:
+
+			@Test
+			pubic void aspectToBeTested() throws Exception
+			{
+				//Arrange
+				Component objComponent = new Component();
+				objComponent.initialise();
+
+				//Assert       |//Act		       |
+				assertEquals(0, objComponent.method(10));
+			}
+
+	BDD:
+
+		- BDD is synonymous to TDD.
+		- BDD utilises descriptive statements of expected behaviour rather than explicit unit tests.
+		- BDD follows the basic pattern:
+
+			Given:		Given that the data/system has been 'Arranged'.
+			When:		When I invoke the 'Act'.
+			Then:		Then the expected state is 'Asserted'.
+
+			For example:
+
+				Given that the player rolled a game of x20 gutter balls.
+				When I request the score of the game.
+				Then the score should be zero.
+
+			There are tools available which provide the ability to parse these sorts of phrases e.g. JBehave or RSpec.
+
+		- BDD has been described as:
+
+			'It uses examples to talk through how an application behaves...And having conversations about those examples.'
+
+	Finite State Machine:
+
+		- Finite state machine contains a finite/fixed number of possible states/permutations.
+
+			TDD:	Unit tests are considered the transitions within a finite state machine.
+			BDD:	Behaviours are considered the transitions within a finite state machine.
+
+		- A fully complete test suite would contain all possible transitions of that finite state machine.
+		- A fully complete test suite can be an aspiration which can be achieved by writing the test first followed by the production code.
+
+	Self-Documentation
+
+		- TDD/BDD naturally leads to self-documentation.
+		- A complete and comprehensive test suite would explicitly describe the expected behaviour of the system.
+
+	Unit Test Format:
+
+		- A potential format of unit test:
+
+			@Test
+			public void Test1() throws Exception
+			{
+			    /*
+				Complete, detailed and thorough explantion of the test.
+			    */
+			    Test Code...
+			}
+
+		- Rather than attempt to cram a sufficient explanation into the name of the method, simply use Test1() and have a proper description within the comments of the unit test.
+
+	Stateless:
+
+		- Ideally unit tests should be as independent and stateless as possible with minimal/no dependencies.
+		- Ideally unit tests should be arrange to test a single fixed aspect which will remain consistent.
+		- Ideally unit tests should continue to operate with minimal or no management, concern or maintenance.
+
+	Test Doubles:
+
+		- Test doubles are a catagory of object used within testing.
+		- Test doubles follow the convention of how a 'double' may stand in for an actor.
+		- Test doubles have the following general history:
+
+			2000's:		Informal grouping of mock objects used within unit tests.
+			2007:		Formal vocabulary, catagorisation and hierachy created:
+
+						Dummy
+						|
+						Stub
+						|
+						Spy
+						|
+						Mock	Fake
+
+		- Test doubles form a hierachy of extension i.e. Mock extends Spy extends Stub extends Dummy. Fake is on own.
+
+	Dummy:
+
+		- Dummy is an implementation of an interface where all of the abstract methods are overriden to return as close to zero/null.
+		- Dummy is used to satisfy a requirement to supply an argument.
+		- Dummy allows the construction of an object which may require an interface as an argument.
+		- Dummy prevents the potential of introducing excessive and unnecessary dependencies into a unit test e.g.
+
+			1. The component being tested requires an object as an argument.
+			2. That argument depends on another object or production data.
+			3. Soon there is this long chain of dependencies, where should one of them change can lead to the unit test no longer working.
+
+		- Example:
+
+			public DummyClass implements requiredInterface
+			{
+			    boolean abstractMethod()
+			    { return true; }
+			    ...
+			}
+
+			@Test
+			public void TestClass throws Exception
+			{
+			    ComponentToBeTested objComponentToBeTested = new ComponentToBeTested(DummyClass);
+			    ...
+			}
+
+	Stub:
+
+		- Stub is an extension of Dummy.
+		- Stub return a fixed/predetermined value that is needed to perform the test.
+		- Stub allows to emulate existing production data rather than create a dependency on real production data.
+		- Example:
+
+			public StubClass implements requiredInterface
+			{
+			    int abstractMethod()
+			    { return 10; }
+			    ...
+			}
+
+	Spy:
+
+		- Spy is an extension of Stub.
+		- Spy is a stub that contains and remembers state.
+		- Spy is a stub that can be programmed.
+		- Spy contains internal logic rather than returning a single value.
+		- Spy has internal variables which can be get/set.
+		- Spy can range from being very simple to complex.
+		- Spy disadvantages:
+
+			1. Tight Coupling:	Spy can become highly coupled to the implementation being tested.
+
+	Mock:
+
+		- Mock is an extension of Spy.
+		- Mock contains 'expectations' which can be confirmed through method calls to the mock.
+		- Mock contains:
+
+			1. Fixed Values.
+			2. State.
+			3. Expected Values.
+
+		- Mock disadvantages:
+
+			1. Tight Coupling:	Mock can become highly coupled to the implementation being tested.
+			2. Complexity:		Mock can become complex requiring unit tests of their own.
+			3. Growth:		Mock can grow with the application which is not ideal, unit tests should ideally be very simple and not defer assertions to deeper mechanisms.
+
+	Fake:
+
+		- Fake is a simulator/emulator of another component.
+		- Fake can be inserted into a program to emulate the behaviour of a component.
+		- Fake allows the testing of an overall system should not components be available.
+		- Fake implement rudimentary business rules/logic.
+		- Fake behaviour is determined by the unit tests themselves.
+		- Fake disadvantages:
+
+			1. Complexity:		Fake can grow in complexity with the application.
+			2. Growth:		Fake can grow with each new unit test.
+			3. Unit Test:		Fake can grow where they need their own unit tests.
+
+	Solution Space:
+
+		- Solution space is specific to the task to be performed.
+		- Solution space is the complete range of algorithms that can be implemented to perform a task.
+		- Solution is the algorithm, the arrangement of steps, the means/method of implementation in order to perform a task.
+		- Solution is not the result of a calculation.
+		- Solution may indeed successfuly perform the required task, but not all solutions are the same:
+
+			Efficiency:	Some will be more efficient than others.
+			Memory:		Some will use more memory than others.
+			Speed:		Some will be quicker than others.
+			General:	Some will be alot closer to the absolute generic solution which will work for all forms of input.
+
+		- Solution space is not the range of results that an algorithm may produce (that is the output space) but the means/method in which it arrives at an output.
+		- Solution space is minimised by unit tests until a sufficent (ideally optimum) general solution is found.
+
+					Time/Progress ---->
+					 _________
+					|	  |___
+					|	      |___
+			Solution Space--|	       ___|----General/Optimmum Solution
+					|	   ___|
+					|_________|
+
+						  |-------|
+
+						  Unit Test Suite continually reduce and minimise the solution space until the general/optmimum solution is found.
+
+		- Solution space is minimised by unit tests causing the refinement and refactoring of the algorithm.
+
+	Output Space:
+
+		- Output space is specific to an algorithm.
+		- Output space is the complete range of output values an algorithm can produce.
+		- Output space contains all of the possible output values given all possible input values.
+		- Output space will alter in concert with the algorithm, if there is any change to the algorithm, the outcome space shifts accordingly.
+		- Output space ultimately contains x2 types of output:
+
+			Correct:	Output space of an algorithm will contain correct outputs for given inputs.
+			Incorrect:	Output space of an algorithm will contain incorrect outputs for given inputs.
+
+		- Output space will contain a degree of uncertainity which will contain both correct and incorrect outputs to varying degrees, the unknown unknowns. 
+		- Output space uncertanty should be minimised/eliminated by the programmer, the test suite should idealy capture all permutations.
+		
+
+				  ___________________________
+				 |
+				 |				Captured		The permutations/outputs that are anticipated and captured by the unit tests.
+			Function-|___________________________ 
+				 |				Uncertainty		The permutations/outputs that are not anticipated nor captured by the unit tests.
+				 |___________________________
+
+	Constraint:
+
+		- Constraint is a measure of how the increase in unit tests constrains the solution space to eventually finding the optimum general solution.
+		- Constraint can vary between unit tests, some unit tests are better at constraining towards to general solution, some do not constrain the solution space at all but prove validation for a single input value only.
+
+	Unit Test Introduction:
+
+		- Unit testing should be introduced at the discretion of the programmer.
+		- Unit testing only needs to be carried out on functions when it is appropriate for automation, where the complexity, variability and output space is sufficently large that automated testing is required.
+		- Unit testing may not necessarily be required on individual methods/functions whose task is sufficiently small, simple, not worthwhile and can be checked via manual inspection.
+		- Unit testing requires discretion to discern and identify the boundary of granularity between what can be checked by a human and which requires automation.
+	
+	TDD Uncertainty Principle:
+
+		- TDD Uncertainty Principle in summary:
+
+			'To the extent you demand certainty, your tests will be inflexible'.
+			'To the extent you demand flexibility, your tests will diminish in certainty'.
+
+		- The above states that the certainty in a test suites coverage of an output space is inversely proportional to the test suite flexibility i.e. the better the test unit is at covering all permutations
+		  the more tightly coupled the test suite will become to the algorithm, whereby any changes to the algorithm being tested will increasingly lead to breakages/failing in the unit tests.
+
+	Value/Property Testing:
+
+		Value Testing:
+
+			- Value testing corresponds to the testing of individual values, individual inputs and checking the outputs.
+
+		Property Testing:
+
+			- Property testing covers a range of values, a range of inputs against outputs looking for a failing permutation.
+			- Property testing is decoupled from the algorithm.
+			- Property testing allows for modifiying/refactoring of the algorithm but does not necessarily break the unit tests.
+
+	Certainty v Flexibility:
+
+		- There are x2 characteristics pulling in opposite directions:
+
+			Certainty			Flexibility
+			_________________________________________________________
+
+			Spies/mocks			Minimal/no spies/mocks
+			Tight coupling			Loose/no coupling
+			Fragile tests			Robust tests
+			Inflexible tests		Flexible tests
+
+			Certainty:
+
+				- The increase in certainty leads to reduction in flexibility.
+				- The increase in certainty tends to lead to tightly coupled unit tests which are closely and specifically designed to closely test that particular algorithm.
+				- The high specificity of these tests can lead to fragile/inflexible unit tests which quickly break once any alterations are applied to the algorithm.
+
+			Flexibility:
+
+				- The increase in flexibility leads to reduction in certainty.
+				- The increase in flexibility allows for the tests to become loosely/no coupling to the specific implementation of the algorithm.
+				- The increase in flexibility allows for the tests to be used on any implementation of the algorithm.
+				- The increase in flexibility allows for less maintenance of the unit tests.
+
+	Schools of Thought:
+
+		- There are generally x2 schools of thought:
+
+			London:
+
+				- Emphasis:	Certainty over flexibility (tolerates rigidity to gain increased certainity).
+				- Focus: 	Algorithm/implementation over results.
+				- Design:	Outside - In:
+
+							UI -> Business Logic		(Start with the UI and then work towards the internal business logic)
+
+				- Test:		x1 complete user case at a time from end-to-end:
+
+							UI -> Business Logic -> UI
+
+				- Components:	Primary:	Mocks/spies (deployed at every boundary).
+						Minimal:	Value/property unit tests.
+
+			Chicago:
+
+				- Emphasis:	Flexibility over certainty.
+				- Focus: 	Results over algorithm.
+				- Design:	Inside - Out:
+
+							Business Logic -> UI		(Start with the business logic and then work towards the external UI)
+
+				- Test:		Not x1 complete user case at a time from end-to-end, but individual layers/boundaries.
+
+				- Components:	Primary:	Value/property unit tests.
+						Minimal:	Mocks/spies.
+
+				- Approach:
+						Check for duplication, generalisation and abstraction between layers/boundaries.
+						Holistic.
+						Keep big picture in view.
+
+		- In practice development usually combines both approaches where it may be appropriate to:
+
+			London:		When testing between components.
+			Chicago:	When testing objects.
+
+	Database Testing:
+
+		Basic Rules:
+
+			1:	Do not test databases (presume that they work, only test statements sent to database).
+			2:	Decouple database from business rules.
+
+		- Create a boundary layer between database and rest of program.
+		- Use a combination of:
+
+			Gateway:	Interface
+			GatewayIMPL:	Interface Implementation
+
+						- Database connection
+						- Database SQL queries
+						- Database resultset unpacking
+						- Database processing
+						- Simply returns the contructed business objects
+
+		- Use small/simple 'Test Database' which is consistent so that the same test database can be restored for all current and future unit tests.
+		- Do not use production database, as this will likely be large and slow.
+
+	Test Patterns:
+
+		The following test patterns utilise the following components:
+
+			Tested Class:		The class that needs to be tested.
+			Test Specific Class:	An extension of 'Tested Class'.
+			Tester Class:		The class that instantiates the 'Test Specific Class'.
+
+							 _______________________________	 _______________________
+							|Tester Class			|	|Tested Class		|
+							|	 ______________________ |	|			|
+							|	|Test Specific Class   ||	|			|
+							|	|		       ||	|			|
+							|	|		       ||	|_______________________|
+							|	|		       ||		    ^
+							|	|		       ||	 ___________|___________
+							|	|		       ||	|Test Specific Class	|
+							|	|		       ||	|			|
+							|	|______________________||	|			|
+							|_______________________________|	|_______________________|
+
+		Test Specific Class
+
+			Purpose: 	To prevent unsafe, slow, computationally expensive, inappropriate processes/threads from running during a test.
+			
+			Method:
+
+				1. Tested Class:		The class to be tested contains a method which is inappropriate to be actually/physically tested every time a test is run.
+				2. Test Specific Class:		Create the 'Test Specific Class' by extending 'Tested Class' which overrides the inappropriate method to do nothing.
+				3. Test Specific Class:		Set to be a spy, so that the invocation of the inappropriate method can be checked e.g. include internal variables/mechanisms that can be checked to confirm success/fail of test.
+
+			Example:
+
+				- An x-ray machine has an align() method but also inappropriately turns on the x-ray machine each time the align() is invoked.
+				- The 'Tested Class' is extended and the align() method is overriden to do nothing and set to spy.
+				- The 'Test Specific Class' can now be tested without concern of turning on the x-ray machine.
+
+		Self Shunt
+
+			- A design incrementation of the 'Test Specific Class' pattern.
+			- Rather than create a separate extension of the 'Tested Class', simply set the 'Tester Class' to extend the 'Tested Class' and override the inappropriate method accordingly.
+			
+				Pro:	Convenient and quick.
+				Con:	Confusing to the reader, therefore should only be used when necesary.
+
+			- Frameworks behave differently 
+
+				JUnit:		Creates a new instance of the Tester Class upon each test.
+				NUnit:		Creates only x1 instance of the Tester Class for all tests.
+
+				This behavioural difference can have implications when using the 'Tested Class' as a spy with internal counter variables e.g. for x1 class would count all invocations rather than just for the current test.
+
+		Humble Object
+
+			- Testing across boundaries or in particular hardware boundaries can be:
+
+				- Difficult
+				- Inconvenient
+				- Computationally expensive
+				- Impossible
+				- Slow
+				- Unreliable
+
+			- Humble objects or 'humiliating' the component that manages that cross boundary communication is a compromise solution.
+			- Humble objects attempt to 'humiliate' the code surrounding this hardware boundary by arranging the architecture of the code so that it is as humble, simple as possible so that it can be easily tested.
+			- Humble objects enable manual inspection and verification given that the code is so simple that it does not need to have automated unit testing.
+			- The body of source code which carries data over any boundary is broken down into the following components:
+
+				1. Presenter:				Class			Accepts an input from the application, unpacks and builds Presentation <DS>.
+				2. View Interface:			Interface		Implemented by the Humble View.
+				3. Humble View (Humble Object):		Class			Implements the View Interface, simply unpacks the Presentation <DS> and sends over the boundary.
+				4. Presentation <DS>:			Data Structure		Contains very simple elements that represent the data that could be sent from the application over the boundary.	
+
+			- Presenter:
+
+				- Input: 	Application Feed
+				- Role:		Processes the application data to be transported across the boundary. Unpacks the application data to be transported across the boundary.
+				- Output:	Produces a Presentation <DS> which is passed to the Humble View.
+
+			- View Interface:
+
+				- Role:		To prevent the higher level Presenter from depending on the lower level Humble View (Object).
+
+			- Humble View:
+
+				- Input: 	Presentation <DS>
+				- Role:		Highly simple object which translates the Presentation <DS> over the boundary.
+				- Output:	Highly simplified data elements e.g. strings, flags. Object is so simple it can be manually inspected/tested and does not need to be included in automated unit tests.
+
+			- Presentation <DS>:
+
+				- Contains simple elements e.g. strings, flags which represent the data to be sent over the boundary.
+
+			- These individual stages are easier to test overall.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,476 @@
+Kotlin
+
+	Lambda Expressions:
+
+		- Lambda Expressions as in Java are annonymous functions which can be used as an expression.
+		- Lambda Expression is simply a function which can be stored within a variable and used/returned/passed around like a normal variable:
+
+			1. Variable Assignment:		Assign/store a lambda within a variable so that it maybe invoked later NB: Only Lambdas can be stored in variable (not regular functions).
+			2. Argument:			Pass a lambda expression as an argument to another function.
+			3. Function Return:		Return a lambda expression from a function.
+			4. Simple Invocation:		Invoke a lambda expression on its own.
+
+			Given:
+
+				fun uppercaseString(s: String, i: Int): String
+				{
+    				    return s.uppercase() + i
+				}
+
+				println(uppercaseString("hello", 10))
+
+			The call to uppercaseString() can be simplified using a lambda expression:
+
+			    	{ s: String, i: Int -> s.uppercase() + i }("hello", 10)
+				  -----------------    -----------------   -----------
+			     	  Parameters           Body	           Arguments
+
+				------------------------------------------
+				Lambda Expression (within {})
+
+			Therefore the call is as follows:
+
+				println({ s: String, i: Int -> s.uppercase() + i }("hello", 10))
+
+			If initial function call does contain additional arguments they are placed within the () as normal:
+
+				println(bTest, 45) { s: String, i: Int -> s.uppercase() + i }("hello", 10)
+
+			If the Lambda has only x1 argument then it can be reference using 'it', however it is bad practice to use multiple differing references for 'it' within chained expression:
+
+				people.flatMap{people.map{person -> it to person}}.maxBy{it.first = it.second}		//Use explicit parameters when have multiple differing references to 'it'
+								    |			 |	    |
+								    Differing objects ---------------
+
+			If the Lambda has only x1 argument then it is not necessary to define a separate parameter as 'it' for it is defined automatically:
+
+				println { it -> it > 0 }	//'it' parameter is not needed
+
+		- Lambda Expressions have the following forms:
+
+			{ s: String, i: Int 	-> s.uppercase() + i }	("hello", 10)					//Multiple Parameters
+			{ s: String 		-> s.uppercase() }	("hello")					//Single Parameter
+			{ it: String		-> it.uppercase() }							//Single Parameter using default 'it' placeholder
+			{ 			   it.uppercase() }							//Single Parameter using default 'it' placeholder without explcit 'it' parameter
+		     	{												//Single Parameter using default 'it' placeholder withing multiline (where last expression is the return value)
+			    println("processing $it")
+			    it > 0
+			}
+			{ println("Updaing Log") }									//No Parameters
+
+			println("Update") 	{ s: String, i: Int -> s.uppercase() + i }	("hello", 10)		//Lambda is the last argument (trailiing Lambda)		Move {} outside the ()
+			println 		{ s: String, i: Int -> s.uppercase() + i }	("hello", 10)		//Lambda is only argument					Drop ()
+			println 		{ s, i -> s.uppercase() + i }			("hello", 10)		//Lambda parameter types can be successfully inferred		Drop Parameter Types
+			println 		{ it > 0 }								//Lambda has only x1 argument					Replace with 'it'
+
+			fun callMyLambda(action: () -> Unit) {								//Lambda is invoked using ()
+    			    for(i in 1..n)
+				action()
+			}
+
+			run {println("Hello")}										//Lambda is invoked using library function run()
+
+		- Lambda Expression have the following general rules to improve readability:
+
+			1. Multiple 'it':		Do not have multiple differing references to 'it' within the same chained expression.
+			2. Explicit Parameters:		Use explicit parameter names in order to aid clarity.
+			3. Library Functions:		Use library functions which may do what you want rather than try to 'reinvent wheel' and implement within your own lambda expression.
+
+		- Lambda Expressions which have only x1 argument it is possible to use the keyword 'it' to represent that parameter:
+
+			list.any{i -> i > 0}
+			list.any{it > 0}	//Both statements are equivalent
+
+			NB: 'it' is an automatically generated name for your parameter if there is only x1 and a user defined name is not provided.
+
+		- Lambda Expression can be multiline whereby the result of the last expression is the value which is returned by the lambda:
+
+			list.any {
+			    println("processing $it")
+			    it > 0			//Boolean result of it > 0 is value returned
+			}
+
+		- Lambda Expressions (and Extension Lambdas) are always enclosed within {}, in order to distinguish other uses of {} (e.g. statement block) the IDE will highlight the {} in bold.
+
+		- Lambda Expressions with no parameters can be defined with just the body i.e. no parameter list nor ->:
+
+			updateLog { println("Log message") }
+
+		- Lambda Expressions can be assigned/stored in a variable:
+
+			val funTest = {string: String -> string.uppercase()}		//Lambda Expression is stored (as a whole - not just any returned value) as a Function Type in a variable
+				    = {string.uppercase()}				//Lambda Expression can be expressed using shorthand should all of the necessary types be inferred
+
+			println(funTest("hello"))					//Lambda Expression is invoked and passed the argument "hello", returning "HELLO"
+
+			aFunction(funTest)						//Lambda Expression passed variable as an argument
+			aFunction{string.uppercase()}					//Lambda Expression defined and passed explicitly as an argument i.e. the ability to pass a function without need to define a function name
+
+		- Lambda Expressions examples:
+
+			1. Argument:
+
+				//Lambda passed as an argument
+
+				val lstNums = listOf(1, -2, 3, -4, 5, -6)
+				val lstPositives = lstNums.filter { x -> x > 0 }
+				val lstNegatives = lstNums.filter { x -> x < 0 }
+
+				println(lstPositives)					// [1, 3, 5]
+				println(lstNegatives)					// [-2, -4, -6]
+
+				Here:
+
+					1. lstNums is a List which is instantiated and initialised.
+					2. lstNums uses one of the member/extension functions .filter() which excepts a Lambda as an argument which is the predicate/condition of the filtering process.
+					3. When .filter() is called it uses the Lambda to filter and return a new list.
+					4. The Lambda itself accepts an Int and returns a boolean (which will be specified by the function type).
+
+				NB: When a function expects only x1 Lambda it is possible to omit the ():
+
+					val lstPositives = lstNums.filter({ x -> x > 0 })		//() not needed
+					val lstPositives = lstNums.filter { x -> x > 0 }
+
+				NB: When a function has a Lambda as the last parameter it is possible to define Lambda outside of the function calls ():
+
+					println(listOf(1, 2, 3).fold(0, { x, item -> x + item }))
+					println(listOf(1, 2, 3).fold(0) { x, item -> x + item })	//Outside .fold()
+
+			2. Function Return Value:
+
+				//Lambda returned by a function
+
+				fun convertToSeconds(time: String): (Int) -> Int = when (time)
+				{
+    				    "hour" 	-> { value -> value * 60 * 60 }
+    				    "minute" 	-> { value -> value * 60 }
+    				    "second" 	-> { value -> value }
+    				    else 	-> { value -> value }
+				}
+
+				fun main()
+				{
+    				    val lstDuration = listOf(2, 10, 15, 1)
+    				    val funConvertToSeconds = convertToSeconds("minute")
+    				    val iTotalTimeInSeconds = lstDuration.map(funConvertToSeconds).sum()
+
+				    println("Total time is $iTotalTimeInSeconds secs") // Total time is 1680 secs
+				}
+ 
+			 	Here:
+
+					1. Lambda can be selected, returned and assigned to a val which can be subsequently used.
+					2. The return type of convertToSeconds() is a Function Type:
+
+						(Int) -> Int
+
+					3. convertToSeconds() does not contain a body (it is a Function Expression) which ultimately uses a when statement to return a lambda from itself and the function convertToSeconds().
+					4. funConvertToSeconds is inferred to be a Function Type of '(Int) -> Int'.
+					5. funConvertToSeconds is assigned and stores reference to the lambda returned by convertToSeconds().
+					6. funConvertToSeconds is then passed to .map() of the list.
+					7. funConvertToSeconds is used by the .map() to transform each of the elements in lstDuration.
+					8. Each of the elements has the lambda applied to it.
+					9. .map() returns a new mutated list (or the same physical list but mutated, to be checked) which has the lambda applied and then .sum()'d.
+
+			3. Variable Assignment and Invocation:
+
+				Lambda can be stored in a variable of the Function Type and called/invoked at any time via:
+
+					val funTest = {string: String -> string.uppercase()}
+					println(funTest("hello"))
+
+			4. Define and Call:
+
+				Lambda can be defined and called at same time without the need to assign to variable:
+
+					{println("Hello")}()
+					{string: String -> string.uppercase()}("hello")
+
+				Lambda which are called when defined and have no arguments can drop the () and use 'run'
+
+					run {println("Hello")}
+
+		- Lambda Expressions can be 'trailing' known as 'Trailing Lambda' which is a common syntax within Compose:
+
+			func update (Parameter1, Parameter2, Parameter3, ... Function Type)		//A function is the last parameter
+			{
+			    ...
+			}
+
+			When the last parameter is a Function Type then 'trailing lambda' syntax can be applied such that when the function is called the passed arguments functions body is not contained within the Argument List but
+			is contained within its own {} after the call.
+
+			...
+
+			{
+			    update(Argument1, Argument2)
+			    {
+				[Function Body]		//This function body defines the function that is passed to the function 'update'
+			    }
+			}
+
+		- Lambda Expressions support 'Destructuring Declarations', where if the parameter of the lambda is a Pair, the Pair does not need to be explicitly declared but its x2 component parts used directly:
+
+				map.mapValues{entry -> "${entry.key} is mapped to ${entry.value}" }
+
+			Can be simplified using destructuring syntax:
+
+				map.mapValues{ (key, value) -> "$key is mapped to $value" }
+
+			It is common for map entries to be supplied and processed via lambdas whereby this syntax improves readability.
+
+		- Lambda Expressions which do not need to use a parameter as specified by the expectant function type can be 'blanked' using _ in place of the parameter (rather than having to think up some dummy name):
+
+			{ (_, messages) -> messages.size }
+
+		- Lambda Expressions always return from the whole function (that the lambda may be contained within) whenever the 'return' keyword is encountered:
+
+			fun aFunction(list: List<Int>): List<Int>
+			{
+			    return list.flatMap			//1
+			    {
+				if(it == 0)
+				    return listOf()		//2
+
+				listOf(it, it)
+			    }
+			}
+
+			Here:
+
+				1. .flatMap() is passed a lambda.
+				2. As soon as an element within list is 0 the whole function (aFunction()) immediately returns, not just the curent iteration within .flatMap().
+
+		- Lambda Expressions always return from the whole function in order to maintain consistency:
+
+			fun aFunction(...)
+			{
+			    for(i int list)
+				if(i == 0)
+				    return true			//1
+			    return false
+			}
+
+			Here:
+
+				1. Upon encountering a 0 the return would naturally be expected to return from the whole function (aFunction()), not from the current iteration of the for loop.
+				2. This logic is simarily applied to lambdas:
+
+					fun aFunction(...)
+					{
+			    		    list.forEach {
+						if(i == 0)
+				    		    return true		//Return from whole 'aFunction'
+					    }
+
+			    		    return false
+					}
+
+		- Lambda Expressions can be made to return locally rather than the whole group of nested functions using a label which matches the name of the local function:
+
+			fun aFunction(list: List<Int>): List<Int>
+			{
+			    return list.flatMap	
+			    {
+				if(it == 0)
+				    return@flatMap listOf()		//Return from the current iteration of the Lambda
+
+				listOf(it, it)
+			    }
+			}				
+
+			fun aFunction(list: List<Int>): List<Int>
+			{
+			    return list.flatMap	@l{			//Manual custom labels can be defined
+				if(it == 0)
+				    return@l listOf()			//Manual custom labels can be defined
+
+				listOf(it, it)
+			    }
+			}
+
+			NB: Labelling when used within a forEach() is eqivalent to continue:
+
+				list.forEach {
+				    if(it == 0)
+				    	return@forEach			//Equivalent to 'continue' within forEach()
+
+				    print(it)
+				}
+
+		- Lambdas may be inlined automatically by the compiler (however this may depend upon the nature/structure/use of the lambda).
+
+				- Lambda Expression examples:
+
+			1. Build the URL's as required:
+
+				fun main()
+				{
+    				    val lstActions = listOf("title", "year", "author")
+    				    val sPrefix = "https://example.com/book-info"
+    				    val iID = 5
+    				    val lstURLs = lstActions.map { sElement -> "$sPrefix/$iID/$sElement" }
+
+    				    println(lstURLs)
+				}
+
+				Output:
+					[https://example.com/book-info/5/title, https://example.com/book-info/5/year, https://example.com/book-info/5/author]
+
+					Here:
+
+						1. .map() expects a function to transform the String elements within the list to the full URL.
+						2. Lambdas have access to the outer variables.
+						3. .map() expects a lambda of Function Type: '(String) -> String'.
+						4. Consequently the lambda below is supplied:
+
+							sElement -> "$sPrefix/$iID/$sElement"
+
+						5. This map/transform is applied to all elements in lstActions using the lambda passed as an argument.
+
+			2. Repeat 'Hello' x5 times:
+
+				fun repeatN(n: Int, action: () -> Unit) {
+    				    for(i in 1..n)
+					action()
+				}
+
+				fun main() {
+    				    repeatN(5){println("Hello")}
+				}
+
+				Here:
+
+					1. A lambda of Function Type '() -> Unit' is expected by repeatN()
+					2. Therefore a lambda must be passed which matches that Function Type (which also prints the text 'Hello'):
+
+						fun aFunction():Unit
+						{
+						    println("Hello")
+						}
+
+						or just
+
+						println("Hello")
+
+					3. The lambda supplied as an argument within 'action' is invoked whereby running 'println("Hello")' x5 times.
+
+			3. Collections in a functional style:
+
+				val employees: List<Employee>
+
+				data class Employee(val city: City, val age: Int)
+
+				employees.filter{it.city == City.PRAGUE}
+					 .map{it.age}
+					 .averge()
+
+	Lambda with Receiver (Extension Lambdas):
+
+		- Lambda with Receiver (also known as an Extension Lambda) is a combination of:
+
+			Extension Function + Lambda
+
+		- Lambda with Receiver is simply a lambda with an implicit access to 'this' i.e. the instance that the lambda is being applied to.
+		- Lambda with Receiver is a means of writing more concise source code when interacting with the members/extensions of an object (receiver) multiple times:
+
+			val sb = StringBuilder()
+
+			sb.appendln("Alphabet: ")		//Here sb is referenced multiple times, which may become cumbersome if sb is a long name
+
+			for(c in 'a..z')
+			    sb.append(c)
+
+			sb.toString()
+
+		- Lambda with Receiver alteratively places all of the calls to the members/extensions of StringBuilder within a lambda in where the variable name need not be included:
+
+			val sb = StringBuilder()
+
+			with (sb) {				//The receiver sb is used 'with' a lambda, 'with' is a regular function defined within the standard Kotlin library
+
+			    appendln("Alphabet: ")		//All of the members/extensions of the receiver can be prefixed with 'this' (this.appendln("Alphabet: ")) but can also be omitted, 'this' is the implicit receiver within the lambda
+
+			    for(c in 'a..z')
+			    	append(c)
+
+			    toString()
+			}
+
+			with() is defined as follows:
+
+				inline fun <T, R> with(receiver: T, block: T.() -> R): R = receiver.block()
+
+				Here:
+
+					1. with() has x2 type parameters T (Receiver) and R which is the value returned by the extension lambda (block) when run on the instance of T.
+
+		- Lambda with Receiver is essentially a lambda with an implict receiver via 'this' (which is of the the type that is the first argument supplied to the 'with' function).
+		- Lambda with Receiver needs consideration when applied to a nullable:
+
+			val window: Window?
+
+			with(window) {
+			    width = 300
+			    height = 200
+			    isVisible = true
+			}
+
+			Here:
+
+				1. This will cause compile error given that window is nullable and therefore the implicit reference to 'this' within the lambda body may also be null, it would be necessary to manually check each time 'this' is referenced.
+				2. An alternative would be to use run() which can be called on a nullable and would automatically do nothing if 'window' was null.
+
+		- Lambda with Receiver is part of the collection of features that can be applied to a class/object:
+
+			Regular Function		Regular Lambda
+			Extension Function		Extension Lambda (also known as Lambda with Receiver)
+
+		- Lambda with Receiver and Extension Functions follow a similar mode of use via the receiver 'this':
+
+			Extension Function:
+
+				fun String.lastChar() = this.get(this.length - 1)
+
+			Extension Lambda (Lambda with Receiver):
+
+				buildString {
+				    this.append("...")
+				}
+
+			Both extension functions and extension lambdas use 'this' to implicitly refer to the receiver, where 'this' can be omitted in both cases, 'this' is in effect a parameter automatically included within extension functions/lambdas.
+
+		- Lambda with Receiver can be stored within a variable just like a regular lambda:
+
+			val isEven: (Int) -> Boolean = {it % 2 == 0}		//Regular lambda
+			val isEven: Int.() -> Boolean = {this % 2 == 0}		//Extension lambda where the function type is 'Int.() -> Boolean', any additional parameters are placed with the ()
+				    |
+				Receiver Type.(Parameters)
+
+			Calling regular lambda and extension lambda are as follows:
+
+			isEven(0)	Regular lambda 		is called the same as 		Regular function
+			1.isOdd()	Extension lambda 	is called the same as		Extension function
+
+		- Lambda with Receiver can be the parameter of a regular function:
+
+			inline fun buildString(action: StringBuilder.() -> Unit): String
+			{
+			    val sBuilder = StringBuilder()
+			    sBuilder.action()			//1
+			    return sBuilder.toString()		//3
+			}
+
+			Which is called while passing an extension lambda as an argument:
+
+			val s:String = buildString {		//Here the extension lambda is passed to buildString() as marked between the { }
+			    appendln("Alphabet: ")		//2
+			    for(c in 'a..z')
+			    	append(c)
+			}
+
+			Here:
+
+				1. Within the regular function buildString() (which is passed an extension lambda), a StringBuilder is instantiated and has the passed extension lambda called on it (as an extension function).
+				2. The body of the extension lambda is applied to the sBuilder instance contained within the regular function buildString(), appendIn() is a member of StringBuilder and is applied to the instance sBuilder (via implicit 'this').
+				3. The modified sBuilder is now returned by the regular function buildString() as a String and assigned to s.

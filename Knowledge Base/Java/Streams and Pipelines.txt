@@ -1,0 +1,501 @@
+Streams and Pipelines
+
+	Overview:
+
+		- Aggregate Operations are operations which are concatenated and cascaded.
+		- Aggregate Operations are composed of:
+
+			1. Streams
+			2. Pipelines
+
+	Streams:
+
+		- Streams are annoymous objects which implement the Stream Interface (or extensions of the Stream Interface).	
+		- Streams are created by methods typically determined by a passed predicate represented as:
+
+			1. Lambda Expressions
+			2. Method References
+
+		- Streams syntax is no different from aggregated methods.
+		- Streams are concatenated to form Pipelines.
+		- Streams 'carry' values from a Source through the Pipeline.
+		- Streams are a sequence of Elements.
+		- Streams do not store data nor a Data Structure.
+		- Streams likely carry a reference to the valid elements in the source (rather than copies).
+		- Streams maybe envisaged as an object which contains a 'bundle' or collection of referenced elements which were extracted and filtered from the source.
+
+	Pipelines:
+
+		- Pipelines are a sequence of Aggregated Operations:
+
+					|__Source__|	|__________________ Intermediate Operations __________________|			|_ Terminal Operation(s)_|
+
+					  		Returns a		Returns a		Returns a			Returns an
+					  		Stream			Stream			Stream				Primitive, Collection, Void
+					|------------------------------|
+					|------------------------------------------------------|
+					|------------------------------------------------------------------------------|
+					|--------------------------------------------------------------------------------------------------------|		
+
+			int iSum = 	Collection	.method1(Lam.Ex)	.method2(Lam.Ex)	.method3(Lam.Ex)		.method4();
+
+			Summary:
+
+				- method1() returns a particular anonymous object implementing stream interface which has method2() as a member.
+				- method2() returns alternate* (or filtered) stream object which has method3() as a member.
+				- method3() returns alternate* (or filtered) stream object which has method4() as a member.
+				- method4() returns a single int which is assigned to iSum.
+
+				* the resulting alternate stream would expected to be determined by the predicate lamda expression argument.
+				  the resulting alternate stream are 'unrelated' and not 'constituent parts' of the original source but are newly created anonymous objects which implement that
+					particular stream interface and contain a modified set of referenced elements (which are still physically stored in the source). 
+
+		- Pipelines contain following components:
+
+			Source:
+
+				1. Collection
+				2. Array
+				3. Generator Function
+				4. IO Channel
+
+			Intermediate Operation:
+
+				- 0 or more Intermediate Operations
+				- Returns only another Stream.
+				- Typically they are passed an argument which is a Predicate of the required Elements.
+				- Elements which generate true when passed through the Predicate are included in the new Stream.
+
+			Terminal Operation:
+
+				- Produces a 'non Stream' result.
+
+					1. A Primitive
+					2. A Collection
+					3. Void e.g. ForEach() which simply carries out a task on each Element e.g. System.printLn()...
+
+				- A Pipeline may contain multiple Terminal Operations (To Be Confirmed).
+
+		- Pipelines are read/processed from left to right, whereby each method returns a Stream which has the 'next method' as a member until it reaches the Terminal Operation(s).
+
+			Source.Intermediate().Intermediate().Terminal()
+
+			1. Intermediate Operations are Lazy i.e. only executed when required.
+			2. Pipeline only starts once the Terminal Operation is encountered and commenced.
+			3. Pipeline only finishes once the Terminal Operation is completed.
+
+		- Pipeline methods are typically passed Lambda Expressions or Method Reference as an argument which typically represents the operation/Predicate to perform.
+		- Pipeline are terminated with a Terminal Operation, which finally evaluates and returns and is assigned to the lValue:
+
+			double average = roster						//Source
+    				.stream()						//Intermediate Operation:	Return Stream
+    				.filter(p -> p.getGender() == Person.Sex.MALE)		//Intermediate Operation:	Return Stream
+    				.mapToInt(Person::getAge)				//Intermediate Operation:	Return IntStream
+    				.average()						//Terminal Operation:		Return OptionalDouble
+    				.getAsDouble();						//Terminal Operation:		Return Average as Double for throw NoSuchElementException if OptionalDouble is 0.
+
+		- Pipeline Operations do not start until the Terminal Operation is executed i.e. the Intermediate Operations do not start processing/generating streams until the Terminal Operation is known.
+
+	Reduction Operation:
+
+		- JDK contains a number of Reduction Operations and Terminal Operations e.g.
+
+			average(), sum(), min(), max(), count()...
+
+		- Reduction and Terminal Operations 'reduce' the contents of the Stream into either:
+
+			1. x1 Value:		e.g. Find an average.
+			2. x1 Collection:	e.g. Group Elements into Groups.
+
+		- Via:
+
+			Stream.reduce:		Reduces the stream down to a single value, returning a new value for each Element that is processed.
+			Stream.collect:		Reduces the stream down to a single Collection, mutating an existing value by adding each Element in the Stream to a mutated Collection (rather than creating a new Collection for each Element).
+
+		- Custom processing of each Element in a Stream can be implemented via the Custom Classes that can be used within .reduce() and .collect().
+		
+		Custom Processing Examples:
+
+			1. Stream.average():
+
+				Integer averageAge = roster
+    					.stream()					//Intermediate Operation:	Return Stream
+    					.mapToInt(Person::getAge)			//Intermediate Operation:	Return IntStream
+    					.average();					//Terminal Operation:		Return OptionalDouble	(.average() is a Reduction Operation as well as a Terminal Operation)
+
+			2.Stream.reduce():
+
+				Integer totalAge = roster
+   					.stream()					//Intermediate Operation:	Return Stream
+   					.map(Person::getAge)				//Intermediate Operation:	Return Stream
+   					.reduce(					//Terminal Operation:		Return Optional		(.average() is a Reduction Operation as well as a Terminal Operation)
+       						0,
+       						(a, b) -> a + b);
+
+				.reduce('identity', 'accumulator'):
+
+					identity:	0
+
+						- Initial Value of the Reduction.
+						- Default Value if no Elements in the Stream.
+
+					accumulator:	(a, b) -> a + b
+
+						- Equivalent to:
+
+							int result = identity;
+
+							for (int element : this stream)
+         							result = accumulator.applyAsInt(result, element);
+
+     							return result;
+
+			3. Stream.collect():
+
+					class Averager implements IntConsumer
+					{
+    						private int total = 0;
+    						private int count = 0;
+        
+    						public double average()
+						{
+        						return count > 0 ? ((double) total)/count : 0;
+    						}
+        
+    						public void accept(int i)
+						{
+							total += i;
+							count++;
+						}
+    						public void combine(Averager other)
+						{
+        						total += other.total;
+        						count += other.count;
+    						}
+					}
+
+					Averager averageCollect = roster.stream()
+    						.filter(p -> p.getGender() == Person.Sex.MALE)
+    						.map(Person::getAge)
+    						.collect(Averager::new, Averager::accept, Averager::combine);
+                   
+					System.out.println("Average age of male members: " + averageCollect.average());
+
+				- Stream.collect can be used to process custom classes.
+				- Averager implements IntConsumer, such that an overloaded .collect() utilised x3 methods:
+
+					1. supplier:	(Averager::new)
+
+							- Factory Function.
+							- Creates the 'result container', the container that is ultimately returned by .collect i.e. the Averager that is ultimately placed in averageCollect.
+
+					2. accumulator:	(Averager::accept)
+
+							- Accumulates and processes the next Element in the stream.
+							- The result is placed in the another temporary 'container'.
+
+					3. combiner:	(Averager::combine)
+
+							- Both 'containers' are combined.
+							- Process continued until the end of the Stream.
+							- 'result container' returned.
+
+			4. Collector:
+
+					List<String> namesOfMaleMembersCollect = roster
+    						.stream()
+    						.filter(p -> p.getGender() == Person.Sex.MALE)
+    						.map(p -> p.getName())
+    						.collect(Collectors.toList());
+
+				- Collector encapsulates the x3 roles (supplier, accumulator, combiner).
+				- Collectors.toList accumulates the Elements into a new instance of List.
+
+			5. Maps:
+
+					Map<Person.Sex, List<Person>> byGender = roster
+        					.stream()
+        					.collect(
+            					Collectors.groupingBy(Person::getGender));
+
+				- .groupingBy() returns a Map whose Keys are the values that result from applying the Lambda Expression/Method Reference specified as its parameter (which is called a Classification Function).
+				- Each Element is processed and sorted by the Classification Function. 
+				- Resulting in following Map:
+
+					Key			Value
+					____________________________________
+					
+					Person.Sex.MALE		List<Person>
+					Person.Sex.FEMALE	List<Person>
+
+			6. MultiLevel Reduction:
+				
+					Map<Person.Sex, List<String>> namesByGender = roster
+        					.stream()
+        					.collect(
+            						Collectors.groupingBy(
+                						Person::getGender,                      //Classification Function
+                						Collectors.mapping(			//Downstream Collector
+                    							Person::getName,
+                    							Collectors.toList())));
+
+				- A pipeline that contains one or more Downstream Collectors is called a Multilevel Reduction.
+
+			7. MultiLevel Reduction:
+
+					Map<Person.Sex, Integer> totalAgeByGender = roster
+        					.stream()
+        					.collect(
+            						Collectors.groupingBy(
+                						Person::getGender,                      
+                						Collectors.reducing(
+                    							0,
+                    							Person::getAge,
+                    							Integer::sum)));
+
+
+				- .reducing() contains x3 parameters:
+
+					identity:	0
+
+						- Initial Value of the Reduction.
+						- Default Value if no Elements in the Stream.
+						- Same role as the 'identity' defined for .reduce().
+
+					mapper:		Person::getAge
+
+						- Mapper method applied to all Elements in the Stream.
+
+					operation:	Integer::sum
+
+						- Reduce the mapped values.
+
+			8. MultiLevel Reduction:
+
+					Map<Person.Sex, Double> averageAgeByGender = roster
+    						.stream()
+    						.collect(
+        						Collectors.groupingBy(
+            						Person::getGender,                      
+            						Collectors.averagingInt(Person::getAge)));
+
+				- Map and find the average age of each gender.
+
+	Ordering:
+
+		- There are many factors which determine the order in which Elements are processed:
+
+			1. Serial/Parallel
+			2. Stream Source
+			3. Intermediate Operations
+
+		- For Example:
+
+			List<Integer> listOfIntegers = new ArrayList<>(Arrays.asList({1, 2, 3, 4, 5, 6, 7, 8}));
+
+			listOfIntegers
+    				.stream()
+    				.forEach(e -> System.out.print(e + " "));		//1 2 3 4 5 6 7 8
+
+			Comparator<Integer> reversed = normal.reversed(); 
+			Collections.sort(listOfIntegers, reversed);  
+
+			listOfIntegers
+    				.stream()
+    				.forEach(e -> System.out.print(e + " "));		//8 7 6 5 4 3 2 1		Reverse Order
+
+			listOfIntegers
+    				.parallelStream()
+    				.forEach(e -> System.out.print(e + " "));		//3 4 1 6 2 5 7 8		Random ordering given that Elements are processed as efficiently as possible concurrently
+
+			listOfIntegers
+    				.parallelStream()
+    				.forEach(e -> System.out.print(e + " "));		//6 3 1 5 7 8 4 2		Random ordering given that Elements are processed as efficiently as possible concurrently
+   
+			listOfIntegers
+    				.parallelStream()
+    				.forEachOrdered(e -> System.out.print(e + " "));	//8 7 6 5 4 3 2 1		Parallel processing but ordered. NB: Benefits of parallelism are normally lost in such circumstances
+
+	Side Effects:
+
+		- Side Effect is when an operation (of any kind) not only returns/produces a result but also alters the state of the computer e.g.
+
+			1. Reduction (mutable).
+			2. System.println (for debugging).
+			3. Method that returns void.
+
+		- JDK handles Side Effects well within Pipelines (in particular parallel).
+		- However:
+
+			1. Care/consideration should always be deployed when supplying Lamda Expressions/Method References within operations within parallel streams.
+			2. Java Runtime will attempt to run the Lamda Expressions/Method References concurrently.
+			3. Never pass Lamda Expressions/Method References that have Side Effects in operations such as .filter() or .map().
+
+	Laziness:
+
+		- An expression, method or algorithm is Lazy if its value is evaluated only when it is required.
+		- All Intermediate Operations are Lazy given that they do not start processing the contents of the stream until the Terminal Operation commences.
+		- Processing Streams lazily enables the Compiler/Runtime to optimise how they process Streams:
+
+			Integer averageAge = roster
+    				.stream()
+    				.mapToInt(Person::getAge)
+    				.average();
+
+		- For example, .stream() and .mapToInt() do not start processing until .average() has commenced.
+	
+	Interference:
+
+		- Interference occurs when a Source of a Stream is modified while a Pipeline processeses the Stream.
+		- Lamda Expressions/Method References should never interfere.
+		- Typically a ConcurrentModificationException may be thrown as required:
+
+			List<String> listOfStrings = new ArrayList<>(Arrays.asList("one", "two"));
+
+			String concatenatedString = listOfStrings
+        			.stream()
+				.peek(s -> listOfStrings.add("three"))		 //Interference
+				.reduce((a, b) -> a + " " + b)
+				.get();
+
+		- Clearly attempting to modify and add Elements to the List while it is being processed will have unpredictable/inconsistent results.
+
+	Stateful Operations:
+
+		- Lambda Expressions/Method References:
+
+			Stateful:	Result depends on any other external/internal state that may change during execution of the Pipeline.
+			Stateless:	Result does not depend on any other external/internal state that may change during execution of the Pipeline.
+
+		- Stateful Operations should be avoided during Pipelines.	
+
+			listOfIntegers
+				.stream()
+    				.map(e -> { serialStorage.add(e); return e; })		// Avoid Stateful Lambda Expression.
+				.forEachOrdered(e -> System.out.print(e + " "));
+
+			listOfIntegers
+    				.parallelStream()
+				.map(e -> { parallelStorage.add(e); return e; })	// Avoid Stateful Lambda Expression.
+				.forEachOrdered(e -> System.out.print(e + " "));
+
+		- Adding Elements to a List while processing through a Pipeline will produce unpredictable/inconsistent results.
+		- For predictable and deterministic results ensure that Lambda Expressions/Method References are Stateless.
+
+	Synchronised List:
+
+		- Collections are not Thread-Safe.
+		- Therefore when instantiating Collection within a parallel context ensure they are Thread-Safe via invoking:
+
+			Collections.synchronizedList()
+
+		- Collections which are not Thread-Safe within a parallel context will behave ver erratically and unpredictable.
+
+	Aggregate Operations v Iterators:
+
+		1. Internal/External Iteration:
+
+			- External Iteration:	[Iterator]
+
+				1. Application:		Determines 'what' Collection to iterate.
+				2. Application:		Determines 'how' Collection should be iterated:		Sequential Only e.g. Manually using .next() as required via an Iterator.
+
+			- Internal Iternation:	[Aggregate Operation]
+
+				1. Application:		Determines 'what' Collection to iterate.
+				2. JDK:			Determines 'how' Collection should be iterated:		Sequential or Parallel (if suitable).
+
+		2. Stream:
+							Support Streams
+			_______________________________________________
+
+			- Iterator:			-
+			- Aggregate Operations:		Y
+
+		3. Behaviour via Arguments:
+
+							Able to Pass Behaviour as an Argument (Lambda Expression/Method References)
+			___________________________________________________________________________________________________________
+
+			- Iterator:			-
+			- Aggregate Operations:		Y	
+
+	Collection Traversal:
+	
+		- Pipeline are the preferred means for traversing Collections given:
+
+			1. More Expressive.
+			2. Fewer Lines of Code.
+
+		- For Example:
+
+			1. Iterate through Collection of Shapes and print only red:
+
+				myShapesCollection.stream()					//Return a Stream representation of the Collection
+					.filter(e -> e.getColor() == Color.RED)			//Return only those which are red as defined by the Lambda Expresion
+					.forEach(e -> System.out.println(e.getName()));		//Print out all of those which are colour red.
+
+			2. Iterate through Collection of Shapes and print only red using parallel stream:
+
+				myShapesCollection.parallelstream()
+					.filter(e -> e.getColor() == Color.RED)
+					.forEach(e -> System.out.println(e.getName()));
+
+			3. Iterate through Collection, convert Elements to Strings and join them together:
+
+				String joined = elements.stream()
+    					.map(Object::toString)
+    					.collect(Collectors.joining(", "));
+
+	Low Level Operation:
+
+		Given:
+
+			Collection.stream()						//Returns an Anonymous object which implements Stream<E> containing concrete .filter()
+				.filter(e -> e.getColor() == Color.RED)			//Returns an Anonymous object which implements Stream<E> containing concrete .filter() + represents a filtered Collection of Red only.
+				.filter(e -> e.getName() == "Square")			//Returns an Anonymous object which implements Stream<E> containing concrete .filter() + represents a filtered Collection of Red Squares only.
+				.forEach(e -> System.out.println(e.getName()));
+
+		The code structure within the Collection may be as follows:
+
+			Collection<E>
+			{
+				default Stream<E> stream()
+				{
+					HiddenClass<E> objHiddenClass = new HiddenClass<E>(this);
+
+					return objHiddenClass;
+				}
+			}
+
+
+			HiddenClass<E> implements Stream<E>
+			{
+				HiddenClass(Collection c)
+				{
+					this.c = c;
+				}
+
+				...	//Implements all of Stream<E> abstract methods.
+				...
+				...
+
+				Stream<E> filter(Predicate<? super E> predicate)
+				{
+					//Build another Arbitary Object whilst passing in the Collection that contains Elements which pass the Predicate
+
+					Collection cLocal;
+
+					for(E e : c)
+					    if(predicate)
+						add to cLocal;
+
+					return new ArbitaryClass<E>(cLocal);	
+				}
+			}
+
+
+
+
+
+

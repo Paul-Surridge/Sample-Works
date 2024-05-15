@@ -1,0 +1,256 @@
+Spring
+
+	Spring Boot:
+
+		- Spring Boot is a framework that enables the building of standalone, production-grade Spring based applications that can run easily and quickly.
+		- Spring Boot does not require the configuration to be repeated for each application.
+		- Spring Boot applications typically require very little Spring configuration which is mainly auto-configured.
+		- Spring Boot main features include:
+
+			1. Spring Boot starters:
+
+				- Modules to quickly get started with commonly used technologies e.g. Spring MVC, JPA ...
+				- Modules are pre-configured with the most commonly used library dependencies removing the need to manually research, find and configure compatible libraries.
+
+			2. Spring Boot auto-configuration:
+
+				- Auto-configuration is applied to many components automatically.
+				- Auto-configuration removes the need to manually setup much boilerplate configuration e.g. if project contains spring-webmvc dependency, a DispatcherServlet is registered automatically.
+
+			3. Spring Boot encorporates an easy to use embedded servlet container.
+
+				- Web applications typically require creating and deploying *.war file to run within a Tomcat server.
+				- Web applications can alternatively be housed within a self-contained *.jar file with an embedded servlet container.
+
+			4. Spring Boot utilises elegant configuration management.
+
+		- Spring boot has many developer tools to assist in application development including:
+
+			- Auto Update:
+
+				- Auto update can sense when files have changed on the classpath and run an automatic restart of the application.
+				- Auto update enables the quick editing of templates without the need to manually stop/start the application.
+
+	Spring Initalializr:
+
+		- Spring Initalializr is a tool for creating an initial Spring Boot project skeleton.
+		- Spring Initalializr allows the instantiation/initialisation of projects via:
+
+			1. Web Interface:	start.spring.io
+			2. Remote API:		curl
+			3. Spring Boot CLI
+			4. IDE:			via Spring Tool Suite (IDE extension)
+			5. IDE:			via built in capability
+
+			NB: Spring Tool Suite provides a dashboard for start/stop Spring Boot application via IDE 					
+
+	Spring Project Structure:
+
+		- Typical/common components:
+
+			scr/main/java:				Source Code
+			scr/main/resources:		
+				/static:			Static resources e.g. images, stylesheets, javascript (initially empty)
+				/templates:			Template files which render content to be displayed in browser
+				/application.properties:	Property configuration (initially empty)
+			scr/main/test:				Test and unit test source code
+
+			mvnw:					Mavern wrapper scripts which all build even if Mavern is not installed
+			mvnw.cmd
+
+			pom.xml:				Mavern build script
+
+			[projectName]Application:		Bootstrap class
+			[projectName]ApplicationTests:		Tests class(es), initially contains x1 test that the application context has loaded, to be extended as required
+
+	Spring Boot Starter Dependencies:
+
+		- Starter Dependencies are the dependencies selected/defined via the Spring Initializr.
+		- Starter Dependencies contain 'starter' in the <artifactId/>.
+		- Starter Dependencies are special case dependencies which pull in libraries transitively, which provide the following benefts:
+
+			Size:			Build is significantly smaller given that only those needed are included.
+			Naming:			Naming can be more abstract e.g. convention can be based around capability rather than specific name e.g. 'web'
+			Versioning:		Latest versions are automatically included.
+			Mavern Goal:		Mavern goal automatically included to build/run spring application.
+			Libraries:		Libraries are all made available to runtime classpath.
+			Manifest Files:		All necessary/relevant information about project defined in manifest file.
+
+	Bootstrap Class:
+
+		- Bootstrap Class is the entry point for the application and generally defined as follows:
+
+			@SpringBootApplication
+			public class TacoCloudApplication {
+  			    public static void main(String[] args) {
+    				SpringApplication.run(MyApplication.class, args);
+  			    }
+			}
+
+			NB: Spring application are all run from either *.jar or *.war file hence require a bootstrap class to define the entry point.
+
+		- Bootstrap Class is generally left as-is unaltered.
+
+	Baseline Test:
+
+		- Baseline Test is the utmost basic test that simply checks to confirm that the application context has loaded:
+
+			@SpringBootTest
+			public class MyApplicationTests {
+
+  			    @Test
+  			    public void contextLoads() {
+  			    }
+			}
+
+	Multimodule Mavern Project Structure:
+
+		Project Structure:
+
+							 _______________________
+							|			|
+					Dependencies----| Libraries/Programs	|
+					|		|_______________________|
+					|		 _______________________
+					|		|			|
+					Plugins---------| Compilers		|
+					|		|_______________________|
+					|
+		 _______________	|
+		| pom.xml	|	|
+		| (root)	|	|			...
+		|		|-------|
+		|		|	|
+		|		|	|		 _______________________
+		|_______________|	|		| Module 1		|
+					|		|			|		
+					|		| psvm (String args[])	|
+					|		| {			|
+					|		|  ...			|
+					|		| }			|
+					|		|			|
+					|		| _____________________	|
+					|		|| pom.xml	       ||
+					|		||_____________________||
+					|		|_______________________|
+					Modules -------- _______________________
+							| Module 2		|
+							|			|
+							| 			|
+							|			|
+							|			|
+							|			|
+							|			|
+							| _____________________	|
+							|| pom.xml	       ||
+							||_____________________||
+							|_______________________|
+
+			- Module is a directory.
+			- Module is a project within itself.
+			- Module can be contained within other modules forming the following structure and naming convention:
+		
+				Root Module
+					Child Module
+					Parent Module
+						Child Module
+					Child Module
+
+			- Module may contain the psvm entry point from the JVM (only x1 module may contain the psvm).
+
+		Project Build, Compile and Run:
+
+			1. IDE:				Press Play
+			2. IDE:				Passes the pom.xml in the root folder to Maven.
+			3. Maven - Build:		Parses the pom.xml file:
+
+								- Downloads and caches all listed dependencies from mvnrepository.com that are used by Maven and the application:
+
+									- Dependencies
+										- Libraries
+										- Frameworks	e.g. SpringFramework
+										...
+
+									- Plugins
+										- Compilers
+										...
+
+								- Output Files:		All build outputs are located within the 'target' directory in the root.
+								- Output Status:	All build status outputs are located and listed within the 'build' tab of the IDE.
+								- Multi-Module:		If the pom.xml specifies that it is a multi-module project then Maven will be directed and continue to parse the pom.xml files within the respective module subdirectories.
+
+			4. Maven - Compile:		Compiles the java source code to bytecode (typically using a downloaded Maven compiler plugin).
+			5. Maven - JVM:			Once built and compiled:
+
+								- JVM is instantiated.
+								- JVM is pointed to the psvm wherever that may be.
+								- JVM runs the java application as normal (using all of the dependencies listed in the pom.xml).
+
+			6. Spring - Instantiation:	psvm(String args[])
+
+								- Spring framework library is used to instantiate a container.
+								- Spring framework library contains all of the classes/interfaces/components necessary to build a container.
+								- Spring framework processes the project files to build and configure the container and the contents of the container:
+
+									1. *.xml:		Read in *.xml which specifies all of the beans to be created and behaviour of the container.
+									2. Annotations:		Scan all of the *.java files within the module using the annotations to specify all of the beans to be created and behaviour of the container.
+
+		Spring Console Output:
+
+			- Spring outputs to the console i.e. the entities within the spring framework i.e. the components of Spring when instantiating a container and generating beans all output to console of their status and progress to enable system monitoring and fault find:
+
+				public static void main(String[] args)
+				{
+			  	    System.out.println("Test");
+
+			  	    ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
+				}
+
+				1. Console:	"Test"
+				2. Spring:	ClassPathXmlApplicationContext creates a container in accordance with the *.xml at CONFIG_LOCATION.
+				3. Console:	All of the status output contained within all of the internal referenced components is sent to console as the container is instantiated and initialised in accordnce with *.xml.
+
+			- The psvm(String args[]) is still the entry point of the program:
+
+				- Spring nor Maven introduce any additional layers 'before hand'.
+				- The first output to console is the first line of the psvm i.e. Test.
+				- Spring simply consists of a library of java classes/interfaces/components which are used, declared, defined and referenced in the standard way for all java components.  
+
+		Module Communication:
+
+			- Module communication is achieved as follows:
+
+				1. Module 1 pom.xml - Open:				Open pom.xml of Module 1 that requires access to Module 2 components.
+				2. Module 1 pom.xml - Add Module 2 as dependency:	Add and declare Module 2 a dependency of Module 1.
+
+				NB: All module communication is reflected and illustrated by the dependencies within the Maven tab.
+
+		Module Dependencies:
+
+			- Module dependencies i.e. dependencies of the source code within that module are declared within the respective module pom.xml.
+			- Module dependencies are transitive i.e. Module 1 establishing a dependency on Module 2 will in turn gain access to all of Module 2's dependencies.
+			- Module dependencies are transitive therefore do not need to be explicitly repeated and declared in each module.
+			- Module dependencies may include those already declared in a parent module.
+
+		Module Versioning:
+
+			- Module version as specified via the <version> tag within the pom.xml has the following 'rules':
+
+				1. When adding a dependency to a module which is already included in the parent pom.xml it is not necessary to declare the <version> of that dependency (only the <groupId> and <artifactId> are needed).
+				2. When adding a dependency which is another child module then the <version> must be included.
+
+			- Module version is inherited by all child modules.
+			- Module version of the parent pom.xml is exposed as a built-in Maven property ${project.version}, therefore if adding child module 2 as a dependency to child module 1 it is recommened:
+
+				1. Use the Maven property:	${project.version}
+				2. Do not hardcode the version of the child module 2.
+
+				For should the parent pom.xml version change then it would overwrite the version of all child modules including the hardcoded version referenced in the pom.xl of child module 1.
+
+			- Module version should ideally be completed in x1 place e.g. parent pom.xml via ${project.version} due to:
+
+				1. Simplicity:		Simply x1 version number for the set of all modules.
+				2. Management:		Easier to manage rather than individual version numbers for all modules.
+				3. Robust:		Less likely to accidently break a dependency link (unlike if dependencies of other child modules are all hardcoded).
+
+				NB: Maven does not permit the use a version property within a <parent> tags, all such elements must be hardcoded.

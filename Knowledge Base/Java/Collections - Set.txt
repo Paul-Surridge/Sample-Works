@@ -1,0 +1,515 @@
+Collections - Set
+
+	Overview:
+
+		- Ordered:	No
+		- Duplicates:	No
+		- Sets model the mathematical notion of a Set.
+
+	API:
+
+			Return Type			Method						Description
+		____________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+		Add/Remove:
+
+			boolean				add​(E e)					Adds the specified element to this set if it is not already present (optional operation).
+			boolean				addAll​(Collection<? extends E> c)		Adds all of the elements in the specified collection to this set if they're not already present (optional operation).
+
+			boolean				remove​(Object o)				Removes the specified element from this set if it is present (optional operation).
+			default boolean 		removeIf​(Predicate<? super E> filter)		Removes all of the elements of this set that satisfy the given predicate.
+			boolean				removeAll​(Collection<?> c)			Removes from this set all of its elements that are contained in the specified collection (optional operation).
+			boolean				retainAll​(Collection<?> c)			Retains only the elements in this set that are contained in the specified collection (optional operation).
+
+			void				clear()						Removes all of the elements from this set (optional operation).
+
+		Query:
+
+			boolean				contains​(Object o)				Returns true if this set contains the specified element.
+			boolean				containsAll​(Collection<?> c)			Returns true if this set contains all of the elements of the specified collection.
+			
+			boolean				isEmpty()					Returns true if this set contains no elements.
+			int				size()						Returns the number of elements in this set (its cardinality).
+
+		For Each:
+
+			default void			forEach​(Consumer<? super T> action)		Performs the given action for each element of the Iterable until all elements have been processed or the action throws an exception.
+
+		Iterator:
+		
+			Iterator<E>			iterator()					Returns an iterator over the elements in this set.
+			
+		Spliterator:
+
+			default Spliterator<E>		spliterator()					Creates a Spliterator over the elements in this set.
+
+		Stream:
+
+			default Stream<E> 		stream()					Returns a sequential Stream with this collection as its source.
+			default Stream<E> 		parallelStream()				Returns a possibly parallel Stream with this collection as its source.
+			
+		Unmodifiable List:
+
+			static	Set<E>			copyOf(Collection<? extends E> c)		Returns an unmodifiable set of c.
+			static <E> Set<E>		of()						Returns an unmodifiable set containing zero elements.
+			static <E> Set<E>		of​(E e1)					Returns an unmodifiable set containing one element.
+			static <E> Set<E>		of​(E... elements)				Returns an unmodifiable set containing an arbitrary number of elements.
+			static <E> Set<E>		of​(E e1, E e2) ... x10				Returns an unmodifiable set containing two elements.
+
+		Array Conversion:
+
+			Object[]			toArray()					Returns an array containing all of the elements in this set.
+			<T> T[]				toArray​(T[] a)					Returns an array containing all of the elements in this set; the runtime type of the returned array is that of the specified array.
+			<T> T[] 			toArray​(IntFunction<T[]> generator)		Returns an array containing all of the elements in this set, using the provided generator function to allocate the returned array.
+
+		Misc:
+
+			boolean				equals​(Object o)				Compares the specified object with this set for equality.
+			int				hashCode()					Returns the hash code value for this set.
+
+	Implementations:
+
+		1. HashSet
+
+			- Storage:		Hash Table.
+			- Ordering:		Unspecified.
+			- Performance:		Fastest.
+
+		2. LinkedHashSet
+
+			- Storage:		Hash Table with Linked List.
+			- Ordering:		As inserted (Insertion-Order).
+			- Performance:		Slightly slower than HashSet.
+
+		3. TreeSet
+
+			- Storage:		Red-Black Tree.
+			- Ordering:		Natural.
+			- Performance:		Slowest.
+
+	Notes:
+
+		No Duplicates:
+
+			- Set may not contain any duplicate Elements where:	e1.equals(e2)
+
+		Null Elements:
+
+			- Set may contain at most x1 null Element.
+
+		Constructors:
+
+			- All constructors must create a Set that contain no duplicate Elements.
+
+		No Mutable Elements:
+
+			- Sets should not contain mutable Elements which may alter over time.
+			- These mutable Elements may alter the result of .equals() hereby potentially resulting in duplicate Elements.
+			- Only in exceptional circumstance and great care should mutable Elements be used. 
+
+		Self-Reference:
+
+			- Set may not contain itself as an Element.
+			- For any self reference would automatically be mutable.
+
+		Mathematical Set:
+
+			- Set is a mathematical notion of a Set, whereby absolutely no ordering nor implicit ordering (as per a List).
+			- Set is a collection of objects which may have a different ordering each time e.g. a Record Set returned by a DB has no ordering (unless ORDER BY is used), the returned data may be in completely different order each time
+			- Therefore the following functionality is not defined in Set:
+
+				No Get/Set
+				No Search
+				No Sort
+				No Range-View
+
+		Equality:
+
+			- Sets are equal if they contain:
+
+				1. The same number of Elements.
+
+				NB: Elements are compared using equals() (not ==), therefore 'equal' Sets do not need to contain exactly the same references, only Elements that would be considered 'equal' whereby e1.equals(e2).
+
+				Set 1			Set 2
+
+				e_1			e_1
+				e_1			e_1
+				e_2			e_2
+				e_3			e_3
+
+			- Sets can be compared regardless of the implementations given that comparison is done via the implementations own overriden equals().	
+
+		Set Algebra:
+
+			- Bulk Operations are well suited for Sets.
+			- Bulk Operations perform standard Set Algebra, if s1 and s2 are Sets:
+
+				Method			Set Algebra Action							Description
+				_______________________________________________________________________________________________________________________________________________________________________________
+
+				s1.containsAll(s2):	Returns true if s2 is a subset of s1. 					(Subset:			s2 is a subset of s1, if s2 can be found in s1)
+				s1.addAll(s2):		Transforms s1 into the union of s1 and s2. 				(Union:				The elements found in s1 or s2)
+				s1.retainAll(s2):	Transforms s1 into the intersection of s1 and s2. 			(Intersection:			The elements found in s1 and s2)
+				s1.removeAll(s2):	Transforms s1 into the (asymmetric) set difference of s1 and s2. 	(Set Difference: 		The elements found in s1 but not in s2)
+																(Symmetric Set Difference: 	The elements found in s1 or s2 but not both)
+
+			- Bulk Operations Union, Interset, Difference are destructive i.e. they modify the underlying Collection, therefore should only be used on an intermediate copy:
+
+				Set<Type> union = new HashSet<Type>(s1);		//Create an intermediate copy of s1
+				union.addAll(s2);
+
+				Set<Type> intersection = new HashSet<Type>(s1);		//Create an intermediate copy of s1
+				intersection.retainAll(s2);
+
+				Set<Type> difference = new HashSet<Type>(s1);		//Create an intermediate copy of s1
+				difference.removeAll(s2);
+
+		Unmodifiable Sets:
+
+			- Set.of() and Set.copyOf() are static facctory methods for generating Unmodifiable Sets of Set, whereby:
+
+				1. No Add/Remove:					Elements cannot be added, removed, replaced 					or throw UnsupportedOperationException
+				2. No null:						Elements must be non-null 							or throw NullPointerException
+				3. No Mutator Methods:					No Mutator Methods may be called 						or throw UnsupportedOperationException
+				4. No Duplicates:					Factory Methods automatically reject being passed duplicate elements		or throw IllegalArgumentException.
+				5. No Order:						Iterator Order is unspecified and subject to change.
+				6. ByValue:						Not ByRef i.e. the generated Elements maybe originals or copies, therefore operations reliant on the address should be avoided e.g.
+
+												equals()
+												hashCode();
+												==
+												synchronisation
+				
+				7. Serialisable: 					Unmodifiable Sets are only serialisable if all Elements are Serialisable as specified by 'Serialised Form' on Java API.
+				
+			- Ideally the underlying Elements contained within a Set should be either:
+
+				1. Immutable:		Elements cannot be altered in anyway.
+				2. Unreachable:		Elements cannot be reached by any of part of the program and potentially altered.
+
+	Examples:
+
+		Conversion Constructor:
+
+			- Use the constructor to convert the passed Collection.
+			- Use the constructor to automatically apply, filter any impositions onto the Collection e.g. removing duplicate Elements, ordering etc...
+
+				Collection<Type> noDups = new HashSet<Type>(c);			//Collection placed into new HashSet: 		Duplicate Elements removed.
+				Collection<Type> noDups = new LinkedHashSet<Type>(c);		//Collection placed into new LinkedHashSet: 	Duplicate Elements removed + Ordered.	
+
+		Aggregate Operations:
+
+			- Use Streams (Aggregated Operations) to convert, filter and collect into a Set:
+
+				Set<String> set = c.stream()					//Collection c returns a Stream which is 'collected' or converted into a Set.
+					.collect(Collectors.toSet());
+
+				Set<String> set = c.stream()					//Collection c returns a Stream
+					.map(Person::getName)					//Intermediary operation Stream is filtered.
+					.collect(Collectors.toCollection(TreeSet::new));	//Terminal operation collects the filtered Stream into  a TreeSet.
+
+		Static Method:
+
+			- Static Method is passed a Collection.
+			- Static Method converts and returns a LinkedHashSet.
+
+				public static <E> Set<E> removeDups(Collection<E> c) {
+    					return new LinkedHashSet<E>(c);
+				}
+
+	Set Implementations:
+
+		Comparison:
+	
+						HashSet						LinkedHashSet						TreeSet						Difference
+			_______________________________________________________________________________________________________________________________________________________				__________
+
+			Speed:			Fastest (1)					(2)							(3)						x
+
+			Ordering:		None						Insertion						Value/Comparator (.compareTo())			x
+
+			Duplicates:		No						No							No
+
+			Backed:			Hash Table (via HashMap)			Hash Table (via HashMap) Doubly Linked List		TreeMap						x
+
+			Null:			Yes (x1 Element)				Yes (x1 Element)					Yes (x1 Element)
+
+			Synchronised:		No						No							No
+
+			Iterator:		Yes (Fail-Fast)					Yes (Fail-Fast)						Yes (Fail-Fast)
+
+			Optional Operations:	Yes (All)					Yes (All)						Yes (All)
+
+			Time Complexity:	Mutative | Iterative				Mutative | Iterative					Mutative | Iterative				x
+						____________________				____________________					____________________
+
+						Constant | Proportional to			Constant | Proportional to				Log(n)	   Log(n)
+						   	Elements + Capacity				   Elements
+
+		HashSet:
+
+			- Ordering:		No guarantee that the order will remain constant over time.
+			- Time Complexity:
+
+				- Mutative:	Constant (presuming that the hash functions of the Elements disperses the Elements properly among the Buckets).
+				- Iterative:	Proportional to:
+
+							1. Size:		The total number of Elements.
+							2. Capacity:		The total number of allocated/reserved Buckets.
+
+						Therefore do not set the Initial Capacity too high or Load Factor too low if iteration speed is important.
+
+			- Most common used.
+			- Load Factor and Initial Capacity effect performance.
+			- Given the Time Complexity of this implementation, excessively high Initial Capacity effect performance the most.
+
+		LinkedHashSet:
+
+			- Twinned:		Equivalent to LinkedHashMap but with a Set.
+			- Ordering:		Insertion Order is not affected if an Element is re-inserted into the Set i.e. if .add(e) is called when .contains(e) is true.
+			- Time Complexity:	
+
+				- Mutative:	Constant (presuming that the hash functions of the Elements disperses the Elements properly among the Buckets).
+				- Iterative:	Proportional to:
+
+							1. Size:		The total number of Elements.
+							2. Capacity:		Not relevant.
+
+						Therefore do not set the Initial Capacity too high or Load Factor too low if iteration speed is important.
+
+			- Almost as fast as HashSet (given need to service Doubly Linked List) whilst still providing ordering but not being as slow as a TreeSet.
+			- Typically used to make a copy of a Set with the same ordering, regardless of the original Sets implementation.
+
+				void foo(Set s) {
+         		    	    Set copy = new LinkedHashSet(s);
+
+			- This is useful when assessing/processing a Set but wish to ensure that the original is unaltered:
+
+				1. Method is passed a Set.
+				2. Method creates a copy.
+				3. Method assesses/processes copy of Set.
+				4. Method returns a result.
+
+			- Given the Time Complexity of this implementation, where Capacity is irrelevant, an excessively high Initial Capacity affects performance less than HashSet.
+
+		TreeSet:
+
+			- Twinned:		Equivalent to TreeMap but with a Set.
+			- Ordering:		Whether natural or Comparator must be 'Consistent with .equals()' (as defined by Comparator) where comparison should yield the same results as using .equals().
+			- No Tuning Parameters.
+
+		EnumSet:
+
+			- High performance Set for Enums.
+			- All Elements must be the same Enum.
+			- Internally represented by a bit-vector, typically a long.
+			- Appropriate For:
+
+				1. Rich and typesafe replacement for traditional bit flags.
+
+		CopyOnWriteArraySet:
+
+			- Set backed up by a 'copy-on-write' array, where all mutative operations are implemented by making a new copy of the array i.e. (no locking is required).
+			- Mutative operations are dependent on the size of the Set.
+			- Appropriate For:
+
+				1. Low Modification
+				2. High Iteration
+				3. Iteration while concurrently add/remove Elements.
+
+				For Example:
+
+					1. Event Handler Lists:		Lists that must not contain duplicate
+
+	SortedSet:
+
+		Overview:
+
+			- SortedSet provides 'total ordering' of its Elements via:
+
+				1. Natural Ordering
+				2. Comparator (supplied at instantiation)
+
+			- SortedSet novel functionality:
+
+				Range-View:		Perform arbitrary range operations.
+				Endpoints:		Return first/last Element.
+				Comparator Access:	Return the Comparator (if any).
+
+		API:
+
+				Return Type			Method					Description
+			____________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+			Range-View:
+
+				SortedSet<E>			headSet​(E toElement)			Returns a view of the portion of this set whose elements are strictly less than toElement.
+				SortedSet<E>			subSet​(E fromElement, E toElement)	Returns a view of the portion of this set whose elements range from fromElement, inclusive, to toElement, exclusive.
+				SortedSet<E>			tailSet​(E fromElement)			Returns a view of the portion of this set whose elements are greater than or equal to fromElement.
+
+			Endpoints:
+			
+				E				first()					Returns the first (lowest) element currently in this set.
+				E				last()					Returns the last (highest) element currently in this set.
+
+			Comparator:
+
+				Comparator<? super E>		comparator()				Returns the comparator used to order the elements in this set, or null if this set uses the natural ordering of its elements.
+
+			Spliterator:
+
+				default Spliterator<E>		spliterator()				Creates a Spliterator over the elements in this sorted set.
+
+			Methods As Declared In:
+
+				java.util.Set:
+
+					add, addAll, clear, contains, containsAll, equals, hashCode, isEmpty, iterator, remove, removeAll, retainAll, size, toArray, toArray
+
+				java.util.Collection:
+
+					parallelStream, removeIf, stream, toArray
+
+				java.lang.Iterable
+
+					forEach
+
+		Implementations:
+
+			1. ConcurrentSkipListSet
+			2. TreeSet
+
+		Notes:
+
+			Elements:
+
+				- All Elements inserted into a SortedSet must either:
+
+					1. Implement Comparable.
+					2. Be accepted by the Comparator.
+
+				- All Elements must 'Mutually Comparable' where either:
+
+					1. e1.compareTo(e2)
+					2. comparator.compare(e1, e2))
+
+					Must not throw a ClassCastException for any elements e1 and e2 in the sorted set.
+
+			Ordering:
+
+				- Ordering must be consistent with .equals() of the Element Type i.e. Comparators should not generate a different result than .equals(), therefore:
+
+					1. Compared elements should only be deemed equal if e1.equals(e2).
+					2. Compared elements should not just consider only one field of the Elements and mistakenly consider them equal when there may be other subtle differences.
+
+			Constructors:
+
+				- SortedSet should ideally contain x4 Constructors:
+
+					1) Void (no arguments):			Creates an empty SortedSet in natural ordering as specified by its Element Type.
+					2) Single Argument (Comparator):	Creates an empty Sortedset in order as specified by the Comparator.
+					3) Single Argument (Collection):	Creates a new SortedSet with the same Elements as its argument, in natural ordering as specified by its Element Type.
+					4) Single argument (SortedSet):		Creates a new SortedSet with the same Elements and ordering as its argument. 
+
+			Set/SortedSet:
+
+				- The operations inherited from Set are identical, except:
+
+					1. Iterator:	Iterator traverses the SortedSet in order.
+					2. toArray:	toArray returns the SortedSet as an array in order.
+					3. toString:	The API does not guarantee it, but the Java implementations of SortedSet do return the Elements in order.
+
+			Range-View Operations:
+
+				- Range-View are analogous to those provided by List, except:
+
+					1. Range-Views remain valid even if the Backing SortedSet is modified directly, due to:
+
+						- Endpoints are absolute points in Element Space rather than specific Elements in the Backing Collection.
+				
+
+				- Range-View is a 'window' on the designated portion of the SortedSet
+				- Range-View can write to Backing Collection.
+				- Range-View reflects any changes in the Backing Collection immediately.
+				- Range-View can be open and used for extended period of time.
+
+			Range Terminology:
+
+				Interval:		Notation		Low	High
+				______________________________________________________________________
+			
+				Open:			(0,10)			-	-		0 >= x <= 1
+				Half-Open:		[0,10)			Y	-		0  = x <= 1
+				Closed:			[0,10]			Y	Y		0  > x <  1
+
+			Alternate Interval:
+
+				- Returning Alternate Intervals can be implemented by finding the next 'successor' value that would naturally be the smallest incremental/decremental amount for that particular type.
+				- For Example:
+
+					Type		Predecessor	Value		Successor
+					__________________________________________________________
+
+					Integer		3		4		5
+					String		-		"Hello"		"Hello" + "\0"				\0 (NUL)	ASCII Code of 0x0.
+
+				- \0 is the smallest possible incremental value that can be applied to a String.
+				- Therefore can be used in .subSet() in order to obtain alternate intervals.
+
+
+				Interval:		Method
+				______________________________________________________________________
+			
+				Open:			count = dictionary.subSet("doorbell" + "\0", "pickle")		Return between 'doorbell' [Exlusive] 	to 'pickle' [Exlusive]
+				Half-Open:		count = dictionary.subSet("doorbell", "pickle")			Return between 'doorbell' [Inclusive] 	to 'pickle' [Exlusive]
+				Closed:			count = dictionary.subSet("doorbell", "pickle" + "\0")		Return between 'doorbell' [Inclusive] 	to 'pickle' [Inclusive]
+
+			Inclusive/Exclusive:
+
+				- The general rule surrounding whether an argument/parameter is inclusive or exclusive:
+
+					SortedSet<String> volume1 = dictionary.headSet("n");				Return to 'n'	[Exclusive]
+					SortedSet<String> volume2 = dictionary.tailSet("n");				Return from 'n' [Inclusive]
+					SortedSet<String> volume2 = dictionary.subSet("doorbell", "pickle");		Return from 'doorbell' [Inclusive] to 'pickle' [Exclusive]
+
+				- Default:
+
+					'from' 		Inclusive
+					'to' 		Exclusive
+
+			Index/Element Space:
+
+				- Index Space:		Reference Element via passing the numerical index of the Element.
+				- Element Space:	Reference Element via passing the Element itself.
+
+			Comparator Accessor:
+
+				- The SortedSet allows the retrival of the Comparator so that it is possible to:
+
+					1. Extract a SortedSet ordering via its Comparator.
+					2. Copy the SortedSet.
+					3. Insert the Comparator back into the new SortedSet in order to apply the same ordering. 
+
+		Examples:
+
+			1. Number of words between 'doorbell' and 'pickle' excluding 'pickle':
+
+				int count = dictionary.subSet("doorbell", "pickle").size();
+
+			2. Remove all letters beginnning with 'f':
+
+				dictionary.subSet("f", "g").clear();
+
+			3. How many words begin with each letter:
+
+				for (char ch = 'a'; ch <= 'z'; )
+				{
+    			    	    String from 	= String.valueOf(ch++);
+    			    	    String to 		= String.valueOf(ch);
+
+    			    	    System.out.println(from + ": " + dictionary.subSet(from, to).size());
+				}
+			
+
+

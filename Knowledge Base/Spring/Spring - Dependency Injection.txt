@@ -1,0 +1,456 @@
+Spring
+
+	Dependency Injection:
+
+		Overview:
+
+			- Dependencies are entities that are used or depended upon by other entities to operate and implement their own required functionality.
+			- Dependencies and the term 'dependency' as follows:
+
+				1. Source Code:		The term 'dependency' ultimately refers to the entities at source code level:
+
+								ClassA may contain instances of ClassB:						ClassA depends on ClassB
+								ClassA may contain instances of ClassC which uses InterfaceD:			ClassA depends on ClassC and InterfaceD
+
+				2. Application Level:	The term 'dependency' may refer to any file, resource, library or program (3rd party or otherwise) that the source code within an application uses and depends upon.
+
+								e.g. a Build Tool maybe said to 'have its own dependencies' but those dependencies will ultimately be collections of source code entities used by that Build Tool i.e. the Build Tool is itself ultimately just a program.
+			
+			- Dependencies may be collated, organised and contained within:
+
+				Libraries
+				Frameworks
+				...
+
+			- Dependencies at the application level are typically downloaded, cached and managed by a Build Tool e.g. Maven from mvnrepository.com
+			- Dependencies are said to be transitive if:
+
+				Example 1:
+
+					ClassB depends on ClassC
+					ClassA depends on ClassB
+
+					ClassA depends on ClassB and transitively on ClassC.
+
+				Example 2:
+
+					Module 1 declares a dependency of Framework 1
+					Module 2 declares a dependency of Framework 2
+
+					Module 1 declares a dependency of Module 2
+					Module 1 now has access to both Framework 1 and transitively Framework 2
+
+		Dependency Injection:
+
+			- Dependency injection is injecting a bean which exists within the container into a variable within another bean within the container:
+
+				Container____________________________________________________
+				|							     |
+				|    Class A (Bean A)___	Class B (Bean B)________     |		Bean A:		Dependent Bean (Target/Receiving Bean)
+				|    |			|	|			|    |		Bean B:		Depedency Bean (Injected Bean)
+				|    | new Class B <------------|			|    |
+				|    | 			|	|			|    |
+				|    | 			|	|			|    |
+				|    | 			|	|			|    |
+				|    |__________________|	|_______________________|    |    				
+				|____________________________________________________________|				
+
+			- Dependency injection can be implemented via x3 forms:
+
+				DI Form			Description										XML Element
+				__________________________________________________________________________________________________________________________________________________________________________
+
+				1. Constructor Based:	The dependency bean (Bean B) is injected to Bean A via the constructor of Bean A.	<constructor-arg ref="<bean_id>"/>
+				2. Setter Based:	The dependency bean (Bean B) is passed to Bean A via a setter method of Bean A.		<property name="<name_of_field_in_bean>" ref="<bean_id>"/>
+				3. Field Based:		The dependency bean (Bean B) is directly injected into Bean A via @Autowiring.
+
+				NB: Spring will convert a string passed within the attribute of an XML element to all primitive types that corresponds with the injected variable type within the bean. 
+
+				Constructor Based DI:
+
+					- Constructor based DI is the most recommended form of DI in particular for mandatory dependencies.
+					- Constructor based DI ensures:
+
+						1. Immutable Objects:		Enables the creation of application components as immutable objects and then not providing any further 'setter' methods for those fields.
+						2. Not Null:			Enables the assurance that dependencies are not null within the dependent bean.
+						3. Fully Initialised:		Enables the assurance that beans are fully initialised when instaniated.
+
+					- Constructor arguments should be limited to at most x3, a large number implies the class has too many responsibilities, should be refactored to better address proper separation of concerns.
+
+						class ClassA
+						{
+						    ClassB bBean;
+
+						    @Autowired
+						    ClassA(ClassB bBean)
+						    {
+							this.bBean = bBean;
+						    }
+							
+						    ClassA(@Autowired ClassB bBean)
+						    {
+							this.bBean = bBean;
+						    }
+						}
+
+					- Constructor based DI is where the container invokes the constructor of the bean where each argument is a dependency to be injected by the container.
+					- Constructor based DI is analogus to a static factory method where the arguments are supplied externally:
+
+						class MyClassA
+						{
+						    public static factoryMethod(ClassB objClassB, ClassC objClassC)
+						    {
+							return new MyClassA(objClassB, objClassC);
+						    }
+						}
+
+					- Constructor based DI simple example:
+
+						public class SimpleMovieLister {						    
+						    private final MovieFinder movieFinder;					// SimpleMovieLister has a dependency on a MovieFinder
+
+						    public SimpleMovieLister(MovieFinder movieFinder) {				// Container injects an instance of MovieFinder which was instantiated 'behind the scenes'
+							this.movieFinder = movieFinder;
+						    }
+
+						    // Injected dependencies used as normal within class
+						}
+
+					- Constructor based DI needs to have consideration for the arguments, argument ordering and how they are identified and resolved by the container:
+
+				Setter Based DI:
+
+					- Setter based DI recommended for optional dependencies.
+					- Setter based DI should only be used for optional dependencies that can be assigned reasonable default values within the dependent class, otherwise continual not-null checks are needed wherever that dependency is used within the class.
+					- Setter based DI enables objects to be reconfigured or re-injected at future point in time.
+					- Setter based DI enables the ability to prevent circular dependencies from occuring.
+
+						class ClassA
+						{
+						    ClassB bBean = [Default Value];
+
+						    @Autowired
+						    void setBean(ClassB bBean)
+						    {
+							this.bBean = bBean;
+						    }
+							
+						    void setBean(@Autowired ClassB bBean)
+						    {
+							this.bBean = bBean;
+						    }
+						}
+
+					- Setter based DI is a x2 stage process:
+
+						1. Container instantiates a bean of ClassA via either:
+
+							- No Argument Constuctor
+							- No Argument static factory method
+
+							[Bean of ClassA is now instantiated]
+							[Bean of ClassA also contains a field/property of ClassB]
+
+						2. Container instantiates an instance of ClassB and passes that instance as an argument to be injected into the field/property via a setter method of ClassA:
+
+							public class ClassA {
+								private ClassB classB;					// SimpleMovieLister has a dependency on the MovieFinder
+
+								public void setClassB(ClassB classB) {			// Spring container can inject an instance of ClassB
+									this.classB = classB;
+								}
+
+								...							// Business logic that actually uses the injected classB
+							}
+
+					- Setter based DI uses the <property/> element in XML:
+
+							<bean id="houseBean" class="examples.HouseBean">
+								<property name="myDoorBean">
+									<ref bean="doorBean"/>				<!-- nested ref element -->
+								</property>
+
+								<property name="myWindowBean" ref="windowBean"/>	<!-- inline ref attribute -->
+								<property name="integerProperty" value="1"/>
+							</bean>
+
+							<bean id="doorBean" class="examples.DoorBean"/>
+							<bean id="windowBean" class="examples.WindowBean"/>
+
+						Corresponding HouseBean class:
+
+							public class HouseBean {
+
+								private DoorBean myDoorBean;						// Properties corresponding setter method is the name set to pascal case and prefixed with 'set'
+								private WindowBean myWindowBean;
+								private int i;
+
+								public void setMyDoorBean(DoorBean myDoorBean) {
+									this.myDoorBean = myDoorBean;
+								}
+
+								public void setMyWindowBean(WindowBean myWindowBean) {
+									this.myWindowBean = myWindowBean;
+								}
+
+								public void setIntegerProperty(int i) {
+									this.i = i;
+								}
+							}
+
+						NB:
+							- Attributes id= and ref= only used and correspond to each other in the XML only.
+							- Attribute name= corresponds to the parameter name in java (I presume that it is not possible to use different paramter name in java file - to be tested)
+						
+
+
+				Field Based DI:
+
+					- Field based DI involves injecting bean directly into variable as they are initialised:
+
+						class ClassA
+						{
+						    @Autowired
+						    ClassB bBeanB;
+
+						    @Autowired
+						    ClassC bBeanC;
+						}
+
+			- Dependency injection most appropriate form typically depends on the requirements of the class/project.
+			- Dependency injection is typically pre-decided within 3rd party classes e.g. they do not supply a setter method therefore only constructor DI available.
+			- Dependency injection is a process whereby objects define their dependencies i.e. their own internal objects via:
+
+				1. Constructor Arguments:
+				2. Factory Method Arguments:
+				3. Setters via properties set on an object instance after it is constructed
+				4. Setters via properties set on an object instance after it is returned by factory method
+
+				Therefore Bean instantiation:
+
+					1. Container injects these dependencies when the bean is instantiated
+					2. Container (rather than the bean itself via class construction or Service Locators) manages the lifecycle/location of these dependencies hence the term IoC.
+
+			- Dependency injection leads to:
+
+				1. Cleaner:		Overall cleaner source code.
+				2. Decoupled:		Object is more effectively decoupled when externally provided their dependencies.
+				3. Lookup:		Object does not lookup its own dependencies.
+				4. Location:		Object does not know the location (nor class) of the dependencies.
+				5. Test:		Object is easier to test (particularly when dependencies are interface or abstract base classes) allowing for stub/mock implementation to be used in unit testing).
+
+			- Dependency injection has x2 major variants:
+
+				1. Constructor Based
+				2. Setter Based
+
+				NB: The container i.e. ApplicationContext can handle all forms of injection on a bean i.e. not just one form or the other.
+
+			- Dependency injection has the following general recommendation:
+
+				Constructor Based:	Mandatory dependencies
+				Setter Based:		Optional dependencies
+
+				NB: @Autowired can be applied to a setter method to make it mandatory but constructor based with programmatic validation of arguments is preferable.
+
+			- Dependency injection style on whether to use Constructor or Setter based in decided upon a class-by-class basis.
+			- Dependency injection is carried out by the conatiner as follows:
+
+				1. ApplicationContext is instantiated.
+				2. ApplicationContext validates and registers all configuration metadata that defines the beans within this container as found in *.xml/*.groovy and annotations.
+				3. ApplicationContext instantiates any beans of singleton scope immediately when itself is instantiated.
+				
+				Going forward:
+
+				4. ApplicationContext will only create beans lazily when they are needed.
+				5. ApplicationContext will only provide instances of the dependencies when the host bean is actually instantiated.
+
+				NB: Resolution mismatch may show up late i.e. when a bean is first instantiated.
+				NB: If desired the eager initialisation of singletons can be altered to lazily if required i.e. to minimise the work/memory consumed when the container is loaded.
+
+			- Dependency injection causes a cascade of initialisation:
+
+				1. BeanA has a dependency on BeanB.
+				2. BeanB is fully configured and instantiated.
+				3. BeanB is injected into BeanA.
+				4. Once all dependencies of BeanA are set, the relevant lifecycle methods are then invoked as required.
+
+			- Dependencies errors detected by Spring when the container is instantiated include:
+
+				1. References:		References to non-existant beans
+				2. Circular:		Circular dependencies
+
+				NB: Dependencies are resolved as late as possible (when the bean is instantiated) therefore it should be noted that exceptions may occur at any point during runtime.
+
+			- Dependency injection can be either:
+
+				1. Value:	A raw value to be provided of the type as specified in the bean definition.
+				2. Reference:	A reference to another bean.
+
+				Spring can convert any value supplied as string to any of the built-in types e.g. int, long, boolean. Therefore it is possible to define raw values within constructor/propery DI using strings (to be tested).
+
+			- Dependencies of a bean are either:
+
+				1. Fields/Properties
+				2. Constructor Arguments
+				3. Static Factory Method Argument
+
+		Circular Dependencies:
+
+			- Circular dependencies can arise through constructor based DI.
+
+				- ClassA		Requires and instance of ClassB via constructor DI.
+				- ClassB		Requires and instance of ClassA via constructor DI.
+
+			- Circular dependencies will occur if ClassA is injected into ClassB and vice versa, at which point Spring container detects this circular reference at runtime and throws BeanCurrentlyInCreationException.
+			- Circular dependencies will occur if ClassB and ClassB has one of the other beans injected into the other before that bean is fully initialised itself (chicken-egg).
+			- Circular dependencies can be implemented successfully by using Setter DI on x1 or both classes (even though Setter DI is in general not recommended).
+
+	Autowiring:
+
+		- Autowiring is a convenient means of automatically injecting collaborating beans into bean properties.
+		- Autowiring allows for significant reduction in XML configuration with no need to specify <constructor-arg/> or <properties/>.
+		- Autowiring allows for dependency alterations to be adjusted quickly without need to adjust XML configuration. Once the source code is stable/finalised then the dependencies can be explicitly defined in XML.
+		- Autowiring must be enabled on a per bean basis within the XML.
+		- Autowiring relies on the container making its 'best guess' and provide 'candidates' as to what to inject (which will naturally lead to the potential for error).
+		- Autowiring should only be used when necessary, explicit bean definition is still preferred/recommended.
+		- Autowiring by default is set to off.
+		- Autowiring default can be changed but it is not recommended for:
+
+			- Autowiring should only be applied when necessary for it can reduce control/clarity in larger systems
+			- Autowiring reduces explicit declaration in XML which self documents the structure of the system.
+
+		- Autowiring has x4 modes which can be defined for each bean defined in XML via the 'autowire' attribute of <bean/>.	
+
+			Mode		Description
+			----------------------------------------------------------------------------------------------------
+			No		- Default.
+					- Bean references are defined via 'ref' element in XML.
+
+			byName		- Spring looks up the collaborator bean to be injected into a property variable by using that property variable name.
+
+						1. XML: Bean 'ClassA' is set autowire="byName".
+						2. XML: Bean 'ClassA' has a <property/> called 'master'. Therefore would naturally require a corresponding setMaster() to inject that dependency and set that property.
+						3. Source Code:
+
+							class ClassA {
+							    @Autowired
+							    ClassB master;	//Property identifer 'master' = name of another bean located in container.
+
+						4. Container looks for a bean with the same name as the property 'master'. NB: It is presumed that the name of the property could be either id/name/alias of another bean.
+						5. If:
+
+							Matching Beans in Container		Action				Injection
+							---------------------------------------------------------------------------------------------------
+							None:					Nothing Happens			master = null
+							1:					Bean Injected			master = instance of ClassB
+							>1:					Exception Thrown		n/a
+
+			byType:		- Spring looks up the collaborator bean to be injected into a property variable by using that property type.
+
+						1. XML: Bean 'ClassA' is set autowire="byType".
+						2. XML: Bean 'ClassA' has a <property/> of type ClassB.
+						3. Source Code:
+
+							class ClassA {
+							    @Autowired
+							    ClassB master;	//Property Type 'ClassB' = type of another bean located in container.
+
+						4. Container looks for a bean with the same type as the property 'master' i.e. ClassB.
+						5. If:
+
+							Matching Beans in Container		Action				Injection
+							---------------------------------------------------------------------------------------------------
+							None:					Nothing Happens			master = null
+							1:					Bean Injected			master = instance of ClassB
+							>1:					Exception Thrown		n/a
+
+			constructor:	- Spring looks up the collaborator bean to be injected into a contructor parameter (rather than a property variable as for byName | byType).
+
+						1. XML: Bean 'ClassA' is set autowire="constructor".
+						2. XML: Bean 'ClassA' has a <constructor-arg/> of type ClassB.
+						3. Source Code:
+
+							class ClassA {
+							    @Autowired
+							    public ClassA(ClassB classB);		//Constructor Type 'ClassB' = type of another bean located in container.
+
+							    [Or]
+
+							    public ClassA(@AutowiredClassB classB);	//Constructor Type 'ClassB' = type of another bean located in container.
+
+						4. Container looks for a bean with the same type as the constructor parameter ClassB.
+						5. If:
+
+							Matching Beans in Container		Action				Injection
+							---------------------------------------------------------------------------------------------------
+							None:					Nothing Happens			classB = null
+							1:					Bean Injected			classB = instance of ClassB
+							>1:					Exception Thrown		n/a
+
+		- Autowiring can be applied to arrays and strongy-typed collections:
+
+			1. Bean must be of mode 'byType' or 'constructor'.
+			2. Container searches register for all matching type as normal (described above).
+
+		- Autowiring has considerations when using Map:
+
+			A map can be autowired if:
+
+				1. Key: 	String (Bean names)
+				2. Values:	Instances of names
+
+				Key		Value
+				----------------------------------
+				"ClassB"	Instance of ClassB
+				"ClassC"	Instance of ClassC
+				"ClassD"	Instance of ClassD
+				"ClassE"	Instance of ClassE
+
+			NB: This is not fully clear in documentation, for how do you store differing (unrelated) types as values in a map, needs to be researched/tested.
+
+		- Autowiring has considerations:
+
+			1. Autowiring is always overriden by explicit definition in XML e.g. <property/> <constructor-arg/>
+			2. Autowiring cannot be applied to:
+
+				- Primitives
+				- Strings
+				- Classes (NB: Unclear in documentation what 'Classes' corresponds to)
+				- Arrays of primitive/Strings/classes
+
+			3. Autowiring is less exact than explicit wiring.
+			4. Autowiring prevents the relationship between Spring managed objects being explicitly documented.
+			5. Autowiring could introduce ambiguity leading to unexpected results (however in such an event of ambiguity an exception is thrown).
+			6. Autowiring may prevent all information being supplied to tools that generate documentation from/for a container.
+			7. Autowiring ambiguity is not a problem with array, (strongly typed) collection or (strongly typed) map (for of course all of these types are distinct and there is no ambiguity),
+				however there is no mechanism to arbitrate when encountering ambiguity with custom types therefore an exception will be thrown (likely during runtime).
+
+		- Autowiring ambiguity can be allieviated via:
+
+			1. Explicit Wiring:		Do not use autowiring and use explicit wiring.
+			2. Exclude:			Do not allow an individual bean to be autowired by setting <autowire-candidate/> attributes to false.
+			3. Primary Candidate:		Designate a particular bean as the primary candidate via <primary/> attribute to true.
+			4. Fine Tune:			Utilise fine tuning via additional annotations to refine condifguration e.g. @Qualifiers
+  
+		- Autowiring exclusion can be applied to specific beans in XML:
+
+			1. <autowire-candidate/> = false:	Attribute in <bean/> can be set to false to prevent the <bean/> from becoming a candidate to be auto-injected/autowired into another bean via @Autowired.
+								This only effects type based autowiring i.e. beans whose <autowire/> mode is myType | constructor. Autowiring byName will still inject a bean if name matches.
+
+			2. <default-autowire-candidates/>:	Attribute in <beans/> can be supplied a comma separated list of String patterns to allow e.g.
+
+									default-autowire-candidates = "*Repository"		//Only allow beans whose name ends with 'Repository' to be auto-injected/@Autowired. 
+
+								NB: Bean <autowire-candidate/> takes precedence over any values assigned to <default-autowire-candidates/> i.e. if <autowire-candidate/> is set either "true" or "false" it will overide/ignore any patterns.
+
+		- Autowiring exclusion can only be applied to the 'Injection-side only' i.e. a bean can only be excluded from being injected into another via @Autowired but can still use/contain @Autowired properties itself.
+
+
+
+
+
+
+
+
+

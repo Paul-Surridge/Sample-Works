@@ -1,0 +1,261 @@
+Utility Functions - Data Conversions (Built-in)
+
+	-> String
+	-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		Class: String
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+				Constructor	String(byte[] bytes)					byte[] 		-> String
+				Constructor	String(byte[] bytes, Charset charset)			byte[] 		-> String 		Using the supplied Charset
+				Constructor	String(byte[] bytes, int offset, int length)		byte[] 		-> String 		From offset for length bytes
+
+				Constructor	String(byte[] bytes, int offset, int length,
+			 	      		       Charset charset)					byte[] 		-> String 		From offset for length bytes using the supplied Charset
+
+				Constructor	String(byte[] bytes, int offset, int length,
+			 	      		       String charsetName)				byte[] 		-> String 		From offset for length bytes using the supplied Charset
+
+				Constructor	String(byte[] bytes, String charsetName)		byte[] 		-> String 		Using the supplied Charset
+				Constructor	String(int[] codePoints, int offset, int count)		int[] 		-> String 		Using offset and count, the int values are interpreted using unicode and narrrowed/converted to chars (16 bit)
+				Constructor	String(String original)					String 		-> String
+				Constructor	String(StringBuffer buffer)				StringBuffer 	-> String
+				Constructor	String(StringBuilder builder)				StringBuilder 	-> String
+
+
+				Constructor	String(char[] value)					char[] 		-> String
+				Constructor	String(char[] value, int offset, int count)		char[] 		-> String 		Using offset and count
+				
+			static	String		copyValueOf(char[] a)					char[] 		-> String 		Calls valueOf(char[] a).
+			static	String		copyValueOf(char[] a,
+							    int iOffset,int iCount)	
+			static	String		valueOf(char[] ca)					char[] 		-> String
+			static	String		valueOf(char[] ca,					char[] 		-> String 		With offset and length, iOffset + iCount must not go out of bounds i.e. this would need to be worked out prior to invocation
+							int iOffset,
+							int iCount)
+
+
+			static	String		valueOf(boolean b)					boolean 	-> String 		"true" or "false"
+			static	String		valueOf(char c)						char 		-> String
+
+			static	String		valueOf(double d)					double 		-> String		Equivalent to: Double.toString()
+			static	String		valueOf(float f)					float 		-> String		Equivalent to: Float.toString()
+			static	String		valueOf(int i)						int 		-> String		Equivalent to: Integer.toString()
+			static	String		valueOf(long l)						long 		-> String		Equivalent to: Long.toString()
+			static	String		valueOf(Object obj)					object 		-> String		Equivalent to: Object.toString()
+
+		Class: Integer
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			static	String		toBinaryString(int i)					int -> String		Convert i to unsigned binary string of 0 and 1 ASCII:
+
+																	i:	1,107,824,706
+																	return: 100 0010 0000 1000 0001 0000 0100 0010
+
+																	i:	-8
+																	return:	1111 1111 1111 1111 1111 1111 1111 1000
+
+																	Leading 0's removed
+
+			static	String		toHexString(int i)					int -> String		Convert i to hex string of 0-9 a-f ASCII:
+
+																	i:	1,237,924,706
+																	return: 49c93b62
+
+																	Leading 0's removed
+																	If uppercase required use:	String.toHexString(1237924706).toUpperCase();
+
+			static	String		toOctalString(int i)					int -> String		Convert i to octal string of 0-7 ASCII:
+
+																	i:	1,237,924,706
+																	return: 11162235542	[No commas]
+
+																	Leading 0's removed
+
+				String		toString()						int -> String		Convert i to decimal string of 0-9 ASCII or using radix:
+			static	String		toString(int i)
+			static	String		toString(int i, int radix)								i:	1,237,924,706
+																	return: 1237924706	[No commas]	
+
+																	Leading 0's removed
+																	If uppercase required use:	String.toString(1237924706, 16).toUpperCase();
+																	Radix:	Character.MIN_RADIX - Character.MAX_RADIX.
+
+																	Characters:	0-9 and a-z are available should large radix be supplied
+
+			static	String		toUnsignedString(int i)					int -> String		Convert signed i to unsigned String:
+			static	String		toUnsignedString(int i, int radix)
+																	i:	1
+																	return:	1
+
+																	i:	2^32/2 - 1	(2,147,483,647)
+																	return:	"2147483647"
+
+																	i:	-1
+																	return:	"4294967295"
+
+																	i:	-2,147,483,648
+																	return:	"2147483648"
+
+																	i:	-2,147,483,647
+																	return:	"2147483649"
+
+																	Same as:	toUnsignedLong(int i).toString()
+
+	-> Integer
+	-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		Integer.
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+				Constructor	Integer(String s)					String -> int		Convert String to Integer
+
+			static	Integer		decode(String s)					String -> int		Convert s to Decimal, Octal or Hex:
+
+																	Decimal:	123
+																	Octal:		0123
+																	Hex:		0x123		0X123		#123
+							
+																	No whitespace
+																	No underscore
+																	Leading zeros ignored
+																	-+ sign optional
+
+			static 	int		parseInt(String s)					String -> int		Convert s to int:
+			static 	int		parseUnsignedInt(String s)
+																	"123"			123
+																	"-123"			-123
+																	"+123"			123
+
+			static 	int		parseInt(String s, int radix)				String -> int		Convert s to int using radix:
+			static 	int		parseUnsignedInt(String s, int radix)
+																	("0", 10) 		0
+																	("473", 10) 		473
+																	("+42", 10) 		42
+																	("-0", 10) 		0
+																	("-FF", 16) 		-255
+																	("1100110", 2) 		102
+																	("2147483647", 10) 	2147483647
+																	("-2147483648", 10) 	-2147483648
+																	("2147483648", 10) 	throws a NumberFormatException
+																	("99", 8) 		throws a NumberFormatException
+																	("Kona", 10) 		throws a NumberFormatException
+																	("Kona", 27) 		411787
+
+																	Character/Digits in s must exist within range of radix:
+
+																		Oct:		0-7
+																		Dec:		0-9
+																		Hex:		0-9 A-F
+
+																	Radix:	Character.MIN_RADIX - Character.MAX_RADIX.
+																	s cannot be null or ""
+																	s cannot be a value larger than int (32 bit)
+
+																	Characters:	0-9 and a-z are available should large radix be supplied
+
+			static	Integer		valueOf(String s)					String -> int		Convert s to an Integer interpreted as a signed decimal, equivalent to:
+			static	Integer		valueOf(String s, int radix)
+																	new Integer(IntegerparseInt(s))
+																	new Integer(IntegerparseInt(s, radix))
+
+																	Exception thrown if s not valid
+
+	-> byte[]
+	-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		Class: String
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			byte[]		getBytes()							String -> byte[]	Convert String to array of byte using the default/supplied charset.
+					getBytes(Charset cs)
+					getBytes(String charset)
+
+
+	-> char[]
+	-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		Class: String
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			char[]		toCharArray()							String -> char[]		Convert characters in string to array of characters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	Integer -> Other Number Type
+	-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		Integer.
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			Constructor	Integer(int i)						int -> Integer		Convert int to Integer (Box)
+
+			byte		byteValue()						int -> byte		Convert 'this' to byte value after narrowing
+			double		doubleValue()						int -> double		Convert 'this' to double after widening
+			float		floatValue()						int -> float		Convert 'this' to float after widening
+			int		intValue()						int -> int		Convert 'this' to int (unbox)
+			long		longValue()						int -> long		Convert 'this' to long after widening
+			short		shortValue()						int -> short		Convert 'this' to short value after narrowing
+
+		
+
+	Integer/int to long (unsigned)
+	-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		Integer.
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	long		toUnsignedLong(int i)			Convert signed i to unsigned long:
+
+											i:	1
+											return:	1
+
+											i:	2^32/2 - 1	(2,147,483,647)
+											return:	2147483647
+
+											i:	-1
+											return:	4294967295
+
+											i:	-2,147,483,648
+											return:	2147483648
+
+											i:	-2,147,483,647
+											return:	2147483649
+
+		static	Integer		valueOf(int i)				Convert int i to an Integer.
+
+											If a new Integer instance is not required*, this should be used compared to using constructor due to caching leading to better time/space complexity.
+											Method will always cache -128 - 127 (sometimes values outside of this range also)
+
+											*Documentation states 'not required' but presume a new instance of Integer is always returned from valueOf(int i)?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+
+			
+
+

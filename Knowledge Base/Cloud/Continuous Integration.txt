@@ -1,0 +1,241 @@
+CI/CD
+
+	Overview:
+
+		- CI/CD (Continuous Integration / Continuous Delivery/Deployment) involves a continuous pipeline of small incremental release which form the core of DevOps operations:
+
+			Code > Build > Test > Release > Operate > Code...
+
+		- CI/CD advantages:
+
+			1. Fault Discovery:		Early fault discovery.
+			2. Productivity:		Increase productivity.
+			3. Fast Cycles:			Rapid integration, test, deployment and release cycles.
+			4. Reliability:			Repeatable reliable processes.
+			5. Automation:			Automation of processes from unit testing to deployment help to reduce human error.
+			6. Version Control:		Version control for consistent and confident management.
+			7. Quality:			Build in consistent quality throughout the whole process.
+			8. Release:			Work is deemed complete when it is released.
+
+		- CI/CD is in contrast to traditional methods where a collection of software updates were integrated into one large batch.
+		- CI/CD rapid cycle may feel unnatural and may cause a reaction to not want to update because 'everything is working', however short update cycles help to quickly identify issues which may only be a few days, hours or minutes old compared to say a few months old.
+		- CI/CD rapid cycle reduces risk for there is less to go wrong with a smaller incremental release.
+
+	Continuous Integration:
+
+		- Continuous Integration involves the following:
+
+			1. Main Branch:			At least one commit per day to main branch.
+			2. Unit Tests:			Solid and comprehensive test suite to catch any bug before it went into production.
+			3. Production Error:		Should an error get through to production, this issue immediately becomes priority whereby the pipeline is updated and resolved within 10-20 minutes.
+
+		- Continuous Integration is required to implement Continuous Delivery/Deployment.
+
+	Continuous Delivery/Deployment:
+
+		- Continuous Delivery/Deployment is the subsequent stage after Continuous Integration.
+		- Continuous Delivery/Deployment has the following distinction:
+
+			- Continuous Delivery:
+
+				- Continuous delivery provides the business the ability to decide when to deploy to production e.g.
+
+					1. Development continually produce product updates.
+					2. Updates are accumuated.
+					3. Business decides which updates to include in the next release of product.
+
+			- Continuous Deployment:
+
+				- Continuous deployment immediately deploys to production.
+
+	CI/CD Small Incrementation:
+
+		- CI/CD small incremental release has the following benefits:
+
+			1. Lower Risk:
+
+				- Smaller amount of change -> Smaller amount that could go wrong -> Reduced risk.
+				- If anything goes wrong it is easier to identify if the amount of change is small.
+
+			2. Progress:
+
+				- Application is always 'done' and could be deployed at anytime.
+				- Rather than having large steps in deployment between large periods of time, multiple smaller incremental steps provides a cleaner/clearer indication of progress.
+				- Multiple smaller steps in deployment induce more confidence in the state of the application.
+
+			3. User Feedback:
+
+				- Smaller increments of change allow for more immediate user feedback.
+				- Monitoring can indicate which features users actually like and use.
+				- Users are poor at describing 'what they want', it can be better to simply put something out there, let them use it and have them describe 'what they don't want'.
+
+	CI/CD Pipeline:
+
+		- CI/CD introduces a pipeline of tests e.g.
+
+			1. Low Level:		Build on local machine
+			2. Low Level:		Run unit tests
+			3. Low Level:		Build on server
+			4. High Level:		Run unit tests on server
+			5. Higher Level:	Run functional tests on server
+			5. Higher Level:	Run performance tests on server
+			...
+			n. Highest Level:	Final test is a test that is as close as possible to the final production environment.
+
+		- CI/CD pipeline needs to be certain that the update is absolutely fault free.
+
+	CI/CD Automation:
+
+		- Automation is a central component of CI/CD.
+		- Automation is applied to the following general processes:
+
+			1. Build
+			2. Test
+			3. Deploy
+
+		- Automation provides the ability to complete the above three aspects quickly, consistently and without human error.
+		- Automation provides the confidence to push the new feature from development to staging area to production.
+		- Automation should not introduce build logic into the CI/CD tools, instead all build logic should be kept in separate build scripts which are called and utilised by build tools and can be version controlled.
+		- Automation should exist and be implemented within all aspects as possible e.g.
+
+			1. Regression Testing:		Regression testing can be completed manually but not reliably and should be automated.
+			2. Provisioning:		Tools allow entire environments to be provisioned automatically.
+			3. Deployments:			Tools enable the automation of deployments.
+
+	CI/CD Version Control:
+
+		- Version control is critical and should be implemented in all aspects of a project e.g.
+
+			1. Source Code
+			2. Configuration Files
+			3. Database Scripts		e.g. management of schema and all other aspects of database
+			4. Build Scripts
+			5. Documentation
+
+	CI/CD Test Automation:
+
+		- Test automation i.e. the automated testing which is carried out on a new build should primarily include:
+
+			Unit Test Suite:
+
+				- Fast			Should not become slow as this can significantly increase development time.
+				- Maintainable		Should be easy to alter to accommodate new tests of new features of the software.
+				- Maximum		Should include the majority of testing within this layer.
+				- Frameworks		Should be left as is, do not attempt to alter/subvert frameworks should they be slow to test. 
+
+			Regression Test Suite:
+
+				- Holistic		Should test the software as a whole and provide the confidence to deploy. Do not couple or only test small stories/tasks.
+				- Automated		Should be 100% automated, all manual testing should be excluded.
+				- Parallel		Should be executed in parallel if possible for regression test are commonly known to be slow.
+				- Professional		Should be written by programers not drag-and-drop.
+
+			Performance Test Suite:
+
+				- Broad			Should be broad and ensure meet both specific and overall performance criteria.
+				- Early			Should be included early within the development, do not add this stage last to reduce the chance of finding late structrual design flaws.
+				- Monitoring		Should utilise monitoring to continually evaluate performance.
+
+	CI/CD Configuration Management:
+
+		- Configuration management refers to the management and state of the overall system e.g.
+
+			1. Source Code
+			2. Database Schemas
+			3. Build Scripts
+
+		- Configuration management includes absolutely everything that would be need to rebuild the entire system from scratch if required.
+		- Configuration management provides the ability to identify all of the changes should any problems arise.
+		- Configuration management should always provide the ability to roll back if required. 
+
+	DevOps:
+
+		- DevOps is a cultural phenomenon, you do not 'do' DevOps.
+		- DevOps is the establishment of closer collaboration between 'Development' and 'Operations'.
+		- DevOps promotes better communication, faster iterations and improved expectation management.
+		- DevOps and Continuous Delivery are not the same. CD is something which is implemented within a DevOps culture.
+		- DevOps is 'shared ownership' rather than individualism.
+		- DevOps utilises 'You Build It, You Run It', meaning very few or no shared resources, what you build you run.
+
+	'Its Done':
+
+		- Definition of 'done' is when software is released.
+		- Deployed is not released.
+		- Released is when it is in a full live production environment and being used by users.
+
+	Production Environment:
+
+		- Production environments are unique, despite attempts to fully replicate within the development and staging areas.
+		- Production environments may produce errors that do not present within the development or stage areas.
+
+	Monitoring:
+
+		- Monitoring should include close co-operation with all users.
+		- Monitoring should establish a culture of the development team being notified as quickly as possible.
+		- Monitoring should contain rapid and effective plans for investigating, identifying and resolving faults.
+		- Monitoring should keep a database of events should it be needed to fault find or find a pattern.
+
+	User Testing:
+
+		- User testing should form feedback loop.
+		- User testing consists of the following tests in a real world setting:
+
+			Userability:		Measure of users ease to complete the required tasks.
+			User Acceptance:	Verification of a users ability to complete the required tasks.
+
+		- User testing can take weeks/months and are not including the CI pipeline.
+		- User testing should not be batched up at the end, as this increases the likihood of significant rework or alteration.
+		- User testing should be run early and often while the code is being written even using emulation to obtain/identify user reaction and feedback.
+		- User testing should be completed as quickly as possible to prevent the 'waterfall' pattern from emerging.
+		- Users will only be grateful of rapid development incrementations if the user experience is usable, effective and consistent.
+
+	Value Stream Map
+
+		- Value stream map is a lean management method for designing a series of events/steps that describe the steps to translate a product/service current state to a future state.
+		- Value stream map enable the identification of areas of delay, hold-up or cost.
+		- Value stream participants should be:
+
+			1. Participants from all stages.
+			2. Participants who will actually complete the work.
+
+		- Value stream map is created as follows:
+
+			1. Current State:	Identify the current state on a whiteboard.
+
+			2. Goals:		Identify and list all of the individual milestones/goals working backwards from completion.
+
+				Unit	>	Regression	>	Performance	>	Deploy		>	Deploy
+				Testing		Testing			Testing			Staging			Production
+
+			3. List the duration of each step
+
+				Unit	>	Regression	>	Performance	>	Deploy		>	Deploy
+				Testing		Testing			Testing			Staging			Production
+
+				5m		5d			3h			1h			2h
+
+			4. List all of the handover durations
+
+				Unit	>	Regression	>	Performance	>	Deploy		>	Deploy
+				Testing		Testing			Testing			Staging			Production
+
+				5m		5d			3h			1h			2h
+
+				       [2d]			[3w]			[3d]			[7d]	
+
+			5. This now allows for the identification of hold-ups/bottlenecks which delay progress e.g. 3 week delay between Regression Testing and Performance Testing.
+	
+					
+
+
+
+
+
+
+
+
+
+
+
+
+

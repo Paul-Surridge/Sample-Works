@@ -1,0 +1,433 @@
+Spring
+
+	Annotations:
+
+		- Annotations are an alternative to XML configuration in order to wire/inject components/beans into containers.
+		- Annotations use bytecode metadata for wiring components rather than explicit XML declarations.
+		- Annotation wiring can be applied to any relevant:
+
+			Class
+			Method
+			Field
+
+		- Annotations are metadata/form markers read by the container and processed using reflection.
+		- Annotations are case sensitive.
+
+			@Component != @component
+
+		- Annotations instruct the container to perform some action with the annotated entity.
+		- Annotations have stereotypes which conform to a fixed or general pattern e.g.
+
+			@Component			Generic stereotype for any Spring-managed component
+				@Service		Applied to Service classes				Layer - Service
+				@Controller		Applied to Controller classes				Layer - Presentation
+				@Repository		Applied to Storage classes 				Layer - Persistence
+				@Configuration		Applied to Configuration classes			Layer - Configuration
+
+				@Service, @Controller, @Repository are all specialisations of @Component and are annotated by the @Component annotation, therefore all will be considered components when scanned by container via @ComponentScan.
+				Annotations compound similar to extended classes/interfaces where extensions naturally contain all of the traits of the class being extended. 
+
+		- Annotations are processed using 'post-processors' therefore need to be declared in an application in order to annotations to work.
+		- Annotation post processors can be manually/explicitly registered as beans within XML, alternatively use the <context:annotation-config/> within XML:
+
+			<?xml version="1.0" encoding="UTF-8"?>
+			    <beans xmlns="http://www.springframework.org/schema/beans"
+			    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			    xmlns:context="http://www.springframework.org/schema/context"		//'context' namespace required
+			    xsi:schemaLocation="http://www.springframework.org/schema/beans
+				https://www.springframework.org/schema/beans/spring-beans.xsd
+				http://www.springframework.org/schema/context
+				https://www.springframework.org/schema/context/spring-context.xsd">
+
+			    <context:annotation-config/>						//Automatically pulls in and registers the five post processors below:
+			</beans>
+
+			<context:annotation-config/>
+
+				1. ConfigurationClassPostProcessor
+				2. AutowiredAnnotationBeanPostProcessor
+				3. CommonAnnotationBeanPostProcessor
+				4. PersistenceAnnotationBeanPostProcessor
+				5. EventListenerMethodProcessor
+
+				NB: <context:annotation-config/> is only applicable within the application context that it is defined, therefore:
+
+					- Only applicable for annotations on beans in current application context.
+					- e.g. if <context:annotation-config/> is applied to WebApplicationContext for a DispatcherServlet, then checks for @Autowired beans are only carried out in your controllers and not services.
+
+		- Annotations 'CommonAnnotationBeanPostProcessor':
+
+			- Annotations library and annotations processor needs to be explicitly specified for annotations to be accessible and processed by container.
+			- Annotations library and annotations processor are included in a project as follows:
+
+				1. *.xml:		Add bean:		<bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
+
+											- CommonAnnotationBeanPostProcessor is a class used to process annotations to be used within the bean.
+											- CommonAnnotationBeanPostProcessor is used when not using @Autowired, when @Autowired is used the below equivalent processor is instantiated:
+
+												org.springframework.context.annotation.InternalCommonAnnotationProcessor
+
+				2. Project POM:		Add dependency:		Javax Annotation API (as found on mvn repository).
+				3. Module POM:		Add dependency:		Javax Annotation API (via refering to the dependency in Project POM).
+
+			- Annotations can now be used within the project to interact with the enclosing container.
+
+		- Annotations are applied to the immediate statement below the annotation (not all stacked statements):
+
+			@Autowired
+			int iMaxNumber;			//@Autowired only applied to iMaxNumber
+			int iMinNumber;
+			
+			@Autowired
+			int iMaxNumber;			//@Autowired applied to both iMaxNumber and iMinNumber
+			@Autowired
+			int iMinNumber;
+
+			@Autowired
+			int iMinNumber, iMaxNumber;	//@Autowired applied to both iMaxNumber and iMinNumber
+
+		- Annotations:
+
+			@Autowired:
+
+				- @Autowired can be applied to:
+
+					1. Fields
+					2. Parameters
+					3. Setter Methods
+
+				- @Autowired automatically wires i.e. automatically invokes, obtains and injects beans into fields, parameters or setter methods within other beans, upon encountering @Autowired:
+
+					1. Search:	Spring searches all x3 forms of bean generation within local container.
+
+								Bean Generation
+								_________________________________
+
+								1. *.xml file
+								2. @Bean 	(Bean Method)
+								3. @Component	(Component Entity)
+
+					2. Find:	Spring finds a bean generator where the following aspects require to match:
+
+								Bean Generator			Variable		Object [Match Required]		Primitive [Match Required]
+								_____________________________________________________________________________________________________________
+
+								1. Type				Type			Y				Y
+								2. Bean Method Name		Name			-				Y
+
+					3. Inject:	Spring invokes the bean generator and injects an instance of the matching bean into the @Autowired variable.
+
+				- @Autowired is enabled in the project via following sequence:
+
+					*.xml file:
+
+						1. Namespace:		Add the context namespace:		xmlns:context="http://www.springframework.org/schema/context"
+						2. Tag:			Add the tag:				<context:annotation-config>					//annotation-config belongs to the context namespace
+						3. Schema:		Add the schema:				http://www.springframework.org/schema/context
+														http://www.springframework.org/schema/context/spring-context.xsd
+					Java Source Code:
+
+						4. Add @Autowired	@Autowired can now be used within the source code.
+
+				- @Autowired can only be used within a bean i.e. the enclosing entity needs to be annotated @Component or be declared as a bean (by other means).
+				- @Autowired uses an instance of the org.springframework.context.annotation.internalCommonAnnotationProcessor.
+				- @Autowired is recommended to be used with the following priority:
+
+					Priority		@Autowired Use
+					______________________________________
+
+					1st			Constructor
+					2nd			Field
+
+				- @Autowired Examples:
+
+					1. Fields:
+
+						@Autowired      				//Spring will inject the bean 'NumberGenerator'
+    						private NumberGenerator numberGenerator;	//Spring does not require 'new' keyword, the instantiation is handled by container
+
+						@Autowired
+						private InterfaceA interface;			//Spring will inject the bean which implements this interface (there must be only x1 class in the container which implements this interface).
+
+
+						@Bean
+						public int iMaxNumber() {
+					    	    return 100;
+						}
+
+						@Autowired
+    						private int iMaxNumber;				//Spring will inject value to the primitive iMaxNumber, name and type must match
+
+					2. Constructors:
+
+						@Autowired is applied to the ClassB objClassB where ClassB has been declared a bean:
+
+							@Autowired
+							ClassA (ClassB objClassB)
+							{...}
+
+							Or
+
+							ClassA (@Autowired ClassB objClassB)
+							{...}
+
+						@Autowired can use qualifiers @MinNumber @MaxNumber which perform more specific injection as defined within the custom annotation which utilises @Qualifier.
+
+							@Autowired
+    							public NumberGeneratorImpl(@MaxNumber int maxNumber, @MinNumber int minNumber) {
+        							this.maxNumber = maxNumber;
+        							this.minNumber = minNumber;
+    							}
+
+					3. Setter Methods:
+
+						@Autowired
+						void setterMethod (ClassB objClassB)
+						{...}
+
+						Or
+
+						void setterMethod (@Autowired ClassB objClassB)
+						{...}
+
+			@Bean:
+			@Bean("<bean_name>"):
+
+				- @Bean declares that the annotated method is a Bean Method.
+				- @Bean will instantiate, configure and return a bean.
+				- @Bean("<bean_name>") will override the default name of the bean (which is the name of the method):
+
+					Annotation			Bean Name
+					________________________________________________
+
+					@Bean:				Bean Method Name
+					@Bean("<bean_name>"):		<bean_name>
+
+				- @Bean("<bean_name>") should be avoided given that it requires additional hardcoding of names which maybe prone to error and necessary to be maintained.
+				- @Bean can be refined using @Qualifier.
+				- @Bean examples:
+
+					1. Objects:
+
+						@Bean
+						public InterfaceA methodName() {
+						    return new InterfaceAImpl();
+						}
+
+						@Bean
+						public ClassA classA() {
+						    return new ClassA();
+						}
+
+					2. Primitives:
+
+						@Bean
+						public int primitiveName() {
+						    return 10;
+						}
+
+			@Component:
+			@Component("<component_name>"):				
+			
+				- @Component declares the annotated entity to be a component (or bean) within the container:
+				- @Component("<component_name>") overrides the default name of the bean which is the name of the entity being annotated:
+
+					Annotation				Bean Name
+					________________________________________________________
+
+					@Component:				Entity Name
+					@Component("<component_name>"):		<component_name>
+
+				- @Component is scanned and registered as a bean via @ComponentScan.
+				- @Component should ideally only be declared against classes not interfaces given:
+
+					1. Interfaces should always be de-coupled from the implementation.
+					2. Interfaces should not depend on spring.
+
+					Designating an interface a component will couple and make that interface dependent on spring.
+
+				- @Component examples:
+
+					@Component
+					public class className
+					{...}
+
+					NB: It is presumed that @Component can be applied to anything that can be used as a bean e.g.
+
+						1. Top Level Forms:	Class, interface Abstract Class, Enum
+						2. Primitives
+
+			@ComponentScan:
+			@ComponentScan(basePackages="<root_package>"):
+
+				- @ComponentScan scans all *.java files within the project looking for @Component annotations:
+				- @ComponentScan scans all *.java files within the base package and all sub-packages:
+
+					Annotation						Base Package
+					__________________________________________________________________________________________________________________________
+
+					@ComponentScan:						The package that the entity annotated with @ComponentScan resides.
+					@ComponentScan(basePackages="<base_package>")		The package specified as <base-package>.
+
+				- @ComponentScan will find all 'candidates' that can be scaned e.g. @Configuration is a candidate to be scanned given that @Configuration itself is annotated with @Component.
+				- @ComponentScan operates as expected when included within a transitive Configuration Class:
+
+					1. Project contains x2 modules with the same folder structure:
+
+						Module 1:	src/main/java/org/application
+						Module 2:	src/main/java/org/application
+
+					2. Module 1:	Configuration class contains @ComponentScan(base package = 'org.application').
+					3. Module 2:	Configuration class @Import the Configuration Class from module 1 as a transitive dependency.
+					4. Component scanning will be applied to the same location 'application/' in both modules (given that both modules share the same Configuration Class).
+
+				- @ComponentScan can be placed within any file located within the base package that will form the root of the scan.
+
+			@Configuration:
+
+				- @Configuration declares the annotated class a configuration class.
+				- @Configuration classes typically contain all of the Bean Methods used within the container.
+				- @Configuration examples:
+
+					@Configuration
+					public class AppConfig {
+    					    @Bean
+					    //Bean Method 1
+    					    @Bean
+					    //Bean Method 2
+    					    @Bean
+					    //Bean Method 3
+					}
+
+			@EnableWebMvc:
+
+				- @EnableWebMvc is used with the configuration classes to import the Spring MVC configuration.
+				- @EnableWebMvc will by default register beans which are specific to Spring MVC e.g. ViewResolver, QuestMappers etc...
+
+			@Import(OtherConfgurationClass.class):
+
+				- @Import(ConfgurationClass.class) is for importing a configration class into another configuration class as a transitive dependency.
+				- @Import(ConfgurationClass.class) effectively 'concatenates' both configuration classes.
+				- @Import(ConfgurationClass.class) example:
+
+					@Import(OtherConfiguration.class)
+					@Configuration
+					public class Configuration {
+    					    @Bean
+					    //Bean Method 1
+    					    @Bean
+					    //Bean Method 2
+    					    @Bean
+					    //Bean Method 3
+					}
+		
+			@PostConstruct:
+
+				- @PostConstruct declares the annotated method a 'callback method' to be invoked once the bean has been instantiated and initialised.
+				- @PostConstruct example:
+
+					@PostConstruct
+					public void init() {
+        				   //Initialisation of bean
+    					}
+
+			@PreDestroy:
+
+				- @PreDestroy declares the annotated method a 'callback method' to be invoked once the bean has been destroyed.
+				- @PreDestroy example:
+
+					@PreDestroy
+					public void deallocateResources() {
+        				   //Deallocate all resources of the bean
+    					}
+
+			@Primary:
+
+				- @Primary is an effective way to autowire several instances where one primary candidate can be determined.
+
+			@PropertySource(<path_to_properties_file>")
+
+				- @PropertySource enables the inclusion of a properties file within the configuration class.
+				- @PropertySource example:
+
+					@Configuration
+					@PropertySource("classpath:config/game.properties")		//NB: @PropertySource("file:...") if the properties file is not on the classpath
+					public class GameConfig {...}
+
+				- @PropertySource presumes a project directory structure and corresponding classpath of:
+
+					classpath = moduleName/src/main/resources
+
+			@Qualifier:
+
+				- @Qualifier is used to refine the selection of which bean should be injected within an @Autowired.
+				- @Qualifier is used to build a custom annotation which can be applied to a @Bean method to uniquely identify and request that particular bean be injected within an @Autowired (rather than let Spring make its best guess).
+
+					- Qualifiers are custom annotations.	
+					- Qualifiers are created and used as follows:
+
+						1. Build Custom Annotation:
+
+							- Apply annotations to the custom annotation:
+
+								@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})		//Annotation MaxNumber can be assigned to Fields, Parameters and Methods only
+								@Retention(RetentionPolicy.RUNTIME)						//Annotation MaxNumber is retained throughout runtime (by the JVM)
+								@Qualifier
+								public @interface MaxNumber {
+
+								}
+
+						2. Bean Methods:
+
+							- Apply custom annotation to the respective Bean Method:
+
+								@MaxNumber
+								@Bean
+								public int MaximumNumber(){
+						    		    return 100;
+								}
+
+						3. Bean Injection:
+
+							- Apply custom annotation to the fields/parameter/method to be injected with the return of the Bean Method:
+
+								@MaxNumber
+								private int iLargestNumber;
+
+							- Bean will now be injected using the bean method annotated and associated with @MaxNumber.
+
+						4. Flexibility:
+
+							- Qualifier is now the 'link' or means in which Spring uses to identify which bean to inject.
+							- Qualifier no longer requires:
+
+								Bean Method Name = Injected Field Name
+
+			@Service:
+
+				- @Service is a stereotype annotation for the Service layer.
+				- @Service is used by @Controller(s) to process, calculate and return data.
+				- @Service is an extension of @Component.
+				- @Service is included within @ComponentScan.
+
+			@Target:
+
+				- @Target is a core Java annotation and not part of the Spring framework.
+				- @Target specifies which types the annotation type can be assigned to:
+
+					@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})			//Custom annotation MaxNumber can be assigned to Fields, Parameters and Methods only
+					@Retention(RetentionPolicy.RUNTIME)							//Custom annotation MaxNumber is retained throughout runtime (by the JVM).
+					@Qualifier
+					public @interface MaxNumber
+					{
+					...
+					}
+
+			@Value("${<property_value>[:default_value]}"):
+
+				- @Value allows for the insertion of values into fields directly referenced from a *.properties file.
+				- @Value examples:
+
+					// == fields ==
+    			  		@Value("${game.maxNumber:20}")		//If game.maxNumber not found or *.properties file not found then will revert and insert the default 20.
+    			    		private int maxNumber = 100;

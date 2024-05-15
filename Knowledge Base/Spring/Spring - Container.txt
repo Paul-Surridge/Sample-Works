@@ -1,0 +1,737 @@
+Spring
+
+	Container:
+
+		- Container is IoC 'Inversion of Control':
+
+			1. Beans:			Beans are housed within the container.
+			2. Bean Management:		Bean lifecycles are managed by the container.
+
+			IoC Meaning:
+
+				- Container controls the instantiation of beans and bean dependencies.
+				- Opposed to the bean itself instantiating its own internal objects itself in the normal way.
+				- The control/responsibility of instantiation is inverted. 
+
+		- Container is represented and accessible via the ApplicationContext interface.
+		- Container is and its definitions are contained withing packges:
+
+			org.springframework.beans
+			org.springframework.context
+
+		- Container can be considered an advance factory for generating and maintaining a registry of its current beans and (any) of their dependencies which can be accessed vi the ApplicationContext interface.	
+
+	Configuration:
+
+		- Configuration is the general process/term used to describe the 'configuring' of the container.
+		- Configuration is achieved by the use of metadata to describe/define the content and functionality of the container.
+		- Configuration informs the container how to instantiate, configure and assemble the object/beans within the container. 
+		- Configuration can be known as the 'Configuration Metadata' i.e. the data about/describing the configuration.
+		- Configuration format is completely decoupled from the container i.e. the container does not care/specify the source formt of the configuration.
+		- Configuration can be defined in many areas and means including:
+																								[Compile Time Checking]
+			1. XML File:			Define beans within an external *.xml file.												-
+			2. Java Annotations:		Define beans internally within application classes using annotations.									Y
+			3. Java Source Code:		Define beans external to application classes by using Java rather than XML files e.g. @Configuration @Bean @Import @DependsOn. 		Y
+			4. Groovy File:			Define beans within an external *.groovy file.												-
+
+			NB: Java based configuration is achieved must be defined/specified/enabled within the XML file.
+
+		- Configuration must define a minimum of x1 bean that the container must manage.
+		- Configuration is not expected to configure/define fine-grained domain objects, it is expected that these be pulled from respective repositories.
+
+	Metadata:						
+
+		- Spring Framework makes extensive use of metadata on how to build and manage the container and its contents.
+		- Spring Framework metadata is contained within either *.xml or annotations:
+
+			XML (*.xml file):
+
+				Pros:
+
+					- XML encourages separation of concerns.
+					- XML is kept external to the source code.
+					- XML is relatively limited in size and easily viewed.
+					- XML allows for the ability to modify without the need for recompiling.
+					- XML requires the least amount of text/files to changed upon modification.
+					- XML is more centralised.
+					- XML is more verbose and may be preferable in providing clarity for beginners. 
+
+				Cons:
+
+					- XML is error prone, typos are difficult to spot and debug (even though there are many tools available to validate *.xml files).
+					- XML may lead to runtime errors:
+
+						1. Java Source Code:	Java source code is modified where an additional argument is added to a beans constructor.
+						2. XML:			*.xml file is not updated with this additional argument.
+						3. Runtime Error:	Program will run and this issue will not be noticed until the bean is instantiated during runtime.
+
+					- XML is not type-safe i.e. no compiler will check the manually typed types passed during dependency injection.
+					- XML can lead to ill-fitting awkward constructs which are more simple to be implemented within java source code.
+
+			Annotations:
+
+				Pros:
+
+					- Annotations tend to lead to shorter more concise configuration overall.
+					- Annotations allows for dependency injection to be alot closer to the source code rather than being kept in separate *.xml file(s).
+					- Annotations ensure type-safety.
+					- Annotations are checked at compile time.
+					- Annotations self-document the source code providing more immediate clarity on what is being injected by Spring rather than having to refer to a separate *.xml file.
+					- Annotations are 'closer' to the source code.
+
+				Cons:
+
+					- Annotations reside within and clutter source code.
+					- Annotations are more decentralised leading to configuration metadata being spread throughtout the codebase, leading to an overall lack of centralised oversight and control of the configuration.
+					- Annotations require recompilation of source code upon modification.
+					- Annotations maybe considered less intuitive due their brevity in particular for students of Spring.
+					- Annotations cause beans to no longer be considered as POJO's.
+					- Annotations are more invasive upon the source code (however via the use of JavaConfig annotations can be used in a non-invasive way without the need to touch target components source code). 
+
+			Summary:
+
+				- No Ideal:		No ideal approach, generally a combination of both *.xml and annotations are deployed.
+				- Project:		Project requirements generally determine the ideal approach e.g. using the conventions already within an existing project.
+				- Industry:		Industry trend is generally to use annotations over *.xml.
+				- Synchronous:		Synchronous behaviour and outcome can be achieved using either *.xml or annotations i.e. a table of equivalent/matching XML elements and annotations.
+				- @Component:		@Component annotation goes some way in providing the best of both *.xml and annotations.
+				- Tooling:		All configuration styles are supported by Spring Tools for common IDE's e.g. Eclipse, Visual Studio Code or Theia IDE.
+
+			NB:
+
+				- Order:		Annotation injection is performed before XML injection, therefore XML configuration will override the properties wired through both approaches.
+
+	Application Context:
+
+		- Application Context is an extended interface of BeanFactory.
+
+			org.springframework.context.ApplicationContext
+
+		- Application Context is more refined and specific to enterprise applications, BeanFactory provides basic configuration and framework.
+		- Application Context represents the Spring IoC container and is responsible for instantiating, configuring and assembling all beans.
+		- Application Context has several implementations with Spring e.g.
+
+								Constructor Arguments
+								---------------------
+			ClassPathXmlApplicationContext		*xml files
+			FileSystemXmlApplicationContext		*xml files
+			GenericGroovyApplicationContext		*groovy files
+			GenericApplicationContext		*groovy or *xml files	(presume same type only, not combinationn of *.xml and *.groovy)
+
+		- Application Context is passed the configuration resources via the constructor e.g. :
+
+			ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
+
+			NB: Contructor arguments may be from various sources e.g:
+
+				1. File System:		Something located on local file system.
+				2. Java CLASSPATH:	Something defined on Java CLASSPATH.
+				3. Resource:		An abstraction for defining multiple resources defined in URI syntax.
+
+		- Application Context can be used to access the internal beans of the current container:
+
+			XML Configuration:
+	
+				ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");			// Pass in the *.xml configuration files whereby creating and configuring beans
+				
+				PetStoreService service = context.getBean("petStore", PetStoreService.class);					// Extract instance of the 'PetStoreService'
+
+				List<String> userList = service.getUsernameList();								// Further use/interrogate the current state of the bean
+
+			Groovy Configuration:
+
+				ApplicationContext context = new GenericGroovyApplicationContext("services.groovy", "daos.groovy");
+
+			Generic Configuration (inconjunctionn with Reader Delegates)
+
+				GenericApplicationContext context = new GenericApplicationContext();
+
+				new XmlBeanDefinitionReader(context).loadBeanDefinitions("services.xml", "daos.xml");				//Reader Delegate for XML Configuration
+				context.refresh();
+
+				[Or]
+
+				new GroovyBeanDefinitionReader(context).loadBeanDefinitions("services.groovy", "daos.groovy");			//Reader Delegate for Groovy Configuration
+				context.refresh();
+
+				NB: It is possible to mix and match such reader delegates on the same generic Application Context i.e. read in configuration from differing sources
+
+			NB: In general it should not be necessary to need to read in and interrogate the internals of a container i.e. best left alone.
+
+		- Application Context allows for the inclusion/registration of objects created outside of the container:
+
+			1. Object is created outside of container.
+			2. Object is pulled in and registered as a bean within the container.
+
+			NB: 
+				- This is via the 'BeanFactory' using getBeanFactory() and registering the external object, however this generally should be avoided and define beans using the normal way.
+				- Any external objects that are registered as beans should be completed as early as possible in order to ensure that the containers autowiring/introspection process allows for the container to be built properly.
+				- The registration of external objects at runtime is available but not recommended/supported whereby possibly leading to concurrent access exceptions and/with unstable/inconsistent container state. 
+
+	Events:
+
+		- ApplicationContext implements interface ApplicationEventPublisher which encapsulates event publication functionality.
+		- ApplicationContext is therefore able to handle events via the use of the following entities:
+
+			1. Class:		ApplicationEvent
+			2. Interface:		ApplicationListner
+
+			Bean implements ApplicationListner and will receive ApplicationEvents published to the ApplicationContext (standard Observer design pattern).
+
+		- Application events can be listened via x2 ways:
+
+			1. Interface: ApplicationListener
+
+				1. Bean implement ApplicationListener.
+
+					- Bean will now have the necessary interface to enable the container ApplicationContext to pass in events which a bean instantiation can listen for.
+
+				2. Bean override:
+
+					@Override
+    					public void onApplicationEvent(ContextRefreshedEvent event) {
+        				    log.info("Container ready for use.");
+    					}
+
+				3. Bean will receive events depending upon the particular event specified in the parameter.
+
+ 					- onApplicationEvent() is an overloaded method.
+					- Parameter determines which event type will be listened to and returned e.g. in this case a ContextRefreshedEvent.
+
+			2. Annotation: @EventListner
+
+				- Annotations can be added to methods to enable them to receive event notifications:
+
+					@EventListner
+    					public void onRenamedApplicationEvent(ContextRefreshedEvent event) {
+        				    log.info("Container ready for use.");
+    					}
+
+				- Annotations enable the method to be called other more appropriate names other than onApplicationEvent().
+				- Annotations allow the parameter to specify the type of event that is listened for by this particular listner method.
+
+					@EventListner(ContextRefreshedEvent.class)
+    					public void onRenamedApplicationEvent() {
+        				    log.info("Container ready for use.");
+    					}
+
+					NB: Annotations with only x1 element named 'value' can omit the 'value =' when the annotation is deployed.
+
+						@EventListner(value = ContextRefreshedEvent.class)
+						@EventListner(ContextRefreshedEvent.class)
+
+				- Annotation is passed the type of event to listen for compared to an overriden onApplicationEvent() and having to include a parameter that may not necessarily be used within the body of the method.
+				- Annotation can be expanded to listen for multiple events (presumably by passing multiple events into the annotation).
+
+	Container Shutdown:
+
+		- Container shutdown in web-applications already have necessary ability to gracefully shutdown the container when the web application is shutdown.
+		- Container shutdown in non-web applications e.g. rich client desktop environement requires the following:
+
+			1. JVM:		Register a shutdown hook with the JVM using registerShutdownHook() on ConfigurableApplicationContext interface:
+
+						public final class myNonWebApplication {
+						    public static void main(final String[] args) throws Exception {
+						    	ConfigurableApplicationContext ctx = new ClassPathXmlApplicationContext("beans.xml");
+						    	ctx.registerShutdownHook();		// Add a shutdown hook for the above context
+
+						    	// App runs here
+						    	// Main method exits, hook is called prior to the app shutting down
+					    	    }
+				    		}
+
+			2. Shutdown:	Container shutdown will now call the relevant destroy methods on all singleton beans so that all resources can be released.
+
+	Exceptions:
+
+		- Spring is written in Java.
+		- Spring is not an integral part of the Java language whose correctness is checked by the compiler.
+		- Spring therefore uses exceptions should the instantiated container (via interface ApplicationContext) encounter a problem.
+		- Spring outputs all exceptions to the console.
+
+	-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	Container Extension: (And the Customisation of Bean Instantiation Logic)
+
+		- Container extension is where the functionality of the container i.e. what the container does during specific events/sequences (e.g. initialisation) can be extended with custom actions.
+		- Container extension is where particular beans implement specific interfaces which the container will 'look out for' and call the respective methods upon those interfaces at certain times e.g. container initialisation. 
+		- Container extension refers to the same general practice of extending classes/interfaces where the existing entity is extended via subclass/subinterface, however this is applied to the container.
+		- Container extension is where the inherent functionality of the container as supplied by Spring is unaltered but extended by the developer.
+		- Container extension can be achieved without the need to extend ApplicationContext i.e. extend and create your own version of ApplicationContext which is used to run your application instead.
+		- Container extension is primarily achieved via beans implementing the following interfaces:
+
+			interface BeanPostProcessor
+			{
+			    Object postProcessBeforeInitialization(Object bean, String beanName)
+			    Object postProcessAfterInitialization(Object bean, String beanName)
+			}
+
+			interface BeanFactoryPostProcessor
+			{
+			    postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
+			}
+
+	BeanPostProcessor:
+
+		- BeanPostProcessor allows for the creation of custom beans from pre-existing bean definitions i.e. apply own/additional/further customisations to pre-existing bean definitions.
+		- BeanPostProcessor defines callback methods which the container will call when the container is at the stage as described by the method name.
+		- BeanPostProcessor broadly operate as follows:
+
+			1. Container instantiates a bean.
+			2. Beans which implement BeanPostProcessor operate upon those beans as they are defined.
+
+		- BeanPostProcessor allows for the ability to define, provide (or override the container default) aspects of the bean instantiation process e.g.
+
+			1. Instantiation Logic
+			2. Dependency Resolution Logic
+			
+		- BeanPostProcessor allows for the ability to add your own custom logic when the container has finished instantiating, configuring and initialising a bean.
+		- BeanPostProcessor allows for your own beans to be 'plugged' into the container infrastructure which the container will use when it instantiates beans.
+		- BeanPostProcessor can be implemented by multiple beans in same container i.e. you can implement more than one bean that fulfills the role of being a BeanPostProcessor but have multiple BeanPostProcessors operating as required.
+		- BeanPostProcessor beans can be orchestrated to run in a certain order by setting the order property via the Ordered interface i.e. your bean must implement both BeanPostProcessor and Ordered.
+		- BeanPostProcessor scope are container only i.e. it only post processes within its container only even if container exists within a hierachy.
+		- BeanPostProcessor callbacks are called for each bean instantiated (presumably throughout the duration of the container as beans are continually instantiated):
+
+			1. Before:		Before container initialisation callbacks e.g. InitializingBean.afterPropertiesSet() or 'init' methods.
+			2. After:		After bean initialisation callbacks.
+
+			NB: BeanPostProcessor can of course ignore a callback i.e. presumably just be an empty method.
+
+		- BeanPostProcessor typically listens for callbacks but may also be used to wrap a bean with a proxy e.g. some Spring AOP infrastructure classes are implemented as bean post-processors in order to provide proxy wrapping logic.
+		- BeanPostProcessor beans are instantiated via:
+
+			1. Container:		ApplicationContext automatically detects all bean post processors.
+			2. Container:		ApplicationContext registers these beans as post processors so that they can be called upon later as beans are created.
+
+		- BeanPostProcessor beans can be deployed in the container in the same way as any other beans.
+		- BeanPostProcessor beans created via @Bean methods in @Configuration classes should be either:
+
+			1. Class:		Returns a class that implements BeanPostProcessor.
+			2. Interface:		Returns an interface of BeanPostProcessor.
+
+			NB: It must be clear to the ApplicationContext that these are BeanPostProcessors for they need to be instantiated 'early' before any other beans so that they can of course 'post-process' other 'standard' beans as they are created.
+
+		- BeanPostProcessor beans can be registered with the container via x2 ways:
+
+			1. Auto Detection:	Bean implements the BeanPostProcessor interface and the container auto-detects (and runs them as per the Order interface - if implemented)
+			2. Manual:		Bean is registered programmatically against ConfigurableBeanFactory via addBeanPostProcess().
+
+			NB: Manual Registration enables:
+
+				- Conditional Logic:	Evaluate any necessary conditional logic as to whether the BeanPostProcessor should be instantiated.
+				- Copying:		Copying and transferring any other existing bean post processor from other contexts in the hierachy.
+
+			NB: Manual Registration leads to:
+
+				- No Ordering:		Bean Post Processor does not adhere to any ordering defined via the Ordered interface.
+				- Registraton Order:	Bean Post Processor are executed in the same order as they are registered.
+				- Before Auto-Detect:	Bean Post Processor are executed before any of those registered via auto-detect.
+
+		- BeanPostProcessor beans are treated slightly 'different' compared to normal beans such that:
+
+			1. Startup Instantiation:	BeanPostProcessor Beans (and all beans that they directly referenced) are instantiated at startup as part of a 'special' startup phase of ApplicationContext.
+			2. Sorted Registration:		BeanPostProcessor Beans (and presuming not those directly referenced) are registered with container in a sorted order.
+			3. Processing:			BeanPostProcessor Beans now operate as expected processing all subsequent 'normal' beans as they are instantiated during normal running of the application.
+
+		- BeanPostProcessor beans are all created eagerly:
+
+			- If the BeanPostProcessor bean was created lazily it would not be created until it was referenced by another bean.
+			- If the BeanPostProcessor bean was not initially referenced by any other bean at startup it would not be created at all thereby not running and negating the purpose of the BeanPostProcessor bean.
+			- Therefore all BeanPostProcessor beans are all created eagerly and any 'lazy' markings will be ignored, even if 'default-lazy-init' attribute is true in <beans/> element.
+
+			NB: This is also the same for BeanFactoryPostProcessor.
+
+		- BeanPostProcessor beans have the following consideration when dealing with AOP auto-proxying:
+
+			- AOP Auto-proxying implement BeanPostProcessor itself.
+			- Therefore BeanPostProcessor instances nor beans that they directly reference are:
+
+				1. Not eligible for auto-proxying
+				2. Not have aspects woven into them
+
+			- This will produce the following log:
+
+				'Bean 'someBean' is not eligible for getting processed by all BeanPostProcessor interfaces (for example: not eligible for auto-proxying)'
+
+			- Beans wired into BeanPostProcessor via @Autowired or @Resource (which may use autowiring) Spring may inadvertently access unexpected bean when searching for type-matching dependency candidates which will make them:
+
+				1. Ineligible for auto-proxying
+				2. Ineligible for other knids of bean-post processing
+
+				For example:
+
+					1. Dependency is annotated with @Resource.
+					2. Field/Setter name does not correspond to declared bean name defined elsewhere, nor 'name' attribute has been used.
+					3. Spring may look/search/access beans for matching them by type (whereby making those beans ineligible).
+
+		- BeanPostProcessor beans have following template:
+
+			public class InstantiationTracingBeanPostProcessor implements BeanPostProcessor {		//1 2
+
+			    public Object postProcessBeforeInitialization(Object bean, String beanName) {		//3
+				return bean;
+			    }
+
+			    public Object postProcessAfterInitialization(Object bean, String beanName) {		//4
+				System.out.println("Bean '" + beanName + "' created : " + bean.toString());		//5
+				return bean;
+			    }
+			}
+
+			Here:
+
+				1. This is a bean called 'InstantiationTracingBeanPostProcessor' which as described traces the bean as it is instantiated.
+				2. This is a bean which implements BeanPostProcessor therefore it behaves as a bean post processor where its respective methods are called when required by the container.
+				3. Any instantiated bean is simply returned as-is unaltered by the BeanPostProcessor, given that Object is returned a comletely alternate object could be instantiated within this method and returned.
+				4. Any instantiated bean has its details printed to console each time it is instantiated.
+
+			The above bean post processor works in conjunction with the following XML configuration:
+
+				<?xml version="1.0" encoding="UTF-8"?>
+				<beans xmlns="http://www.springframework.org/schema/beans"
+				    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				    xmlns:lang="http://www.springframework.org/schema/lang"
+				    xsi:schemaLocation="http://www.springframework.org/schema/beans
+					https://www.springframework.org/schema/beans/spring-beans.xsd
+					http://www.springframework.org/schema/lang
+					https://www.springframework.org/schema/lang/spring-lang.xsd">
+
+				    <lang:groovy id="messenger"									//1 3
+					script-source="classpath:org/springframework/scripting/groovy/Messenger.groovy">
+					<lang:property name="message" value="My message"/>
+				    </lang:groovy>
+
+				    <bean class="scripting.InstantiationTracingBeanPostProcessor"/>				//2
+
+				</beans>
+
+			Here:
+
+				1. Bean whose id is 'messenger' is defined using Groovy.
+				2. Bean whose definiton is that of the InstantiationTracingBeanPostProcessor as defined in above class definition:
+
+					- No Name:		No name is required
+					- Defined Only:		Bean post processor only needs to be merely listed/defined in XML
+
+					NB: This bean post processor is still a bean therefore it can still be dependency injected like any other beans i.e. the bean post processor class definition can have its own collaborating beans (as per any normal bean)
+ 
+				3. When 'messenger' is instantiated "My message" is outputed to console
+
+			Finally the components above (Bean Post Processor and XML) can be used within the following application:
+
+				public final class Boot {
+				    public static void main(final String[] args) throws Exception {
+					ApplicationContext ctx = new ClassPathXmlApplicationContext("scripting/beans.xml");		//1
+					Messenger messenger = ctx.getBean("messenger", Messenger.class);				//2 3
+					System.out.println(messenger);									//4
+				    }
+				}
+
+			Here:
+
+				1. ApplicationContext is instantiated as normal.
+				2. Messenger bean is instantiated and the bean post processor is called whereby sending the following to console:
+
+					'Bean 'messenger' created : org.springframework.scripting.groovy.GroovyMessenger@272961'
+
+				3. Reference to that singleton bean instance of Messenger is obtained from container.
+				4. Reference address of the instance is sent to console (as normal):
+
+					'org.springframework.scripting.groovy.GroovyMessenger@272961'
+
+		- BeanPostProcessor has a common implementation in Spring:	AutowiredAnnotationBeanPostProcessor
+
+			- AutowiredAnnotationBeanPostProcessor is common means of extending the container.
+			- AutowiredAnnotationBeanPostProcessor is part of and ships with the Spring distribution autowiring annotated fields, setter methods containing arbitrary configuration methods.
+
+	BeanFactoryPostProcessor:
+
+		- BeanFactoryPostProcessor allows for the creation of custom beans from pre-existing bean definitions i.e. apply own/additional/further customisations to pre-existing bean definitions.
+		- BeanFactoryPostProcessor allow for the changing of the actual Bean Definition configuration metatdata which leads to:
+
+			1. Low Risk:	No need to change potentially complex XML configuration
+			2. Simplicity:	No need to change potentially complex XML configuration
+
+		- BeanFactoryPostProcessor operates in a similar fashion as BeanPostProcessor however the 'Factory' aspect corresponds to an ability to operate on the bean configuration metadata
+		- BeanFactoryPostProcessor provides the ability to read (and alter) configuration metadata before any bean instances (other than the beans which actually implement BeanFactoryPostProcessor) are created.
+		- BeanFactoryPostProcessor maybe created multiple times i.e. a container may contain multiple differing instances of BeanFactoryPostProcessor.
+		- BeanFactoryPostProcessor can be ordered should they implement the Ordered interface, the BeanFactoryPostProcessor's will run as per their defined order.
+		- BeanFactoryPostProcessor can be used to change the actual instance that is created and returned to the bean e.g. (I presume)
+
+			1. Bean Definition configuration metadata states an instance of ClassA will be returned.
+			2. However an instance of ClassB is returned.
+
+			NB: While the above can 'technicially' be possible using BeanFactoryPostProcessor (via use of BeanFactory.getBean()) it is not recommended for it causes:
+
+				1. Premature bean instantiation
+				2. Violation of the standard container lifecycle
+
+				This may have negative side effects e.g. bypassing any specific bean post processing.
+
+		- BeanFactoryPostProcessor beans are scoped per-container, therefore:
+
+			1. BeanFactoryPostProcessor only run within the containers that they are defined.
+			2. BeanFactoryPostProcessor only apply to beans within that container i.e. only beans within that container are post processed.
+			3. BeanFactoryPostProcessor do not apply to other containers, even those within a container heirachy.
+
+		- BeanFactoryPostProcessor beans are all automatically run when declared within an ApplicationContext.
+		- BeanFactoryPostProcessor beans are automatically detected by the conatiner i.e. all beans that implement BeanFactoryPostProcessor are detected and run at the appropriate time.
+		- BeanFactoryPostProcessor beans are automatically included in Spring Framework, these include:
+
+			PropertyOverrideConfigurer
+			PropertySourcesPlaceholderConfigurer
+
+			However custom BeanFactoryPostProcessor beans can be used to register custom property editors.
+
+		- BeanFactoryPostProcessor beans are all in themselves 'just beans' and can be deployed like any other bean.
+		- BeanFactoryPostProcessor beans are all created eagerly:
+
+			- If the BeanFactoryPostProcessor bean was created lazily it would not be created until it was referenced by another bean.
+			- If the BeanFactoryPostProcessor bean was not initially referenced by any other bean at startup it would not be created at all thereby not running and negating the purpose of the BeanFactoryPostProcessor bean.
+			- Therefore all BeanFactoryPostProcessor beans are all created eagerly and any 'lazy' markings will be ignored, even if 'default-lazy-init' attribute is true in <beans/> element.
+
+			NB: This is also the same for BeanPostProcessor.
+
+	PropertySourcesPlaceholderConfigurer
+
+		- PropertySourcesPlaceholderConfigurer is a BeanFactoryPostProcessor is a bean (as described above) allows for the changing and dynamic setting of a beans configuration metadata.
+		- PropertySourcesPlaceholderConfigurer is automatically included in the Spring Framework.
+		- PropertySourcesPlaceholderConfigurer allows for:
+
+			1. External Properties:		Property values to be externalised i.e. placed in a separate properties file (which use standard Java properties format).
+			2. Low Risk:			Make changes to key information (which may regularly change over time) without the need/complexity/risk of modifiying existing files (be that XML or otherwise) e.g.
+
+								Database URLs
+								Database Passwords
+
+		- PropertySourcesPlaceholderConfigurer primarily use the 'placeholder' syntax:
+
+			${property-name}
+
+		- PropertySourcesPlaceholderConfigurer is reflected in the XML as follows:
+
+			<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">		//BeanFactoryPostProcessor bean supplied by Spring called 'PropertySourcesPlaceholderConfigurer'
+			    <property name="locations" value="classpath:com/something/jdbc.properties"/>		//Location of corresponding/associated .properties file
+			</bean>
+
+			<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">	//BasicDataSource bean which pulls in external property values via placeholder syntax ${property-name}
+			    <property name="driverClassName" value="${jdbc.driverClassName}"/>
+			    <property name="url" value="${jdbc.url}"/>
+			    <property name="username" value="${jdbc.username}"/>
+			    <property name="password" value="${jdbc.password}"/>
+			</bean>
+
+			Here:
+
+				1. At runtime the PropertySourcesPlaceholderConfigurer is applied to the BasicDataSource bean when it is instantiated.
+				2. PropertySourcesPlaceholderConfigurer replaces the placeholders with the corresponding property values as defined in the external .properties file.
+
+				NB: ${property-name} follows the Ant, log4j and JSP EL style.
+				NB: Placeholder prefix/suffix can be customised if required.
+				NB: PropertySourcesPlaceholderConfigurer will check for the existance of any placeholders 'in most' properties and attributes within a bean definition (documentation unclear on which are excluded).
+
+		- PropertySourcesPlaceholderConfigurer uses files which store the externalised data in the standard Java properties format:
+
+			jdbc.driverClassName=org.hsqldb.jdbcDriver
+			jdbc.url=jdbc:hsqldb:hsql://production:9002
+			jdbc.username=sa
+			jdbc.password=root
+			|	      |
+			Keys	      Values
+
+		- PropertySourcesPlaceholderConfigurer can be directed to use/find/reference external property files as specified within XML:
+
+			<context:property-placeholder location="classpath:com/MyApplication/jdbc.properties"/>
+
+			Here:
+
+				1. 'context' namespace introduced in Spring 2.5.
+				2. One or more locations can be provided via comma separated list in 'location' attribute.
+
+		- PropertySourcesPlaceholderConfigurer will look for property values in following order:
+
+			1. Property Files (as specified above in XML).
+			2. Spring environment properties.
+			3. Java system properties.
+
+			NB: Multiple Property Files/Locations:
+
+				It is recommended:
+
+					- There should be only x1 location where properties are stored externally i.e. x1 external .properties file.
+					- Multiples .properties files can be used as long as all property keys are unique.
+					- If external properties do need to be modularised in some way then it may be best to create your own PropertySourcesPlaceholderConfigurer i.e. your own implementation of BeanFactoryPostProcessor 
+
+					[It is not fully clear was is meant in passage pertaining to the above, requires further referencing/checking]
+
+					https://docs.spring.io/spring-framework/reference/core/beans/factory-extension.html	[Text: Warning: Only one such element...]
+
+		- PropertySourcesPlaceholderConfigurer can be used to substitute class names, which can be used to pick particular implementation class during runtime:
+
+			<bean class="org.springframework.beans.factory.config.PropertySourcesPlaceholderConfigurer">		//1
+
+			    <property name="locations">
+				<value>classpath:com/MyApplication/strategy.properties</value>					//2
+			    </property>
+
+			    <property name="properties">
+				<value>custom.strategy.class=com.MyApplication.DefaultStrategy</value>
+			    </property>
+
+			</bean>
+
+			<bean id="serviceStrategy" class="${custom.strategy.class}"/>						//3
+
+			Here:
+
+				1. PropertySourcesPlaceholderConfigurer has x2 internal properties of its own:
+
+					'locations'	String defining the path to .properties file
+					'properties'	Class variable (I think)
+
+				2. PropertySourcesPlaceholderConfigurer has been provided with the location of a .properties file.
+				3. Bean with id "serviceStrategy" has its 'class=' attribute assigned the value of the class variable called 'custom.strategy.class' which is ultimately defined in the .propertes file.
+
+				NB:
+					- If the class cannot be resolved at runtime then instantiation fails.
+					- This failure will occur during preInstantiateSingletons() phase of an ApplicationContext for any non-lazy-init bean i.e. all beans which are created by default as singletons eagerily.
+
+	PropertyOverrideConfigurer
+
+		- PropertyOverrideConfigurer is a BeanFactoryPostProcessor is a bean (as described above) allows for the changing and dynamic setting of a beans configuration metadata.
+		- PropertyOverrideConfigurer is automatically included in the Spring Framework.
+		- PropertyOverrideConfigurer is similar to PropertySourcesPlaceholderConfigurer (above) except:
+
+			1. Default:	Original definitions can have default values.
+			2. None:	Original definitions can have none/empty values.
+
+			If an overriding .properties file does not have a matching key for a placeheld property within a bean then the default context definition is used.
+
+		- PropertyOverrideConfigurer should be used with caution:
+
+			1. Non-Aware:		Beans are not in any way 'aware' that its properties are being overriden.
+			2. No Highlight:	Beans are not highlighted within XML as being overriden.
+
+		- PropertyOverrideConfigurer can exist as multiple instances which may define differing overriding values for the same property within a particular bean.
+		- PropertyOverrideConfigurer operate a 'last one wins' logic where in the case of multiple instances the last instance run is the value that finally gets applied to the property due to the inherrent 'overriding' mechanism.
+		- PropertyOverrideConfigurer require the .property file to be formated as follows:
+
+			beanName.property=value
+
+			e.g.
+
+			dataSource.driverClassName=com.mysql.jdbc.Driver
+			dataSource.url=jdbc:mysql:mydb
+
+			Here:
+				1. If a container contains a bean called 'dataSource' which has the following properties:
+
+					'driver'		//NB: The example states 'driverClassName', unsure if this is a mistake or given that it appears to be a jdbc.Driver (i.e. a class) which is assigned that this suffix is required?
+					'url'
+
+				2. These properties are overriden accordingly.
+
+				NB: Override values are always literal, they are not translated into bean references, this includes even when the original value in the XML bean definition specifies a bean reference.
+
+		- PropertyOverrideConfigurer can be directed to use/find/reference external property files as specified within XML:
+
+			<context:property-override location="classpath:com/MyApplication/override.properties"/>
+
+			Here:
+
+				1. 'context' namespace introduced in Spring 2.5.
+				2. (It is presumed that) one or more locations can be provided via comma separated list in 'location' attribute (just like PropertySourcesPlaceholderConfigurer).
+
+	Compound Property Names:
+
+		- Compound Property Names allow for the definition of nested properties within multiple layers of beans:
+
+			BeanA.BeanB.BeanC = "123"
+
+			BeanC:	Is a property of BeanB
+			BeanB:	Is a property of BeanA
+
+			NB: For the above to work all of the beans (except the last BeanC) must be non-null and initialised (via constructors)
+
+		- Compound Property Names are supported by PropertyOverrideConfigurer (it is presumed by PropertySourcesPlaceholderConfigurer also, however does not explicitly state in documentation).
+
+	FactoryBean:
+
+		- FactoryBean is an interface which can be applied to an object which is itself a factory, allowing that factory to become incorporated into the containers instantiation logic. 
+
+			org.springframework.beans.factory.FactoryBean
+
+		- FactoryBean has following abstract methods:
+
+			T getObject():			Return a new instaniation of the object that the factory creates. This instance may be shared depending on whether the returned bean is singleton or prototype.
+			boolean isSingleton():		Return true if factory returns singletons, default is true.
+			Class<?> getObjectType():	Return the object type that is created by the factory (via getObject()) or null if type is not known in advanced.
+
+		- FactoryBean is useful if a particular bean has complex initialisation which is best expressed within Java rather than trying to do so within (verbose) XML:
+
+			1. FactoryBean:		Create your factory bean as normal, along with all of the necessary complex initialisation logic.
+			2. FactoryBean:		Have the factory implement FactoryBean, override abstract methods as required.
+			3. Container:		Container will now 'look up' the FactoryBean which produces the required bean (which is determined via getObjectType()).
+			4. Container:		Container uses the FactoryBean to request/obtain an instance of the desired bean via getObject().
+
+			NB: It is likely/presumed that container invokes getObjectType() on all implementations of FactoryBean during startup/initialisation of container and registers their output object type for quick lookup when required.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

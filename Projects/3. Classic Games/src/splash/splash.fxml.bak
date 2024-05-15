@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="anchorPaneSplashCSSID" fx:id="apSplash" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="950.0" xmlns:fx="http://javafx.com/fxml" fx:controller="splash.Splash">
+  <children>
+    <ImageView id="imagsViewBackground" fitHeight="700.0" fitWidth="949.9999472718403" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/generic/Background%20-%20Light%20Grey.jpg" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewSplashBackground" fitHeight="562.8699340820312" fitWidth="919.0" layoutX="17.0" layoutY="68.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/generic/Translucent%20Border%20-%20Large.png" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewPokerButton" fitHeight="62.899993896484375" fitWidth="260.0" layoutX="122.0" layoutY="270.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/generic/Button%20-%20Black%20Long.png" />
+      </image>
+    </ImageView>
+    <Label id="labelClassicGames" alignment="CENTER" layoutX="209.0" layoutY="84.0" prefHeight="77.0" prefWidth="533.0" text="Classic Games" textAlignment="CENTER" textFill="WHITE">
+      <font>
+        <Font name="Agent Orange" size="48.0" />
+      </font>
+    </Label>
+    <ImageView id="imageViewPoker" fx:id="ivPokerStart" fitHeight="150.0" fitWidth="200.0" layoutX="75.0" layoutY="199.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/splash/Game%20Select%20-%20Poker.png" />
+      </image>
+    </ImageView>
+    <Label id="labelPoker" fx:id="labPokerStart" layoutX="230.0" layoutY="273.0" prefHeight="56.0" prefWidth="143.0" text="Poker" textAlignment="CENTER" textFill="WHITE">
+      <font>
+        <Font name="Agent Orange" size="28.0" fx:id="x1" />
+      </font>
+    </Label>
+    <ImageView id="imageViewFruitMachineButton" fitHeight="62.899993896484375" fitWidth="279.0" layoutX="103.0" layoutY="472.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/generic/Button%20-%20Black%20Long.png" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewSpaceInvadersButton" fitHeight="62.899993896484375" fitWidth="260.0" layoutX="584.0" layoutY="269.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/generic/Button%20-%20Black%20Long.png" />
+      </image>
+    </ImageView>
+    <ImageView id="ivSpaceInvaders" fx:id="ivSpaceInvadersStart" fitHeight="116.0" fitWidth="231.99990000000253" layoutX="598.0" layoutY="199.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/splash/Game%20Select%20-%20Space%20Invaders.png" preserveRatio="false" smooth="false" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewPongButton" fitHeight="62.9000244140625" fitWidth="237.0" layoutX="595.0" layoutY="470.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/generic/Button%20-%20Black%20Long.png" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewHeader" fitHeight="62.89999771118164" fitWidth="950.0" pickOnBounds="true" AnchorPane.topAnchor="0.0">
+      <image>
+        <Image url="@../app/images/generic/Header.png" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewFooter" fitHeight="55.875" fitWidth="950.0000610351562" layoutX="1.0" pickOnBounds="true" AnchorPane.topAnchor="644.0">
+      <image>
+        <Image url="@../app/images/generic/Footer.png" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewExit" fx:id="ivExitClassicGames" fitHeight="38.0" fitWidth="38.0" layoutX="904.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/generic/Close.png" />
+      </image>
+    </ImageView>
+    <ImageView id="ivPong" fx:id="ivPongStart" fitHeight="102.9000244140625" fitWidth="231.99989318847656" layoutX="600.0" layoutY="430.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/splash/Game%20Select%20-%20Pong.png" />
+      </image>
+    </ImageView>
+  </children>
+</AnchorPane>

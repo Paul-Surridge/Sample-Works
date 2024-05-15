@@ -1,0 +1,273 @@
+Operators
+
+	Order of Precedence:
+
+		Postfix			expr++ expr--
+		Unary			++expr --expr +expr -expr ~ !
+		Multiplicative		* / %
+		Additive		+ -
+		Shift			<< >> >>>
+		Relational		< > <= >= instanceof
+		Equality		== !=
+		Bitwise AND		&
+		Bitwise XOR		^
+		Bitwise OR		|
+		Logical AND		&&
+		Logical OR		||
+		Ternary			? :
+		Assignment		= += -= *= /= %= &= ^= |= <<= >>= >>>=
+
+	Evaluation:
+
+		Right-to-Left:		Assignment
+		Left-to-Right:		All Others
+
+	Grouping:
+
+		Assignment:
+
+			=
+
+		Arthimetic
+
+			+ - / *
+		Unary
+
+			+ -	Sign e.g. -10 is the negation of 10 to become -10, +(expression) if expression returned a negative value, it will be inverted to become positive (essentially modulus y = |x-10|).
+			++ --	Post/Pre In/Decrement
+			!	Boolean Inversion (not integer sign)
+
+		Equality/Relational
+
+			== !=
+			< > <= >=
+
+		Conditional/Logical
+
+			&&
+			||
+			?:
+
+		Type Comparison
+
+			instanceof
+
+		Bitwise
+
+			~	Bit pattern inversion (all 0->1 and all 1->0).
+			&
+			|
+			^	Xor
+			<<      Signed 		Left shift
+			>>      Signed 		Right shift
+			>>>     Unsigned 	Right shift
+
+	Compound Assignment:
+
+		'The operator always goes first'
+
+			+= -= *= /= %= &= ^= |=
+
+		x = x + 1;
+		x += 1;
+
+		NB: The 'operator' always goes first (in all circumstances), this is just as applicable to not-equal and greater/less than relational operators:
+
+			!=
+			>=
+			<=
+
+	Not Equal:
+
+		Does not support:	<>
+		Only:			!=
+
+	Pre/Postfix In/Decrement:
+
+		++iResult;	//The value is 	incremented 		then 	evaluated/returned.
+		iResult++;	//The value is 	evaluated/returned 	then 	incremented.
+
+		Example:
+
+			rm(int i)
+			{
+				...
+				rm(++i);	//This will increment i before it is evaluated and passed into the next recursion of rm()
+				rm(i++);	//This will increment i after it is evaluated hence not pass the incremented value into the next recursion of rm().
+			}
+
+	== and .equals():
+
+		Primitives:
+
+			=		Assign.
+			==		Equal Value.
+
+		Objects:
+
+			= 		Assign.
+			== 		Check if point/reference the same object or memory address.
+			equals()	Class specific notion of equality.
+	
+	Logical Shortcut
+
+		Logical operators utilise 'shortcut' evaluation, whereby the second operand is only evaluated if required:
+
+			Logical AND:	&&
+			Logical OR:	||
+
+		For Example:
+
+			if( (i != 0) && ( ((2/i) > 5) ) )		//Checks, confirms and prevents potential divide by zero.
+			{}
+
+	Ternary Operator
+
+		(Boolean Expression) ? (Expression 1) : (Expression 2)
+
+			- Sequence:
+
+				1. Boolean Expression is evaluated.
+				2. If:
+
+					True:	Overall Ternary Operator evaluated to and returns Expression 1
+					False:	Overall Ternary Operator evaluated to and returns Expression 2
+
+			- Boolean Expression:		Must always evaluate to a boolean.
+			- Expression 1/2:		Can be any expression which evaluates and returns the expected type within which Ternary Operator is enclosed.  
+
+		Example 1:
+
+				public int indexOf(E e) {
+    			    	    for (ListIterator<E> it = listIterator(); it.hasNext(); )
+        				if (e == null ? it.next() == null : e.equals(it.next()))
+            			    	    return it.previousIndex();
+
+			- The 'if' statement is naturally expecting/requiring the Ternary Operator to evaluate and return a boolean.
+			- Therefore both Expression 1/2 must evaluate and return a boolean should they be selected.
+			- As shown a Ternary Operator is quite handy as a 'nested if' within an 'if' (rather than cascaded 'if' statements).
+
+		Example 2:
+
+				int iValue1 = 1;
+        			int iValue2 = 2;
+        			int iResult;
+        			boolean bBoolean1;
+        
+				iResult = bBoolean1 ? iValue1 : iValue2;	//bBoolean1 (true):	iResult = iValue1
+										//bBoolean1 (false):	iResult = iValue2
+
+			- iResult is naturally expecting/requiring the Ternary Operator to evaluate and return an int.
+			- Therefore both Expression 1/2 must evaluate and return an int should they be selected.
+
+		Example 3:
+
+
+					[Boolean Expression]			(Expression 1)		(Expression 2)
+			return ( 	(e1.number() < e2.number()) 	? 	(-1) : 			(e1.number() == e2.number() ? 0 : 1)	);
+
+			- Cascaded.
+
+	instanceof:
+
+		Specification:
+
+			RelationalExpression instanceof ReferenceType
+
+				true: if
+
+					1. RelationalExpression is non-null.
+					2. RelationalExpression could be cast to the ReferenceType (without raising a ClassCastException)
+
+				false: otherwise
+
+			PLEASE NOTE: No CamelCase - Lower case o
+
+		Used to check if an object is an instance of:
+
+			1. A Class.
+			2. A Subclass.
+			3. A Class which implements an interface.
+
+		Operands:
+
+			1. Reference Type (must be Reifiable).
+			2. null
+
+			Primitive - Compile Error
+
+		For Example:
+
+			class 		Parent {}
+			class 		Child extends Parent implements Interface {}
+			interface 	Interface {}
+
+			Parent objParent = new Parent();
+        		Parent objChild  = new Child();
+
+			if(objParent instanceof Parent)		//True
+			if(objParent instanceof Child)		//False
+			if(objParent instanceof Interface)	//False
+
+			if(objChild  instanceof Parent)		//True
+			if(objChild  instanceof Child)		//True
+			if(objChild  instanceof Interface)	//True
+
+		Evaluates Object not Type:
+
+			- instanceOf evaluates the object currently assigned to a reference variable, not the type of reference variable itself.
+			- instanceOf will return false if the reference variable has not been initialised and still containing null.
+
+				Object oTest;
+
+				if(oTest instanceOf Object)		//False - oTest is unitialised therefore still holds null, therefore the object referenced by oTest is of null not of Object.
+				    ...
+
+		Read As:
+
+			'True if Object contains Class either directly or through extension'
+			'True if Object contains Interface'
+
+		NB: Instance of Null is likely to be false (TBT)
+
+	Bitwise Operators:
+
+		~	Inverts bit pattern
+
+		<<	Signed 		Left shift bit pattern
+		>>	Signed		Right shift bit pattern
+		>>>	Unsigned 	Right shift bit pattern
+
+		NB:
+			Signed:		Takes consideration for the sign bit		1000 1010	>> 1	= 1000 0101
+			Unsigned:	Takes no consideration for the sign bit		1000 1010	>>> 1	= 0100 0101
+
+		For example:
+
+			bByte = bByte << 2;		//bByte is left shifted 2 bit positions
+			bByte = bByte >>> 3;
+
+	Inclusive/Exclusive Or
+
+		Inclusive:	|	'Normal Or'		
+		Exclusive:	^	XOr
+
+		Or:
+
+			0 0	0
+			0 1	1
+			1 0	1
+			1 1	1
+
+		XOr:
+
+			0 0	0
+			0 1	1
+			1 0	1
+			1 1	0
+
+			When both bits are different (not the same, 'There can be only one!').
+
+
+
+

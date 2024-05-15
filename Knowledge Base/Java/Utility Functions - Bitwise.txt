@@ -1,0 +1,64 @@
+Utility Functions (Built-in)
+
+	Bitwise Operations
+
+		Integer.
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	int		bitCount(int i)				Number of 1's in i
+
+		static	int 		highestOneBit(int i)			Return 0, 1, 2, 4, 8 ... representing the position of the first (most right/significant) bit in i interpreted as 2-complement:
+
+											Integer.highestOneBit(8):	8
+											Integer.highestOneBit(10):	8
+											Integer.highestOneBit(6):	4
+
+ 		static	int 		lowestOneBit(int i)			Return 0, 1, 2, 4, 8 ... representing the position of the last (least left/significant) bit in i interpreted as 2-complement:
+
+											Integer.lowestOneBit(11):	1
+											Integer.lowestOneBit(10):	2
+											Integer.lowestOneBit(8):	8
+
+		static	int		numberOfLeadingZeros(int i)		Return the number of 0's preceding the left most bit (MSB) as interpreted using 2-complement:
+
+											i = 0000 0000 0000 0000 0000 0000 0000 0001		31
+											i = 0001 0010 0001 0000	0100 0000 1000 0010		3
+											i = 0101 0010 0001 0001	0000 0010 0001 0000		1
+
+		static	int		numberOfTrailingZeros(int i)		Return the number of 0's after the right most bit (LSB) as interpreted using 2-complement:
+
+											i = 0000 0000 0000 0000 0000 0000 0000 0001		0
+											i = 0001 0010 0001 0000	0100 0000 1000 0010		1
+											i = 0101 0010 0001 0001	0000 0010 0001 0000		4
+
+											NB: The documentation states that is interpreted using 2-complement but the return value seems to include the sign bit (Left most bit)?
+
+		static 	int		reverse(int i)				Reverse the bits as represented using 2-complement:
+
+											i:	0001 0010 0001 0000 0100 0000 1000 0010		303,054,978
+											return:	0100 0001 0000 0010 0000 1000 0100 1000		1,090,652,232
+
+											i:	1001 0010 0001 0000 0100 0000 1000 0010		2,450,538,626
+											return:	Error (given that i is too large, likely due to representation of 2-complement)
+
+		static 	int		reverseBytes(int i)			Return the int value with all of the bytes in i reversed using 2-complement:
+
+												1-------- 2-------- 3-------- 4--------
+											i:	0000 0000 0000 0000 0000 0000 1000 0010		130
+												4-------- 3-------- 2-------- 1--------
+											return:	1000 0010 0000 0000 0000 0000 0000 0000		-2,113,929,216
+
+											i:	0000 0000 0000 0000 0000 0000 0010 0010		34
+											return:	0010 0010 0000 0000 0000 0000 0000 0000		570,425,344
+
+		static 	int		rotateLeft(int i, int distance)		Rotate the bits in int i by distance number of bits using 2-complement:
+					rotateRight(int i, int distance)
+											i:	0001 0010 0001 0000 0100 0000 1000 0010		303,054,978		[Rotate Left] Distance = 5
+											return:	0100 0010 0000 1000 0001 0000 0100 0010		1,107,824,706
+
+											Bits which leave one side re-enter on other side.
+											Negative distance is equivalent to rotation in opposite direction.
+											Distance of 32 naturally results in no change.
+
+
+				

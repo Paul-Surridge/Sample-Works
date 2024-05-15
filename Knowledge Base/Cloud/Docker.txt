@@ -1,0 +1,1334 @@
+Docker:
+
+	Overview:
+
+		- Docker is a platform or ecosystem for creating and running containers.
+		- Docker is supplied from Docker with following OS versions:
+
+			Docker for Windows
+			Docker for MacOS
+			Docker for Linux
+
+		- Docker install includes:
+
+			docker-server
+			docker-client
+			docker-compose
+
+	docker-server:
+
+		- docker-server is the core engine of Docker.
+		- docker-server is the actual piece of software which 'does all the work' e.g.
+
+			1. Creates images
+			2. Runs/manages containers 
+
+		- docker-server listens/utilises commands from the docker-client.
+		- docker-server is also known as the Docker Daemon.
+
+	docker-client:
+
+		- docker-client is the human interface to the docker-server.
+		- docker-client has a CLI.
+
+			> docker run hello-world
+
+		- docker-client parses the command and interacts/instructs the docker-server.
+		- docker-client does not actually 'do anything' it is merely the interface to the docker-server.
+		- docker-client is the only means for a human to interact with the docker-server for there is no direct interaction with the docker-server.
+
+	Image:
+
+		- Image is a single physical file which consists of the following:
+
+			1. File System:		A collection of folders/files that constitute that image.
+			2. Startup Command:	A command that is called by Docker when the image is instantiated and 'spun up' within a container.
+
+		- Images are all derived from base images which are downloaded from DockerHub.
+		- Images which are custom are all built upon base images.
+		- Images are not accessible on the local machine like a file e.g. there are no .img files or similar.
+		- Images are stored on the local machine such that the images File System, Startup Command (and all other aspects) will be stored in memory only accessible by the docker-server.
+		- Images are constructed and instantiated generally as follows:
+
+			1. Base Image:		Download base image from DockerHub.
+			2. Build Image:		Configure/modify by either:
+
+							1. Downloading/installing other programs.
+							2. Pulling other files from the local machine.
+
+			3. Instantiated:	Image is placed within a container and started i.e. 'spun up' within a container.
+
+			NB: The human does not 'touch' or interact with the images and the corresponding containers directly, it is all managed by the docker-server.
+
+	Container:
+
+		- Container is not a physical construct in memory.
+		- Container is not accessible within memory as a file, there is no Container.cnt file.
+		- Container is an organisational construct containing references to segmented memory and resources on the local machine.
+		- Container is registered and maintained by the docker-server.
+		- Container can be started/stop/monitored/queried all via the docker-client.
+		- Container runs within a Linux VM, a Linux VM which is in turn running within OS of the local machine e.g. Windows/MacOS.
+
+		 	 Image __________________________
+			|				 |
+			|   File System (Snapshot):	 |
+			|	Application		 |
+			|	Application Dependencies |
+			|				 |
+			|   Startup Command		 |
+			|	> run Application	 |
+			|________________________________|
+
+		 	 Container _____________________________________
+			|				 		|
+			|    Processes _________________		|
+			|   |				|		|
+			|   |	Process Application	| 		|
+			|   |	Process 2		|	 	|
+			|   |	Process ...		|		|
+			|   |___________________________|	 	|
+			|				 		|
+			|    Kernel ______________________________________________________________ _ _
+			|   |
+			|   |												
+			|   |
+			|   |
+			|   |_____________________________________________________________________ _ _
+			|				
+			|    Hardware Resources ________________	|
+			|   |					|	|
+			|   |	CPU				|	|
+			|   |	Memory				|	|
+			|   |	Network				|	|
+			|   |	Hard Drive			|	|
+			|   |	    File System (Snapshot)	|	| 
+			|   |___________________________________|	|
+			|_______________________________________________|
+
+		- Container is a segmented portion of hardware resources.
+		- Container is instantiated as follows:
+
+			1. Image:	File System (Snapshot) is loaded/copied into the segmented portion of hard drive.
+			2. Image:	Startup Command is run which instantiates the application from the File System stored within the segmented hard drive as a running process within the container.
+			3. Kernel:	Application makes system calls to segmented hardware resources via the shared kernel.
+
+		- Container shares the kernel of the host OS (Kernel handles the hardware system calls from all running processes across the host OS).
+			
+	CLI Naming Convention:
+
+		- This document uses the following naming convention:
+
+			'Terminal':	The command line tool that is of preference to the programmer e.g.
+
+						Commmand Prompt
+						Powershell
+						Git Bash
+
+					Whatever is used to send commands to an application via the applications command line interface.
+
+			CLI Command:	The command that is typed and sent to the CLI of the application.
+
+		- Terminal is the name of the command line tool used within MacOS.
+		- Terminal will however be used to cover all text based applications that can be used to send commands to another applications CLI.
+		- Terminal will be used given that it is distinct and reduces confusion.
+
+	Workflow Summary:
+
+		1. x1 Container:
+
+			Dockerfile -> docker-client -> x1 Image -> x1 Container
+
+			1. Dockerfile - Write
+
+				- Dockerfile 		Production (no extension)
+				- Dockerfile.dev	Development and Test Suite
+
+			2. docker-client:
+
+				1. Image - Build
+
+					> cd C:\Users\Paul Surridge\Documents\Software Development\Project
+					> docker build .
+
+					Return: image name/id
+
+				2. Container - Instantiate
+
+					> docker create <image name/id>
+
+					Return: <container id>
+
+				3. Container - Start
+
+					> docker start <container id>
+
+				Or > docker run <image name/id> = docker create <image name/id> + docker start <container id>
+
+		2. Multiple Containers:
+
+			docker-compose.yml -> docker-compose -> Multiple Images -> Multiple Containers
+
+			1. docker-compose.yml - Write
+			2. docker-compose:
+
+				> docker-compose up			Run all images in *.yml located in working directory
+				> docker-compose up --build		Build and run all images in *.yml located in working directory
+
+				> docker-compose down:			Stop and removes all images
+				> docker-compose ps:			Returns status of all active/running containers as defined within the *.yml only
+	
+	Container: Build and Start
+
+		Overview:
+
+			1. Image: Build:
+
+				1. Dockerfile:		Construct a Dockerfile script to build image (and place in cache within docker-server i.e. there are no separate instances of image available within the host OS file system).
+				2. docker-client:	Pass to docker-server (via docker-client).
+				3. Return:		Image Name/ID.
+
+			2. Container: Instantiate:
+
+				1. Instantiate a container using the image name.
+
+					> docker create <image name/id>		//docker-server copies the image File System, Startup Command (and all other aspects) into a new container and returns a SHA256 Container ID.
+
+				2. docker-server will search:
+
+					1. Local Cache:	Search local machine cache for any images matching image name.
+					2. Online:	Search DockerHub for any images matching image name.
+
+				3. Return:		Container ID.
+
+			3. Container: Start:
+
+				1. Start that container containing that Container ID.
+
+					> docker start <container id>		//docker-server spins up the container and calls the designated 'Startup Command'.
+					> docker start <container id> - a	//docker-server spins up the container and calls the designated 'Startup Command' and establishes a connection to the STDOUT of the container, whereby routing the output of the container back to Terminal.
+
+			NB: Container: Run:
+
+				Container Instantiate and Start can be combined into x1 single run command:
+
+					> docker run <image name> = docker create <image name> + docker start <container id>
+
+				For example:
+
+					> docker run hello-world		//Instantiate and start a new container containing the image with the name/ID 'hello-world'
+					> docker run -d redis			//Instantiate and start a new container containing the image 'redis' in the background on a daemon thread allowing Terminal to be used for other commands.
+					> docker run hello-world ls		//Instantiate and start a new container containing the image called 'hello-world' but overide the startup command as defined in the image, instead call 'ls' via the containers own internal Terminal.
+					> docker start hello-world ls		//NB: This would fail given that the overridden startup command would need to be included when the container is created from the image.
+
+		Psuedocode:
+
+			The above can be summarised with the following:
+
+				ImageName 	= buildImage(Base | Custom);
+				ContainerID 	= containerCreate(ImageName);
+				containerStart(ContainerID);
+
+				Condensed:	containerStart(containerCreate(buildImage(Base | Custom)));
+
+		Image: Build:
+
+			Dockerfile:
+
+				- Dockerfile is a file with no extension.
+				- Dockerfile is a script which is interpreted by the docker-server.
+				- Dockerfile defines the image which is to be built and instantiated within a container.
+				- Dockerfile is used to build an image.
+
+			Overview:
+
+				- docker-server is used to build images generally as follows:
+
+					1. Base Image:		Base images are retrieved from either:
+
+									1. DockerHub:		Downloaded from DockerHub if not in local cache.
+									2. Local Cache:		Retrieved directly from cache when container is being instantiated (not when image is built).
+
+					2. Build Image:		'Building an image' involves using a base image as a base and applying subsequent:
+
+									1. Programs
+									2. Source code file(s)
+									3. Resource file(s)
+									4. Other
+
+				- docker-server uses the Dockerfile and multiple temporary images to build final custom image as follows:
+
+					1. Base Image:		docker-server acquires Base Image via download/cache.
+
+					2. Augment:
+
+						File Sytem:	docker-server uses multiple temporary images to augment the File System by either:
+
+									1. Online:		Download/install other programs from DockerHub.
+									2. Local:		Copies and pulls in other runtimes/source code files from the local machine i.e. the actual program that will run within the container.
+
+						Resources:	docker-server defines all remaining aspects including:
+
+									1. Startup Command:	Startup command that is called by the Command Line within the container.
+									2. Resource:		Resources the container will require e.g. what RAM, network, CPU will be required.
+
+					3. Image Name:		docker-server returns a SHA256 hash code representing the Image Name (which can then be used to be create/start a container). 
+
+			Local Cache:
+
+				- docker-server starts with the base image, temporary images are created at each stage of modification and augmentation building up to the final custom image as specified in the Dockerfile.
+				- docker-server checks local cache at each stage to evaluate if it already contains a matching temporary image up to that point, rather than rebuild from scratch each time.
+				- docker-server places the final custom image into local cache.
+				- docker-server does not place a physical image or 'image file' in the project working directory, all images are stored in local cache.
+
+			Dockerfile Modification:
+
+				- Upon modifications to the Dockerfile:
+
+					- docker-server will utilise cache where possible.
+					- docker-server will parse the Dockerfile from top-bottom whereby utilising any steps whose resultant temporary image is already contained within cache.
+					- docker-server will rebuild all subsequent steps upon finding a change, step or a resultant temporary image not in cache.
+
+				- Therefore if changes need to be made to Dockerfile, it is best to:
+	
+					1. Arrange the Dockerfile so that any steps that are likely to change are as far down the file as possible.
+					2. Arrange the Dockerfile so that all of the time consuming steps are as close to the top of the file or behind aspects that are more likely to change.
+
+				- Dockerfile has/is:
+
+					No File Extension:	Dockerfile has no file extension.
+					Case Sensitive:		Dockerfile is case sensitive and must be the filename 'Dockerfile'.
+					Unique:			Dockerfile may be the only file in the working directory of that name.
+
+			Build Context:
+
+				- Build Context is the working directory which includes and specifies:
+
+					1. Dockerfile
+					2. Source code file(s)
+					3. Dependencies
+					4. [All relevant files]
+
+			Build CLI Commands:
+
+				- docker-client is used to instruct the docker-server to build an image:
+
+					> cd C:\Users\Paul Surridge\Documents\Software Development
+					> docker build .							//Instruct docker-server to build image using the Dockerfile within the build context pointed to by the docker-client.
+
+				- docker-server will now build image and return image name [SHA256 hash code].
+				- docker-server will generate a small or large image name depending whether 'Buildkit' is enabled in docker-server (accessible via icon in System Tray).
+
+			Tagging:
+
+				- Image names can be given a human friendly name rather than a SHA256 hash code:
+
+					> docker build -t [Docker ID] / [Repo/ProjectName : Tag (Version | Latest | Unique Identifer)] [Directory of folders/files to use in the build | .]		// -t 	= tag
+																									// . 	= all
+					> docker build -t PaulSurridge/redis:1.12 .		//Tag the build as '1.12'
+					> docker build -t PaulSurridge/redis:latest .		//Tag the build as 'latest'
+
+				- This built image can then be run as follows:
+
+					> docker run PaulSurridge/redis				//Default: Run the latest image of redis
+					> docker run PaulSurridge/redis:1.12			//Run version 1.12
+					> docker run PaulSurridge/redis:latest			//Run version which is the latest (manually define)
+
+				- The tag as mentioned in the documentation is specifically the version at the end and does not include the whole 'Docker ID / Repo/ProjectName' prefix.
+				- The 'Docker ID' is your ID that you have on DockerHub, such that docker-server may need/use this if need to go off to DockerHub to pull down images?
+
+			:latest Tag:
+
+				- The :latest tag is a specific tag assigned by the developers of images to explicitly declare which is the latest image when listed on DockerHub.
+				- The :latest tag may not be assigned to the most recent version on DockerHub, there maybe beta versions listed but are not considered or formally declared as the :latest.
+				- The :latest tag can be used to always ensure that when referencing a particular image the correct 'latest' file is invoked (and no 'magic strings' or hardcoding of version is defined within the Dockerfile).
+
+	Container: Stop
+
+		- Stopping a container is as follows:
+
+			> docker stop <container name/id>
+
+				- Stop running container.
+				- Sends a hardware 'SIGTERM' command to the process within the container. NB: the process must be programmed to listen, accept and implement the SIGTERM (not all programs do).
+				- Allows the container time to perform any shutdown/cleanup.
+				- If container does not stop after 10s then docker-server will automatically issue the 'kill' command.
+
+			> docker kill <container name/id>
+
+				- Kill running container.
+				- Sends a hardware 'SIGKILL' command to the process within the container.
+				- Does not allow the container time to perform any shutdown/cleanup.
+				- Process within the container ends immediately.
+				- Typically used if the container has locked up and the 'stop' command does not cause the container to respond.
+
+	Container: Attaching a Terminal
+
+		- Attach a Terminal to the primary process (PID: 1) within the container:
+
+			> docker attach <container id>
+
+		- A container may contain numerous processes, it should not be assumed that the external Terminal will gain access (and be attached) to the desired/intended process.
+		- A container may contain a program e.g. npm which is used for running the test suite, but the npm may start a new process for the actual running of the tests, therefore STDIN access to the test suite process may not be available.
+				
+	Container: Exiting
+
+		- When a Terminal is attached to a container e.g. it is possible to send CLI commands to a container and receive output from a container, to 'exit' that container:
+
+			1. Ctrl+C			//Exit the container and return to host OS.
+			2. Ctrl+D			//Exit the container and return to host OS (if Ctrl+C not responsive).
+			3. CLI Command:
+
+				> docker exit		//Exit the container and return to host OS.
+
+	Container: Status/Monitoring
+
+		- Status and monitoring of all running containers is as follows:
+
+			> docker ps			//List all running container id's on local machine.
+			> docker ps --all		//List all running and previous containers id's which have ever run.
+
+		- ps is commonly used when wishing to investigate or start a program within a container e.g.
+
+			1. Call 'ps' get all of the running container id's.
+			2. Copy/paste/use the container name/id of interest in subsequent commands.
+
+		- ps may refer to 'process(es) status' i.e. return the status of all the processes running on:
+
+			1. Local Machine:		(Presumably all container processes which are/have been registered with the local docker-server)
+			2. Container:			(Presumably all processes of any kind running within a container (should the command be run on a containers own shell interface instantiated via exec ... sh)).
+
+		- ps will return the status of all containers running on local machine, this includes:
+
+			1. Docker:			All containers instantiated by Docker running on a local machine
+			2. Kubernetes:			All containers instantiated by kubernetes and running within pods
+
+		- ps will not return just those instantiated by the programmer but also all those created by other programs.
+
+	Container: Cleanup
+
+		- Container may become stopped for a number of reasons:
+
+			1. docker-server:	Container is automatically stopped by the docker-server
+			2. docker-client:	Container is manually stopped via a manual CLI command to docker-client.
+			3. Network:		Issues with the network resources.
+			4. Build cache:		Issues with the build cache.
+			5. Images:		'Dangling images'.
+
+		- Containers which have been stopped can have their resources released/freed:
+
+			> docker system prune		//Remove all stopped/exited containers
+
+	Container: Logging
+
+		- Container output (all container output) is stored within a log.
+		- Container logs can be used for multitude of purposes including debugging and performance testing.
+
+			> docker logs <container id>	//Return all logs and output that has ever been emitted by the container.
+
+	Container: Communication Channels
+
+		- Containers can run multiple processes each having the following x3 channels automatically associated:
+
+			Channel			Purpose						Source					Destination
+			______________________________________________________________________________________________________________________________________________
+
+			1. STDIN:		Channel for input/incoming text/data 		Terminal 			-> 	Process (within the container)
+			2. STDOUT:		Channel for output/outgoing text/data 		Process (within the container)	-> 	Terminal
+			3. STDERR:		Channel for output/outgoing errors		Process (within the container)	-> 	Terminal
+
+		- Channels are process specific (not container specific) i.e. each process has its own set of x3 channels and must be connected to discretely.
+		- Channels do not report the output of all processes only the processes that has been explicity specified and connected.
+
+		- The -it flag are concatenated flags -i (input) -t (formatted text)
+
+			-i:	Attach Terminal to the STDIN of the associated process used in the command i.e. enable Terminal to send in string commands to that process.
+			-t:	Format Terminal to appropriately display the returned text from the process e.g. appropriate prompts and autocomplete. 
+
+	Container: Manually Start Program/Instance/Process within a Running Container
+
+		- Containers may contain individual programs which can be instantiated:
+
+			> docker exec -it <container id> <command>	//<command> is the application to instantiate
+
+		- For example:
+
+			> docker exec -it 093fe98ac82b redis-cli	//Starts up a program/instance/process of 'redis-cli' within the container.	(it is presumed that redis-cli was included in the image build).
+			> docker exec -it 093fe98ac82b sh		//Starts up a program/instance/process of 'shell' within the container.		(it is presumed that some containers already include this program by default).
+			> docker run -it <image name> sh		//Starts a container but override the startup command with 'sh', therefore it is possible to fully investigate an empty container without any running processes.
+
+	Container: Running Local Terminal within Container
+
+		- Containers contain by default their own instance of a shell.
+		- Containers provide access to this shell enabling access to the internals of a container while the container is running:
+
+			1. > docker ps					//Return all running container id's
+			2. Copy/paste/use container id of interest
+			3. > docker exec -it 093fe98ac82b sh		//Open shell within the container
+
+		- For example:
+
+			4. # ps						//Return all running processes within the container
+
+	Image: Manual Modification
+
+		- Manual modification of an image other than via Dockerfile, use the 'commit' command:
+
+			Windows:	docker commit -c "CMD 'redis-server'" container id
+			Non-Windows:	docker commit -c 'CMD ["redis-server"]' container id
+
+		- For example:
+
+			> docker commit -c "CMD 'redis-server'" 093fe98ac82b		//docker-server will now generate a new image which incorporates that command and return a new image id/name.
+
+		- NB: It's recommended that manual modification of an image should be avoided, the automated and consistent Dockerfile approach prevents human error.
+
+	Image: Truncated Image ID
+
+		- docker-client may return a very long SHA256 image name when generating a new image.
+		- docker-client does not necessarily require the whole value to be pasted into any subsequent commands but may still work for the first say x10 digits.
+		- docker-client may be able to successfully identify the image without the whole SHA256 value. 
+
+	Dockerfile:
+
+		- Dockerfile uses a proprietry language.
+		- Dockerfile statements are converted into the raw CLI commands by the docker-client and sent to the docker-server.
+		- Dockerfile automates the build image process.
+		- Dockerfile is used to create x1 image, typically there is x1 dockerfile per directory i.e. x1 directory = x1 image.
+		- Dockerfile extension is dependent upon whether in development or production environment:
+
+			Filename:		Dockerfile			Production: 	No extension for production.
+						Dockerfile.dev			Development: 	Extension .dev for development environment e.g. contains all and any aspects for development or testing.
+
+						NB: Only the .dev file should have reference to the Test Suite (not production) i.e. if running the Test Suite it must always be using the .dev file.
+
+		Dockerfile Components:
+
+			- Dockerfile consists of the following general x4 sections:
+
+				1. Base Image:		Define base image to be augmented/customised as required.
+				2. Dependencies:	Define dependencies to be added to base image.
+				3. Resources:		Define resources that will be available/enabled.
+				4. Start Up:		Define startup command e.g. 'run Hello-World'
+
+			- Dockerfile example:
+
+				FROM alpine			#Use the alpine base image
+				RUN apk add --update redis	#Use the Apache package manager to download and install redis
+				CMD ["redis-server"]		#Once it is installed run the redis-server i.e. this is equivalent to opening the shell in the container and typing 'redis' [enter]
+
+				NB: FROM, RUN, CMD:		Instructions informing docker-server on what to do.
+
+			- Dockerfile analogy:
+
+				The above sequence is akin to being given an empty computer with no OS and installing a program say Chrome:
+
+					1. Base Image		->	Install OS e.g. Windows
+					2. Dependencies		->	Using default browser, download Chrome installer and place in suitable directory.
+					3. Startup		->	Run chrom.exe
+
+				This is essentially what happens with each spin up of a container:
+
+					1. Base Image:			Base image forms foundation.
+					2. Dependencies:		Additional programs/resources/source code are layered on top of the base image.
+					3. Startup:			Startup command is ran.
+
+			- Dockerfile build:
+
+				docker-server uses iterations of temporary images and containers to build up the final custom image, given the above example:
+
+					1. Base Image:			docker-server downloads (or retrieves cached) base image 'alpine'.
+									docker-server defines a temporary container 1 using:
+
+										File System:		File System from 'alpine'
+										Startup Command:	'apk add --update redis'
+
+					2. Temporary Container 1:	docker-server starts temporary container 1 which automatically runs the startup command:
+
+										'apk add --update redis'	Downloads, unpacks and installs Redis which adds additional files to the File System of Base Image 'alpine'.
+
+					3. Temporary Container 1:	docker-server copies the File System (which now contains a copy of Redis) of temporary container 1.
+					4. Temporary Container 1:	docker-server stops temporary container 1.
+					5. Image 1:			docker-server pastes the File System of temporary container 1 to a new image 1.
+					6. Image 1:			docker-server sets the startup command of Image 1 to 'redis-server'.
+					7. Final Image:			docker-server now returns the image name (normally a hashcode) of the final image which will run 'redis-server' if instantiated within a container.
+
+				docker-server continually refers to the output of the previous 'step' in the Dockerfile e.g. the temporary container ID generated by the previous step.
+
+			Dockerfile Caching:
+
+				- Source files (or any files within the build context) cannot be 'hot reloaded'.
+				- Source files cannot be altered and immediately inserted/replaced within a container. The image must be rebuilt and container re-instantiated.
+
+					...
+					COPY ./ ./			//Copy across all contents (including souce code) of build context
+					RUN npm install			//Long duration install
+					...
+
+				- Source file modification would require the run 'npm install' to be carried out each time.
+				- Source file COPYing should be arranged and separated out during the COPYing process:
+
+					...
+					COPY ./package.json ./		//npm install dependency
+					RUN npm install			//Long duration install
+					COPY ./ ./			//Copy across all remaining folder/files/source code of build context
+					...
+
+				- Source files can now be altered and docker-server will use the cached image containing the install rather than need to run it each time the overall image is rebuilt.
+				- Source files should generally be arranged as follows:
+
+					Top of Dockerfile:
+
+						1. Items which required long install.
+						2. Items which rarely if ever change.
+
+					Bottom of Dockerfile
+
+						1. Items which are liable to change e.g. source files.
+
+				- In general:
+
+					1. Minimum Copy:	Copy across the minimum files in order to satisfy the next immediate successive step.
+					2. Utilise Cache:	Copy the remaining files further down the Dockerfile in order to take most advantage of the cache.
+
+			Dockerfile Volumes:
+
+				- Dockerfile volume mounts allow for referencing and instanteous runtime updating of the files (in particular source files) running within a container, consequently making the COPY statements redundant.
+				- Dockerfile should however always be a complete description of the entire build requirements and build process (and not presume that any particular aspects will be handled elsewhere).
+				- Dockerfile should therefore continue to contain COPY statements and remain complete and not depend on any other aspect to successfully build an image.
+
+		Dockerfile Keywords:
+
+			Location Reference:
+
+					./			// Denotes
+								//	Local Computer:		'root of build context'
+								//	Container:		'root of container file system'
+
+					.			// Denotes
+								//	Local Computer:		'current working directory'
+								//	Container:		'current working directory'
+
+			COPY:
+
+				- Copy external files into container:
+
+					COPY [Path to copy from relative to build context] [Location to paste within container]
+
+					COPY ./ ./ 		// Copy all contents of the build context and place in the root of the file system within container.
+					COPY [local file] .	// Copy the local file in the build context to the current working directory of the container.
+					COPY package.json .	// Copy the local file 'package.json' in the current working directory to the current working directory of the container
+					COPY . .		// Copy everything in the current working directory to the current working directory of the container
+					COPY ./default.conf /etc/nginx/conf.d/default.conf	//Copy a single file 'default.conf' and place in container file system, if the file already exists overwrite.
+
+			WORKDIR:
+
+				- WORKDIR defines a 'working directory' within the container file system, rather than simply just the root of the container file system.
+				- WORKDIR points the docker-server to the location where all subsequent COPY commands should place all file transfers.
+				- WORKDIR is useful for it may not be appropriate to use the root of the container file system for it may contain folders/files which match/clash with those defined within the project.
+				- WORKDIR is typically/conventionally used to define and place a project with a 'usr' directory in the root e.g.
+
+					...
+					WORKDIR /usr/app	//Insert the WORKDIR command before any COPYing to point the docker-server to a more appropriate directory e.g. [root]/user/app
+					...			
+					COPY ./ ./
+					...
+
+				NB: A container application may be placed anywhere within the file system of the container e.g. /home, /var or /user/app
+
+		Environment Variables:
+
+			- Environment variables may be included, referenced or set within a Dockerfile.
+			- Environment variables are those within the particular environment within that container (not the external environment of the container).
+
+				 _______________________________
+				|Container			|
+				|				|
+				| Environment Variable 1	|
+				| Environment Variable 2	|
+				| Environment Variable ...	|
+				|				|
+				|				|
+
+			- Environment variables are all 'container-centric':
+
+				- Environment variables are not 'encoded' within the image.
+				- Environment variables are not instantiated when the image is built.
+				- Environment variables are only instantiated when the container is instantiated.
+
+			- Environment variables take the form:
+
+				1. variableName=value		//Explicitly define environment variable.
+				2. variableName			//Pull in and use an environment variable contained within the local machine.
+				
+				NB: variableName is all that is needed to obtain access to an external environment variable removing the need to explicitly define a literal string containing potentially sensitive information stored in a host environment variable.
+
+	Docker Compose:
+
+		Overview:
+
+			- Docker Compose is an application which gets installed along with docker-client.
+			- Docker Compose utilises YAML *.yml files, these are read in and the individual CLI commands are parsed to the docker-client (which in turn instructs the docker-server).
+			- Docker Compose has the following advantages:
+
+				1. Multiple Containers:		Instantiate and control large number of containers.
+				3. Automation:			Automate the building of multiple images.
+				2. Network:
+
+					- Network infrastructure is automatically defined and included between all containers in *.yml file.
+					- Network infrastructure and container ports do not need to be explicitly defined.
+					- Network infrastructure enables all containers within the *.yml to communicate on all container ports.
+
+		docker-compose.yml
+
+			- Docker Compose utilises a docker-compose.yml file which takes the general form:
+
+				services:
+				  service1Name:				//Service represents a container
+				    build
+				    ports
+				    [other options]
+				  service2Name:
+				    build
+				    ports
+				    [other options]
+				  service3Name:
+				    build
+				    ports
+				    [other options]
+
+				NB:
+					- Case and indentation (x2 spaces) within *.yml files are required.
+					- The - denotes an array i.e. it is possible to specifiy more than x1 property.
+
+			- Docker Compose utilises the ability to specify individual properties to define each service:
+
+				verion: '3'				//Version of Docker Compose
+				service:
+
+			  	  redis-server:				//Container 1 named 'redis-server'
+			    	    image: 'redis'			//Container 1 to use 'redis' as base image from DockerHub/cache
+
+			  	  node-app:				//Container 2 named 'node-app'
+				    build: .				//Container 2 to use the Dockerfile located in the working directory
+			    	    ports:
+			      	      - "4001:8081":			//Container 2 maps ports 4001 to 8081 i.e. 4001 on local machine to the internal port 8081 within the container
+				    restart: always			//Container 2 will restart if container stops/crashes for any reason
+			    	    volumes:
+				      - .:/app				//Container 2 creates a volume i.e. map the project directory on local machine to containers application directory
+				      - /app/node_modules		//Container 2 not to map this folder within the containers application directory
+
+				  web:					//Container 3 named 'web'
+				    build:
+				      context: .			//Container 3 build context is the current working directory
+				      dockerfile: Dockerfile.dev	//Container 3 uses the Dockerfile.dev contained within the working directory (rather than the default Dockerfile)
+				    ports:
+				      - "3000:5001"			//Container 3 maps ports 3000 to 5001 i.e. 3000 on local machine to the internal port 5001 within the container
+				    command:
+				      - ["npm", "run", "test"]		//Container 3 will have an overriden startup command of 'npm run test', the command is defined using an array of strings to forms the overall CLI command
+				    environment:
+				      - REDIS_HOST=redis-server		//Container 3 will define the environment variable REDIS_HOST (which is the host/URL/location of the Redis server) as the redis-server container.
+				      - REDIS_PORT=6379			//Container 3 will define the environment variable REDIS_PORT to 6379 i.e. the port that the redis-server will use.
+
+				NB:
+					- 'Option' is a generic term applied to the specifiers shown above within the .yml file.
+					- 'Option' maybe considered as having the same role/functionality as options within CLI commmands.
+					- 'Option' is an optional property that can be set or use its default.
+
+		Docker Compose Restart Policies:
+
+			- Within the .yml file, individual restart policies can be assigned to each container/service:
+
+				Policy			Container Behaviour:
+				__________________________________________________________________________________________________________________________________________________________________
+
+				"no"			Never attempt to restart container if stop/crash. NB: The "" or '' are required given that 'no' is keyword, equivalent to 'false' in YAML.
+				always			Always attempt to restart container if stop/crash.
+				on-failure		Only restart container if stop/crash with an error code.
+				unless-stopped		Always attempt to restart container if stop/crash unless it was forcibly stopped (by developers).
+
+			NB:
+				- Whenever a container is restarted, it reuses the same physical container that stopped, it does not rebuild or recreate any existing container.
+				- Therefore upon restarting an existing container will cause all previous output to be sent again to Terminal.
+
+		Docker Compose Commands:
+
+			Docker Compose				docker-client (Equivalent)		Description
+			____________________________________________________________________________________________________________________________________________________________
+
+			> docker-compose up:			> docker run <image name/id 1>		//Runs all images within *.yml located within the working directory (while creating an internal named network between all containers)
+								> docker run <image name/id 2>
+								> docker run <image name/id n>
+
+			> docker-compose up --build:		> docker build .			//Builds and runs all images within *.yml located within the working directory
+								> docker run <image name/id 1>
+								> docker run <image name/id 2>
+								> docker run <image name/id n>
+
+			> docker-compose up -d:			> docker run <image name/id 1>		//Runs all images within *.yml located within the the working directory on daemon thread in background i.e. therefore do not get a Terminal full of output
+								> docker run <image name/id 2>
+								> docker run <image name/id n>
+
+			> docker-compose down:								//Stops and removes all images
+
+			> docker-compose ps:								//Returns all active/running containers NB: It reviews the .yml file in the working directory and returns the status of those (not potentially all containers which may have been started by other means)
+
+
+	Image Documentation:
+
+		- Official images of common/popular project are accompanied by comprehensive documentation on DockerHub.
+		- Official image documentation contains all relevant information about the image that may be required during the building of the image e.g. port numbers, environment variable etc...
+		- If in doubt or need to find anything refer to image documentation on DockerHub.
+
+	Docker Login:
+
+		- Docker login links a local docker-client to the respective account on DockerHub.
+
+			> docker login...
+
+		- Once logged in it is possible to upload images to your account on DockerHub.
+
+	Networking:
+
+		Networking between containers can be achieved via x2 means:
+
+			1. docker-client:	Manually define network connectivity between containers. 	[Arduous (never used)]
+			2. docker-compose:	Automatically define network connectivty between containers. 	[Preferred]
+
+		Incoming:
+
+			- A container can only accept incoming connections/traffic on explicitly defined ports via Port Mapping.
+			- A container can only accept incoming connections/traffic which is explicitly declared when the container is spun up at runtime (not within the Dockerfile).
+			- At which point any incoming connection/traffic on the local machine on specified port will also get forwarded and accessible to the containers own set of network ports.
+
+				> docker run -p [from/local machine] : [to/container] <image id/name>
+				> docker run -p Local machine port : Container port <image id/name>
+
+				> docker run -p 8080 : 8080 <image id>		//Routes all incoming traffic on port 8080 of the local machine/host to port 8080 of the container.
+				> docker run -p 5000 : 8080 <image id>		//Routes all incoming traffic on port 5000 of the local machine/host to port 8080 of the container.
+
+		Outgoing:
+
+			- A container can make a connection to the outside world using any port (default).
+			- For example:
+
+				1. Dockerfile may contain 'RUN npm install'.
+				2. docker-server connects to DockerHub (or elsewhere).
+				3. docker-server downloads and installs the content within the containers file system.
+ 
+		Intercontainer/Interservice Communication:
+
+			- Internal or interservice communication is all via the service name (hostname) as declared within the docker-compose.yml file.
+			- All service name resolution is fully handled and completed by Docker (presume docker-server).
+			- All container referencing is via service name, there is no need to attempt to decipher/use any network IP or similar.
+
+	CLI Help:
+
+		- List all available CLI commands within docker-client and docker-compose as follows:
+
+			1. Open Terminal.
+			2. Type name of the application e.g.
+
+				1. Docker
+				2. [Enter]
+
+				1. Docker-Compose
+				2. [Enter]
+
+			3. This will return all available commands.
+
+		- [Fully research means to returning all commands e.g 'command?', 'help', help all' etc...]
+
+	Docker Volumes:
+
+		- Docker Volumes are similar to port mapping, but folder mapping.
+		- Docker Volumes are links to a directory on the local machine (rather than a physical copy of the directory in the File System of the container):
+
+			Local Machine						Container
+			______________________________________________________________________________
+
+				frontend (PWD)						/app
+				    /src <-------------------------------------------------- reference
+				    /public <----------------------------------------------- reference
+				    /node_modules <----------------------------------------- reference
+
+		- Docker Volumes CLI command is cumbersome using -v (volume):
+
+			> Docker run -p 3000:3000 -v /app/node_modules -v $(pwd):/app <image name> 
+
+				-v $(pwd):/app			//Map:		Map the PWD (present working directory 'frontend') on the local machine to the '/app' directory on the container.
+				-v /app/node_modules		//Ignore:	Set folder /app/node_modules to not be included in the created volume i.e. any attempts by a process within the container to access file(s) within app/node_modules will not reference to frontend/node_modules but remain as being app/node_modules.
+
+			Therefore should a process running in the container attempt to access files in /app they are routed out to /frontend on the local machine (except for /app/node_modules):
+
+				Container:								Local Machine:
+				_________________________________________________________________________________________________________________
+
+				[Process in container attempts to access]				[Redirected to]
+
+				/app/src/SourceFile.txt ----------------------------------------------> frontend/src/SourceFile.txt
+				/app/public/SourceFile.txt -------------------------------------------> frontend/public/SourceFile.txt
+				/app/node_modules/SourceFile.txt -------------------------------------> [Do not map /app/node_modules to frontend/node_modules therefore process should continue to access /app/node_modules]
+
+			If frontend/node_modules does not exist on local machine then app/node_modules would appear empty from the perspective of a process running in the container.
+
+		- Docker Volumes syntax follows the same organisational approach as port mapping about the colon :
+
+			> Docker run -p 3000:3000 -v /app/node_modules -v [from/local machine]:[to/container] <image name>
+
+		- Docker Volumes syntax which utilise the -v flag has arguments which utilise a colon or no colon:
+
+			Colon			Description
+			___________________________________________________________________________________________________________________________________
+
+			: (With)		Map:		Folder (local machine) -> Folder (container file system). 
+			  (Without)	 	Ignore:		Folder (container file system) 					Set this folder to be ignored and do not attempt to map this folder to a corresponding folder on local machine.
+
+			NB: There maybe issus if attempting to reference to project folders on Windows File System, rather than within WSL2 File System Please refer to part 73 for full details. 
+
+		- Docker Volume Mounts:
+
+			- The mount occurs within the local machine i.e. the container is thought to reach out and 'mount' a corresponding location within the host (not vice versa).
+			- The mount occurs within the local machine not within the container file system.
+
+				Docker Volume:		The directory on the host.
+				Docker Volume Mount:	The directory on the host receives a mount from a container.
+
+	Docker Testing:
+
+		- Docker testing and the testing of running containers can be implemented by a number of means:
+
+			1. docker-client:
+
+				> docker run -it <image name> npm run test
+
+				1. The image is built (including any/all of the volume mounting which include the folders which contain the test suite files).
+				2. npm is a program within the container.
+				3. npm has the ability to run the test suite.
+				4. -it ensures that the terminal has access to STDIN with output text formatting.
+				
+				NB: Volume mounting ensures that any changes to the test suite are reflected immediately without needing to rebuild image and automatically re-run.
+
+			2. docker-compose:
+
+				verion: '3'
+				service:
+			  	  app:
+				    restart: always
+			    	    build: .
+			    	    ports:
+			      	      - "4001:8081"
+				    volumes:
+				      - .:/app
+				      - /app/node_modules
+				  app-test:
+				    build:
+				      context: .
+				      dockerfile: Dockerfile.dev
+				    volumes:
+				      - .:/app
+				      - /app/node_modules
+				    command:
+				      - ["npm", "run", "test"]
+
+				1. 'app-test' uses the Dockerfile.dev which is used to build a container.
+				2. 'app-test' contains volume mounts which cover the folders containing the test suite, therefore any changes in the test suite are reflected immediately without the need to rebuild image.
+				3. 'app-test' startup command is overriden to call 'npm run test' which calls and runs the test suite.
+
+		- Docker Testing Considerations:
+
+			- Docker testing maybe hindered due to the test suite running on an alternate process:
+
+				Process			Running
+				_____________________________________________________
+
+				PID 1:			Container Primary Source Code
+				PID 2:			Test Suite
+
+			- Docker testing maybe prevented due to following reasons:
+
+				1. Separate Processes:
+
+					- Test Suite maybe managed by a separate program e.g. npm
+					- Test Suite is started up by npm and placed within a separate process.
+					- Test suite may test the source code by sending in a number of CLI commands which would not be possible given on separate threads. 
+
+				2. STDIN/STDOUT:
+
+					- Test Suite maybe running on separate process as described above.
+					- Test Suite may require CLI input/output from the programmer, however the STDIN/STDOUT may attach to PID 1 rather than the process containing the Test Suite.
+					- Test Suite is unreachable.
+
+				NB: 'exec' command ensures that the terminal is attached to the primary process running the test suite.
+
+	Multistep Docker Build:
+
+		- Multistep Docker Build is preferable when:
+
+			1. Dependencies:
+
+				- A container build requires a large initial download of dependencies which are unlikely to change and only used for intermediary install of programs used during the overall build.
+				- A multistep docker build removes the need to continually run this initial stage.
+
+			2. Multi-base Images:
+
+				- A container requires the combination of contents from x2 base images which is broadly organised into x2 phases:.
+
+					Step 1. Build Phase:
+
+						1. Base Image 1:			Download Base Image 1.
+						2. Base Image 1 - Dependencies:		Download and install all large amount of dependencies of Base Image 1.
+						3. Base Image 1 - Finalise:		Install and build all remaining aspects.
+
+					Step 2. Run Phase:
+
+						4. Base Image 2:			Download Base Image 2.
+						5. Base Image 2 - Dependencies:		Download and install all dependencies of Base Image 2.
+						6. Merge:				Copy over the resultant folder of Build Phase (Step 3).
+						7. Call startup command.
+
+				NB:
+					- The resultant file system of Base Image 1 is physically copied across to and combined with Base Image 2.
+					- The large amount of dependencies associated with Base Image 1 can be discarded and do not clutter the overall resultant image.
+
+		- Multistep Docker Build Dockerfile
+										 _
+			FROM node:alpine as builder				| Build Phase 
+			WORKDIR '/app'						|
+			COPY pack.json .					|
+			RUN npm install						|
+			COPY . .						|
+			RUN npm run build					|_
+										 _
+			FROM nginx						| Run Phase
+			EXPOSE 80						|	EXPOSE has no specific relevance and ignored when the image is being built, it is however used by the cloud provider e.g. AWS to expose ports of the container to enable external access.
+			COPY --from=builder /app/build /usr/share/nginx/html	|_	--from = 'copy from an alternate phase'
+
+			NB:
+
+				- FROM Statement:		Each phase can only have x1 FROM statement, therefore FROM statements terminate each phase.
+				- Merge:			Once the Build Phase is complete, the resultant folder '/app/build' is copied over to '/usr/share/nginx/html'
+				- Documentation:		Typically the x2 locations of what needs to be copied from Base Image 1 to Base Image 2 are listed within each images documentation.
+
+	Cloud Container Hosting:
+
+		- Container hosting i.e. uploading and running a container within a cloud provider e.g. AWS, Google Cloud are all very similar.
+		- Container hosting services typically have native wiring to DockerHub, enbling direct pulling of personal project images from DockerHub straight into live containers on the cloud service provider.
+ 
+	Demo React Project:
+
+		NPM Commands:
+
+			Command					Environment		Description										Dockerfile Extension
+			____________________________________________________________________________________________________________________________________________________________________________
+
+			> npm run start				Development:		Start development server (for development purposes only)				Dockerfile.dev
+			> npm run test				Testing:		Runs test suite
+			> npm run build				Production:		Build a production version of the application						Dockerfile
+			> npm run build	-f Dockerfile.dev .	Development:		-f denotes build production using specified file rather than default Dockerfile
+	
+	Travis CI:
+
+		- Overview:
+
+			- Travis CI is an online website which enables the ability to automate the whole test and deployment to a cloud service provider:
+
+				1. Local Machine:	Modify project source code.
+				2. Local Machine:	Merge source code into main branch of remote repo on GitHub.
+				
+				Travis:
+
+					3. GitHub:		Automated download of GitHub repo.
+					4. Build:		Automated build.
+					5. Test:		Automated run of Test Suite.
+					6. Deployment:		Automated deployment to a cloud service provider.
+
+			- Travis CI must be associated, pointed to or 'wired' to a GitHub repo.
+			- Travis CI is programmed via a .travis.yml file.
+			- Travis CI is extensible.
+			- Travis CI has a downloadable CLI for uploading sensitive files e.g. login credentials of a cloud account to enable Travis to connect and update the deployment.
+
+		- Workflow:
+
+			1. GitHub:		Travis monitors a remote repo on Github.
+			2. Source Code:		Travis monitors for any change pushed to the remote repo and automatically downloads the repo.
+			3. Test:		Travis runs Test Suite.
+			3. Deployment:		Travis upload to cloud service provider e.g. AWS.
+
+		- Workflow Example:
+
+			1. Local Machine:	Modify project source code.
+			2. GitHub:		Commit to local repository:		'git commit -m "project update"'
+			3. GitHub:		Push to GitHub:				'git push origin master'
+			4. Travis:		Open browser.
+			5. Travis:		Refresh and the output of the Docker build and Test Suite will be displayed in the browser.
+
+		- .travis.yml
+
+			- .travis.yml is file to explicitly program Travis CI on the actions to perform upon each push to the Github repo.
+			- .travis.yml generally consist of the following sections:
+
+				1. Container Runtime:	Inform Travis that a copy of Docker needs to be running.
+				2. Build Image:		Inform Travis to build image using Dockerfile.dev.
+				3. Test Suite:		Inform Travis on the Test Suite to be used.
+				4. Deployment:		Inform Travis on how/where to deploy on cloud service provider.
+
+				NB: Step 2 references the 'Dockerfile.dev' for only *.dev should/will have reference to the test suite.
+
+		- .travis.yml Example:
+
+			sudo: required			//Inform Travis that super user required
+			services:
+			  - docker			//Inform Travis on the services that will be required
+
+			before_install:			//Inform Travis on which image to build, its tag and the corresponding Dockerfile.dev
+			  - docker build -t paul-surridge/projectname -f Dockerfile.dev
+
+							
+							//Inform Travis on the script of commands which will constitute the test suite, if an aspect of this script fails, Travis will consider it a failed test run.
+							//Test suite must always return and not hang, present a menu or wait for further input from user before it fully finishes and returns (0) i.e. status code of 0 denotes no error, non-zero denotes error. 
+			script:
+			  - docker run paul-surridge/projectname npm run test -- --coverage		//'-- --coverage' is specific to the npm run test to ensure that it finishes and returns to Travis
+
+
+			deploy:
+			  provider: elasticbeanstalk					//Inform Travis on the provider to attempt to connect to, Travis CI comes with pre-knowledge of all major cloud providers
+			  region: "us-west-2"						//Inform Travis of the region where the deployment is hosted, this can be found via the URL supplied by the provider e.g. Docker-env.hsybsudnfs.us-west-2.elasticbeanstalk.com
+			  app: "docker-app"						//Inform Travis of the application name that was defined when the cloud environment was created	
+			  env: "docker-env"						//Inform Travis of the environment name that was defined when the cloud environment was created	
+			  bucket_name: "elasticbeanstalk-us-west-2-5273525472654"	//Inform Travis of the specific bucket on the cloud service provider that is used during deployment. Travis will zip up the GitHub repo and transfer it over to the specified S3 bucket on the cloud service provider (in this case AWS) which can be obtained via the AWS dashboard, AWS will use, unzip this file and place in its environment
+			  bucket_path: "docker"						//Inform Travis of the bucket path which can be obtained from the cloud service provider dashboard
+			  on:
+			    branch: master						//Inform Travis to deploy whenever there is a change or merge of the master branch
+			  access_key_id: $AWS_ACCESS_KEY				//Inform Travis of the environment variable which contains the Access Key to the cloud provider account.
+			  secret_access_key:
+			    secure: "$AWS_SECRET_KEY"					//Inform Travis of the environment variable which contains the Access Key password to the cloud provider account.
+
+		- Travis CI - Cloud Service Provider Verification:
+
+			- Travis CI communicates with the account/environments of the cloud service provider.
+			- Travis CI is typically setup and defined as a 'user' on the cloud account.
+			- Travis CI will be required to use keys generated by the cloud account.
+			- Travis CI allows for 'secrets' to be stored as environment variables for that particular account/project (for of course keys are not to be stored in .travis.yml file for that is stored in a public GitHub repo).
+
+		- Travis CI - Environment Variables:
+
+			- Travis CI utilises the common/general procedure of using environment variables in order store sensitive information (secrets) e.g. login credentials etc...
+			- The procedure is generally as follows:
+
+				1. *.yml Script:		Online platform is programmed/configured via a *.yml file.
+				2. Remote Connection:		Online platform may require to connect to another cloud service provider account.
+				3. No Hardcode:			Online platform will not recommend the hardcoding of secrets in .yml file as plain text which can be viewed by anyone.
+				4. Environment Variables:	Online platform will make use of local environment variables which can be defined via the online platform website.
+								Online platform will allow the entering of secrets which are stored and encrypted on the online platform and accessible/referenced from within the *.yml file via locally defined environment variables. 
+								Online platform will employ high security e.g. will only display this environment variable once after being entered i.e. do not forget it.
+
+			- This is a common procedure which is employed by online platforms which utilise a *.yml file which may contain secrets.
+
+		- Travis CI - Continuous Integration Example:
+
+			- Travis CI can be configured to perform continuous integration using the following workflow as defined within the *.yml file:
+
+				1. Dependencies:		Specify Docker as a required dependency.
+				2. Development - Build:		Build development version of application which includes the test suite (using *.dev dockerfiles).
+				3. Development - Test:		Run test suite on development application.
+				4. Production - Build:		Should test suite return 0 build production version of project (using *. dockerfiles).
+				5. Production - DockerHub:	Push all production images to DockerHub.
+				6. Cloud Service Provider:	Inform the Cloud Service Provider to pull the images from DockerHub, deploy and run within containers.
+
+				Once the above successfully runs Travis CI will display an output showing the status of all individual steps and the latest production images should appear on DockerHub.
+
+			- Travis CI corresponding .yml file:
+
+				sudo: required									//Inform Travis that super user required
+				services:
+			  	  - docker									//Inform Travis on the services that will be required
+
+				before_install:
+			  	  - docker build -t paul-surridge/projectname -f Dockerfile.dev			//Inform Travis to build the development version of the project (which contains the test suite)
+
+				script:
+			  	  - docker run paul-surridge/projectname test					//Inform Travis to run test suite
+
+				after_success:
+			  	  - docker build -t paul-surridge/service1 ./service1folder			//Inform Travis to build production images using the dockerfile in each respective directory
+			  	  - docker build -t paul-surridge/service2 ./service2folder
+			  	  - docker build -t paul-surridge/servicen ./servicenfolder
+
+			  	  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-2		//Inform Travis to login to DockerHub using the encrypted local environment variables
+
+			  	  - docker push paul-surridge/service1						//Inform Travis to push all of the production images to DockerHub
+			  	  - docker push paul-surridge/service2
+			  	  - docker push paul-surridge/servicen
+
+			- Travis CLI Installation:
+
+				- Travis CI has its own CLI that can be downloaded and used to interact with the project on Travis CI.org.
+				- Travis CLI can be downloaded from:
+
+					github.com/travis-ci/travis.rb
+
+				- The above requires Ruby to be installed locally:
+
+					Mac OS:		Ruby pre-installed and ready to be used.
+					Windows:	Ruby is not pre-installed and the installation process is cumbersome.
+
+				- Therefore an alternative:
+
+					1. Docker:	Create a docker image which contains Ruby.
+					2. Travis CLI:	Run Travis CLI from within the container.
+
+	Cloud Service Provider (AWS) Integration:
+
+		Single Container:
+
+			1. Local Machine:	Upload to Github:		Upload source code from local machine to Github repo.
+			2. Travis:		Pull from Github:		Automatically pulls source code from repo.
+			3. Travis:		Build Development Image:	Builds development image from the source code (using the .dev files) and runs the test suite.
+			4. Travis:		Run Test Suite:			Run test suite on development image.
+			5. Travis:		Push to AWS EB:			If test suite passes, push source code over to AWS Elastic Beanstalk (or any cloud service provider).
+			6. AWS EB:		Build Production Image:		Builds the production image again from the source code and deloys within a local spun up docker container.
+
+			This approach is not ideal for it requires AWS EB to be responsible for continually building the image (rather than running the webserver and handling/processing incoming web requests).
+
+		Multi Container:
+
+			1. Local Machine:	Upload to Github:		Upload source code from local machine to Github repo.
+			2. Travis:		Pull from Github:		Automatically pulls source code repo.
+			3. Travis:		Build Development Image:	Builds development image from the source code (using the .dev files) and runs the test suite.
+			4. Travis:		Run Test Suite:			Run test suite on development image.
+			5. Travis:		Build Production Image:		If test suite passes, build production image i.e. the image without all of the test suite referencing.
+			5. Travis:		Push to DockerHub/AWS EB:	Push the production image over to DockerHub.
+			6. Travis:		Push to AWS EB:			Push the source code to AWS EB to define all aspects of the container runtime environment.
+			7. AWS EB:		Pull from DockerHub:		Pull production image from DockerHub and deloys within a local spun up docker container.
+			
+			The approach uses Travis to build the production image rather than have this completed by AWS EB.
+
+	Cloud Service Provider (AWS) Configuration:
+
+		- Dockerrun.aws.json:
+
+			Dockerrun.aws.json is a *.json configuration file used by AWS, it is comparable to docker-compose.yml:
+
+				docker-compose.yaml
+				____________________
+
+				Services
+
+					serviceName1
+					serviceName2
+					serviceNameN
+ 
+					Utilises a *.yml file which describes the images and services that are created.
+
+				Dockerrun.aws.json
+				____________________
+
+				Container Definitions
+
+					serviceName1
+					serviceName2
+					serviceNameN
+
+					Utilises a *.json file which describes the services to be created using Container Definitions.
+
+		- Dockerrun.aws.json Example:
+
+			{
+			  "AWSEBDockerrunVersion": 2
+			  "containerDefinitions" : [			//Array of definitions of all the containers to be created
+			    {
+			      "name": "serviceName1",			//Name of container that will appear in the AWS dashboard, it does not need to match the name of image.
+			      "image": "dockerID/imageName1",		//Image to be pulled down from DockerHub.
+			      "hostname": "hostname1"			//Reference name of the container, this name will be used by AWS to enable intercontainer communication (just as docker-compose.yml used the service name as the hostname). Only needs to be specified if another container will be required to communication with this container.
+			      "essential": false			//True = If this container was critical such that if crashed/stopped then all other containers defined in this group will also be immediately closed down.
+			    },
+			    {
+			      "name": "serviceName2",
+			      "image": "dockerID/imageName2",
+			      "hostname": "hostname2"
+			      "essential": false
+			    },
+			    {
+			      "name": "essentialServiceName",
+			      "image": "dockerID/imageName3",
+			      "hostname": "hostname3"
+			      "essential": true
+			      "portMappings": [				//Array of port mappings that the container will utilise
+				{
+				  "hostPort": 80,			//Port that recieves incoming requests on local machine that is hosting all of the containers
+				  "containerPort": 80			//Port on container which is mapped to the hostPort
+				}
+			      ],
+			      "links": ["client, "server""]		//Links specify the "name" of other services that this service will be required to establish bi-directional communication with. NB: It is only necessary to specify the link at 'x1 end' i.e. do not need to specify the link in the corresponding services. 
+			    }
+			  ]
+			}
+
+			NB:
+				- "essential":		Minimum of x1 container definition must be marked as essential.
+				- JSON Check:		JSON validators are available online which can be used to validate the JSON file and ensure that there are no typos.
+				- JSON Check:		Spelling (and indentation (x2 spaces)) within JSON files are required for correct operation. 
+
+	Cloud Service Provider
+
+		AWS:
+
+			AWS Elastic Beanstalk (EB):		Online platform for running containerised application.
+			AWS Elastic Container Service (ECS):	Online backing service to AWS EB, which utilises task definitions which define how to run a single container.
+			AWS Elastic Cache (EC):			Online backing service intended to be of general use for any memory caching requirement in any AWS platform/application e.g. a Redis server (synonym: ElastiCache)
+
+				Advantages:
+
+					- Production Grade:		Automatically creates and maintains production level instances of Redis.
+					- Dedicated Expertise:		Cloud Service Providers typically have highly trained and specialised personel dedicated to the optimum implementation and maintenance of such servers.
+					- Scaling:			Quick and easy to scale without the need to concern self with purchasing new hardware etc...
+					- Logging:			Easy access to built-in logging and monitoring.
+					- Security:			Cloud Service Providers have the resource and expertise to implement highest level security.
+					- Decoupled:			Easy to utilise alternate cloud service providers or different architectures altogether for Elastic Cache is completely decoupled from the rest of AWS.  
+					- General:			Cloud Service Providers in general provide services which are difficult to properly implement and manage well on your own.
+
+			AWS Relational Database Service (RDS):	Online backing service intended to be of general use for any hosting of a relational database in any AWS platform/application e.g. Postgres.
+	
+				Advantages:
+
+					- Same as Elastic Cache.
+					- Automated backups and quick/easy rollbacks.
+
+			Region:
+
+				- AWS organisation utilises regions around the world.
+				- AWS includes the region as a selectable field and is defined as a subdomain within the URL.
+
+			Virtual Private Cloud (VPC):
+
+				- AWS utilises an effective virtual private cloud within a specific region.
+				- AWS will provide a default VPC per region/data centre e.g. as soon as you open an account you can choose which region in the world to locate your VPC.
+				- AWS will include within the VPC all of the instances of the relevant services that you utilise within your account e.g. EB, RDS (Postgres), EC (Redis).
+
+			Security Group:
+
+				- Security Group defines which external traffic can connect to the services within your VPC.
+				- Security Group is analogous to firewall rules e.g.
+
+					1. Allow any incoming traffic on port 80 from any IP
+					2. Allow any incoming traffic on port 3010 from 172.0.40.2
+					3. Allow any incoming traffic from any other AWS service that has this security group (this is required in order to allow services within your AWS account to communicate with each other).
+					4. ...
+
+				- Security Groups are the groups of the security measures which are assigned to a specific instance of a service you are running within your VPC.
+
+			Logs/Monitoring:
+
+				- Logs:		Debugging and fault finding should initially be carried out by evaluating the logs provided by the cloud service provider.
+				- Download:	Typically all cloud service providers will have 'Logs and Monitoring' features which enable the download of first x100 lines or all.
+				- Automation:	There may also be dedicated automated logging/monitoring software available.
+
+			Dashboard Refresh:
+
+				- Delayed Update:	It is common for all actions instigated via an online dashboard of a cloud service provider to take a period of time to complete and be refreshed.
+				- Browser Refresh:	If required regularly refresh the browser to reflect if an action has been completed e.g. change or delete and application running on the cloud service provider.
+
+
+	
+
+

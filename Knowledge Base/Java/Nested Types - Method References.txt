@@ -1,0 +1,187 @@
+Method References
+
+	Overview:
+
+		- Method References are an alternative to Lambda Expressions.
+		- Method References can be clearer, compact and easier to read should the required method already exist within another class.
+
+	Intended Purpose:
+
+		1. To be able to pass a method as an argument indirectly by referencing the desired method located in another class.
+		2. Any method referenced must match:
+
+			1. Return Type		of the x1 single Abstract Method in the Functional Interface.
+			2. Parameter List 	of the x1 single Abstract Method in the Functional Interface.
+
+			NB: Method Signature is just the Name and Parameter List (excluding the Return Type)
+
+	Modes:
+
+		- There are x4 modes of Method Referencing, being able to reference the following methods:
+
+			1. Static Method
+			2. Instance Method:	Of a Particular Object
+			3. Instance Method:	Of a Arbitrary Object
+			4. Constructor
+	Example:
+
+		1. A Roster of people defined as:
+
+			Person[] rosterAsArray = roster.toArray(new Person[roster.size()]);
+
+			NB: 'roster' was originally a List<Person>, which is converted to an array.
+
+		2. It is possible to sort this array using a static method of Arrays:
+
+			static <T> void sort(T[] a, Comparator<? super T> c)
+
+		3. 'sort' requires being passed a Comparator<Person>.
+
+		4. Comparator<Person> is a Functional Interface containing only x1 Abstract Method:
+
+			int compare(T o1, T o2)
+
+		5. Therefore it is necessary to pass a method as an Argument which matches the Return Type and Parameter List of the x1 single Abstract Method in the required Comparator<Person> Functional Interface:
+
+			int compare(Person o1, Person o2)
+
+		6. There are a number of options of how the required Return Type and Parameter List that can be passed:
+
+			1. Class:
+
+				- Manually declare a class which implements Comparator<Person> and override Compare(Person, Person):
+
+					class PersonAgeComparator implements Comparator<Person>
+					{
+    						public int compare(Person a, Person b)
+						{
+        						return a.getBirthday().compareTo(b.getBirthday());
+    						}
+					}
+
+				- Pass an instantiation of this class.
+
+			2. Lambda Expression:
+
+				- Manually define and pass a Lamda Expression which overrides the required x1 Abstract Method in Comparator:
+
+					Arrays.sort(rosterAsArray,
+
+					(Person a, Person b) ->
+					{
+						return a.getBirthday().compareTo(b.getBirthday());
+					}
+					);
+
+			3. Method Reference:
+
+				- Should the necessary method with matching Return Type and Parameter List already be defined in another class elsewhere:
+
+					class Person
+					{
+						public static int compareByAge(Person a, Person b)
+						{
+							return a.birthday.compareTo(b.birthday);
+    						}
+					}
+
+				- Then it can just be directly referenced:
+
+					via Lambda Expression:		Arrays.sort(rosterAsArray, (a, b) -> Person.compareByAge(a, b));
+					via Method Reference:		Arrays.sort(rosterAsArray, Person::compareByAge);
+
+		6. The Compiler checks that whatever is passed matches the required Return Type and Parameter List of:
+
+			int compare(Person o1, Person o2)
+
+		7. The Person.compareByAge() method does:
+
+			int compareByAge(Person a, Person b)
+
+		8. Therefore may be used and referenced by:
+
+			Person::compareByAge
+
+		9. Similar as do the Lamda Expressions:
+
+			(Person a, Person b) ->
+			{
+				return a.getBirthday().compareTo(b.getBirthday());
+			}
+
+			Or
+
+			(Person a, Person b) -> Person.compareByAge(a, b);
+
+		10. Directly assign to an Interface Variable:
+
+			Comparator<Integer> normal = Integer::compare;
+
+	Referencing Modes:
+
+		1. Static Method:
+
+			Syntax:		Class::staticMethodName
+
+			Example:	Person::compareByAge
+
+		2. Instance Method:	Of a Particular Object
+
+			Syntax:		objObject::instanceMethodName
+
+			Example:
+
+				class ClassA
+				{
+    					public int compareByName(Person a, Person b)
+					{
+        					return a.getName().compareTo(b.getName());
+    					}
+				}
+
+				ClassA objClassA = new ClassA();
+				
+				Arrays.sort(rosterAsArray, objClassA::compareByName);
+
+		3. Instance Method:	Of a Arbitrary Object
+
+			Syntax:		Class::instanceMethodName
+
+			Example:
+
+				class ClassA
+				{
+    					public int compareByName(Person a, Person b)
+					{
+        					return a.getName().compareTo(b.getName());
+    					}
+				}
+
+				Arrays.sort(rosterAsArray, ClassA::compareByName);
+
+		4. Constructor
+		
+			Syntax:		Class::new
+					ClassA<ClassB>::new
+
+			Example:
+
+				1. Given the following Static Method:
+
+					public static <T, SOURCE extends Collection<T>, DEST extends Collection<T>> 	DEST 	transferElements(SOURCE sourceCollection, Supplier<DEST> collectionFactory)
+					{...}
+	
+				2. Supplier<DEST> is a Generic Functional Interface with x1 Abstract Method get().
+
+				3. Supplier<DEST> get() takes no arguments and returns an object.
+
+				4. Consequently may be invoked via the equivalent statements:
+
+					Lambda Expression:	Set<Person> rosterSet	 	= transferElements(roster, () -> { return new HashSet<>(); });
+					Method Reference:	Set<Person> rosterSet 		= transferElements(roster, HashSet::new);
+					Method Reference:	Set<Person> rosterSet 		= transferElements(roster, HashSet<Person>::new);
+					
+
+
+
+

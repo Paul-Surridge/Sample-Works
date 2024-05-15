@@ -1,0 +1,274 @@
+Anonymous Class
+
+	Overview:
+
+		- Declare/Instantiate:		Anonymous Class provide the ability to declare and instantiate a class at the same time.
+		- Local Class:			Anonymous Class are like Local Class without need to supply a name.
+		- Arbitary Object:		Anonymous Class create an arbitary object of a class extension.	
+
+	Purpose:
+
+		- Concise:			Anonymous Class make source code less verbose and more concise.
+		- Single Use:			Anonymous Class should be used if need to use a Local Class only once.
+		- Speed:			Anonymous Class should be used if need to quickly generate the following for single use in a particular expression:
+
+							1. An extended class
+							2. An interface implmentation
+
+		- Use:				Anonymous Class may be used anywhere where a Class or Interface is being instantiated and initialised at the same time.
+						Anonymous Class may be used irrespectively within non-Static/Static memory.
+
+		NB:
+
+			- If SuperClass/Interface only have x1 method, then a Lambda Expression should be used.
+			- If SuperClass/Interface have x2 or more methods, then an Anonymous Class should be used.
+
+	Returning an Object:
+
+		- Anonymous Class returns an anonymous object from an un-named class, that object maybe instantiated from either:
+
+			1. An extended class:			An un-named class which is the extension of a class.
+			2. An interface implementation:		An un-named class which simply implements an interface directly.
+
+		- Overriding:
+
+			Therefore an Anonymous Class is simply an un-named class which overrides methods, whether via extension or implementing an interface.
+
+	No Constructor:
+
+		- Anonymous Class does not contain any Constructor.
+
+	Expression:
+
+		- Compared to a Local Class, an Anonymous Class is an expression:
+
+			- Local Class:		A formal Class Declaration.
+			- Anonymous Class:	An Expression.
+
+		- Therefore:
+
+			- Anonymous Class maybe contained within another expression.
+			- Anonymous Class is terminated with a ;
+
+	Extended Subclass:
+
+		- Anonymous Class returns an object of an extended class:
+
+			btn.setOnAction(new EventHandler<ActionEvent>(10)	//Anonymous Class must always supply any necessary arguments to the constructors of the extended class.
+			{
+            			@Override
+            			public void handle(ActionEvent event)
+				{
+                			System.out.println("Hello World!");
+            			}
+        		});
+
+		- Extended Class:	EventHandler<ActionEvent>
+		- Therefore:
+
+			- Rather than having to:
+
+				1. Define:		Create a separate extension of EventHandler<ActionEvent> somewhere.
+				2. Name:		Give that new subclass a name.
+				3. Instantiate:		Instantiate and supply as an argument to btn.setOnAction.
+
+			- The extended EventHandler<ActionEvent> can just be all defined 'inline'.
+			- Overriding the members as required.
+
+		- Constructors:
+
+			- Anonymous Class must always supply any necessary arguments to the constructors of the superclass
+
+	Direct Interface Implementation:
+
+		- Anonymous Class returns an object which implements an interface directly:
+
+			interface Interface
+			{
+        			public void greet();
+        			public void greetSomeone(String someone);
+    			}
+
+			Interface itfInterface = new Interface()
+        		{
+            			@Override
+            			public void greet() 
+            			{
+                			greetSomeone("Hello");
+            			}
+            
+            			@Override
+            			public void greetSomeone(String sName) 
+            			{
+                			System.out.println("Hello " + sName);
+            			}
+        		};
+
+		- Therefore:
+
+			- Rather than having to:
+
+				1. Define:		Create a separate implementation of Interface somewhere.
+				2. Name:		Give that new class a name.
+				3. Instantiate:		Instantiate and assign to itfInterface.
+
+			- It can just be all defined 'inline'.
+			- Overriding the members as required.
+
+		- Constructors:
+
+			- Anonymous Class does not contain a constructor if created via direct interface implementation.
+			- Therefore just use empty parentheses ().
+
+	Inline Interface Instantiation:
+
+		ClassA constructor is as follows:
+
+			ClassA(InterfaceA<S,T> infInput)
+			{
+				...
+			}
+
+			//The constructor of ClassA requires an object containing the interface of InterfaceA.
+
+		Instantiation of ClassA can be passed an anonymous object which implements InterfaceA directly 'inline':
+
+			ClassA objClassA = new ClassA(new InterfaceA<Integer, SimpleBooleanProperty>()
+			{
+				//Override all of the abstract methods in InterfaceA
+			});
+
+	Outer Referencing:
+
+		- Local Class is able to reference:
+
+			- Top Level Class:
+
+				(Outer Block - non-Static)				(Outer Block - Static)
+				______________________________________________________________________________________________
+
+				non-Static Members					Static Members
+				Static Members
+
+			- Outer Class:
+
+				(Outer Block - non-Static)
+				__________________________________
+
+				non-Static Members
+				Static Constant
+
+			- Enclosing Block:
+
+				Local Variables or Parameters ('final' or 'effectively final' only)
+
+					- Given:
+
+						void methodBlock(int iBlockParameter)
+						{
+							int i = 0;		//OK	Effectively Final if 'i' does not change once initialised.
+							final int j = 1;	//OK	non-Static Constant
+						}
+					
+					- Starting in Java 8.
+					- Access to:
+
+						1. i
+						2. j
+						3. iBlockParameter
+
+						As long as:
+
+							1. They are not assigned an alternate value prior to Local Class.
+							2. They are not assigned a value within the Local Class itself.
+
+					- Local Variable or Parameter that never changes once it has been initialised is 'effectively final'.
+					- For Example:
+
+						1. If a Local Variable is initialised.
+						2. Altered.
+						3. Used in Local Class.		//Compile Error
+
+					NB: Capture: Whenever a Local Class accesses a Local Variable or Parameter it 'captures' that Local Variable or Parameter.
+
+			- Overall essentially:
+
+				1. Everything in outer block.
+				2. Everything in outer class.
+				3. Everything in Top Level Class 		(if Local Class is within non-Static memory of the Top Level Form).
+				4. Only Static Members in Top Level Class 	(if Local Class is within Static memory of the Top Level Form).
+
+	Local Class Comparison:
+
+		- Anonymous Class is an expression, therefore will always exist within an Outer Block within an Outer Class.
+		- Anonymous Class is the same as Local Class with regards to:
+
+			1. Outer Block:		Same access to Outer Block Local Variables.
+			2. Outer Class:		Same access to Outer Class Members.
+			3. Shadowing:		Same shadowing of fields within Outer Block/Class with same identifier.
+			4. Members:		Same restrictions on members:
+
+				Permitted:
+
+					1. non-Static Members
+					2. Constants
+					3. Own Additional Methods (other than those overriden from SuperClass/Interface).
+					4. Own Additional Local Classes 
+
+				Not Permitted:
+
+					1. No Static Members.
+					2. No Nested Interfaces.
+					3. No Nested Enums.
+
+	Serialisation:
+
+		- Serialisation of Nested Classes is strongly discouraged.
+		- Applicable to:
+
+			1. Inner Class
+			2. Local Class
+			3. Anonymous Class
+			4. Lambda Expressions
+
+			NB: Likely also just as applicable to Static Nested Class?
+
+		- Due to:
+
+			- Java Compiler creating 'Synthetic Constructs' when compiling the above entities.
+			- Whereby the 'Synthetic Constructs' vary depending on the Java Compiler implementation.
+			- Therefore:
+
+				- .class files can vary depending on the compiler.
+				- Compatibility issues may arise if the above are serialised and deserialised with an alternate JRM.
+
+	Summary Matrix:
+
+		Key Points:
+
+			- Anonymous Classes are identical in characteristics.
+			- Anonymous Classes declared within a Static Block of the Top Level Class may only reference Static members of Top Level Class.
+
+							(Outer Block - non-Static)					(Outer Block - Static)
+							______________________________________________________________________________________________
+
+		Anonymous Class:
+
+			Members:			non-Static Only							non-Static Only
+							non-Static Constant						non-Static Constant
+							Static Constant							Static Constant
+
+			Outer Block Referencing:	Local Variables (Effectively Final)				Local Variables (Effectively Final)	//From Java 8:	Local Variables which are 'effectively final'
+							Parameters 	(Effectively Final)				Parameters 	(Effectively Final)	//From Java 8:	Parameters which are 'effectively final'
+							non-Static Constant						non-Static Constant
+
+			Outer Class Referencing:	non-Static Members						non-Static Members
+
+			Top Level Class Referencing:	non-Static Members						Static Members Only
+
+			Shadowing:			Applicable							Applicable
+
+
+
+
+

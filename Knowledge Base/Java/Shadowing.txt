@@ -1,0 +1,101 @@
+Shadowing
+
+	Overview:
+
+		- Shadowing occurs when:
+
+			1. A variable declared within an inner block/scope hides a variable with a matching identifier.
+			2. The compiler first checks the immediate/inner scope, if it can not be found then it refers to the next layer/scope until it is found.
+
+			Opposed to:
+
+			1. A variable declared within an inner block/scope is completely associated with that scope.
+			2. The compiler only checks the immediate/inner scope, if it can not be found then it does not refer to the next layer/scope and immediately declares a compile time error.
+
+		- Shadowing only occurs between:
+
+				Class
+				|
+				Extended Class
+
+				Interface
+				|
+				Extended Interface
+
+				Class
+				|_______________________________________________________________________________
+				|				|			|			|
+				Init Block [non-Static]		Init Block [Static]	Method [non-Static]	Constructor
+
+															How to reference the Shadowed/Hidden Field in enclosed/outer scope
+			__________________________________________________________________________________________________________________________________________________________________
+
+			1. Extended Class/Interface		Shadow/hide fields in superclass			super.iField;			Only applicable to non-Static fields given static fields are assocaited with the superclass and are not accessible by extended classes.
+			2. Init Block [non-Static]		Shadow/hide fields in enclosing class			this.iField;
+			3. Init Block [Static]			Shadow/hide static fields in enclosing class		classname.iStaticField
+			4. Constructor				Shadow/hide fields in enclosing class			this.iField;
+			5. Method [non-Static]			Shadow/hide fields in enclosing class			this.iField;
+
+			NB:
+				
+				- 'this' 	May not be used in 'static' context.
+				- 'super' 	May not be used in 'static' context.
+		- Shadowing does not occur between:
+
+				Top Level Component		Method [non-Static or Static]
+				|				|
+				Nested Component		Local Class
+
+		- Upon encountering a Variable, the compiler will always:
+
+			1. Local:	Check locally for any matching identifier.
+			2. Outer:	If not found then refers to the outer/enclosing scope until found.
+
+		- Shadowing can be considered a 'Mini-Overide'.
+	
+	Referencing:
+
+		- Use 'this' to refer to the instance variables of the enclosing scopes:
+
+			this.x:			The instance variable of immediate class
+			Outer.this.x:		The instance variable of Outer class(es)
+
+		- This is similar to referencing class variables but the inclusion of 'this' ensures that it refers to the immediate instance in which it was invoked (rather than the Class).
+
+	Example:
+
+		public class Outer
+		{
+    			public int x = 0;
+
+    			class Inner
+			{
+        			public int x = 1;
+
+        			void innerMethod(int x)
+				{
+            				System.out.println("x = " + x);					//The 'x' passed as argument to method parameter. 	Shadows the 'x' of Outer and 'x' of Inner.
+            				System.out.println("this.x = " + this.x);			//The 'x' of Inner in which case was instantiated 1.	Shadows the 'x' of Outer.
+            				System.out.println("Outer.this.x = " + Outer.this.x);		//The 'x' of Outer in which case was instantiated 0.
+        			}
+    			}
+
+    			public static void main(String... args)
+			{
+        			Outer 			objOuter = new Outer();
+        			Outer.InnerClass 	objInner = objOuter.new Inner();
+
+        			objInner.innerMethod(23);
+    			}
+		}
+
+		Output:
+
+			x = 23
+			this.x = 1
+			Shadow.this.x = 0
+
+
+
+
+

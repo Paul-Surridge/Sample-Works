@@ -1,0 +1,111 @@
+Access Modifiers
+
+	Memory		Member				Public			Protected		Package-Private		Private
+													None/Blank			
+	___________________________________________________________________________________________________________________________________________
+
+	Top Level	Class				Y			-			Y			-
+			Abstract			Y			-			Y			-
+			Enum				Y			-			Y			-
+			Interface			Y			-			Y			-
+
+	non-Static	Field				Y			Y			Y			Y
+			Constant			Y			Y			Y			Y
+			Initialisation Block		-			-			-			-
+
+			Constructor			Y			Y			Y			Y
+			Method				Y			Y			Y			Y				
+
+			Nested Class			Y			Y			Y			Y
+			Nested Abstract Class		Y			Y			Y			Y
+			Nested Interface		Y			Y			Y			Y
+			Nested Enum			Y			Y			Y			Y
+
+	Static		Field				Y			Y			Y			Y				
+			Constant			Y			Y			Y			Y			
+			Initialisation Block		-			-			-			-
+
+			Method				Y			Y			Y			Y				
+
+			Nested Class			Y			Y			Y			Y
+			Nested Abstract Class		Y			Y			Y			Y
+			Nested Interface		Y			Y			Y			Y
+			Nested Enum			Y			Y			Y			Y
+
+
+	Interface	Field/Constant			Y			-			-			-			Implicit: 	public static final
+
+			Abstract Method			Y			-			-			-			Implicit: 	public
+			Static Method			Y			-			-			-			Implicit: 	public (private static methods introduced in Java 9)
+			Default Method			Y			-			-			-			Implicit: 	public (private default methods introduced in Java 9)
+
+	Key Principles:
+
+		1. Universal:
+
+			- Everything can be assigned an Access Modifier except:
+
+				Component						Permitted Access Modifiers
+				_____________________________________________________________________________________________________________________________________________
+
+				1. Top Level Class Form:	All Forms:		'public' | 'package-private'.
+				2. Interface:			All Members: 		'public' (except after Java 9, where 'private' Static/Default Methods are introduced).
+				3. Enum:			Constructor:		'package-private' | 'private'
+
+		2. Top Level Class Form:
+
+			- Top Level Class Form declared 'public', must be:
+
+				1. x1:		Must be only x1 Top Level Class Form declared in a *.java file.
+				2. Name:	Must match filename.java.
+
+			- Applcable to Top Level Class Forms:
+
+				1. Class
+				2. Abstract Class
+				3. Enum
+				4. Interface
+
+		3. Interchange:
+
+			- Wherever an Access Modifier maybe situated in a Class or Extended Forms (Abstract Class, Enum, Interface), can be interchange with any Access Modifier.
+			- Exceptions:
+
+				1. Enum Constructor:
+
+					Permitted:	private
+							package-private
+
+					Not Permitted:	public
+							protected
+
+				2. Top Level:
+
+					Permitted:	public
+							package-private
+
+					Not Permitted:	private
+							protected
+
+				3. Interface:
+
+					Member			Implicit/Fixed			Comment
+					_____________________________________________________________________________________
+
+					Fields: 		public static final
+
+					Abstract Method:	public
+					Static Method:		public				private permitted from Java 9
+					Default Method:		public				private permitted from Java 9
+
+		4. Private:
+
+			- Use 'private' unless have a good reason not to.
+
+		5. Public:
+
+			- Avoid 'public' fields except for constants.
+			- Public fields increase dependencies to particular implemenation and brittleness, reducing flexibility.
+			- Public fields should not be used in production code.
+
+		

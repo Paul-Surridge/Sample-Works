@@ -1,0 +1,427 @@
+Glossary:
+
+	0.0.0.0/0:
+
+		- Any IP address/port (allow any connection on any IP address/port).
+
+	0:
+
+		- Any port (allow any connection on any port)
+
+	Alpine:
+
+		- Generic term for an image which is as small and compact as possible.
+		- For example a popular repository will offer an 'alpine' version of an image which is the minimal and most compact version of the functionality of that particular repository.
+
+	Backing Service:
+
+		- Any service which is consumed by an application during normal operation and are attached/connected/associated with the application for the life of application:
+
+			Database
+			Queue
+			Memory Cache
+			SMTP/FTP
+
+		- Typically via a API driven RESTful web service.
+
+	Boomark:
+
+		- Bookmarking a volume is an instruction to a running container to not attempt to reference a corresponding volume of the same name on the local file system. 
+
+	Bounded Context:
+
+		- The operational boundary within the business that a particular microservice is responsible for and operates.
+
+	Build Cache:
+
+		- Location where the previously downloaded/used images are stored within docker-client.
+		- Reducing the need to download again, whereby significantly increasing container creation and spin up.
+
+	Build Context:
+
+		- The project directory on local machine i.e. the directory that forms the natural boundary for the build process within Docker.
+		- The project directory which holds the Dockerfile.
+
+	Cloud Native Application:
+
+		- An application which is hosted and managed by a 'cloud service provider'.
+
+	Cloud Service Provider:
+
+		- Company who house, manage and maintain cloud services e.g. Microsoft (via Azure)
+
+	Commoditization:
+
+		- Commoditization is a process in which a product or a service becomes so common that the consumers cannot differentiate between the different brands offering the product or the service.
+		- This way a product becomes a commodity.
+
+	Component:
+
+		- Component refers to any collection of entities which collectively form a functional unit.
+		- Component may refer to a collection of objects, interfaces or microservices.
+
+	Configuration File:
+
+		- Build tools, platforms, servers, automation tools/technologies typically use a configuration of some sorts.
+		- Configuration make take the form of a YAML or JSON file to provide the general role of providing the ability to configure and 'program' the consumer of that file.
+		- The 'configuration' is the general term for this aspect of the technology.
+
+	Container:
+
+		- Lightweight.
+		- Runs x1 image.
+		- An instance of an image.
+		- Allocated own memory, network and resources in general.
+		- Container should not be thought of a physical construct in memory but x1 or more processes with specific resources (which may be segmented) assigned to it.
+		- Container contains the File System defined and contained within the image.
+		- Container once finished will be listed as 'Exited' but may be rerun and does not need to be recreated.
+		- No external access to any internal aspects of the container however each process running within container can be accessed via following channels:
+
+			stdin
+			stdout
+			stderr
+
+	Container ID:
+
+		- Unique ID for each container.
+		- Unique ID as generated when building the image of the container, therefore also can be considered the 'Image ID' which then becomes the 'Container ID' once spun up in a container.
+
+	Container Orchestration:
+
+		- Software which manages software containers running microservices or containerised applications.
+
+	Continuous Delivery:
+
+		- Development methodology whereby incremental changes to a program are collated and decided when to be pushed to production.
+
+	Continuous Deployment:
+
+		- Development methodology whereby incremental changes to a program are continually and immediately pushed to production.
+
+	Continuous Integration:
+
+		- Development methodology whereby incremental changes are continually built and tested, whereby ensuring that there is always a testable build and avoid merge conflucts.
+
+	Control Groups (cgroups):
+
+		- Similar to namespacing which isolate resources from processes.
+		- Control Groups limit resources from processes (not isolate/segregate completely).
+		- Control Groups may limit CPU, network bandwidth, HD I/O.
+		- Linux only (not Windows/MacOS).
+
+	DevSecOps:
+
+		- Extension of DevOps culture with a greater empathsis on security, compliance, risk mitigation and observability of all the states within the development pipeline.
+		- Typically employing additional stages of TDD, Pairing, linting, scanning and ensuring the integrity and validity of all stages within the pipeline.
+
+	Docker Client:
+
+		- Docker CLI.
+		- Runs locally, interacts directly with the docker-server.
+
+	Docker File:
+
+		- File containing configuration on how the container should behave.
+		- File is passed to the docker-server to generate the custom image.
+
+	DockerHub:
+
+		- Onlne repository of common images e.g. 'Hello World'.
+
+	docker-server:
+
+		- Online server which provides functionality via the docker-client.
+
+	Enterprise Service Bus:
+
+		- An architectural pattern whereby a centralized software component performs iteractions between applications, an essential component of SOA.
+
+	Event Driven Architecture:
+
+		- An architecture that is supplied b Cloud Service Providers, where the application only responds and consumes resources to input/user events.
+
+	FaaS:
+
+		- Function as a Service, a subset of 'serverless, the compute paradigm central to serverless, wherein application code or containers run only in response to events or requests.
+
+	Feature:
+
+		- An individual unit of functionality that can be added, removed or modified within a program.
+
+	File System:
+
+		- File system is the collection of files/memory that is contained within and used by the container.
+		- File system is the 'mini hardrive' within the container, the segmented portionn of the local computer.
+
+	Horizontal Scaling:
+
+		- Increasing capacity by adding more instances of a resource rather than adding or increasing the capactity of an existing existing resource e.g. increasing the number of nodes in a cluster.
+
+	IaaS:
+
+		- IaaS 'Infrastructure as a service'.
+		- IaaS customers purchase and utilise VM's (Virtual Machines).
+		- IaaS customers pay for the resources and services to run the applications from the moment that they are commissioned until they are explicitly decommissioned.
+	
+	Image:
+
+		- x1 single file that contains all files, dependencies, config that is required to run within a container.
+		- Image contains:
+
+			File System Snapshot:		A collection of physical files and file references collectively known as the container 'File System'
+			Startup Command:		A string which defines the startup command (which is called from CLI, therefore must be a command the CLI would understand) to start and run container e.g. 'run hello-world'
+
+	Image Cache:
+
+		- Local repository on local machine containing previously run images.
+
+	Image ID:
+
+		- The numerical hash ID representing a built image.
+		- Functionally identical as an Image Name but a hash generated value.
+
+	Image Name:
+
+		- The human readable name representing a built image.
+		- Functionally identical as an Image ID but a character based value typically manually assigned prior to build.
+
+	Impl:
+
+		- Impl is a suffix commonly used in web application development meaning implementation, typically of an interface:
+
+			Interface:	NumberGenerator
+			Class:		NumberGeneratorImpl
+ 
+	Incubating Project:
+
+		- End users are using the technology in production applications and the project has a healthy number of contributors i.e. the project is being incubated/growing. 
+
+	Kernel:
+
+		- Software layer running in its own process.
+		- Manages System Calls between processes and hardware. 
+
+	Logical Host:
+
+		- An entity which is represented and accessible via an IP address and/or Hostname.
+
+	Manifest File:
+
+		- File containing all external dependencies of a project.
+
+	Middleware:
+
+		- Software that lies between an operating system and the applications running on it.
+		- A hidden translation layer or 'plumbing' of a distributed system, enabling communication between applications and with data sources via the respective 'pipes'.
+	
+	MLOps:
+
+		- Machine learning Operations
+
+	Monolith:
+
+		- Architecture where all operational components of the whole system are encapsulated within a single structure.
+
+	Namespacing:
+
+		- Isolating resources per process (or group of processes), a generic term which can eb applied to memory, network, users or other processes.
+		- For example:
+
+			A means of segmenting a hardrive memory to allow potentially incompatible resources to exist on same machine.
+
+		- Linux only (not Windows/MacOS)
+
+	Nginx
+
+		- Pronouced: En-gine-X.
+		- Simple webserver but professional production grade.
+
+	n-teir Architecture:
+
+		- Traditional stack of technologies which form the collection of OS, platforms, language and framework which constitute typically a monolith architecture.
+
+	Last Mile:
+
+		- The 'last mile' traditionally meant the final stage between a service providers infrastructure and the customers home, in computing it refers to Mobile, Web and IoT.
+
+	Load Balance:
+
+		- Application which distributes incoming requests to a number of identical instances of another application.
+
+	Operations:
+
+		- Department within organisation who manage the hosting, stability, reliability and availability of the product/software i.e. they look after the infrastructure/servers.
+
+	ORM:
+
+		- Object Relational Mapping, for mapping objects to relational database e.g. Hibernate.
+
+	Path Routing:
+
+		- A technique where all incoming traffic to a website is fed into a server e.g. Nginx Server and its path is routed to an appropriate backend server/resource.
+		- Nginx server will then assess the prefix of request path and route the incoming request to the appropriate backend service/server depending on that prefix folder.
+
+			Browser Request			Nginx Server (Prefix)
+			______________________________________________________________________________________
+
+			/index.html			/	-> (Removes prefix /)		React Server		
+			/main.js		->	/api	-> (Removes prefix /api)	Express Server	
+			/api/values/all
+			/api/values/current
+
+	Payload:
+
+		- The package of data that is transfered from one place to another, for example a JSON payload my be passed between microservices.
+
+	Pipeline:
+
+		- Within CI/CD a series of incremental tests that comprehensively test all aspects of a piece of software from the lowest level to highest level.
+		- The highest test is as close as possible to production environment.
+
+	Port Mapping:
+
+		- Map network ports on the local machine to the network ports within a container.
+		- Explicitly declare which network ports within a container are permitted to receive incoming requests/traffic from local computer or other computers on the network/internet.
+
+	Primary Process:
+
+		- Process within a container with the PID of 1.
+
+	PWD:
+
+		- Present Working Directory.
+		- Present Working Directory can be accessible/return by typing 'pwd' into a terminal/command prompt. NB: Does not work on Windows Command Prompt, PowerShell only GitBash (there maybe alternate commands within Command Prompt/PowerShell) 
+
+	Regression Testing:
+
+		- Running the same set of tests before and after a change in order to identify any regression.
+
+	Risk:
+
+		- A function/measure of unpredictability that reduces value.
+
+	Scale:
+
+		- A function/measure of the relationship between the amount of value that can be derived from each unit of scaling offset against the cost of that scaling.
+		- A function/measure of cost that produces value.
+
+	Segmenting:
+
+		- Dividing a hardrive/memory in order to potentially accommodate 'Namespacing' where potentially incompatible resources can exist on same machine.
+
+	Serverless:
+
+		- A service whereby the customer does not need to be involved nor manage physical servers.
+		- Configuration, management and billing of services are all invisible to the customer/user.
+		- Serverless covers FaaS and all other associated aspects/resources/services supporting the application code:
+
+			Storage, databases, networks, API gateways, authentication
+
+	Service:
+
+		- Service is a generic term which describes an entity within an overall application/architecture.
+		- Service is a not a container but a type of container with specific functionality.
+
+	SOA:
+
+		- Service Orientated Architecture.
+
+	Startup Command:
+
+		- Startup command is the command that is called by the container once the container has fully spun up.
+		- Startup command can be considered the entry point of the container similar to public static void main(String args[])) of the JVM.
+
+	Switch:
+
+		- Switch is a constituient part of a Linux CLI command which modifies the original command:
+
+			> Docker run -p 3000:3000 -v /app/node_modules -v $(pwd):/app <image name>
+				     |___________||__________________||______________|
+				      Switch 1	   Switch 2	       Switch 3
+
+	System Call:
+
+		- Invocation from a process to Kernel in order to interact with hardware.
+
+	Tagging:
+
+		- Means of assigning a user/human friendly tag to an image/container.
+		- Uses the convention within the docker-client build command:
+
+			-t Docker ID / Repo/ProjectName : Version [Directory of folders/files to use in the build]
+
+			> Docker build -t PaulSurridge/redis:1.12
+			> Docker build -t PaulSurridge/redis:latest
+
+	Tomcat:
+
+		- Web application server i.e. a server for hosting, running and enabing the interface across the web.
+
+	Unit Test Suite:
+
+		- The collection of unit tests which are carried out for each and every build within a CI/CD pipeline.
+
+	Upstream:
+
+		- Upstream is the direction from the browser through to the backend.
+		- Browser > Path Routing Server > Backend (Upstream) Server 
+
+	Value Stream Mapping:
+
+		- Lean management method for designing a series of events/steps that describe the steps to translate a prouct/service current state to a future state.
+
+	Vertical Scaling:
+
+		- Increasing capacity by adding more resources to a single device or node rather than creating more instances of that program across more physical devices or nodes.
+		- Scaling up.
+
+	WSL2
+
+		- Windows Subsystem for Linux. Docker runs within Linux, this subsystem needs to be installed followed by Linux OS of choice where Docker and all that related to Docker runs within.
+
+
+
+
+
+							
+
+	
+
+	
+
+	
+
+	
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

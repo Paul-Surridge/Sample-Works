@@ -1,0 +1,827 @@
+Recursion:
+
+	Overview:
+
+		- Recursion can be deployed within many areas, including:
+
+			1. Dynamic Programming.
+			2. Graph Traversal.
+			3. Back Tracking
+
+		- Recursion within dynamic programming and graph traversal are fundamentally equivalent:
+
+			Dynamic Programming		Graph Traversal
+			_________________________________________________________________________________________________________________________________________________
+
+			Initial input			Starting node
+			Input				Current node
+			Base case			Target node
+			Invalid case			Unavilable node 		e.g. a blocked 'walled' node
+			Mutators			Paths to adjacent nodes 	e.g. the available means/options of traversing and arriving at the adjacent nodes
+			Mutation			Moving to an adjacent node
+			Parent rm() call		Previous node
+			Child rm() call			Adjacent/next node
+
+	Dynamic Programming
+
+		Call Tree:
+
+			- Call tree is not an existing graph/structure in memory.
+			- Call tree nodes:
+
+				- Nodes are not physical constructs in memory.
+				- Nodes do not hold any value.
+				- Nodes only hold the mutated input value from previous recursive method call.
+				- Nodes are emphemeral recursive method calls which are essentially just a memory address.
+
+			- Call tree represents temporal instances of rm() on the call stack.
+			- Call tree is generated 'on the fly' and respresents the recursive method calls and the mutated input being passed down, each rm() call has x3 possible outcomes/cases:
+
+				1. Base:	Recursion ceases, the design of the rm() determines behaviour once base case found, there are x3 options:
+
+							Base Cases		Return to Root
+							________________________________________________________________________________________________________________________________________________________________
+
+							Find x1			Immediate 			Once x1 base case has been found immediately return to the root and the initial method.
+							Find n 			Non-Immediate			Traverse the partial tree, once n base cases found then return to the root and the initial method.
+							Find all		Non-Immediate			Traverse the whole tree, once all base cases found then return to the root and the initial method.
+
+						There may be multiple definitions of base case:
+
+							if(input == 1 || input%10 == 5 || ...)
+								return 
+
+				3. Ongoing:	Recursion continues passing mutated input, number of branches may be:
+
+							Number of		Tree
+							Branches		Shape
+							________________________________________________________________________________________________________________________________________________________________
+
+							1:			Degenerate:			A straight line down from the root node until the single base case is reached.
+							Fixed			Tree (Symmetric):		A tree where each recursive method generates the fixed same number of child rm() calls.
+							Varied:			Tree (Non-Symmetric):		A tree where each recursive method generates differing number of child rm() calls, The condition is passed down as an argument with each rc(...) call.
+
+															void rc(input, condition)
+															{
+																if(baseCase == input)
+																	return
+
+																for(i = 0 -> n && condition)
+																	[return] rc(modifiedInput_i)
+
+																postProcessing
+															}
+
+				2. Invalid:	Recursion ceases, control immediately returns to parent rm().
+
+		Recursive Method Structure
+
+			[return type] rm(input, mutator, iLevel, condition)
+			{
+				[Base Case]
+					if(input == baseCase1 || input == baseCaseN || ...)
+						return/process [base value]
+
+				[Invalid Case]
+					if(input == inValid)
+						return
+
+				[Ongoing Case]
+					[recursive return] rm(modifiedInput_1)					//Individual (non-loopable mutations)
+					[recursive return] rm(modifiedInput_2)			
+					[recursive return] rm(modifiedInput_n)
+
+					(OR)
+
+					for(i = 0 -> mutator.n && modifiedInput_i == valid)
+						[recursive return] rm(modifiedInput_i)
+
+					(OR)
+
+					for(i = 0 -> mutator.n && modifiedInput_i == valid)			//Level/depth tracking
+						[recursive return] rm(modifiedInput_i, iLevel+1)
+
+					(OR)
+
+					for(i = 0 -> mutator.n && modifiedInput_i == valid && condition)	//Conditional rm() calls
+						[recursive return] rm(modifiedInput_i, condition))
+
+					(OR)
+
+					for(i = 0 -> mutator.n && modifiedInput_i == valid)			//Path tracking
+					{
+						alPath.add(i)
+						[recursive return] rm(modifiedInput_i)
+						alPath.remove(alPath.size-1)
+					}
+
+				[postProcessing]
+
+				[return]
+			}
+
+			[return type]
+
+				[return type]		Behaviour/Use
+				_______________________________________________________________________________________________________
+
+				void:			Traverse whole call tree processing a mutated input or external data structure
+				boolean:		Traverse whole call tree and determine if any base case exists in the call tree
+				type:			Traverse whole call tree return the nth [base value] found
+
+				Behaviour/Use depends on whether [recursive return] has been include
+
+				[recursive returns]	Behaviour
+				______________________________________________________________________
+
+				Included:		Return the [base value] in the first base case
+				Not Included:		Return the [base value] in the last base case
+
+			[input]
+
+				- Input is the unique for each rm() call.
+				- Input is mutated within the rm() and passed onto 'its own' recursive rm() calls.
+				- Input is continually reduced until reach base case (at which point return to previous rm() call).
+
+			[initial input]
+
+				- Input that is provided from the initial method would be the initial (large) input that needs to be processed in order to find the desired solutions.
+
+			[valid input]
+
+				- Valid input can be determined either:
+
+					Prior:
+
+						void rm(input)
+						{
+							if(input == baseCase)
+								process/log
+								return
+
+							if(modifiedInput == valid)			//The modified input is checked 'prior' to being passed into another instance of rm().
+								return rm(modifiedInput)
+						}
+
+					Within:
+
+						void rm(input)
+						{
+							if(input == baseCase)
+								return
+
+							if(input == invalidCase)			//The modified input is checked 'within' its own instance of rm()
+								return
+						}
+
+					[recursive return]	Form			
+					__________________________________________________________________________________________________________________________________________________________________________________________________________
+
+					Used			Prior Only		Prior must be used if [recursive return] is used. This is to prevent execution immediately returning to root/initial method when an invalid case is found.
+					Not Used		Prior | Within		Prior or Within can be used if [recursive return] is not used.
+
+				NB: Invalid Modified Input and [recursive return]
+
+					- If it is possible for invalid modified inputs to emerge, then [recursive return] can not be used for it is possible for an:
+
+						rm() to incorrectly behave as if a base case as been found.
+						rm() will naturally return rather than on-going to find further base cases.
+						rm() will return immediately to root/initial method.
+
+			[mutator]:
+
+				- Mutator is the consistent set of mutations which are applied to the input of each rm() call.
+				- Mutator may reside external to the rm() calls or 'passed down' each rm() call.
+				- Mutator is typically a set/array of values that are applied to the input.
+				- Mutator values are what form the path and particular combinations that result in a base case and are typically the sought answer to dynamic programming.
+				- Mutation may be an additive or subtractive process:
+
+					Additive: Initial input is empty or 0 and subsequent values are 'added' to reach a target value:
+
+						Initial Input:		[]					0
+						Mutator:		[] + [1]				0 + 1
+									[] + [2]...				0 + 2...
+
+						Base Case:		[1,2,6,10] (All Valid Elements)		10 (Target Value)
+
+					Subtractive: Initial input is a value and subsequent values are 'subtracted' to reach 0 or empty:
+
+						Initial Input:		[1,2,6,10]				10
+						Mutator:		[1,2,6,10] - [1]			10 - 1
+									[1,2,6,10] - [2]...			10 - 2...
+
+						Base Case:		[] (Empty)				0
+
+			[modifiedInput_i]:
+
+				- All internal ongoing rm() calls must contain a unique modified version of the input.
+
+			[recursive return]:
+
+				Used:		[recursive return] is only used when all x3 below are true:
+
+							1. No Invalid Modified Input:		No invalid case will ever be produced. Only events which cause return to the parent rm() is when a base case has been found or all rm()'s have returned.
+							2. x1 Base Case:			Only x1 (1st) base case needs to be found and then immediately return to the root/initial method.
+							3. Call Tree:				Call tree does not need to be fully traversed only via the standard sequence (below) until 1st base case is found.
+
+				Not Used:	[recursive return] is not used when need to do any of the below:
+
+							1. Invalid Modified Inputs:		Invalid modified inputs can emerge.
+							2. Multiple Base Case:			Multiple/all base cases need to be found.
+							3. Call Tree:				Call tree needs to be fully traversed.
+							4. Backtracking:			Backtracking needs to explore the whole potential call tree.
+												Backtracking may encounter invalid cases which need to be ignored (and 'backtracked') rather than cause an immediate return to root/initial method.
+
+							NB: It is fair to say that the majority of DP problem will NOT use [recursive return].
+
+				[recursive return]	Behaviour
+				_________________________________________________________________________________________________________________________________________
+
+				Included:		Return to root		Return immediately to the root/initial method upon finding first base case
+				Not Included:					Return to root/initial method naturally once whole call tree has been generated/traversed
+
+				Included:		Back Tracking		Back tracking not possible given that the first invalid case will cause recursion call stack to cease and return back to the root/initial method.
+				Not Included:					Back tracking is possible.
+
+				Included:		[postProcessing]	Does not run any statements after the rm() call, any [postProcessing] or other rm() calls are inaccessible 
+				Not Included:					Does run statements after the rm() call, any [postProcessing] or other rm() calls are accessible and ran
+
+				Included:		Base Cases		x1 base case (maximum):		Only x1 and the first base case is found and returned to root/initial method  
+				Not Included:					All base cases:			All base cases are found and nothing is returned to the root/initial method
+
+				[recursive returns] may be applied to all, some or no rm()'s:
+
+					1. All:
+
+						- All rm() [recursively return]:
+
+							for(i = 0 -> n)
+								return rm(modifiedInput_i)
+
+							[postProcessing]
+
+							Behaviour:
+
+								1. First base case found.
+								2. Execution returns immediately to the root/initial method.
+								3. Nothing else will ever execute after the rm() call one the base case has been found
+
+								[postProcessing] will never run and always inaccessible.
+
+					2. Partial:
+
+						- Partial rm() [recursively return]:
+
+							return rm(modifiedInput_1)
+							rm(modifiedInput_2)
+							return rm(modifiedInput_3)
+
+							[postProcessing]
+
+							Behaviour:
+
+								1. Upon traversing back up the call tree, program execution will depend on whether the individual parental rm() calls in the parental chain [recursively returned] or not.
+								2. If execution traverses back up the call tree due to base case, the next program execution depends on whether that particular parent rm() call [recursively returns]:
+
+									Parent rm()
+									[Recursively Return]	Behaviour
+									___________________________________________________________________________________________________________________________________________________________________________________________
+
+									Y			Execution will immediately return to its immediate parent rm() call.
+									N			Execution will continue with any statements after that particular rm() call (including other rms() calls, which may send execution down the call tree again).
+
+								3. If execution traverses back up the call tree due to base case:
+
+									Parent rm()
+									[Recursively Return]	Behaviour
+									______________________________________________________________________________________________________________________________________________________________________________
+
+									All:			If all parent rm() call's [recursively return] then execution will immediately return to the root/initial method.
+									Partial:		If a particular parent rm() call does not [recursive return] then any statements (including other rm() calls) after that particulr rm() call will run. 
+
+								[postProcessing] will never run given that the last rm() call [recursively returns] therefore execution will never get past this point in all circumstances.
+
+					3. None:
+
+						- No rm() [recursively return]:
+
+							for(i = 0 -> n)
+								rm(modifiedInput_i)
+
+							[postProcessing]
+
+							Behaviour:
+
+								1. Whole call tree will reproduced and traversed in all circumstances.
+								2. Return to the root/initial method only occurs 'naturally'
+
+								[postProcessing] will always run.
+
+				[postProcessing]
+
+					- postProcessing is run when returning 'up a level' to the parent rm() or to the 'lower' rm() call on the call stack.
+					- postProcessing is run when there is no [recursive return] on any immediate subsequent rm() call.
+
+				Natural Return:
+
+					- The 'natural' return is the return when a method naturally ends.
+					- The 'natural' return when applied to last statement has the following equivalences:
+
+						rc()							rc()							rc()
+						{							{							{
+							...							...							...
+							return rc(...)			=			rc(...)				=			rc(...)
+						}							}								return
+																				}
+				Other Forms:
+
+					- There are of course other structrual arrangements/forms which are ultimately the same as above e.g.
+
+						void rm(input)
+						{
+							[preProcess: modifiedInput]
+
+							if (input = baseCase)	process/return;
+							else 			return rm(modifiedInput)
+
+							[postProcess]	//Unreachable
+						}
+
+		Call Tree Sequence:
+
+			- Call tree sequence is always consistent in dynamic programming as shown, given that it is not an existing structure but a consequence of continual rm() calls. 
+
+												1
+						_________________________________________________________________________________________________
+						2						15						28
+				__________________________________		_________________________________		_________________________________
+				3		7		11		16		20		24		29		33		37
+		     	     _______	      ______	     ________	     ________	     ________	     ________	     ________	     ________	     ________
+		     	     4  5  6          8 9 10	     12 13 14	     17 18 19	     21 22 23	     25 26 27	     30 31 32	     34 35 36	     38 39 40
+
+			- Call tree sequence can not be determined by the structure of the rm() as in Graphs.
+			- Call tree sequence can not be determined by any of the following, the following is not applicable to dynamic programming:
+
+				1. PreOrder()
+				2. InOrder()
+				3. PostOrder()
+				4. LevelOrder()
+				5. DFT
+				6. BFT
+
+			- Call tree sequence may be consistent but it's structure is not. The structure of the call tree is of course dependent upon:
+
+				1. Initial Input
+				2. Mutators
+
+				For these x2 factors determine when base cases and invalid cases are found and where recursion ('backtracking') occurs and therefore the overall shape of the call tree.
+
+			- Call tree sequence example: Find all bases cases?
+
+				rm(input)
+    				{
+					if(input == baseCase)
+						process/log
+						return
+
+        				for(i -> mutator.n)
+        				{
+						if(modifiedInput_i == valid)
+							rm(modifiedInput_i)
+        				}
+    				}
+													rm()
+				 _______________________________________________________________________|_______________________________________________________________________________________________
+				|						|						|						|			|
+				rm()						rm()						rm()						x			rm()
+				|_______________________________		|_______________________________		|_______________________________		24			|_______________________________
+				|	|	|	|	|		|	|	|	|	|		|	|	|	|	|					|	|	|	|	|
+				rm()	x	x	rm()	x		x	x	x	x	x		x	x	x	x	x					x	x	x	x	x
+				|	6	7	|	13		14	15	16	17	18		19	20	21	22	23					25	26	27	28	29
+				|			|_______________________________
+				|			|	|	|	|	|
+				|			8	9	10	11	12
+				|_______________________________
+				|	|	|	|	|
+				1	2	3	4	5
+
+		Base Case Existance:
+
+			- Base case existance is where only need to determine if the problem has any solution.
+			- Base case existance once found need only return immediately to root and initial method once a single instance of the base case has been found.
+			- Base case existance has the following general form:
+ 
+				boolean rm(input)
+    				{
+					if(input == baseCase)
+						return true;
+
+        				for(i -> mutator.n)
+        				{
+						if(modifiedInput_i == valid)
+							if(rm(modifiedInput_i))
+								return true
+        				}
+
+					return false;
+    				}
+
+		Recursive Time/Space Complexity:
+
+			- Time/space complexity of a recursive algorithm is best evaluated from the call tree.
+
+				Time Complexity:
+
+					Associated with the amount of branching:
+
+						1. What is the increase rate in the function calling itself?
+						2. What is the worse case scenario for the maximum size of the base of the call tree?
+
+				Space Complexity:
+
+					Associated with the maximum height.
+
+						1. What is the maximum height of the call tree?
+						2. What memory does each iteration of rm() use e.g. does it allocate its own memory each time, if so then that must also be taken into consideration.
+						3. What is the worse case scenario for the maximum height and memory usage within the call tree?
+
+			- For example, given the fibonacci sequence, the recursive implementation calls itself x2 per iteration:
+
+								fib(7)
+						 _______________|_______________
+						|				|
+				n = 1		fib(5)				fib(6)			Calls: 2
+						|_______			|_______
+						|	|			|	|
+				n = 2		fib(3)	fib(4)			fib(4)	fib(5)		Calls: 4
+						|	|			|	|
+
+			- Therefore as shown:
+
+				Time: 	O(2^n)
+				Space: 	O(n * m)	m: Memory used by the recursive method (if any)
+
+			- The time/space complexities can be derived by evaluating the source code but if in doubt draw out the call tree.
+			- The space complexity is derived from the following x2 facts:
+
+				1. Immediate garbage collection:	Released memory is immediately garbage collected
+				2. Maximum depth:			Maximum amount of memory that needs to be used at any one time is:
+
+										(amount of memory used in rm() call * maxmium possible depth of rm() calls in call tree) i.e. when the recursion is at the lowest point/furthest distance from root.
+
+		Path Tracking:
+
+			- Path within the call tree records the inidividual modifications that are applied recursively to the initial input.
+			- Path is best stored in a List<> due to the O(1) operations:
+
+				List<Modification_Type> alPath = new ArrayList<>();
+
+				void rc(input)
+				{
+					if(baseCase == input)
+					{
+						Print alPath
+						return
+					}
+
+					for(i = 0 -> n)
+					{
+						alPath.add(i)
+						rc(modifiedInput_i)
+						alPath.remove(alPath.size-1)
+					}
+
+					postProcessing
+				}
+
+				Above will find all base cases in call tree and the corresponding combination which produces that base case.
+
+			- NB: Path Tracking should only be carried out using recursion (not iteration traversal of tree) given that:
+
+				1. Once reach end of branch (leaf node) execution immediately jumps to the next node in stack which maybe a completely different branch many levels back up.
+				2. The variable containing the path would:
+
+					- Still contain the characters which were accrued on the way down to that leaf node.
+					- Continue to accumulate/append characters that existed from wherever execution went to next.
+					- Not remove the characters that were accrued on the way to the leaf.
+
+				3. Overall the variable containing the path would just continue to append the paths to each leaf growing ever longer.
+				4. Only via recursion can those characers be removed as execution moves back up the tree, whereby keeping the path variable accurate.
+
+				If Path Tracking must be done using iteration then need to do the following:
+
+					1. Store the parent node in each node via the Constructor.
+					2. Once at leaf node.
+					3. Call a method which iteratively goes back up to root node while storing the value of each node that it traverses e.g. within a StringBuilder.
+					4. Once reach the root (typically by testing for null)
+					5. Reverse the String e.g. via StringBuilder.reverse.
+					6. Print.
+
+					void printPath(Node nLeaf)
+					{
+						Node n = nLeaf
+        					StringBuilder sbWord = new StringBuilder();
+        
+        					while(n.getValue() != null)	//i.e. the null value within the null parent of nRoot
+        					{
+            						sbWord.append(n.getValue());
+            						n = n.getParent();
+        					}
+        
+        					System.out.println(sbWord.reverse());
+					}
+
+				However this is of course highly inefficient given the need to traverse back up the tree each time a leaf is found.
+
+		Level Tracking:
+
+			- Level tracking of the current height of the call stack (or depth into the call tree):
+
+				void rc(input, iLevel)
+				{
+					if(baseCase == input)
+						return
+
+					for(i = 0 -> n)
+						rc(modifiedInput_i, iLevel+1)
+
+					postProcessing
+				}
+
+				Above iLevel will always be correct when within its respective recursive call, opposed to attempting to manage the increment/decrement an external variable to keep track.
+
+		Greedy Algorithm:
+
+			- Greedy algorithm is a simple intuitive algorithm used in optimisation problems.
+			- Greedy algorithm makes the optimal choice at each recursive stage with the data it has and is currently visible/available as it attempts to find the optimal solution of the overall problem.
+			- Greedy algorithm is not suitable for all problems e.g. 'finding the largest sum':
+
+						7
+					________|_________
+					3		12
+				    ____|___	     ___|____
+				    99	   8	     5	    6
+
+				1. The traversed nodes will be:
+
+					7, 12, 6 = 25
+
+				2. The algorithm will overlook/not see the 99 from the the initial stage/root.
+
+			- Greedy algorithm is more suitable for:
+
+				Huffman Encoding
+				Dijkstra Algorithm
+
+			- Greedy algorithm is suitable for problems which adhere to the following x2 properties
+
+				1. Greedy Choice: 		A global (overall) optimal solution can be reached by choosing the optimal choice at each stage of recursion/iteration.
+				2. Optimal Substructure: 	A problem has an optimal substructure if an optimal solution to the entire problem contains the optimal solutions to the sub-problems.
+									i.e. that the optimal solutions of all of the sub-problems constitute the optimal solution of the overall problem.
+
+	Graph Traversal:
+
+		Existing Graph/Structure
+
+			- Yes
+			- Graph is traversed using:
+
+				DFS/BFS (utilising optional 'Visited' flag)
+		Nodes:
+
+			- Nodes are physical constructs in memory.
+			- Nodes hold a value which can be mutated.
+
+		Graph Types:
+
+			- Graph
+			- Tree
+			- Binary Tree
+				preOrder:	DFS
+				inOrder:	Ascending order if Binary Search Tree
+				postOrder
+				levelOrder:	BFS
+
+		Traversal:
+
+			Graph:
+
+				- BFS/DFS can be implemented recursively or iteratively:
+
+					Recursive:
+
+						B/DFT(Node n)
+						{
+							process n
+
+							for(i -> n.children)
+								stack/queue.add(n.child[i])
+
+							while(!stack/queue.isEmpty())
+								B/DFT(stack/queue.pop()/poll())
+						}
+
+					Iterative:
+
+						B/DFT(Node nStart)
+						{
+							stack/queue.add(nStart)
+
+							while(!stack/queue.isEmpty())
+							{
+								n = B/DFT(stack/queue.pop()/poll())
+
+								process n
+
+								for(i -> n.children)
+									stack/queue.add(n.child[i])
+							}
+						}
+
+				- BFS/DFS are identical expect that:
+
+					Traversal		Datastructure
+					_____________________________________
+
+					Breadth			Queue	 
+					Depth			Stack
+
+				- BFS/DFS as defined above can be applied to all graphs:
+
+					1. Graphs
+					2. Tree
+					3. Binary Tree
+
+				- BFS/DFS can be used inconjunction with each node being an object containing a bVisited flag to prevent cycles. 
+
+			Tree/Binary Tree:
+
+				- Trees implement x4 sequences of traversal:
+
+					1. preOrder:		Effectively DFT
+					2. inOrder:		Binary Tree Only: Return ascending order if Binary Search Tree
+					3. postOrder
+					4. levelOrder:		Use general graph BFT
+
+				- Trees can use the general graph algorithms for implementing DFT/BFT as shown above, however should the number of child nodes be fixed then the following can be used: 
+				
+							a
+						_________________
+						b		c
+					_________________ _______________
+					d		e f		g
+
+					1. PreOrder:
+
+						void preOrder(Node n)
+						{
+							if node == null
+								return
+
+							process n
+
+							preOrder(node.child1)
+							preOrder(node.child2)
+							...
+							preOrder(node.childn)
+						}
+
+						Traversal: a b d e c f g
+
+					2. InOrder:
+
+						void inOrder(Node n)
+						{
+							if node == null
+								return
+
+							inOrder(node.child1)
+							process n
+							inOrder(node.child2)
+						}
+
+						Traversal: d b e a f c g
+
+					3. PostOrder:
+
+						void postOrder(Node n)
+						{
+							if node == null
+								return
+
+							postOrder(node.child1)
+							postOrder(node.child2)
+							...
+							postOrder(node.childn)
+
+							process n
+						}
+
+						Traversal: d e b f g c a
+
+					4. Level Order:
+
+						Use the general graph BFT algorithm above.
+	
+		Techniques:
+
+			- Windows Files Traversal:
+
+				function void traverseAndProcess(Node n)
+				{
+					for(i = 0 to n.numberOfChildren)
+					{
+						check/process(n.child[i])
+
+						if(n.child[i] == parent)
+							traverseAndProcess(parent.child[i])
+					}
+				}
+
+				- The above will traverse all nodes as follows:
+
+					root
+                    			1
+                    			2
+                    			3
+                    			4 - Parent
+                    			9   5
+                    			10  6
+                    			11  7
+                    			12  8
+                    			13
+                    			14 - Parent
+                    			18  15
+                    			19  16
+                        		    17
+
+			- Tree Search (using a boolean):
+
+				function void search(Node n, int iTarget)
+				{
+					if(n == null)
+						return;
+
+					if(n.value == iTarget)
+					{
+						bfound 		= true
+						nTargetNode 	= node
+					}
+					else
+					{
+						for(i -> n.children && !bFound)
+							search(node.child[i], n.value);
+					}
+				}
+
+				function boolean search(Node n, int iTarget)
+				{
+					bFound1 = isTargetCriteria1Found(n, iTarget);
+					bFound2 = isTargetCriteria2Found(n, iTarget);
+
+					if(bFound1 && bFound2)
+						return;
+
+					for(i -> n.children.isValid() && !bFound1 && !bFound2)
+						search(node.child[i], iTarget);
+
+					return (bFound1 && bFound2);
+				}
+
+		Problems:
+
+			- Path Finding:		Does a valid path exist between x2 nodes.
+			- Path Finding:		Does a valid sequence of nodes exist in the graph e.g. word search.
+			- Path Mutation:	Mutate the nodes on the path between root and destination.
+
+	Reading Recursive Methods:
+
+		How to read recursive methods include the following:
+
+			1. rm calls():				Where are the rm() calls?
+			2. return:				Where are the return points?
+
+									Explicit:	Manual [recursive return]
+									Natural:	End of function
+
+			3. return type/values:			What are the possible values that can be returned?
+			4. Standard Structural Elements:	If possible attempt to identify the standard structrual elements as defined above (for the actual source code may be of a differing structure).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

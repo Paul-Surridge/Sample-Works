@@ -1,0 +1,352 @@
+Scrum Development
+
+	Overview:
+
+		- Scrum is an implementation of Agile.
+		- Scrum allows for controlled incremental works to a product.
+		- Scrum is a lightweight framework that helps people, teams, organisations to generate value through solutions which are adaptive and evolve with the development process.
+		- Scrum is founded on:
+
+			1. Empiricism:			Knowledge and decisions are based upon experience and what is observed.
+			2. Lean Thinking:		Reduce waste and only focus on the essential.
+
+		- Scrum is an iterative process which:
+
+			1. Predictability:		Increase and optimise predictability.
+			2. Risk:			Control and minimise risk.
+
+		- Scrum implements x3 pillars:
+
+			1. Transparency
+			2. Inspection
+			3. Adaption
+
+	Waterfall:
+
+		- Prior to scrum dvelopment typically followed a waterfall pattern:
+
+			1.	Plan
+			2.		Build
+			3.			Test
+			4.				Review
+			5.					Deploy
+
+		- Duration:
+
+			- Each stage may take several months. 
+			- Potentially alot of resource/time just to complete x1 product.
+
+		- Rigid:
+
+			- Design/requirements may shift during excessively long development time.
+			- Not easy to apply any changes to features or direction of product.
+			- Not possible to completely plan given potentially many unknonws down the line.
+			- Changes may require going back a step or creating a new plan of works completely.
+
+	Scrum Components:
+
+		Roles				Artifacts (Documents)			Sprint Events (Processes)
+		________________________________________________________________________________________
+
+		1. Product Owner		1. Product Goal				1. Sprint
+		2. Scrum Master			2. Product Backlog			    2. Plan
+		3. Developers			3. Sprint Backlog			    3. Development
+						    4. Sprint Goal			    4. Review
+						    5. Items				    5. Retrospective
+						    6. Plan of Delivery
+						    7. Burndown Chart
+						8. Increment (of Value)
+
+	Scrum Workflow:
+
+		1. Product Owner:
+
+			- Product Goal:		Holder.
+			- Product Backlog:	Creator and holder.
+
+		2. Sprint:
+
+			Start:
+
+				1. [Event/Meeting] Planning:
+
+					1. Product Backlog:
+
+						- Product Owner reviews current Product Backlog.
+						- Product Owner arranges and prioritises the items on the Product Backlog.
+
+					2. Spring Backlog:
+
+						- Product Owner, Scrum Master and Developers discuss, decide and commit which items (Features/'User Stories') from the Product Backlog to be included in the Sprint Backlog.
+						- Product Owner, Scrum Master and Developers all now have solid understand of what shall constitute the next sprint.
+
+							Sprint Backlog represents:	Sprint Goal
+							Sprint Backlog represents:	Increment of Value
+
+				2. [Phase] Development:
+
+					1. Development:			Work through items on Sprint Backlog.
+					2. Daily Scrum:			Assess progress through Sprint Backlog highlighting, discussing and addressing any bottlenecks/issues.
+
+					[Repeat until the Sprint Backlog is complete (1-3 weeks)]
+
+				3. [Event/Meeting] Review:
+
+					1. Demo:			Demo Increment to Product Owner.
+					2. Shippable Product:		Ensure that at the end of the Sprint it still produces/leaves an overall Shippable Product that contains the Increment of Value.
+
+				4. [Event/Meeting] Retrospective:
+
+					1. Spring Improvements:		Assess, evaluate and how to improve the Sprint process. 
+
+			End:
+
+		3. Repeat until Product Backlog has been finished and the product is 'feature complete'.
+
+	Scrum Team:
+
+		- Scrum team contains all x3 roles:
+
+			 Scrum Team ____________________
+			|				|
+			|	Product Owner		|
+			|	|			|
+			|	Scrum Master		|
+			|	|			|
+			|	Developers		|
+			|_______________________________|
+
+		- Scrum team sole objective is ultimately to reach the Product Goal via Sprints.
+		- Scrum team is self-contained and self-managing unit.
+		- Scrum team is responsible and internally decides all aspects required to reach Product Goal.
+		- Scrum team should be afforded the necessary structure to complete their works by the external organisation.
+		- Scrum team size is typically > 10.
+		- Scrum teams which are smaller tend to be more productive.
+		- Scrum teams which are too large should consider breaking into smaller multiple cohesive teams which all share the same:
+
+	Scrum Roles:
+
+		Product Owner:
+
+			- Responsibilities:
+
+				1. Maximise Value:		Maximise value derived from the Scrum Team in each Sprint working towards the Product Goal.
+
+				2. Product Backlog:
+
+					Items:			Define and decide the items to be included in Product Backlog.
+					Maintain:		Maintain and prioritise items in Product Backlog.
+					Clarity:		Ensuring that the Product Backlog is transparent, visible and fully understood by all members of the Scrum Team.
+
+			- Product Owner may delegate the above to others but overall remains responsible.
+			- Product Owner is x1 person (not a committee) but may represent multiple internal/external stakeholders associated with the Product.
+			- Product Owner may be convinced to alter the Product Backlog but ultimately it is their decision.
+
+		Scrum Master:
+
+			- Responsibilities:
+
+				1. Standards:			Establish and maintain Scrum Standards as defined in the Scrum Guide.
+				2. Effectiveness:		Establish and maintain Scrum Team effectivness through continual learning and improvement within the Scrum Framework.
+				3. Coach:			Coach Developers in self-management, cross-roles and cross-functionality.
+				4. Implementation:		Ensure that the Developers deliver quality in accordance with the 'Definition of Done'.
+				5. Impediments:			Remove any impediments to the Developers progress.
+				6. Time Keeping:		Ensure that all Scrum events do take place and are positive, productive and kept within the timeframe.
+
+			- Serves:
+
+				1. Product Owner
+
+					1. Product Goal:	Assist with Product Goal:		Help find techniques for improved management and establishing empirical product planning.
+					2. Product Backlog:	Assist with Product Backlog:		Help find techniques for improved management and maintaining clarity with all members of Scrum Team.
+					3. Collaboration:	Assist facilitating collaboration between all Stakeholders when required.
+ 
+				2. Organisation
+
+					1. Scrum Adoption:	Promote, lead and train Scrum adoption within the organisation and the empirical assessment of complex works.
+					3. Barrier Reduction:	Reduce barriers between Stakeholders and Scrum Teams.
+
+		Developers:
+
+			- Responsibilities:
+
+				1. Sprint Backlog:		Create Sprint Backlog in accordance with the items committed from the Product Backlog to be included in this Sprint.  
+				2. Sprint Goal:			Daily accessment of progress and if necessary adapting the plan to ensure being able to meet the Sprint Goal.
+				3. Definition of Done:		Ensuring quality and meeting the 'Definition of Done'.
+				4. Accountability:		Holding each other accountable as professionals. 
+
+			- Developers have multiple roles e.g. rotating the roles of Developer, Testing or anything else needed to meet the Sprint Goal.
+
+	Scrum Artifacts (Documents):
+
+		1. Product Goal:
+
+			- Produced by:	Organisation
+			- Managed by:	Organisation
+			- Description:
+
+				- Product:		Complete overview of the entire product including all features.
+
+		2. Product Backlog
+
+			- Produced by:	Product Owner.
+			- Managed by:	Product Owner.
+			- Description:
+
+				- List:			List of all items that constitute the Product Goal.
+				- Open to Change:	List is open to change in priority and content as the product develops with every Sprint.
+				- Priortisation:	List order of priority and content managed by the Product Owner.
+
+		3. Sprint Backlog
+
+			- Produced by:	Team: Product Owner, Scrum Master and Developers.
+			- Managed by:	n/a
+			- Description:
+
+				- Sprint Works:		List of all agreed items that are committed to and to be contained in this Sprint including the following artifacts:
+
+								1. Sprint Goal
+								2. Product Backlog [selected] items
+								3. Plan of Delivery
+
+			- Derived Artifacts:
+
+				1. Sprint Goal:			Sprint Backlog constitutes the Sprint Goal.
+				2. Burndown Chart:		Chart illustrating the progress through the Sprint Backlog, approaches 0 as the works are being completed.
+				3. Increment (of Value):	Value that has been added to the product over the course of the Sprint.
+
+	Scrum Events:
+
+		- Event is both a constituent part and marker within the Sprint.
+		- Event is a formal opportunity to discuss, inspect and adapt Scrum artifacts.
+		- Event aids transparency.
+		- Event which do not occur form lost opportunities to discuss, inspect and adapt i.e. 'keep things on track'.
+		- Event held as specified help to reduce unscheduled meetings outside of Scrum framework.
+		- Event are held in same time/place to reduce complexity.
+		- Event types (x5):
+
+			1. Sprint:
+
+				- Sprint is the container event which houses the other x4 core events:
+
+					Scrum Sprint
+					 _______________________________
+					|				|
+					|	Planning		|
+					|	|			|
+					|	Daily Scrum(s)		|
+					|	|			|
+					|	Review			|
+					|	|			|
+					|	Retrospective		|
+					|_______________________________|
+
+				- Sprint is the process of converting a Sprint Backlog into an Increment (of value).
+				- Sprint is immediately subsequent of the previous Sprint.
+				- Sprint is one month or less to ensure consistency.
+				- Sprint is a container for all other events.
+				- Sprint is a container for all works necessary to complete the Sprint Backlog thereby completing an Increment (of value) towards the Product Goal.
+				- Sprint is a process which generally ensures:
+
+					1. No Changes:			No changes that would alter the Sprint Backlog.
+					2. No Decrease in Quality:	No decrease in quality as defined by the 'Definition of Done'.
+
+				- Sprint is a process which generally allows:
+
+					1. Product Goal:		Product Goal to be regularly assessed, inspected and adapted on a regular basis.  
+					2. Product Backlog:		Product Backlog to be refined as necessary on a regular basis e.g. add, remove or reordering of priority.
+
+				- Sprint horizon should always be kept within a suitable timeframe, anything longer than x1 month may lead to:
+
+					1. Invalid Sprint Goal
+					2. Increased complexity
+					3. Increased risk
+					4. Increased cost
+
+				- Sprint should be considered a 'short project' in itself.
+				- Sprint may be cancelled if the Sprint Goal becomes obsolete.
+				- Sprint may be cancelled by the Product Owner only.
+				- Sprint should be organised to always ensure that a shippable product can be deployed at the end of the Sprint if required
+				- Sprint initial Sprint Goal should be 'just enough' to be able to get a shippable product.
+
+			2. Planning:
+
+				- Planning produces the Sprint Backlog.
+				- Planning is collaborative involving all members of the Scrum Team.
+				- Planning may also involve other people in order to provide advice.
+				- Planning typically the following discussion points:
+
+					1. Value:		What is the overall value of this Sprint.
+					2. Sprint Backlog:
+
+						What:		What items from the Product Backlog will be included within Sprint Backlog.
+						How:		How items will be implemented.
+
+									- Developers are the sole members of the Team which determine how the items are done.
+
+						Duration:	How long to be implemented.
+
+									- Developers decompose the items into smaller items (normally of a day in size).
+									- Developers are the sole members of the Team who determine the duration.
+
+					3. Refine:		Scrum Team may discuss and refine the items to be included in Sprint Backlog in order to increase clarity, understanding and confidence.
+					
+				- Planning is timeboxed to x8 hours for x1 month Sprint.
+
+			3. Daily Scrum:
+
+				- Scrum is to inspect progress and where necessary adapt Sprint Backlog.
+				- Scrum is x15 minutes and held in same time/place each day to maintain consistency and reduce complexity.
+				- Scrum is for the actual Developers, however should the Scrum Masters and Product Owner also be operating as Developers they may participate.
+				- Scrum is open to any format or technique proposed/decided by the Developers as long as is focused on progress towards completing Sprint Backlog.
+				- Scrum is to produce an actionable plan for the days work whilst stimulating focus and self-management within the Developers.
+				- Scrum is to discuss:
+
+					1. Impediments:		Quickly identify issues or impediments that are holding up progress.
+					2. Decision Making:	Quick decision making.
+					3. Reduce Meetings:	Reduce the need for further meetings outside of the Scrum Framework or otherwise.
+					4. Communication:	Improve communication within the Team.
+					5. Progress:		What has been achieved since the last Scrum Meeting.
+					6. Allocation:		What each Team Member is working on and how it is going.
+					7. Assistance:		Who may need help within their works.
+
+				- Scrum is not exclusively the only place where Developers may meed to adapt the Sprint Backlog, Developers may meet at anytime if necessary.
+ 
+			4. Review:
+
+				- Review occurs at the end of the Sprint.
+				- Review is to:
+			
+					1. Demo:		Demonstrate the work completed during the Sprint to the Product Owner.
+					2. Improvements:	What improvements can be added to the overall development process.
+					3. Assess:		Assess, evaluate and inspect the outcome of the Sprint.
+					4. Adaptions:		Identify possible future adaptions and works.
+
+			5. Retrospective:
+
+				- Retrospective is a review of the actual Sprint process rather than the output.
+				- Retrospective is a review to assess, evaluate and understand how to improve the Sprint process. 
+
+	Increment (of Value):
+
+		- Increment of Value is typically shortened to 'Increment'.
+		- Increment = x1 complete Sprint
+
+	User Stories
+
+		- A way of describing a Feature Set using simple to understand description of the requirements, typically:
+
+			As a:		User/Salesman/Accountant		[A Role]
+			I need:		To view the latest reports		[A Requirement]
+			So that		To present at end of each month		[A Reason]
+
+		- User Story provides a convenient and easy to understand means for a Product Owner to describe to the Scrum Master/Team what is required and how long it will take.
+		- User Story provides the ability to specify just enough detail for the Scrum Master/Team to accurate gain an understanding of the works.
+		- User Story is an item on the Product Backlog. 
+
+	Blocked Items
+
+		- Any aspect of the Sprint Backlog that is preventing stopping progress 
+		
+
+	

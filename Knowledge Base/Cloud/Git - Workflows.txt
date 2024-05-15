@@ -1,0 +1,287 @@
+Git - Commands and Workflows:
+
+	Git Workflow Overview:
+
+		- Git workflows should be:
+
+			- Consistent:	Consistent fixed set of actions used during everyday development.
+			- Errors:	Errors are kept to an absolute minimum/ruled out.
+			- Expectation:	Expectation and the state of local repo and how this compares with main repo is fully known.
+			- Control:	Control is maintained over local repo and the state of the codebase is fully under control.
+			- Mess:		Mess and clouds on ambiguity do not begin to accrue, all aspects are tidy.
+			- Simple:	Simple, simple, simple, keeps all workflows as simple as possible.
+			- Basic:	Basic and straight forward as possible.
+			- Safty:	Safty and minimal risk above all else.
+
+		- Git workflows should not be:
+
+			- Erratic:	Do not jump around increasing the risk of potential error, confusion.
+			- Convoluted:	Do not attempt any ninja gymnastics with the state, config and content of repo.
+			- Unnecessary:	Do not attempt to implement anything which is unnecessarily complex/convoluted.
+
+		- Git Alias:
+
+			- Utilise efficent usage/allocation of alias for common commands.
+			- Care and consideration to ensure effective alis which are not confusing, cumbersome and more hassle than they are worth.
+
+	Git Workflows:
+
+		[Initialise a New Repository]
+
+			Locally:		[Initialise a new repository via local project/set of files]
+			Remote Download:	[Initialise a new repository via remote download and clone]
+
+		[Development]
+
+			[Feature Branch]			[Create feature branch]
+				[Commits - Add]
+				[Commits - Revert]
+				[Commits - Remove]
+				[Commits - Rebase/Squash]
+
+				[Experiment Branch]		[Create experiment branch on feature branch]
+
+					Pros/Cons		Experimental branch good/bad or best just kept on x1 local 
+
+					[Commits - Add]
+					[Commits - Revert]
+					[Commits - Remove]
+					[Commits - Rebase/Squash]
+
+				[Experiment Branch]		[Merge experiment branch on feature branch]
+
+			[Feature Branch]	[Finalise feature branch]
+			[Pull Request]		[Create pull request]
+
+		[Wipe and Start Again]
+
+			[What is the ultimate ability to wipe and start again]
+
+		[Reversion Points]
+
+			[What are the reversion points]
+			[What are the implications of using those recursion points]
+
+		[Shortcuts]
+
+		[Techniques]
+
+		[Get Out of the Shit]
+
+	[Initialise a New Repository]
+
+		1. $ cd <folder location>
+		2. $ git init
+		3. Hidden folder .git is created which will contain all of the files/information pertaining to the evolution of the repository.
+		4. No file are currently tracked.
+
+	[Adding a file to repo]
+
+		1. Add file to folder					|??|
+		2. $ git add "Source Code - 1.txt"			|A |	NB: Extension is needed, quotation marks needed if name contains spaces, case sensitive
+		3. Modify file 						|AM|
+		4. $ git commit -m "Commit Message"			|  |
+		5. Modify file						| M|
+		6. $ git add "Source Code - 1.txt"			|M |
+		7. $ git commit -m "Commit Message"			|  |
+
+	[Updating a file in repo]
+
+		1. Modify file 						| M|
+		2. $ git add "Source Code - 1.txt"			|M |
+		3. Modify file						|MM|
+		4. $ git add "Source Code - 1.txt"			|M |
+		5. Modify file						|MM|
+		6. $ git add "Source Code - 1.txt"			|M |
+		7. $ git commit -m "Commit Message"			|  |
+
+	[Branching]
+
+		7. GitHub CLI Login
+		1. $ git checkout -b <branch name>
+
+	[Revert to a previous commit]
+
+	[Deleting a branch and starting again with whatever is on remote]
+
+	[Recovering Deleted Commits]
+
+		1. Branch is as follows:
+
+			C1 --->	C2 --->	C3 --->	C4 --->	C5 (HEAD)
+
+		2. Deletion:	Delete the last x2 commits using $ git reset:
+
+			C1 --->	C2 --->	C3 (HEAD)
+
+		3. Recover:	Recovery of the last x2 commits is now required:
+
+		4. Reflog:	Reflog is opened:
+
+			$ git reflog
+
+			- Reflog entries are all chronological.
+			- Reflog will list the reset deletion.
+			- Reflog will list the commit ID which the HEAD pointed to at each stage in the history of the branch.
+
+		5. Restore:	Restore the x2 deleted commits by obtaining the commit ID which of C5 above and enter into the below command:
+
+			$ git branch happy-ending e5b19e4
+
+			- Head will now point to the commit C5 once again.
+			- Head will now point to C5 and given that all commits that constitute a branch is a linked list, C5 points back to its parent C4 which points back to its parent C3 restoring the overall branch.
+				
+	[Recovering Deleted Branches]
+
+		1. Branch is as follows:
+
+				C2 ---> C6 ---> C7 ---> C8 (HEAD)		[feature]
+				|
+			C1 --->	C2 --->	C3 --->	C4 --->	C5 			[main]
+
+		2. Deletion:	[feature] branch is deleted
+
+			C1 --->	C2 --->	C3 --->	C4 --->	C5 			[main]
+
+		3. Recover:	[feature] now needs to be recovered
+
+		4. Reflog:	Reflog is opened and copy the commit ID which the HEAD previously pointed to C8:
+
+			$ git reflog	
+
+		5. Create:	Create a new branch of the same name whilst also pointing the HEAD to commit ID of the last commit on that branch i.e. C8:
+
+			$ git branch feature <C8 commit ID>
+
+		6. Restore:	Restore the former [feature] branch:
+
+				C2 ---> C6 ---> C7 ---> C8 (HEAD)		[feature]
+				|
+			C1 --->	C2 --->	C3 --->	C4 --->	C5 			[main]
+
+			- Given that the deletion of commits/branches does not formally delete those objects/structures but simply break their association within the inherent linked list structure.
+			- Creating a new branch while pointing the HEAD to a previously existing commit ID C8 instructs git to 'reconnect' C6 back to C2 i.e. the linked list structure was not deleted but existing the repo and is restored.
+
+	Everday Updating:
+
+		Online:
+
+			1. GitHub.com		Branch and download clone of repo onto local machine
+
+		Offline:
+
+			2. Modify
+			3. Local:		git:	Commit, git takes a snapshot, creates a patch stored in the hidden .git folder
+			4. Modify
+			5. Local:		git:	Commit, git takes a snapshot, creates a patch stored in the hidden .git folder
+			6. ...[Repeat]
+
+		Online:
+
+			7. GitHub CLI:		Login
+			8. GitHub CLI:		Make pull request
+			9. GitHub Repo Owner:	Merge branch
+
+		Questions
+
+			1. Can same folder be used between branch/repo downloads:
+
+				1. Repo 1: Branch
+				2. Modify
+				3. Pull Request
+				4. Merged
+
+			2. Same Folder
+
+				1. Repo 2: Branch (but into the same folder/work location)
+				2. Does it:
+
+					1. Fully delete wipe the contents of the work folder
+					2. Is init required to be run first
+					3. Manual deletion required
+
+		Querying
+
+			How to find a point when a file worked but no longer does
+
+			Is there a history of commands sent to git so can look back if in any doubt - log?
+
+		History		(via git)
+
+		Diff		(via git)
+
+		Loggin in	(via GitHub CLI)
+
+		Issues		(via GitHub CLI)
+
+		Gists		(via GitHub CLI)
+
+		Pull Requests	(via GitHub CLI)
+
+		Status		(via git)
+
+		Safety/Rectify/Undo:	(via git)
+
+		Deleting/removing and replacing remote repository:
+
+			1. GitHub:		Delete repository.
+			2. Local Repository:	Delete all contents including hidden folders.
+			3. GitHub Desktop:	Create new repository.
+			4. Local Repository:	Add repository contents.
+			5. GitHub Desktop:	Publish.
+
+			The new remote repository is created on GitHub.
+
+		Remote Repository Default Settings Alterations:
+
+			1. Code and automation
+
+				Actions:	Disable Actions
+				Read repository contents permission
+
+		Local and Remote Repository Creation via CLI:
+
+			1. Github:		Setup new repository
+			2. Local CLI:		cd 'working directory'
+
+						git init							//Initialise PWD on local machine
+						git add .							//Add PWD to local repository
+						git commit -m "initial commit"					//Commit the contents of PWD to local repository
+						git remote add origin <Github remote repository link>		//Point and associate the local repo to the remote repo as defined by the URL as supplied via Github.com
+
+							git remote add origin git@github.com:Paul-Surridge/repo-name
+
+						git push origin master						//Push the local repo to the master branch of the remote repo on GitHub
+
+		Local and Remote Repository Update via CLI:
+
+			Present State:
+
+				Local Directory:	
+
+		Creating Issue and Merge:
+
+			1. Master Branch:
+			2. Create Issue:
+
+				1. Create Branch
+				2. Commits:			Modifiy the Feature Branch creating regular 'Commits'.					
+				3. Make Pull Request:		Once all necessary works complete, make a Pull Request for the Owner of the Master Branch to peer review, comment and discussion of the Feature Branch.
+				4. Pull:			Once all members and Owner of Master Branch are happy, sign off the modifications in the Feature Branch.
+								Feature Branch is 'pulled' into the Master Branch i.e. merged with the Master Branch.
+			3. Close Issue.
+
+		[Commits]
+
+			- All is based around the 'commit'
+			- All is reset when the 'commit' is applied
+
+	ToDo
+
+		cd: Fully research this command ../Path ?
+		IntelliJ GitHub Integration ?
+
+	Queries:
+
+		What happens if try to present, add, modify an ignored files to index.
+

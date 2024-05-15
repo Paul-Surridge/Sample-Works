@@ -1,0 +1,129 @@
+Spring
+
+	Logging:
+
+		- Logging provides the ability to:
+
+			1. Program State:	Maintain a record of a programs state.
+			2. Program Execution:	Maintain a record of a programs execution.
+			3. Program Debug:	Perform debug at all stages of development including:
+
+							Filter:		Logging via an API provides the ability to filter what is logged as opposed to sending everything to System.out.println.
+							Security:	Logging provides the ability to trace access for security purposes.
+							Statistics:	Logging creates data for statistical use.
+
+		- Logging is one of the primary means of debug within microservice based architectures.
+		- Logging should aim to be:
+
+			1. Detailed
+			2. Configurable
+			3. Reliable
+
+		Slf4j:
+
+			- Slf4j is a logging framework.
+			- Slf4j has x2 basic aspects:
+
+				1. API:			Interface/facade.
+							Slf4j only uses org.slf4j.Logger within applications i.e. all logging is via this interface.
+
+				2. Implementation:	Implementation is the current operational functionality behind the API (which the API will call to provide the overall logging service).
+							Implementation is an interchangable.
+							Implementation is called a 'binding'.
+							Implementation is relatively simple and Slf4j requires only x1 implementation at runtime which overall leads to minimal setup and configuration by the developer i.e. easy to setup and use.
+
+		Logback:
+
+			- Logback is an implementation of the Slf4j API interface which is a successor of log4j java project.
+			- Logback is fast, flexible and reliable logging implementation written in java.
+			- Logback has extensive documentation.
+			- Logback logging output can be configured using a separate/external config/script file at runtime e.g. *.xml or groovy files.
+			- Logback can automatically reload its configuration file upon modification.
+			- Logback automatically removes old log archives.
+			- Logback views the logging uses priorities which determine x5 levels of granularity, severity and verbosity:
+
+				TRACE
+				DEBUG
+				INFO
+				WARN
+				ERROR
+
+			- Logback can direct logging information to a variety of destinations e.g. databsae, file, email, console...
+			- Logback is built and included within a project via Maven.
+			- Logback has x3 main components/interfaces:
+
+				1. logger:		Responsible for capturing logging information.
+				2. appenders:		Responsible for publishing logging information to desired destinations.
+				3. layouts:		Responsible for formatting logging information.
+
+				NB: The behaviour of the above aspects can be altered by switching implementations for the above interfaces.
+
+			- Logback utilises filters allowing them to be assembled or chained together to form complex filtering policy.
+			- Logback is initialised as follows:
+
+				1. Logback looks for a config file on the classpath in the following order:
+
+					1. logback-test.xml
+					2. logback.groovy
+					3. logback.xml
+					4. Cloud Service Provider provides an implementation of the Configurator interface.
+					5. [Last] If above all fails Logback configures itself automatically using the BasicConfigurator which will direct all logging to the console. 
+		
+				2. The above ensures that if there is no config file, output is directed to the console.
+
+			- Logback Logger:
+
+				- Logger is an object supplied by LogBack which can be used within the java source code to pass text for logging.
+				- Logger names follow the 'hierarchical naming rule' (as that deployed in packaging):
+
+					org.Surridge			//Ancestor
+					org.Surridge.Paul		//Parent
+					org.Surridge.Paul.Logger
+
+				- Logger at the top of the heirarchy is the 'root logger':
+
+					- Root Logger cannot be retrieved by name as for other loggers.
+					- Root Logger always exists by default.
+
+				- Logger examples:
+
+					log.info("objA = {}", objA);
+
+						- Returns the reference of objA if it is instantiated and not null.
+						- .toString of the object replaces the {}.
+
+					log.info("This is a message");
+
+						- Returns simple message.
+
+			- Logback Layout:
+
+				- Layouts utilise a pattern conversion:
+
+					%date[%thread][%-5level]%logger{40} - %message%n
+
+					2021-01-01 12:00:00,000[main][INFO](Name of Logger) - (Message Output)
+					2021-01-01 12:00:00,000[main][INFO]org.Surridge.Paul.Logger - This is a test message.
+
+					%:		Prefix of any Conversion Character
+					%-5level:	Output is left justified
+					%5level:	Output is right justified
+					%logger{40}:	Output of logger name is reformated to fit within x40 characters
+
+			- Logback.xml Rename:
+
+				- Logback.xml should be renamed as Logback-Spring.xml when within a Spring Boot project.
+				- This enables Spring to be fully in control of all aspects of the initailsiation process.
+
+			- ANSI Console Output:
+
+				- Within application.properties:
+
+					# enable ansi output
+					spring.output.ansi.enabled = always
+
+				- This will cause the console output to be colour coded and easier to read.
+
+			- Configuration File:
+
+				- Configuration file needs to be within the resources folder in project root i.e. src/main/java.

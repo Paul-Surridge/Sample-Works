@@ -1,0 +1,633 @@
+Collections - Map
+
+	Overview:
+
+		- Map models the mathematical function abstraction.
+		- Map replaces Dictionary Abstract Class.
+		- Map contain Entries of Key-Value pairs (not Elements).
+
+	API:
+
+			Return Type			Method											Description
+		____________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+		Add/Remove:
+
+			V				remove​(Object key)									Removes the mapping for a key from this map if it is present (optional operation).
+			default boolean			remove​(Object key, Object value)							Removes the entry for the specified key only if it is currently mapped to the specified value.
+			default V			replace​(K key, V value)									Replaces the entry for the specified key only if it is currently mapped to some value.
+			default boolean			replace​(K key, V oldValue, V newValue)							Replaces the entry for the specified key only if currently mapped to the specified value.
+			default void			replaceAll​(BiFunction<? super K,​? super V,​? extends V> function)			Replaces each entry's value with the result of invoking the given function on that entry until all entries have been processed or the function throws an exception.
+
+			void				clear()											Removes all of the mappings from this map (optional operation).
+
+		Get/Set:
+
+			V				get​(Object key)										Returns the value to which the specified key is mapped, or null if this map contains no mapping for the key.
+			default V			getOrDefault​(Object key, V defaultValue)						Returns the value to which the specified key is mapped, or defaultValue if this map contains no mapping for the key.
+
+			static <K,​V> Map.Entry<K,​V>	entry​(K k, V v)										Returns an unmodifiable Map.Entry containing the given key and value.
+			Set<Map.Entry<K,​V>>		entrySet()										Returns a Set view of the mappings contained in this map.
+
+			V				put​(K key, V value)									Associates the specified value with the specified key in this map (optional operation).
+			void				putAll​(Map<? extends K,​? extends V> m)							Copies all of the mappings from the specified map to this map (optional operation).
+			default V			putIfAbsent​(K key, V value)								If the specified key is not already associated with a value (or is mapped to null) associates it with the given value and returns null, else returns the current value.
+			Set<K>				keySet()										Returns a Set view of the keys contained in this map.
+			default V			merge​(K key, V value, BiFunction<? super V,​? super V,​? extends V> remappingFunction)	If the specified key is not already associated with a value or is associated with null, associates it with the given non-null value.
+
+		Query:
+
+			boolean				containsKey​(Object key)									Returns true if this map contains a mapping for the specified key.
+			boolean				containsValue​(Object value)								Returns true if this map maps one or more keys to the specified value.
+			int				size()											Returns the number of key-value mappings in this map.
+			boolean				isEmpty()										Returns true if this map contains no key-value mappings.
+
+		Compute:
+
+			default V			compute​(K key, BiFunction<? super K,​? super V,​? extends V> remappingFunction)		Attempts to compute a mapping for the specified key and its current mapped value (or null if there is no current mapping).
+			default V			computeIfAbsent​(K key, Function<? super K,​? extends V> mappingFunction)			If the specified key is not already associated with a value (or is mapped to null), attempts to compute its value using the given mapping function and enters it into this map unless null.
+			default V			computeIfPresent​(K key, BiFunction<? super K,​? super V,​? extends V> remappingFunction)	If the value for the specified key is present and non-null, attempts to compute a new mapping given the key and its current mapped value.
+
+		Unmodifiable Map:
+
+			static <K,​V> Map<K,​V>		copyOf​(Map<? extends K,​? extends V> map)						Returns an unmodifiable map containing the entries of the given Map.
+
+			static <K,​V> Map<K,​V>		of()											Returns an unmodifiable map containing zero mappings.
+			static <K,​V> Map<K,​V>		of​(K k1, V v1)										Returns an unmodifiable map containing x2 mappings.
+			... x10
+			static <K,​V> Map<K,​V>		ofEntries​(Map.Entry<? extends K,​? extends V>... entries)				Returns an unmodifiable map containing keys and values extracted from the given entries.
+
+		Collection View:
+
+			Collection<V>			values()										Returns a Collection view of the values contained in this map.
+
+		ForEach:
+
+			default void			forEach​(BiConsumer<? super K,​? super V> action)						Performs the given action for each entry in this map until all entries have been processed or the action throws an exception.
+
+		Misc:
+
+			boolean				equals​(Object o)									Compares the specified object with this map for equality.
+			int				hashCode()										Returns the hash code value for this map.
+
+	Implmentations:
+
+		General Purpose:
+
+			1. HashMap
+			2. TreeMap
+			3. IdentityHashMap
+
+			Map and Set implementations are precisely analogous.
+
+			Maps:		Sets:
+			_________________________
+
+			HashMap		HashSet
+			TreeMap		TreeSet
+			LinkedHashMap.  LinkedHashSet
+
+		Specific:
+
+			1. AbstractMap
+			2. Attributes
+			3. AuthProvider
+			4. ConcurrentHashMap
+			5. ConcurrentSkipListMap
+			6. EnumMap	
+			7. Hashtable
+			8. Headers	
+			9. LinkedHashMap
+			10. PrinterStateReasons
+			11. Properties
+			12. Provider
+			13. RenderingHints
+			14. SimpleBindings
+			15. TabularDataSupport
+			16. UIDefaults
+			17. WeakHashMap
+
+	Notes:
+
+		Form:
+
+			Key	Value
+			_____________
+
+			k1	v1
+			k2	v1
+			k3	v2
+			k4	v4
+			k5	v10
+
+			Keys:
+				- No Duplicates (Unique)
+				- Map only to x1 Value
+
+			Values:
+
+				- Duplicate
+
+		Collection Views:
+
+			- x3 Collection Views:
+
+				1. Set of Keys
+				2. Collection of Values
+				3. Set of Key-Value Mappings
+
+		Ordering:
+
+			- Defined by Iterators (which determine the order as per the Collection Views).
+			- Order is not guaranteed on all implmentations.
+
+		No Mutable Keys:
+
+			- Mutable Objects should not be used in as Keys.
+			- Behaviour is not specified if a Key is altered (which effects .equals()).
+
+		Self-Referencing:
+
+			- Given that Keys should not be mutable.
+			- Therefore a Key may not be a reference to the Map itself.
+			- However a Value may be able to reference to the Map itself (but this is still strongly not advised) for the .equals() and .hashCode() are no longer well defined on such a Map.
+
+		Destructive Methods:
+
+			- Destructive Methods i.e. methods which modify the map throw UnsupportedOperationException, if that particular implementation does not implement that method.
+			- Even if a particular call to a Destructive Method does not actually modifiy the Map e.g. adding an empty Map, the UnsupportedOperationException should still be thrown.
+
+		Key, Value Restrictions
+
+			- Key, Value restrictions can be applied e.g.
+
+				1. No null Keys/Values.
+				2. Restricted Key, Value Types.
+
+			- Attempting to insert ineligible Key/Value throws unchecked exception e.g.
+
+				1. NullPointerException.
+				2. ClassCastException.
+
+		of()
+
+			- No Vargs
+
+		equals():
+
+			- A large number of methods in Collections Framework utilise .equals() e.g.
+
+				boolean containsKey(Object k)
+				{
+				    returns true if and only if this map contains a mapping for a key k such that (key==null ? k==null : key.equals(k);
+				}
+
+			- However it should not b eassumed that all methods use .equals() as described above.
+			- Implementations of Collections are free to use alternative more efficient means of checking equality other than .equals() e.g. checking hashCodes().
+			- In general, implementations of the various Collections Framework are free to take advantage of any methods associated with the underlying Key objects wherever the implementor deems it appropriate.
+
+		Equality:
+
+			- Maps are equal if they represent tha same key-value mappings.
+
+		Map Conversion:
+
+			- All general purpose Maps contain a Constructor that allows the conversion of a supplied Map to the invoked Map:
+
+				Map<K, V> copy = new HashMap<K, V>(m);
+
+			- m:		A Map of some description.
+			- copy:		A converted HashMap of supplied Map m
+
+			- 'copy' contains all of the same key-value mapping of me but now within the characteristics of a HashMap.
+
+		Unmodifiable Maps:
+
+			- Map.of(), Map.copyOf() and Map.ofEntries​() are static facctory methods for generating Unmodifiable Maps of Map, whereby:
+
+				1. No Add/Remove:					Key, Values cannot be added, removed, replaced 			or throw UnsupportedOperationException
+				2. No null:						Key, Values must be non-null 					or throw NullPointerException
+				3. No Duplicates:					Key, Values which are duplicate are rejected.
+											Key, Values which are duplicate and passed to Factory Method	throw IllegalArgumentException
+				4. No Order:						Order is unspecified and subject to change.
+				5. ByValue:						Not ByRef i.e. the generated Key, Values maybe originals or copies, therefore operations reliant on the address should be avoided e.g.
+
+												equals()
+												hashCode();
+												==
+												synchronisation
+				
+				6. Serialisable: 					Unmodifiable Maps are only serialisable if all Key, Values are Serialisable as specified by 'Serialised Form' on Java API.
+				
+			- Ideally the underlying Key, Values contained within a Map should be either:
+
+				1. Immutable:		Key, Values cannot be altered in anyway.
+				2. Unreachable:		Key, Values cannot be reached by any of part of the program and potentially altered.
+
+			- Key, Values which are altered may cause the Map to behave unexpectedly/inconsistently.
+
+		Collection Views:
+
+			- Map support Collection Views as per List, Set.
+			- Map Collection Views are:
+
+				Method			Return
+				_____________________________________________________________
+
+				keySet:			Set of Keys contained in the Map
+				values:			Collection of Values contained in the Map 	(NB: Values are not returned as a Set, given Values may contain duplicates).
+				entrySet:		Set of Key-Value pairs contained in the Map	(NB: Map contains a Nested Interface Map.Entry, the Set returned by 'entrySet' contains Elements of Map.Entry)
+
+			- Collection View provide the sole ability to iterate over a Map:
+
+				For-Each:
+
+					for (KeyType key : m.keySet())					//Keys
+					    System.out.println(key);
+
+					for (Map.Entry<KeyType, ValType> e : m.entrySet())		//Key-Value Pairs
+    					    System.out.println(e.getKey() + ": " + e.getValue()); 
+
+				Iterator:
+
+					for (Iterator<Type> it = m.keySet().iterator(); it.hasNext(); )
+    					    if (it.next().isBogus())					//Filtered
+        					it.remove();
+
+					- The Iterators associated .remove() method, removes the entry from the Backing Map (presuming that is supported).
+					- The Iterators Mutator Methods are the only safe way of modifiying the Backing Map, modifiying the Backing whilst the Iterator is running is undefined and not recommended.
+
+				NB:
+					- Upon invoking the above, a Map does not recreate the returned Collection View each time.
+					- A Map contains the Collection View 'ready to go' and returns the same object.
+					- Applicable to Map implementations in java.util.
+
+			- Collection Views do not support any means of adding Entries to a Map, in which instant the direct methods associated with the Backing Map should be used.
+
+		MultiMap:
+
+			- Multimap is a map where each Key maps to multiple values.
+			- Multimap is a map where the values maybe typically Lists.
+			- Multimap is not a specific Interface in the Collections Framework for the requirement is not that common.
+
+				Map<Integer, List<String>>
+
+	Examples:
+
+		1. Grouping:
+
+			Map<Department, List<Employee>> byDept = employees.stream().collect(Collectors.groupingBy(Employee::getDepartment));
+
+			- A Map of:
+
+				Keys:		Values:
+				__________________________
+
+				Departments	List<Employee>
+
+			- .stream():	'employees' is a Collection that returns a .stream().
+			- .collect():	Returns a Map using Collectors.groupingBy(Method Reference which returns the Department of each Employee) 
+
+		2. Calculate Salary:
+
+			Map<Department, Integer> totalByDept = employees.stream().collect(Collectors.groupingBy(Employee::getDepartment, Collectors.summingInt(Employee::getSalary)));
+
+			- A Map of:
+
+				Keys:		Values:
+				__________________________
+
+				Departments	Total Salary Costs
+
+		3. Student Grades:
+
+			Map<Boolean, List<Student>> passingFailing = students.stream().collect(Collectors.partitioningBy(s -> s.getGrade()>= PASS_THRESHOLD));
+
+		4. Cascaded Grouping:
+
+			Map<String, Map<String, List<Person>>> peopleByStateAndCity = personStream.collect(Collectors.groupingBy(Person::getState, Collectors.groupingBy(Person::getCity)))
+
+			- Map within a Map
+
+				Keys:		Values:
+				__________________________
+
+				State		Map<City, List<Person>>
+
+			- 'personStream':	A stream of 'Person'
+			- 'collect':		Collected and return a Map
+			- Overall a highly compact, expressive means of converting a Stream into a Map.
+
+		5. Map with Default Values:
+
+			static <K, V> Map<K, V> newAttributeMap(Map<K, V>defaults, Map<K, V> overrides)
+			{
+    			    Map<K, V> result = new HashMap<K, V>(defaults);
+
+    			    result.putAll(overrides);
+    			    return result;
+			}
+
+			- newAttributeMap:	Accepts x2 Maps:
+
+						'defaults':	A Map contain nothing but the default values.
+						'overrides':	A Map contain nothing but the desired attribute values.
+
+			- 'result':	A copy of 'defaults'
+			- 'result':	'overrides' is overlaid, whereby any Entries which are not contained in 'overrides' remain at their default value.
+	
+		6. Check if one Map is a Subset of another Map:
+
+			if (m1.entrySet().containsAll(m2.entrySet()))
+			{...}
+
+		7. Check if x2 Sets all contain the same Keys:
+
+			if (m1.keySet().equals(m2.keySet()))
+			{...}
+
+		8. Attribute Pairs:
+
+			static <K, V> boolean validate(Map<K, V> attrMap, Set<K> requiredAttrs, Set<K>permittedAttrs)
+			{
+    				boolean valid = true;
+    				Set<K> attrs = attrMap.keySet();
+
+    				if (! attrs.containsAll(requiredAttrs))
+				{
+        				Set<K> missing = new HashSet<K>(requiredAttrs);
+        				missing.removeAll(attrs);
+        				System.out.println("Missing attributes: " + missing);
+        				valid = false;
+    				}
+
+    				if (! permittedAttrs.containsAll(attrs))
+				{
+        				Set<K> illegal = new HashSet<K>(attrs);
+        				illegal.removeAll(permittedAttrs);
+        				System.out.println("Illegal attributes: " + illegal);
+       					valid = false;
+    				}
+    				return valid;
+			}
+
+			- attrMap:		[Map] Attribute-Value Pairs
+			- requiredAttrs:	[Set] Required Attributes
+			- permittedAttrs:	[Set] Permitted Attributes
+
+			- The 'Permissible Attributes' naturally contain the 'Required Attributes'.
+			- The above checks that the Attribute Map conforms to the above.
+
+		9. Find all common Keys:
+
+				Set<KeyType>commonKeys = new HashSet<KeyType>(m1.keySet());
+				commonKeys.retainAll(m2.keySet());
+
+			- Map 'm1' is converted into a HashSet 'commonKeys'.
+			- Map 'm2' is converted into a KeySet.
+			- 'commonKeys' is then compared with the KeySet of 'm2' whereby retaining all of the commom Keys.
+
+	Destructive Idioms:
+
+		10. Remove all Key-Value pairs that x2 Maps have in common:
+
+			m1.entrySet().removeAll(m2.entrySet());
+
+		11. Remove all Keys that x2 Maps have in common:
+
+			m1.keySet().removeAll(m2.keySet());
+
+		12. MultiMaps:
+
+				public class Anagrams
+				{
+    					public static void main(String[] args)
+					
+        					int minGroupSize = Integer.parseInt(args[1]);
+
+        					// Read words from file and put into a simulated multimap
+        					Map<String, List<String>> m = new HashMap<String, List<String>>();
+
+        					try
+						{
+            						Scanner s = new Scanner(new File(args[0]));
+            						while (s.hasNext())
+							{
+                						String word 	= s.next();
+                						String alpha 	= alphabetize(word);
+                						List<String> l 	= m.get(alpha);
+                						if (l == null)
+                    							m.put(alpha, l=new ArrayList<String>());
+                						l.add(word);
+            						}
+        					} catch (IOException e)
+						{
+            						System.err.println(e);
+            						System.exit(1);
+        					}
+
+        					// Print all permutation groups above size threshold
+        					for (List<String> l : m.values())
+            						if (l.size() >= minGroupSize)
+                						System.out.println(l.size() + ": " + l);
+    					}
+
+    					private static String alphabetize(String s)
+					{
+        					char[] a = s.toCharArray();
+        					Arrays.sort(a);
+        					return new String(a);
+    					}
+				}
+
+			- HashMap MultiMap of <String, List<String>>
+			- Scanner opens a wordlist file containing x1 word per line.
+			- Each word is read in and sorted into alphabetical order.
+			- If sorted word does not already exist as a Key in the MultiMap, add it as a Key to the MultiMap and create a new List<String> Value and add the unsorted word to the List.
+
+				Key		Value
+				__________________________________________________
+
+				Word_1		List of all permutations of Word_1
+				Word_2		List of all permutations of Word_2
+				Word_3		List of all permutations of Word_3
+				...
+
+			- Finally print out all Entries in the MultiMap.
+
+	Map Implementations
+
+		Comparison:
+																		
+						HashMap				HashTable			LinkedHashMap			TreeMap					Difference
+			_______________________________________________________________________________________________________________________________					__________
+
+			Speed:			(2)				Fastest (1)			(3)				(4)					x
+
+			Ordering:		None/Inconsistent		None/Inconsistent		Insertion			Natural or Comparator			x
+
+			Duplicates:		Keys    - No			Keys    - No			Keys    - No
+						Values  - Yes			Values  - Yes			Values  - Yes
+
+			Backed:			HashTable			HashTable			HashTable			Red Black Tree				x
+														(With Doubly Linked List)
+
+			Null:			Keys 	- x1			Keys 	- No			Keys 	- x1								x
+						Values 	- Multiple		Values 	- No			Values 	- Multiple
+
+			Synchronised:		Yes				Yes				No				No					x
+						(but use ConcurrentHashMap)	(but use ConcurrentHashMap)
+
+			Iterator:		No				No				No				No
+						(only via Collection View)	(only via Collection View)	(only via Collection View)	(only via Collection View)
+
+			Optional Operations:	Yes (All)			Yes (All)			Yes (All)			Yes (All)
+
+			Time Complexity:	Operation Dependent		Operation Dependent		Operation Dependent		Operation Dependent
+
+		HashMap:
+
+			- Equivalent to HashTable except that it is synchronised and permits nulls.
+			- Time Complexity:
+
+				- Mutative:	Constant (presuming that the hash functions of the Elements disperses the Elements properly among the Buckets).
+				- Iterative:	Proportional to:
+
+							1. Size:		The total number of Elements.
+							2. Capacity:		The total number of allocated/reserved Buckets.
+
+						Therefore do not set the Initial Capacity too high or Load Factor too low if iteration speed is important.
+
+			- Iterators:		HashMap does not directly return an Iterator, but 'Collection View' methods do return Set<E>, whereby the same precautions apply i.e. do not mutative the Data Structure while using returned Set<E>.
+			- Initial Capacity:	The number of buckets when created.
+			- Element/Entry:	Key-Value Pair.
+			- Load Factor:		Default 0.75 (best compromise between time and space costs)
+			- Resizing:		When the below, the Data Structure is resized and rehashed. Capacity is approximately doubled.
+
+							Number of Entries > (Initial Capacity * Load Factor)
+
+			- Minimum Rehashing:	Rehashing should always be kept to a minimum via careful consideration of:
+
+							1. Number of Entries (expected).
+							2. Load Factor.
+							3. Initial Capacity.
+
+						Recommend:
+
+							1. Initial Capacity:		Larger in order to store Entries more efficiently.
+
+			- HashCode:		Important to ensure that hashCode() always must return a unique value to prevent a slow down in performamnce.
+			- Comparable<E>		Having keys implement Comparable<E> helps to ameliorate any possible hash conflicts by using comparaison order to help break ties. 
+			- Iterators:		HashTable does not directly return an Iterator, but 'Collection View' methods do return Set<E>, whereby the same precautions apply i.e. do not mutative the Data Structure while using returned Set<E>.
+		
+		HashTable:
+
+			- Keys:			Must implement/override .equals() and .hashCode().
+			- Values:		Must implement/override .equals() and .hashCode().
+			- Open:			HashTable is 'open' i.e. upon hash conflicts, a single Bucket will contain multiple Entries which must be searched sequentially leading to poor performance. 
+			- Minimum Rehashing:	Rehashing should always be kept to a minimum via careful consideration of:
+
+							1. Number of Entries (expected).
+							2. Load Factor.
+							3. Initial Capacity.
+
+						Recommend:
+
+							1. Initial Capacity:		Larger in order to store Entries more efficiently.
+
+			- Enumerations:		The Enumerations<> returned by .keys() and .values() are not Fail-Fast i.e. if the Data Structure is modified after the Enumerations are returned their behaviour is undefined.
+			- Synchronisation:	HashTable is synchronised however if concurrency is needed it is recommended that ConcurrentHashMap is used rather than HashTable.
+
+		LinkedHashMap:
+
+			- Twin:			Equivalent to LinkedHashSet but with a Map.
+			- Ordering:		Insertion Order is not affected if an Element is re-inserted into the Map i.e. if .add(e) is called when .contains(e) is true.
+			- Time Complexity:	
+
+				- Mutative:	Constant (presuming that the hash functions of the Elements disperses the Elements properly among the Buckets).
+				- Iterative:	Proportional to:
+
+							1. Size:		The total number of Elements.
+							2. Capacity:		Not relevant.
+
+						Therefore do not set the Initial Capacity too high or Load Factor too low if iteration speed is important.
+
+			- Almost as fast as HashMap (given need to service Doubly Linked List) whilst still providing ordering but not being as slow as a TreeMap.
+			- Typically used to make a copy of a Map with the same ordering, regardless of the original Maps implementation.
+
+				void foo(Map m) {
+         		    	    Map copy = new LinkedHashMap(m);
+
+			- This is useful when assessing/processing a Map but wish to ensure that the original is unaltered:
+
+				1. Method is passed a Map.
+				2. Method creates a copy.
+				3. Method assesses/processes copy of Map.
+				4. Method returns a result.
+
+			- Given the Time Complexity of this implementation, where Capacity is irrelevant, an excessively high Initial Capacity affects performance less than HashMap.
+			- Ideal for LRU caches, specialist Constructors provide functionality.
+
+		TreeMap:
+
+			- Twin:			Equivalent to LinkedHashMap but with a Map.
+			- Ordering:		Whether natural or Comparator must be 'Consistent with .equals()' (as defined by Comparator) where comparison should yield the same results as using .equals().
+			- No Tuning Parameters.
+
+	SortedMap:
+
+		Overview:
+
+			- SortedMap is analogous to SortedSet.
+			- SortedMap provides 'total ordering' of its Keys via:
+
+				1. Natural Ordering
+				2. Comparator (supplied at instantiation)
+
+			- SortedMap novel functionality:
+
+				Range-View:		Perform arbitrary range operations.
+				Endpoints:		Return first/last Element.
+				Comparator Access:	Return the Comparator (if any).
+
+		API:
+
+				Return Type			Method					Description
+			____________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+			Range-View:
+
+				SortedMap<K,​V>			headMap​(K toKey)			Returns a view of the portion of this map whose keys are strictly less than toKey.
+				SortedMap<K,​V>			subMap​(K fromKey, K toKey)		Returns a view of the portion of this map whose keys range from fromKey, inclusive, to toKey, exclusive.
+				SortedMap<K,​V>			tailMap​(K fromKey)			Returns a view of the portion of this map whose keys are greater than or equal to fromKey.
+
+			Endpoints:
+
+				K				firstKey()				Returns the first (lowest) key currently in this map.
+				K				lastKey()				Returns the last (highest) key currently in this map.
+
+			Comparator:
+
+				Comparator<? super K>		comparator()				Returns the comparator used to order the keys in this map, or null if this map uses the natural ordering of its keys.
+
+			Collection View:
+
+				Collection<V>			values()				Returns a Collection View of the values contained in this map.
+
+			Set View:
+
+				Set<Map.Entry<K,​V>>		entrySet()				Returns a Set View of the mappings contained in this map.
+				Set<K>				keySet()				Returns a Set View of the keys contained in this map.
+
+			Methods As Declared In:
+
+				java.util.Map:
+
+					clear, compute, computeIfAbsent, computeIfPresent, containsKey, containsValue, equals, forEach, get, getOrDefault, hashCode, isEmpty,
+					merge, put, putAll, putIfAbsent, remove, remove, replace, replace, replaceAll, size
+
+		Implementations:
+
+			1. ConcurrentSkipListMap
+			2. TreeMap
+

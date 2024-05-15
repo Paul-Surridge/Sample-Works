@@ -1,0 +1,274 @@
+Utility Functions (Built-in)
+
+	Integer
+
+		Fields
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			BYTES			4				Number of bytes used within an int using 2-complement
+			MAX_VALUE		(2^31)-1			Maximum value that can be contained within an int
+			MIN_VALUE		-2^31				Minimum value that can be contained within an int
+			SIZE			32				Number of bits used within an int using 2-complement
+			TYPE			Class				Class instance representing the primitive type int
+
+		Constructors:
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			Integer(int i)						Convert int to Integer (Box)
+			Integer(String s)					Convert String to Integer
+
+
+		Conversion:
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			byte		byteValue()				Convert 'this' to byte value after narrowing
+			double		doubleValue()				Convert 'this' to double after widening
+			float		floatValue()				Convert 'this' to float after widening
+			int		intValue()				Convert 'this' to int (unbox)
+			long		longValue()				Convert 'this' to long after widening
+			short		shortValue()				Convert 'this' to short value after narrowing
+
+
+		Conversion: String to Integer/int
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	Integer		decode(String s)			Convert s to Decimal, Octal or Hex:
+
+											Decimal:	123
+											Octal:		0123
+											Hex:		0x123		0X123		#123
+							
+											No whitespace
+											No underscore
+											Leading zeros ignored
+											-+ sign optional
+
+		static 	int		parseInt(String s)			Convert s to int:
+		static 	int		parseUnsignedInt(String s)
+											"123"			123
+											"-123"			-123
+											"+123"			123
+
+		static 	int		parseInt(String s, int radix)		Convert s to int using radix:
+		static 	int		parseUnsignedInt(String s, int radix)
+											("0", 10) 		0
+											("473", 10) 		473
+											("+42", 10) 		42
+											("-0", 10) 		0
+											("-FF", 16) 		-255
+											("1100110", 2) 		102
+											("2147483647", 10) 	2147483647
+											("-2147483648", 10) 	-2147483648
+											("2147483648", 10) 	throws a NumberFormatException
+											("99", 8) 		throws a NumberFormatException
+											("Kona", 10) 		throws a NumberFormatException
+											("Kona", 27) 		411787
+
+											Character/Digits in s must exist within range of radix:
+
+												Oct:		0-7
+												Dec:		0-9
+												Hex:		0-9 A-F
+
+											Radix:	Character.MIN_RADIX - Character.MAX_RADIX.
+											s cannot be null or ""
+											s cannot be a value larger than int (32 bit)
+
+											Characters:	0-9 and a-z are available should large radix be supplied
+
+		static	Integer		valueOf(String s)			Convert s to an Integer interpreted as a signed decimal, equivalent to:
+		static	Integer		valueOf(String s, int radix)
+											new Integer(IntegerparseInt(s))
+											new Integer(IntegerparseInt(s, radix))
+
+											Exception thrown if s not valid
+
+		Conversion: Integer/int to String (All Bases)
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	String		toBinaryString(int i)			Convert i to unsigned binary string of 0 and 1 ASCII:
+
+											i:	1,107,824,706
+											return: 100 0010 0000 1000 0001 0000 0100 0010
+
+											i:	-8
+											return:	1111 1111 1111 1111 1111 1111 1111 1000
+
+											Leading 0's removed
+
+		static	String		toHexString(int i)			Convert i to hex string of 0-9 a-f ASCII:
+
+											i:	1,237,924,706
+											return: 49c93b62
+
+											Leading 0's removed
+											If uppercase required use:	String.toHexString(1237924706).toUpperCase();
+
+		static	String		toOctalString(int i)			Convert i to octal string of 0-7 ASCII:
+
+											i:	1,237,924,706
+											return: 11162235542	[No commas]
+
+											Leading 0's removed
+
+			String		toString()				Convert i to decimal string of 0-9 ASCII or using radix:
+		static	String		toString(int i)
+		static	String		toString(int i, int radix)			i:	1,237,924,706
+											return: 1237924706	[No commas]	
+
+											Leading 0's removed
+											If uppercase required use:	String.toString(1237924706, 16).toUpperCase();
+											Radix:	Character.MIN_RADIX - Character.MAX_RADIX.
+
+											Characters:	0-9 and a-z are available should large radix be supplied
+
+		static	String		toUnsignedString(int i)			Convert signed i to unsigned String:
+		static	String		toUnsignedString(int i, int radix)
+											i:	1
+											return:	1
+
+											i:	2^32/2 - 1	(2,147,483,647)
+											return:	"2147483647"
+
+											i:	-1
+											return:	"4294967295"
+
+											i:	-2,147,483,648
+											return:	"2147483648"
+
+											i:	-2,147,483,647
+											return:	"2147483649"
+
+											Same as:	toUnsignedLong(int i).toString()
+
+		Conversion: Integer/int to long (unsigned)
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	long		toUnsignedLong(int i)			Convert signed i to unsigned long:
+
+											i:	1
+											return:	1
+
+											i:	2^32/2 - 1	(2,147,483,647)
+											return:	2147483647
+
+											i:	-1
+											return:	4294967295
+
+											i:	-2,147,483,648
+											return:	2147483648
+
+											i:	-2,147,483,647
+											return:	2147483649
+
+		static	Integer		valueOf(int i)				Convert int i to an Integer.
+
+											If a new Integer instance is not required*, this should be used compared to using constructor due to caching leading to better time/space complexity.
+											Method will always cache -128 - 127 (sometimes values outside of this range also)
+
+											*Documentation states 'not required' but presume a new instance of Integer is always returned from valueOf(int i)?
+
+		Bitwise Operations
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	int		bitCount(int i)				Number of 1's in i
+
+		static	int 		highestOneBit(int i)			Return 0, 1, 2, 4, 8 ... representing the position of the first (most right/significant) bit in i interpreted as 2-complement:
+
+											Integer.highestOneBit(8):	8
+											Integer.highestOneBit(10):	8
+											Integer.highestOneBit(6):	4
+
+ 		static	int 		lowestOneBit(int i)			Return 0, 1, 2, 4, 8 ... representing the position of the last (least left/significant) bit in i interpreted as 2-complement:
+
+											Integer.lowestOneBit(11):	1
+											Integer.lowestOneBit(10):	2
+											Integer.lowestOneBit(8):	8
+
+		static	int		numberOfLeadingZeros(int i)		Return the number of 0's preceding the left most bit (MSB) as interpreted using 2-complement:
+
+											i = 0000 0000 0000 0000 0000 0000 0000 0001		31
+											i = 0001 0010 0001 0000	0100 0000 1000 0010		3
+											i = 0101 0010 0001 0001	0000 0010 0001 0000		1
+
+		static	int		numberOfTrailingZeros(int i)		Return the number of 0's after the right most bit (LSB) as interpreted using 2-complement:
+
+											i = 0000 0000 0000 0000 0000 0000 0000 0001		0
+											i = 0001 0010 0001 0000	0100 0000 1000 0010		1
+											i = 0101 0010 0001 0001	0000 0010 0001 0000		4
+
+											NB: The documentation states that is interpreted using 2-complement but the return value seems to include the sign bit (Left most bit)?
+
+		static 	int		reverse(int i)				Reverse the bits as represented using 2-complement:
+
+											i:	0001 0010 0001 0000 0100 0000 1000 0010		303,054,978
+											return:	0100 0001 0000 0010 0000 1000 0100 1000		1,090,652,232
+
+											i:	1001 0010 0001 0000 0100 0000 1000 0010		2,450,538,626
+											return:	Error (given that i is too large, likely due to representation of 2-complement)
+
+		static 	int		reverseBytes(int i)			Return the int value with all of the bytes in i reversed using 2-complement:
+
+												1-------- 2-------- 3-------- 4--------
+											i:	0000 0000 0000 0000 0000 0000 1000 0010		130
+												4-------- 3-------- 2-------- 1--------
+											return:	1000 0010 0000 0000 0000 0000 0000 0000		-2,113,929,216
+
+											i:	0000 0000 0000 0000 0000 0000 0010 0010		34
+											return:	0010 0010 0000 0000 0000 0000 0000 0000		570,425,344
+
+		static 	int		rotateLeft(int i, int distance)		Rotate the bits in int i by distance number of bits using 2-complement:
+					rotateRight(int i, int distance)
+											i:	0001 0010 0001 0000 0100 0000 1000 0010		303,054,978		[Rotate Left] Distance = 5
+											return:	0100 0010 0000 1000 0001 0000 0100 0010		1,107,824,706
+
+											Bits which leave one side re-enter on other side.
+											Negative distance is equivalent to rotation in opposite direction.
+											Distance of 32 naturally results in no change.
+
+		Comparison
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	int		compare(int x, int y)			Compare where: 		0: Equal 		<0: x < y		>0: x > y		(Signed - 2-Complement)
+			int		compareTo(int i)			Compare where:		0: Equal		<0: this < i		>0: this > i
+		static	int		compareUnsigned(int x, int y)		Compare where: 		0: Equal 		<0: x < y		>0: x > y		(Unsigned)
+
+			boolean		equals(Object obj)			True if obj is an Integer, not null and value is same as this		
+
+		static	int		min(int a, int b)			Return the smallest of a or b
+		static	int		max(int a, int b)			Return the largest of a or b
+
+
+		System Property
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	Integer		getInteger(String s)			Get System Property s (as defined/obtained via System.getProperty(String s)), val is the default value returned if property do not exist, use null if not needed to prevent unnecessary allocation of Integer
+		static	Integer		getInteger(String s, int val)
+		static	Integer		getInteger(String s, Integer val)
+
+
+		Division
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	int		divideUnsigned(int x, int y)		Divide x/y as both unsigned
+
+		static	int		remainderUnsigned(int x, int y)		Return the unsigned remainder of x/y (compared to % which I presume is signed)
+
+
+		Sign
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static 	int		signum(int i)				Return the sign of i:
+
+											i: -12:		return: -1
+											i: 0:		return: 0
+											i: 12:		return: 1
+
+		HashCode
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			int		hashCode()				Return hashCode for this
+		static	int		hashCode(int i)				Return hashCode for i
+
+
+					

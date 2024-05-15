@@ -1,0 +1,423 @@
+Collections
+
+	Overview:
+
+		- Collections are a 'Container' for housing multiple elements into a single unit.
+		- Collections are a 'Container' for items which form a natural group.
+		- Collections Framework are a unified architecture for representing and manipulating Collections.
+		- Collections Framework existing in many languages:
+
+			C++:		Standard Template Library
+			SmallTalk:	Collection Heirachy
+
+		- Collections Framework consist of:
+
+			Interface:		Interfaces allow Collections to be manipulated regardless of the contents or implementations.
+			Implementations:	Implementations are concrete interpretations of the Interfaces, they are reusable data structures.
+			Algorithms:		Algorithms perform useful computation on the classes which implement the Interfaces e.g. searching/sorting.
+						Algorithms are 'Polymorphic' where the same method can be used on any Collection irrespective of implementation or contents.
+						Algorithms are re-usable functionality.
+
+		- Collections are not Thread-Safe, special care should always be deployed to ensure that any necessary synchronisation is applied if operating on Collection in parallel programming.
+
+	Purpose:
+
+		1. Store
+		2. Retrieve
+		3. Manipulate
+		4. Communicate Aggregate Date
+
+	Benefits:
+
+		1. Effort:
+
+			- Reduces effort in the low level 'plumbing' of an application.
+			- Reduces the need for adapter objects to convert/communicate between unrelated class API's.
+			- Reduces the need to learn separate sub-API's which may have little consistency and be inherent between systems.
+			- Reduces the potential for error/bugs if separate systems use consistent API.
+			- Reduces the need to 're-create the wheel' for each application designing API's which all do the same job.
+
+		2. Speed/Quality:
+
+			- Collections are high quality/performance Data Structures and Algorithms.
+			- Collections do not require the programmer to spend time constantly re-creating their own each time.
+			- Collections are built around Interfaces therefore objects can be easily and quickly interchanged without the need for time consuming modifications.
+			- Collections allow for more time to spend concentrating on the quality and performance of the overall application.
+
+		3. Interoperability:
+
+			- Collection Interfaces form the bedrock and venacular of the API's between different systems.
+			- For Example: Separate Network and GUI applications may agree to use Collections whereby introducing seamless interoperability whilst being written independently.
+
+		4. Software Re-Use:
+
+			- Naturally occurs when systems use the same set of API's, interfaces and algorithms.
+
+	Collections Framework Consists Of:
+
+		Interfaces:
+
+			1. Collection Interfaces:	x8 core interfaces which represent the central types of Collection e.g. Sets, Lists, Queue, Deques and Maps. These interfaces form the basis of the framework.
+
+		Implementations:																For Example
+			________________________________________________________________________________________________________________________________________________________________________________________________________
+
+			1. General Purpose:		Collection Classes as primary implementations of the Collection Interfaces.
+			2. Legacy:			Collection Classes existing from earlier releases. 							Vector and Hashtable retrofitted to implement the Collection Interfaces.
+			3. Special Purpose:		Collection Classes designed for use in special situations.						Display nonstandard performance characteristics, usage restrictions or behavior.
+			4. Concurrent:			Collection Classes designed for highly concurrent use.
+			5. Wrapper:			Collection Classes designed to add functionality.							Synchronization to other implementations.
+			6. Convenience:			Collection Classes designed to be high-performance "mini-implementations" of the Collection Interfaces.
+			7. Abstract:			Partial implementations of the Collection Interfaces to facilitate custom implementations.
+
+		Algorithms:
+
+			1. Algorithms:			Static methods that perform useful functions on Collections e.g. sorting/searching a List.
+
+		Utilities/Support:
+
+			1. Infrastructure:		Interfaces that provide essential support for the Collection Interfaces.
+			2. Array Utilities:		Utility functions for arrays of primitive types and reference objects.
+							Not strictly part of the collections framework.
+							Added to the Java platform at the same time as the Collections Framework.
+
+	Core Collection Interfaces:
+
+		Groups:
+
+			Collection Interfaces for x2 groups:
+
+				1. java.util.Collection:		Core Collection Interfaces
+				2. java.util.Map:			Not True Collection, however contain collection-view operations that enable them to be used as Collections
+
+		Hierarchy:
+
+				Iterable<E>
+				|
+				Collection<E>					|_________________ Concurrent _______________|
+				|_______________________________ _ _ _ _ _ _ _ _ _______________________________
+				|		|		|		|		|		|
+				Set<E>		List<E>		Queue<E>	BlockingQueue	TransferQueue	BlockingDeque
+				|				|
+				Sorted Set<E>			Deque<E>
+
+
+				Map<K,V>					|____________________ Concurrent __________________|
+				|_______________________________________________________________________
+				|			|			|			|
+				SortedMap<K,V>		NavigableMap<K,V>	ConcurrentMap<K,V>	ConcurrentNavigableMap<K,V>
+
+			- Collection Interfaces are generic.
+			- Collection Interfaces contain optional operations e.g. Immutable, Fixed-Sized, Append-Only
+			- Collection Interfaces throw a UnsupportedOperationExceptionn when an unsupported operation is attempted.
+			- Collection<E>:
+
+				- The root/base interface shared by all Collections.
+				- Java API does not contain any direct implementations of Collection.
+
+			- All implementations within the Java API which utilise Collections support all operations.
+			- Implementations are responsible to document which operation they supports.
+
+				Duplicate		Ordered								Comment
+				________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+		Set<E>:		No			No								Modelled on the mathematical notion of a Set.
+
+		List<E>:	Yes			Direct Indexing or Comparator					Precise control of the placement, position and access of elements directly using their index.
+															Similar to legacy Vectors.
+
+		Map<E>:		Keys:	No		Keys:	Implementation Dependent				Key Value Pairs.
+				Values:	Yes										Key can only map to x1 Value.
+
+		SortedSet<E>:	No			Natural or Comparator						Additional methods to take advantage of the ordering.
+
+		SortedMap<E>:	Keys:	No		Keys:	Natural or Comparator					Additional methods to take advantage of the ordering.
+				Values:	Yes
+
+		Queue<E>:	Yes			FIFO | Natural | Comparator (Implementation Dependent)		Hold multiple elements prior to processing.
+															Priority Queues allow natural ordering or via a supplied Comparator.
+
+																				[Tail]				[Head]
+																Elements Added:			||||||||||||||||||||||||||||||||||||||		:Elements Removed
+
+		Deque<E>:	Yes			FIFO | LIFO (Implementation Dependent)				Hold multiple elements prior to processing.
+															FIFO (Queue):
+															LIFO (Stack):
+
+																				[Tail]				[Head]
+																Elements Added/Removed:		||||||||||||||||||||||||||||||||||||||		:Elements Added/Removed
+
+	Interface v Classes:
+
+		- When 'using' Collections, as a rule programmers should be 'thinking in' Interfaces rather than Class implementations of Interfaces.
+		- The choice of implementation affects only performance, therefore:
+
+			1. Choose an implementation.
+			2. Instantiate that implementation.
+			3. Immediately either:
+
+				1. Interface Variable:		Assign it to a Interface Variable.
+				2. Interface Argument:		Pass to a method expecting an Interface Argument.
+
+		- Therefore:
+
+			1. Program does not become dependent on a particular implementation.
+			2. Program does not potentially contain any methods particular to an implementation
+			3. Allowing the programmer to alter the implementations at anytime that it is warranted by performance concerns or behavioral details.
+
+	Collection Characteristics:
+
+		Collection implementations may contain certain characteristics:
+
+			Characteristic					Description
+			________________________________________________________________________________________________________________
+
+			Modifiable/Unmodifiable:			Collection cannot be modified.
+			Mutable/Unmutable:				Collection cannot be modified nor any of its internal components.
+			Fixed Size:					Collection size cannot be modified but internal components/elements may be modifiable.
+			Variable Size:					Collection size can be modified and internal components/elements may be modifiable.
+			Random Access:					Collection supports fast/constant time to access an indexed Element.
+			Sequential Access:				Collection does not support fast/constant time to access an indexed Element.
+
+		Unmodifiable:
+
+			- Unmodifiable indicates that the implementation does not contain methods such as add(), remove(), clear().
+			- Unmodifiable however does not guarantee that any wrapped internal Collection or the Elements within the wrapped internal Collection are not accessible or can be referenced by any other code.
+			- For Example:
+
+				- An Unmodifiable Collection is often a wrapper around a Modifiable Collection.
+				- An Unmodifiable Collection may indeed not be possible to alter but the internal Modifiable Collection may still have code which has access to it.
+
+		Unmutable:
+
+			- An Unmutable Collection however is an Unmodifiable wrapper of a Collection whose Elements cannot be accessed by any other part the program.
+			- An Unmutable Collection can typically be implemented by directly instantiating the Collection within the Argument:
+
+				Set s = Collections.unmodifiableSet(new HashSet(...));				
+
+		RandomAccess Marker Interface:
+
+			- The empty Marker Interface can be applied to a generic class to indicate that it supports Random Access.
+			- Allowing implementing classes to adjust/differentiate their own algorithm/behaviour depending on the implementation they have been passed.
+
+	Collection Restrictions:
+
+		- Collection implementation may restrict what Elements may be stored:
+
+			Restriction						Typically Returned Exception
+			__________________________________________________________________________
+
+			1. Type:	Only store particular types		IllegalArgumentException
+			2. Null:	Only store non-null			NullPointerException
+			3. Predicate:	Obey an arbitary Predicate		ClassCastException
+
+	Conversion Constructor:
+
+		- It is convention for all Collection implementations to have a constructor that takes a Collection argument, convert and place that supplied Collection into its own Implementation.
+		- This 'Conversion Constructor' initialises itself to contain all of the Elements contained in the supplied Collection regardless of the supplied Collections Interface or Implementation Type.
+		- The supplied Collection is 'converted'.
+		- For Example:
+
+			The Interface Variable of the Collection c may be a List, Set or any other kind of extended Collection:
+
+				Collection<String> c;
+
+			It is possible to convert whatever c is into an ArrayList (which implements List) by simply supplying c to the ArrayList Conversion Constructor:
+
+				List<String> list = new ArrayList<>(c);
+
+	Elements toString():
+
+		- Collection Implementations should always ensure that toString() is overriden and appropriate for the object i.e. print out a clean, easily recognisable representation of the Class.
+		- Typically Collection Implementations depend upon or refer to the toString() methods of their Elements i.e. ensure that .toString() is appropriately overriden within the Element Types.
+
+	Implementation:
+
+		Collection Implementations can be catagorised into the following:
+
+			General Purpose:		Most common, everyday use.
+			Special Purpose:		Non-Standard, performance characteristics, usage restrictions or behaviour.
+			Concurrent:			High concurrency (at the expense of the single thread performance), part of java.util.concurrent.
+			Wrapper:			Encapsulate 'General Purpose' implementations in order to provide added or restricted behaviour.
+			Convenience:			Mini-Implementations (typically provided by static factory methods) that provide convenient, efficient alternatives to 'General Purpose' e.g. Singleton Sets
+			Abstract:			Skeletal implementations that facilitate the construction of Custom Implementations.
+
+		Java Platform API Specification:
+
+			- Collection Interfaces are listed in the online Java Platform API Specification.
+			- Collection Interfaces contain detailed description of what the Abstract Methods need to do.
+			- Collection Interfaces list that it is permissible that some Abstract Methods may be 'optional' and only need to return an 'UnsupportedOperationException' Exception should the programmer not wish to provide this functionality.
+
+		Options:
+
+			1. Java Pre-Made:
+
+				- Java Platform contains a number of pre-made classes which implement the Collection Interfaces as specified in the Java Platform API Specification.
+				- Java Platform pre-made classes strictly adhere to the specification as described in the Java Platform API Specification.
+
+			2. Custom:
+
+				- A Programmer may create their own Collection implementations.
+				- As long as it strictly adheres to the specification as described in the Java Platform API Specification.
+
+		Implementation Performance:
+
+			- Implementation performance is measured using:
+
+				1. Constant-time
+				2. Log
+				3. Linear
+				4. n log(n)
+				5. Quadratic
+
+			- All refering to the asymptotic upper-bound on the time complexity of performing the operation i.e. the performance of the operation if done a very large number of time (asymptotic) Big O Notation.
+			- However in 'real-world' algorithms it can be better and more accurate to simply measure the performance for a given task (rather than relying on the specified speeds).
+
+		Collection Implementations (Java JDK 15):
+
+			Below are the implementations which inherent the behavioural traits (and interface):
+
+							[ADT/Interfaces]		
+
+							Set			List				Map				Queue				Deque				SortedSet			SortedMap
+			        			______________________________________________________________________________________________________________________________________________________________________________________________________________
+
+				Most Common:		HashSet			ArrayList			HashMap				ArrayDeque			ArrayDeque							
+				Linked:			LinkedHashSet		LinkedList			LinkedHashMap			LinkedList			LinkedList
+				Tree:			TreeSet							TreeMap												TreeSet				TreeMap
+
+				Misc:						Vector				HashTable			PriorityQueue
+										Stack				
+
+				Concurrent:		ConcurrentHashMap.KeySetView				ConcurrentHashMap		ConcurrentLinkedDeque		ConcurrentLinkedDeque		ConcurrentSkipListSet		ConcurrentSkipListMap
+							ConcurrentSkipListSet					ConcurrentSkipListMap		ConcurrentLinkedQueue		LinkedBlockingDeque
+																		LinkedBlockingDeque
+																		LinkedBlockingQueue
+																		LinkedTransferQueue
+																		PriorityBlockingQueue
+																		DelayQueue
+ 																		ArrayBlockingQueue
+																		SynchronousQueue
+
+				Special Purpose:	EnumSet			AttributeList			EnumMap
+							CopyOnWriteArraySet	CopyOnWriteArrayList		Headers
+							JobStateReasons		RoleList			IdentityHashMap
+										RoleUnresolvedList		PrinterStateReasons
+														Properties
+														Provider
+														RenderingHints
+														SimpleBindings
+														TabularDataSupport
+														UIDefaults
+														WeakHashMap
+														Attributes
+														AuthProvider
+
+				Abstract:		AbstractSet		AbstractList			AbstractMap			AbstractQueue
+										AbstractSequentialList
+
+		General Purpose Implementations:
+
+			Interfaces		Hash Table		Resizable Array		Tree		Linked List		Hash Table + Linked List	Misc
+			_____________________________________________________________________________________________________________________________________________________________
+
+			Set:			HashSet						TreeSet					LinkedHashSet
+			List:						ArrayList				LinkedList
+			Queue:						ArrayQueue				LinkedList						PriorityQueue
+			Deque:											LinkedList
+			Map:			HashMap						TreeMap					LinkedHashMap
+
+			SortedSet:								TreeSet
+			SortedMap:								TreeMap
+
+		Standard Characteristics:
+
+			Optional Operations:
+
+				- Collection Implementations support all 'optional operations'.
+
+			Null Elements:
+
+				- Collection Implementations support Elements, Keys and Values being null.
+
+			Synchronisation:
+
+				- Collection Implementations are not synchronised, due to being frequently used when the synchronization is of no benefit e.g.
+
+					1. Single-threaded use.
+					2. Read-only use.
+					3. Part of a larger data object that does its own synchronization.
+					4. Unnecessary synchronization can result in deadlock under certain circumstances.
+					5. Good API design practice does not make users pay for a feature they do not use.
+
+				- If Synchronisation is neeed i.e. multiple threads need to access the Collection concurrently, any Collection can be synchronised via:
+
+					1. External Lock:	Synchronise on external object that naturally encapsulate the Collection.
+					2. Wrapper:		Synchronise via a Wrapper generated at creation time e.g.
+
+									Set s = Collections.synchronizedSet(new HashSet(...));
+
+								Ensure that the 'new' is passed as an argument to ensure that it absolutely cannot be accessed by any other thread.
+
+				- Collection Framework contains many implementations designed for concurrency, these can be found in 'java.util.concurrent', e.g.
+
+					1. BlockingQueue 	(which extends Queue)
+					2. ConcurrentMap 	(which extends Map)
+
+					These implementations offer much higher concurrency than mere synchronized implementations.
+
+				- Legacy Collections e.g. Vector and HashTable are synchronised.
+
+			Fail-Fast Iterators:
+
+				- Collection Implementations suppprt Fail-Fast Iterators, which detect illegal concurrent modification during iteration, fail quickly and cleanly, preventing:
+
+					- Arbitary Non-Deterministic Behaviour.
+					- Unknown time in future.
+
+				- However:
+
+					- Fail-fast iterators are not entirely guaranteed.
+					- Fail-fast iterators throw ConcurrentModificationException on a 'best-effort' basis.
+
+				- Therefore:
+
+					- Do not write a program that depended on this exception for its correctness.
+					- Fail-fast iterators should be used only to detect bugs.
+
+				- External Mutation:
+
+					- Once an Iterator has been created.
+					- Do not modify a Collection other than through the Iterators own methods e.g. .remove().
+					- For this will throw ConcurrentModificationException.
+
+			Serialisable:
+
+				- Collection Implementations support being Serialisable (presuming all Elements are serialisable).
+
+			Clone:
+
+				- Collection Implementations support public .clone().
+
+		Capacity:
+
+			- Capacity is measured in Buckets i.e. the number of allocated/reserved Buckets which hold a single Element.
+			- Capacity which is too:
+
+				High: 		Wastes time and space (which may become non-neglible is large Collections).  
+				Low:		Wastes time copying the Data Structure when increasing capacity.
+
+			- Capacity Default:	16
+			- Capacity is automatically rounded up to the nearest power of 2 i.e. best to allocate capacity as a power of 2.
+			- Capacity was originally recommended to be allocated to a prime number but this is no longer true.
+			- Capacity is typically doubed upon reaching the Load Factor.
+			- Capacity should in general be allocated as:
+
+				"Double the size the Data Structure is expected to grow"
+
+		Load Factor:
+
+			- Load Factor determines the point at which the Collection Implementation is increased.
+			- Load Factor is a 'Tuning Parameter' when considering capacity.
+			- Load Factor has a default (0.75) which is normally adequate i.e. once 75% of Buckets are filled then the Collection Implementation is resized.
+			- Load Factor is a the level at which the Data Structure is resized (typically douubled) once it reaches this level of contained Elements.

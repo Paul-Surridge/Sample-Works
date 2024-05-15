@@ -1,0 +1,217 @@
+Packages:
+
+	Purpose:
+
+		1. Grouping:		Collecting and collating classes/interfaces of similar and appropriate functionality.
+		2. Namespace:		Reuse of names applicable to package.
+		3. Convenience:		Easily find required classes.
+		4. Security:		Restrict access to classes within the package.
+		5. Clarity:		Illustrate related classed.
+
+	Source File Package Allocation:
+
+		- Source Files are allocated to a package as follows:
+
+			1. Source File must be physically located within a directory/folder of matching name on the development machine.
+
+				Development Root (src)
+				|
+				|__Package_1
+				|    Package_2
+				|__Package_3
+
+			2. Package Statement must be the first line in source file.
+
+				package PackageName;
+
+			3. Only x1 Package Statement per source file and it applies to all Top Level Types in the file.
+			4. Package name must be fully qualified:
+
+				File Location		Package Statement Syntax
+				_____________________________________________
+
+				src			none/blank
+				Package_1		package Package_1;
+				Package_2		package Package_1.Package_2;
+				Package_3		package Package_3;
+
+		NB: Default/Unnamed Package:
+
+			- If a source file does not define a package then it is automatically placed in an unnamed package.
+			- All source files should be assigned to a package unless it is a small applcation or just beginning development.
+
+	Source File:
+
+		- A Source File may contain multiple Top Level Types.
+		- A Source File may only have x1 Top Level Type being declared public, which must match the filename.
+
+			public class Circle		Circle.java
+			public interface Connect	Connect.java
+			public enum Counter		Counter.java
+
+		- A Source File may contain additional Top Level Types but this is discouraged, unless these Top Level Types are small and closely related to the public Top Level Type.
+		- A Source File non-public Top Level Types are by default package-private.
+
+	Package Naming Convention:
+
+		- Package names are all written in lower case (to avoid conflict with the names of Top Level Types).
+		- Package names are usually written using the companies reverse domain name:
+
+			com.domain.region.mypackage
+
+			NB: Naming conflict within packages should be handled at company/department level.
+
+		- Package names within the Java API begin with:
+
+			1. java.package...
+			2. javax.package...
+
+		- Package names may not contain:
+
+			1. Hyphen
+			2. A special character
+			3. Keyword
+			4. Begin with digit or other illegal character (as per that for a java identifier)
+
+			NB: If the domain name contains any of the above, it is recommended that an underscore is used.
+
+				1. hyphenated-name.example.org		->	org.example.hyphenated_name
+				2. example.int				->	int_.example
+				3. 123name.example.com			->	com.example._123name
+
+	Package Members
+
+		- The Top Level Types contained within a package are called 'Package Members'.
+
+	Referencing:
+
+		- To use a public Package Member from outside the package, there are x3 options:
+
+			1. Fully Qualified:		Reference the Fully Qualified Name of the Package Member.
+			2. Import: Package:		Reference the Simple Name of the Package Member via import of the whole package.
+			3. Import: Package Member:	Reference the Simple Name of the Package Member via import of the Package Member only.
+
+		- Non-imported package members can only be referenced by the fully qualified name:
+
+			graphics.Rectangle myRect = new graphics.Rectangle();
+
+			NB: Full qualifications should only be used very infrequently, is difficult to read and discouraged.
+
+	Importing:
+
+			package PackageName;			//Importations come after defining the files package allocation.
+
+			Import					Syntax
+			____________________________________________________________________________________________________
+
+			Package					import graphics.*;			//Wildcard Character
+			Package Member				import graphics.Rectangle;	 
+			Class Nested Members			import graphics.Rectangle.*;		//This will only import nested members of Rectangle but not Rectangle itself.
+			Class Static Member			import static java.lang.Math.PI
+			Class Static Members			import static java.lang.Math.*
+
+		- Import Default:
+
+			The compiler automatically imports the following x2 packages:
+
+				1. java.lang
+				2. Current Package	(The current package that the *.java file is contained within).
+
+		- Import Naming Conflicts:
+
+			Naming Conflicts or Ambiguous Identifiers must be resolved through full qualification.
+
+		- Import Static Members/Constants
+
+			Multiple referencing to static components/constants within a class can lead to cluttered source code, this can be reduced by importing just the Static components:
+
+				double r = Math.cos(Math.PI * theta);
+				double r = cos(PI * theta);		//After static import of Math
+
+			NB:
+
+				- Static Import should only be used very sparingly.
+				- Static Import overuse can lead to code that is difficult to read/maintain for it is not easy to discern which class static components belong to.
+				- Static Import when used correctly can lead to improved readability by removing class name repition.
+
+		- Import Hierachy:
+
+			Packages are not heirachical.
+
+				1. java.awt may contain multiple packages which include their own packages and so on.
+				2. Importing java.awt.* does not import internal packages, only the package listed.
+
+			Packages must be imported individually.
+
+	Management Conventions:
+
+		- Source File package allocation and location on the development machine run in parallel:
+
+			Class Name:	   	    graphics.Rectangle
+			File Path:		...\graphics\Rectangle.java
+
+		- The company domain name is added accordingly:
+
+			Full Class Name:   	    com.example.graphics.Rectangle
+			Full File Path:		...\com\example\graphics.Rectangle
+
+	.class Files:
+
+		- When .java files are compiled they generate .class files of bytecode.
+		- When compiled, generated .class files may be stored in either:
+
+			1. .java Directories:	In the same directories as the uncompiled .java files.
+			2. CLASSPATH:		In a designated location stored within the Environment/System Variable CLASSPATH.
+
+	Distribution:
+
+		- Separating the .java and .class files enables the compiled .class files to be distributed to other programmers without releasing the .java source code.
+
+	CLASSPATH:
+
+		- When compiling the .class files, the JVM/Compiler construct and replicate the source directory structure starting from the CLASSPATH:
+
+			Development Directory Structure:
+
+				Development Root (src)
+				|
+				|__Package_1
+				|    Class_1.java
+				|    Class_2.java
+				|    Package_2
+				|      Class_1.java
+				|      Class_2.java
+				|__Package_3
+				     Class_1.java
+				     Class_2.java
+				     Class_3.java
+
+			Compiled Directory Structure:
+
+				CLASSPATH
+				|
+				|__Package_1
+				|    Class_1.class
+				|    Class_2.class
+				|    Package_2
+				|      Class_1.class
+				|      Class_2.class
+				|__Package_3
+				     Class_1.class
+				     Class_2.class
+				     Class_3.class
+
+		
+		- CLASSPATH may contain multiple paths separated by ; (Windows) or : (UNIX)
+
+	- Compiling:
+
+		- The JIT compiler/JVM will automatically add the following locations to the CLASSPATH:
+
+			1. Development Root
+			2. JAR File (Java API)
+
+		- The JIT compiler/JVM will search for the .class files using the paths listed in the CLASSPATH as root.
+
+		
+

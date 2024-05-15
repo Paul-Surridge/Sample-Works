@@ -1,0 +1,275 @@
+Kotlin
+
+	Sequences:
+
+		- Sequences are an interface which is defined in the standard Kotlin library and are the Java equivalent to streams:
+
+			interface Sequence<out T> {
+			    operator fun iterator(): Iterator<T>		//Iterator is required in order to allow for the sequence to be created within a for loop
+			}
+
+			Eager			Lazy
+			--------------------------------
+			Iterable		Sequence			//Interface is not part of collections framework
+			|
+			Collection
+			|	|
+			List	Set
+
+		- Sequences utilise intermediate and terminal operations:
+
+			sequence.map {...}. filter {...}.toList()
+				 |		       |     |
+				 Intermediate Operations     Terminal Operations
+
+			Intermediate Operations:	Return: Other Sequences (with references to the initial collection and any other prior sequences)	(Generally not inline)
+			Terminal Operations:		Return:	Overall Result (of chained expression), nothing happens until this operation is called		(Generally inline)
+
+			NB: Intermediate Operations are generally not inline given that they implement lazy computation and need to store values (e.g. the lambda arguments) until the terminal operation is executed.
+
+		- Sequences are used in as an alternative to collections:
+
+			1. Collection extension functions which perform intermediate operations e.g. map(), .filter(), .groupBy() are all inline but still return a new collection at each stage within chained calls (which can become a substantial overhead).
+
+				val list = listOf(1,2,-3)	//1st list
+
+				val maxOddSqaure = list
+				    .map {it * it}		//2nd list
+				    .filter {it % 2 == 1}	//3rd list
+				    .max			//x3 new collections are created within this chained call
+
+			2. Collection lambdas which are passed to the extenson functions are all inlined but a new collection is still created each time.
+			3. Collection use 'eager' computation (horizontal computation) which apply the necessary transform to create the complete set of intermediary results for each intermediary call.  
+
+		- Sequences are created simply by using and inserting the .asSequence() intermediary operation before all other intermediary operations:
+
+			val list = listOf(1,2,-3)
+
+			val maxOddSquare = list
+			    .asSequence()
+			    .map {it * it}
+			    .filter {it % 2 == 1}
+			    .max			//Entire computation is carried out using sequences.
+
+			Here no intermediary collections are created by map() and filter() but instead sequence objects are created which maintain a reference to the initial list and all of the intermediary operations to be performed.
+
+		- Sequences can use all of the processing operations that are available for collections, they are just performed on individual elements within sequences rather than whole collections at each stage.
+		- Sequences use 'lazy' computation, collections use 'eager' computation:
+
+			Lazy:
+
+				- No intermediary results/collections are calculated at each stage within the chained call, operations are performed only once the terminal operation is known and executed.
+				- No intermediary results can be viewed/observed/printed at each stage.
+				- No computation is performed until the terminal operation is encountered, if there is no terminal operation then nothing is returned.
+				- Once the terminal operation has been satisfied it is immediately returned and no further compution of any remaining elements in the initial collection are processed.
+				- 'You only compute what you need to compute until you find the first overall answer', 'you do not do anything unless it is needed'.
+				- Vertical computation
+
+					listOf(1,2,3,4)			//Sequence 'lazy' computation
+				    	    .asSequence()
+				    	    .map { it * it }
+				    	    .find { it > 3 }
+
+					Here:
+
+						1. Each element in turn in the initial list is fully processed where all of the transformations performed on that element.
+						2. Once the first element is found which is >3 it is returned by the expression.
+						3. None of the remaining elements in the initial list are processed.
+
+			Eager:
+
+				- Intermediary results are fully calculated to fully generate an intermediary collection at each stage within the chained call.
+				- Intermediary results can be viewed/observed/printed at each stage.
+				- All elements in all collections at each stage are transformed regardless if they are needed.
+				- Computation is fully performed at each stage, it is not necessary to wait until the terminal operation is known.
+				- Horizontal computation i.e. the full collection reading from left to right is processed before moving onto the next stage.
+
+					listOf(1,2,3,4)			//Collection 'eager' computation
+				    	    .map { it * it }
+				    	    .find { it > 3 }
+
+					Here:
+
+						1. .map() traverses through the entire initial list creating a complete new collection.
+						2. .find() checks and returns the first element which is >3.
+
+		- Sequence ordering within chained expressions is important and can significantly impact the number of elements processed and the overall amount of work required to reach the result:
+
+			A  B  C  D	.map()
+			|  |  |  |
+			A' B' C' D'	.filter()
+			   |     |
+			   B'    D'
+
+			When done the other way round, requires significant less amount of processing:
+
+			A  B  C  D	.filter()
+			   |     |
+			   B     D	.map()
+			   |     |
+			   B'    D'
+
+		- Sequences can be manually created without the need for an initial collection to derive the sequence from:
+
+			val seq = generateSequence { Random.nextInt(5).takeIf { it > 0 } }
+			println(seq.toList())
+
+				Here:
+
+				1. generateSequence() returns an object that implements the Sequence interface using the lambda as a predicate such that once the lambda returns null the sequence stops.
+				2. generateSequence() returns a sequence of only positive numbers, once 'it' is <= 0 the lambda returns null whereby stopping the sequence generation.
+				3. Prints [4, 4, 3, 2, 3, 2]	This would have stopped once <= 0 values generated by Ramdon.nextInt().
+
+
+			val seq = generateSequence { readLine.takeIf { it != "exit" } }
+			println(seq.toList())
+
+				Here:
+
+				1. generateSequence() returns a sequence of human input and stops once a specific string is entered.
+				2. Human inputs: 'a b exit', prints [a, b].
+
+
+			val seq = generateSequence(0) { it + 1 }
+			println(seq.take(5).toList())
+
+				Here:
+
+				1. generateSequence() returns a sequence starting from 0 which will continually increment by 1. NB: Nothing is generated at this point, the sequence only 'does something' when invoked.
+				2. The terminal operation take() causes the object behind the sequence to lazily generate the first x5 iterations and print [0, 1, 2, 3, 4].
+
+
+			val seq = generateSequence(BigInteger.ZERO) { it + BigInteger.ONE }
+
+				Here:
+
+				1. Integers are the default internally used within sequences (which can lead to integer overflow) therefore BigInteger should be used when required.
+
+
+			val seq = generateSequence(3) {
+			    n ->
+			    println("Generating element")
+			    (n + 1).takeIf {it < 7}
+			}
+			println(seq.first())		//1					
+			println(seq.toList())		//2
+
+				Here:
+
+				1. Lambda is not run even once (given lazy implementation/overloading), the sequence simply returns/prints 3
+				2. Prints:
+
+					Generating element
+					Generating element
+					Generating element
+					Generating element
+					[3, 4, 5, 6]
+
+		- Sequences example:
+
+			fun m(i: Int) Int {
+			    print("m$i")
+			    return i
+			}
+
+			fun f(i: Int) Boolean {
+			    print("f$i")
+			    return i % 2 == 0
+			}
+
+			val list = listOf(1,2,3,4)
+
+			list.map(::m).filter(::f)				//Prints:	m1 m2 m3 m4 f1 f2 f3 f4		Given horizontal processing
+			list.asSequence.map(::m).filter(::f).toList()		//Prints:	m1 f1 m2 f2 m3 f3 m4 f4		Given vertical processing
+			list.asSequence.filter(::m).map(::f).toList()		//Prints:	f1 f2 m2 f3 f4 m4		Given change of intermediate ordering, all of the elements are processed by .f() but only those filtered processed by .m().
+			list.asSequence.map(::m).filter(::f)			//Prints:	Nothing/Blank			Given no terminal operation
+
+	Yield:
+
+		- Yield is a library function contained with the Kotlin standard library (not a language construct).
+		- Yield removes the constraint of having the elements generated by the sequence being defined by the intermediary operations and the lambda only, where the elements can only be defined by either:
+
+			1. External sources as defined in the lamda.
+			2. Previous element
+
+			These can not be customised.
+
+		- Yield allows for the elements generated by the sequence to be in any custom/convenient order.
+		- Yield implementation is mainly based on coroutines.
+		- Yield is utilised/called from within the sequence lambda predicate using the following structure/form:
+
+			sequence{
+			    yield(value)
+			    yieldAll(list)
+			    yieldAll(sequence)
+			}
+
+		- Yield is called in a lazy manner, a yield function will only be called if required, typically if the result has not yet been found as defined by the terminal operation.
+		- Yield is intended to be generally used as follows:
+
+			sequence{
+			    yield(value)		//x2 separate stages of computation between yield statements as shown
+			    //Computation 1
+			    yieldAll(list)
+			    //Computation 2
+			    yieldAll(sequence)
+			}
+
+			NB: Local variables can be declared/used within the lambda in order to define/set the values passed to the yield arguments.
+
+		- Yield only 'yields' some values until the terminal operation is executed i.e. if no terminal operation is present at the end of a chained expression then nothing happens.
+		- Yield when defined using this structure within a sequence definition defines/generates the sequence values:
+
+			fun mySequence = sequence{
+			    yield(3)
+			    yieldAll(5..7)
+			    yieldAll(listOf(10, 11))
+			}
+
+			Here:
+
+				1. The function MySequence() will return an object which implements the Sequence interface.
+				2. This sequence object will return the following sequence of values:
+
+					3, 5, 6, 7, 10, 11
+
+				3. These values are now the custom values generated by this particular sequence, which are intended to be used in the same way inconjunction with intermediary operations and a terminal operation.
+
+			NB: It is presumed that:
+
+				1. Values generated within the sequence are simply those list from top to bottom within the sequence lambda.
+				2. Values can be added/remove simply be adding/removing yield/yieldAll statements.
+
+		- Yield example:
+
+			fun mySequence = sequence{
+			    println("Yield element 1")
+			    yield(1)
+			    println("Yield elements 3 - 5")
+			    yieldAll(3..5)
+			    println("Yield elements 7 and 9")
+			    yieldAll(listOf(7, 9))
+			}
+
+			println(mySequence()
+			    .map {it * it}
+			    .filter {it > 10}
+			    .first())
+
+			Here:
+
+				1. Function mySequence() generates and returns an object which implements the Sxequence interface, this object would generate a sequence of 1 3 4 5 7 9 (once a terminal operation is encountered).
+				2. Sequences are lazily/vertically processed i.e. the first element 1 is fully processed through all stages and once the terminal operation is satisfied the sequence returns that element:
+
+					Element:	1	3	4
+					------------------------------------------
+					map():		1	9	16
+					filter():	-	-	16
+					first():	-	-	16
+
+				3. The 3rd element '4' is the first element to 'make it to the end' and satisfy the terminal operation.
+				4. The last yield statement is not called because the first 'correct' answer has already been found, thereby printing the following:
+
+					Yield element 1
+					Yield elements 3 - 5		//'Yield elements 7 and 9' is not called/printed due to the result already being found
+					16

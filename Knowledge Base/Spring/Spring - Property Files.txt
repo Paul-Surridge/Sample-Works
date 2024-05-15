@@ -1,0 +1,40 @@
+Spring
+
+	Property Files:
+
+		- Property files are *.properties
+		- Property files contain key:value pairs used within the configuration of the application.
+		- Property files are located within:
+
+			core/.../resources/config/
+
+		- Property files enable quick modification of an applications configuration without modifiying and recompiling any of the source code.
+		- Property files:
+
+			# game properties
+			game.maxNumber = 100
+			game.guessCount = 10
+
+			NB:
+				- # denotes comment.
+				- Space before and after = is optional.
+				- game. is a prefix purely to create a namespace i.e. it could be removed if required.
+		
+		- Property files are accessed via @PropertySource inconjunction with @Value:
+
+			@Configuration
+			@PropertySource("classpath:config/game.properties")
+			public class GameConfig {
+
+    			    // == fields ==
+    			    @Value("${game.maxNumber:20}")
+    			    private int maxNumber = 100;
+			}
+
+			NB:
+				- The syntax for referencing the key:value within the *.properties file is of the same format as when using properties withn the maven *.pom file e.g. ${game.maxNumber} ${java.version}
+				- Successful insertion of values are reflected in the console output via 'Found key':
+
+				> o.s.c.e.PropertySourcesPropertyResolver - Found key 'game.maxNumber' in PropertySource 'class path resource [config/game.properties]' with value of type String
+
+		- Property files store all key@value pairs as strings, the values are converted to the appropriate type when inserted into the fields (when a value cannot be inserted an exception will be thrown).

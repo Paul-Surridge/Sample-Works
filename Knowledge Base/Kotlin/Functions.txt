@@ -1,0 +1,609 @@
+Kotlin
+
+	Functions:
+
+		- Functions have the following standard form:
+
+			fun <name> ([parameter list]): [return Type]
+			{...}
+
+			fun printSum(i1: Int , i2: int):		//Return Type is Unit (void)
+			{
+			    println(i1 + i2)
+			}
+
+			fun computeSum(i1: Int , i2: int): Int
+			{
+			    return i1 + i2
+			}
+
+		- Functions which return a value must use return, it is not possible to have the value of the last expression be the return.
+		- Functions parameters are set to val by default therefore cannot be altered within the function body.
+		- Functions parameters can not be defined as var.
+		- Functions are all by default 'final'.
+		- Functions can be defined anywhere:
+
+			Top Level:		fun topLevelFunction(x: Int, y: Int) = x = y
+
+			Member Function:	class A
+						{
+						    ...
+
+						    fun memberFunction(x: Int, y: Int) = x = y
+						}
+
+			Local Function:		fun localFunction
+						{
+						    ...
+
+						    fun otherLocalFunction(x: Int, y: Int) = x = y
+						}
+
+			NB: Top Level functions are defined implicitly as 'static' functions when compiled
+		
+		- Functions signature is defined just as in Java:
+
+			Name + Parameters	//Excluding the return type
+
+		- Functions can be extended if the function in the parent class is defined as 'open' (as well as the class also being defined as 'open').
+
+			open fun computeTwoNumbers(i1: Int , i2: int): Int
+			{
+			    return i1 + i2
+			}
+
+		- Functions are overriden as follows:
+
+			override fun computeTwoNumbers(i1: Int , i2: int): Int
+			{
+			    return i1 + i2
+			}
+
+		- Functions can be called in the parent class as follows:
+
+			super.computeTwoNumbers(1, 3)
+
+		- Functions are considered first-class constructs and can be treated just like any other data type:
+
+			1. Variable:		Functions can be stored within a variable and invoked using that variable:
+
+							fun printName()
+							{
+					    		    println("Paul")
+							}
+
+							val fnMyName ::printName
+
+							fnMyName()	//Paul
+
+			2. Argument:		Functions can be passed as an argument to a function call:
+
+							fun printNameAndSurname(fnParam: () -> Unit)
+							{
+							    fnParam()	//Paul
+							}
+
+							printNameAndSurname(fnMyName)
+
+			3. Return:		Returned from a function and assigned to a variable or used within another expression.
+
+	Named Arguments/Parameters:
+
+		- Named Parameters allow for the parameters to be named and passed in any order:
+
+			fun addTwoNumbers(i1, i2)
+			{...}
+
+			addTwoNumbers(i2 = 5 , i1 = 2)
+
+		- Named Parameters must be applied to all arguments if used (not just x1) (I presume, to be tested)
+
+			addTwoNumbers(5 , i1 = 2)
+
+		- Named Parameters when not used, compiler will presume the ordering as specified by the function definition.
+
+	Default Arguments:
+
+		- Default Arguments can be applied when declared:
+
+			fun repeatHello(i: Int = 5, s: String = "Hello")
+			{...}
+
+		- Default Arguments when used when calling the function may need to be inconjunction with Named Arguments to ensure that compiler knows how to assign.
+
+			Therefore:	repeatHello(i = 2)		//OK
+					repeatHello("Bye")		//Fail: Compiler will perceive "Bye" as being assigned to i, not s
+
+		- Default Arguments require consideration when the function is called:
+
+			1. Once a parameter is skipped, you must name all subsequent parameters.
+			2. Compiler must be able to identify and assigned all of the subsequent arguments to parameters.
+
+			For example:
+
+				fun repeatChar(c: Char = '*', i: Int = 10)
+				{...}
+
+				repeatChar('#', 5)		//#####
+				repeatChar('#')			//##########
+				repeatChar()			//**********
+
+				Default values can only be used by moving 'back' from the right to left of the required arguments, alternatively named arguments must be deployed.
+
+	Function Types:
+
+		- Function Types are the 'type' of the function.
+		- Function Types are primarily used within lambdas and functional programming.
+		- Function Types are how the compiler knows that the particular lambda meets any necessary requirements in how the lambda will be used.
+		- Function Types are defined and constructed via:
+
+			(Parameter List) -> Return Type
+
+			(Int, String, Int) -> String		//This function accepts Int, String, Int and returns a String
+			(Int, Int) -> Int			//This function accepts Int, Int and returns a Int
+			() -> String				//This function has no parameters but just returns a String
+
+		- Function Types can be defined by either:
+
+			1. Implicit:		Compiler builds the Function Type via the lambda itself			val sum 			= {x: Int, y: Int -> x + y}	Inferred Function Type: (Int, Int) -> Int
+			2. Explicit:		Compiler builds the Function Type via explicit declaration		val sum: (Int, Int -> Int)	= {x, y -> x + y}		Explicitly declared Function Type
+
+		- Function Types can be nullable, however careful distinction is required between:
+
+			1. Function Type which is nullable:		(() -> Int)?
+			2. Function Type which returns a nullable:	() -> Int?
+
+			For example:
+
+				val f1: () -> Int? = null		//Compile Fail:		This is attempting to assign null to a Function Type which is not nullable
+				val f2: () -> Int? = {null}		//Compile OK:		This is a Function Type whose return is a nullable Int, the Lambda returns null
+				val f3: (() -> Int)? = null		//Compile OK:		This is a Function Type which is nullable being assigned null
+				val f4: (() -> Int)? = {null}		//Compile Fail:		This is attempting to return null from a Function Type whose return is not nullable
+
+		- Function Types which are nullable have to be checked before they are called:
+
+			val f: (() -> Int)? = null
+
+			f()		//Compile Fail
+
+			if(f != null)
+			    f()		//Compile OK:	Smart cast to non-nullable Function Type
+
+			f?.invoke()	//Compile OK:	Safe Call operator inconjunction with invoke() (this is a particuarly useful instance of using invoke() when used with nullable types)
+
+		- Function Types (which are not inlined) are compiled to Java as follows:
+
+			Kotlin			Java (Bytecode)
+			------------------------------------------------
+			() -> Boolean		Function0<Boolean>
+			(Order) -> Int		Function1<Order, Int>
+			(Int, Int) -> Int	Function2<Int, Int, Int>
+
+			The parameters and the return type of the function type are all combined into a single interface as shown (contained within kotlin.jvm.functions):
+
+				interface Function2<in P1, in P2, out R> : Function<R> {
+				    operator fun invoke(p1: P1, p2: P2): R
+				}
+
+			For example:
+
+				Kotlin:			fun countStatistics(popularity: (Order -> Int))
+							{
+							    popularity(order)		//order is an instance of Order instantiated previously at some point
+							}
+
+				Java (equivalent):	public static final void countStatistics(Function1<Order, Int> popularity)
+							{
+							    popularity.invoke(order)
+							}
+
+	Function Expressions:
+
+		- Functions can be reduced to a single expression (where appropriate):
+
+			fun sum(x: Int, y: Int): Int
+			{
+    			    return if(x > y) x else y
+			}
+
+			Remove the braces and utlise Type Inference, reduce to:
+
+			fun sum(x: Int, y: Int) = if(x > y) x else y
+
+		- Functions can only omit the return type if:
+
+			1. No Body:	The function has no body i.e. no collection of statements within {}, but just a single statement
+			2. Unit:	The function returns Unit
+
+			NB: It is recommened that omitting the return should only be applied to:
+
+				1. Private functions (non-public/API facing).
+				2. Return type is entirely clear.
+
+		- Functions can in effect be used to store a single value:
+
+			fun myNumber() = 42
+
+	Local Functions:
+
+		- Local Functions are functions defined and called within other functions.
+		- Local Functions are defined and then passed as arguments to other functions using a Member Reference (or variable):
+
+			func func1(...)
+			{
+			    fun func2(...)
+			    {...}
+
+			    return list.flatMap(::func2)
+			}
+
+		- Local Functions return from itself only and does not return from the whole group of nested functions:
+
+			fun func1(list: List<Int>): List<Int>
+			{
+			    fun func2(e: Int): List<Int>
+			    {
+				if(e == 0)
+				    return listOf()
+
+				return listOf(e, e)			//2
+			    }
+
+			    return list.flatMap(::func2)
+			}
+
+			println(func1(listOf(3, 0, 5)))
+
+			Here:
+
+				1. Instead of using a Lambda to pass to .flatMap(), a local function func2() is defined and then its reference is passed to .flatMap().
+				2. Return exits from func2() instead of the whole group of nested functions i.e. func1()
+
+	Anonymous Functions:
+
+		- Anonymous Functions are as defined in Java.
+		- Anonymous Functions are functions which contain no name which were the precursor to Lambda Functions.
+		- Anonymous Functions are an alternative to Lambda where the bytecode is the same, with the following differences:
+
+						Lambda							Anonymous Function
+						---------------------------------------------------------------------------------------------
+			1. Return:		Return from whole nested group				Return from Anonymous Function itself
+			2. Return Type:		Unable to explicitly define return type			Able to explicitly define return type
+
+		- Anonymous Functions are passed as arguments: 
+
+			func func1(...)
+			{
+			    return list.flatMap(fun func2(...){...})
+			}
+
+		- Anonymous Functions return from itself only and does not return from the whole group of nested functions:
+
+			fun func1(list: List<Int>): List<Int>
+			{
+			    return list.flatMap(
+				fun (e: Int): List<Int>
+			    	{
+				    if(e == 0)
+				    	return listOf()			//2
+
+				    return listOf(e, e)
+			    	})
+			}
+
+			Here:
+
+				1. Instead of using a Lambda or Local Function/Member Reference to pass to .flatMap(), an Anonymous Function func2() is defined and passed as an argument to .flatMap().
+				2. Return exits from the anonymous function instead of the whole group of nested functions i.e. func1()
+
+	Member References:
+
+		- Member References as in Java are references to members within a class using ::
+
+			class Person(val name: String, val age: Int)
+
+			people.maxBy{it.age}
+			people.maxBy(Person::age)	//IDE will normally indicate when possible to convert from Lambda to Member Reference
+
+		- Member References can be used to store regular (non-Lambda) functions into a variable:
+
+			fun isEven(i: Int): Boolean = 1 % 2 == 0
+
+			val predicate = ::isEven			//Compile OK
+			val predicate = {i: Int -> isEven(i)}		//Member Reference is equivalent to calling the function inside Lambda as shown
+
+		- Member References are useful when the function being assigned to a variable may have many parameters:
+
+			val action = {person: p, message: String -> sendEmail(p, message)}	//Verbose
+			val action = ::sendEmail						//Concise
+
+			Here all of the parameters are inferred as required.
+
+		- Member References are useful when needing to pass a potentially verbose function as a Lambda argument to multiple other functions:
+
+			fun isEven(i: Int): Boolean = ... (Very long function body)
+
+			val list = listOf(...)
+
+			list.any(::isEven)		//Only need to send through the member reference rather than define the function a number of times
+			list.filter(::isEven)
+
+		- Member References can be bound or unbound:
+
+			Bound:		Member Reference is bound to a particular instance of the class it is referencing.
+			UnBound:	Member Reference is not bound to a particular instance of the class it is referencing but to the class in general whereby it may be necessary to pass as an argument any instance that you wish to invoke the member of.
+
+			For example:
+
+				class Person(val name: String, val age: Int)
+				{
+				    fun isOlder(ageLimit: Int) = age > ageLimit
+				}
+
+				//Unbound
+
+					val agePredicate = Person::isOlder					//1
+					val agePredicate: (Person, Int) -> Boolean = Person::isOlder		//2
+
+						//If using the IDE to check the Function Type of agePredicate (1) it automatically includes the additional parameter Person as shown (2)
+						//Whereby the compiler interprets the member reference Person::isOlder as the Lambda:	{person, ageLimit -> person.isOlder(ageLimit)} 
+
+					val alice = Person("Alice", 29)
+					println(agePredicate(alice, 21))					//true
+
+						//Within unbounded member references the compiler automatically inserts an additional argument of the class itself
+						//The Lambda simply calls the member reference on the object passed within the argument
+						//Unbounded member references are not bound to any specific instance but can be called on any instance of that class
+
+				//Bound
+
+					val alice = Person("Alice", 29)
+					val agePredicate = alice::isOlder					//1
+					val agePredicate: (Int) -> Boolean = alice::isOlder			//2
+
+					println(agePredicate(21))						//true
+
+						//Bound member references are bound to the specific instance of the class (1)
+						//The function type of the member reference expects just the argument Int but does not need/expect the additional argument instance of the class (2)
+						//The corresponding Lambda that gets called by the compiler is simply:			{ageLimit -> alice.isOlder(ageLimit)}
+						//It is not necessary/required to pass through an additional instance of the class that the member reference will correspond to given that it is applied to an instance directly
+
+		- Member References when used within a class can use the keyword 'this':
+
+			class Person(val name: String, val age: Int)
+			{
+			    fun isOlder(ageLimit: Int) = age > ageLimit
+			    fun getAgePredicate() = this::isOlder		//Function Type of getAgePredicate() is '(Int) -> Boolean' (a bounded member reference to the particular/current instance of class)
+			    fun getAgePredicate() = ::isOlder			//this can be ommitted
+			}
+
+			val alice = Person("Alice", 29)
+			val agePredicate = alice.getAgePredicate()
+
+		- Member References can be applied to Collections as shown:
+
+			fun isEven(i: Int): Boolean = i % 2 == 0
+
+			val list = listOf(1,2,3,4)
+			list.any(::isEven)					//Unbounded given that the member reference is not bound to any particular instance of the class but to the class itself (similar to static method) 
+			list.fiilter(::isEven)					//Unbounded member reference is applied to all instances within the collection
+
+
+	Extension Functions:
+
+		- Extension Functions are primarily a means to add members/functionality to an existing class without the need to formally create, name and extend an existing class.
+		- Extension Functions provide the ability to extend classes which maybe final/closed in other libraries/modules.
+		- Extension Functions should all be physically located in the same *.kt file so that they are easily discoverable and maintainable (not spread around various files in codebase).
+		- Extension Functions appear and are used just like members of that class:
+
+			fun String.lastChar() = this.get(this.length - 1)		//String is appended with an Extension Function called lastChar() 
+
+			val c: Char = "abc".lastChar()					//Extension Function can then be called just as if it was a member function of the class
+
+		- Extension Functions are generally defined as follows:
+
+			fun String.lastChar() = this.get(this.length - 1)
+			    |
+			    Receiver
+
+			Receiver:	Type that the Extension Function extends.
+			this:		Receiver is accessed/referenced using 'this', however 'this' can be omitted if necessary. It is possible to refer/invoke members of the Receiver directly from within the body of the Extension Function:
+
+						fun String.lastChar() = get(length - 1)
+									|   |
+									Members of Receiver
+
+		- Extension Functions need to be imported into source files as when required (they do not automatically 'come along' with the class import):
+
+			import com.example.util.lastChar
+
+			Or
+
+			import com.example.util.*
+
+		- Extension Functions are compiled as regular static functions, therefore:
+
+			1. No Override:		Extension Function can not be overriden given that static functions can not be overriden.
+			2. Parent Referenced:	Given the below:
+
+							open class Parent
+							class Child: Parent()
+
+							fun Parent.foo() = "parent"		//Extension function applied to Parent
+							fun Child.foo() = "child"		//Extension function applied to Child
+
+							val parent: Parent = Child()		//Parent variable assigned a Child object
+							println(parent.foo())			//Prints "Parent" i.e. even though the object assigned to Parent is a Child the extension function of Parent is called (not Childs)
+
+						Therefore the extension function that gets called is always that of the variable not of the object assigned to that variable.
+						The extension function associated with the variable type is called (rather than the object) given that at compile time it is not known what may be assigned to that variable i.e. Parent, Child or another extended class.
+						The only known type is that of the variable rather than what may be currently assigned to it or assigned to it at a later date.
+
+		- Extension Functions which have the same name as a member function i.e. shadow a member function (compiler will generate a warning), the member function is always called (not the extension function):
+
+				fun String.get(index: Int) = '*'
+
+				println("abc".get(1))			//Prints: b (not *), the extension function get() does not override member get()
+
+			However it is possible to overload member functions using extension functions should a different parameter list be used:
+
+				class A
+				{
+				    fun foo() = "member"		//Member function
+				}
+
+				fun A.foo(i: Int) = "extension $i"	//Extension function
+
+				A().foo(2)				//Prints: 'extension 2'
+
+		- Extension Functions can be called from Java source code by treating the Extension Function as a static function of the Receiver:
+
+			Example 1:
+
+				StringExtensions.kt:
+
+					fun String.lastChar() = get(length - 1)
+
+				JavaClass.java:
+
+					import static StringExtensionsKt.lastChar;
+
+					char c = lastChar("abc");
+					char c = StringExtensionsKt.lastChar("abc");		//Fully qualified
+						    |
+					NB: It appears as if Extension Functions are created within Java by extending the reciever using the name '[FileName]Kt' and then adding the static method ExtensionFunctionName(...) (to be investigated).
+
+			Example 2:
+
+				StringExtensions.kt:
+
+					fun String.repeat(n: Int): String
+					{
+					    val sb = StringBuilder(n*length)
+
+					    for(i in 1..n)
+						sb.append(this)
+
+					    return sb.toString()
+					}
+
+				JavaClass.java:
+
+					import static StringExtensionsKt.repeat;
+
+					StringExtensionsKt.repeat("abc", 3);		//abcabcabc
+								   |
+					NB: It is necessary to pass in the instance of the Receiver to be computed as the first argument in addition to the arguments required by the Extension Function itself.
+		
+		- Extension Functions do not have access to private members of the Receiver.
+		- Extension Functions are regular static functions defined in a separate auxiliary class (therefore would not have access to another classes private members).
+		- Extension Functions are automatically incorporated into Intellisense/Autocompletion within the IDE.
+		- Extension Functions are defined externally to an existing class.
+		- Extension Functions are akin to a utility function defined outside of the class but which appears and can be accessed like a member function.
+		- Extension Functions are what define much of the Kotlin Standard Library:
+
+			Kotlin Standard Library = Java Standard Library + Extensions
+
+			For example:
+
+				val list = arrayListOf(1,2,3)
+
+				println(list.javaClass)		//class java.util.ArrayList
+
+				Here:
+					1. list has many (additional) extension functions.
+					2. These include filter(), count(), map(), find() ...
+					3. These are all functions 'built on top' of existing class from within the Java Standard Library.
+
+			For example:
+
+				listOf('a','b','c').joinToString(separator = "", prefix = "(", postfix = ")"))
+
+				Here:
+
+					1. Above extension function has the following signature within the Kotlin Standard Library:
+
+						fun <T> Iterable<T>.joinToString(separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = ""): String
+
+			For example:
+
+				val array: Array<String>
+
+				println(${array.getOrNull(0)})
+
+				Here:
+
+					1. Above extension function has the following definition within the Kotlin Standard Library:
+
+						fun <T> Array<T>.getOrNull(index: Int)
+						    if(index in 0 until size)	this[index]
+						    else 			null
+
+		- Extension Functions allow for the use of 'infix' which enables the use of the extension function but with simpler syntax:
+
+			infix fun Int.until(to: Int): IntRange
+
+				Without infix:	1.until(10)
+				With infix:	1 until 10
+
+				Here:
+
+					1. The class Int has an extension function appended called 'until(to: Int)' which returns an IntRange.
+					2. When defined as 'infix' the syntax can be simplified as shown.
+
+		- Extension Function can be applied in a generic form i.e. the extension function is created and applied to the Type Argument that is passed when it is used: 
+
+			Example 1:
+
+				infix fun <A,B> A.to(that: B) = Pair(this, that)
+
+					Here:
+
+						1. The Type Argument supplied within A has the extension function .to() appended to it.
+						2. The return of the Extension Function is a Pair of the supplied instance of A and the passed argument of an instance of B.
+						3. Leading to the ability to create Pairs as shown:
+
+							"Answer".to(42) 		->		"Answer" to 42 		//infix allows for the simplified syntax
+
+					This is typically most ideal when initialising elements within a map:
+
+						mapOf(0 to "zero", 1 to "one")
+
+			Example 2:
+
+				infix fun <T> T.eq(other: T)
+				{
+				    if(this == other)		println("OK")
+			    	    else			println("Error: $this != $other")
+				}
+
+				fun getAnswer() = 42
+
+				getAnswer eq 42		//OK
+				getAnswer eq 43		//Error: 42 != 43			
+
+		- Extension Functions lead to there being no actual 'Kotlin SDK' but simply:
+
+			Kotlin SDK = Standard JDK + Extensions + Some New Classes (e.g. Pair)
+
+			This arrangement leads to:
+
+				1. Compact:			Small runtime *.jar due to not requiring any duplication of pre-existing java classes and where only those extension functions used are actually included.
+				2. Interoperability:		Easy and smooth interoperability with java and existing java code, given that no form of conversion is involved.
+
+		- Extension Functions can call other Extension Functions:
+
+			fun Char.isLetter() = this in 'a'..'z' || this in 'A'..'Z'		//Reads: Is the supplied instance of char within the described ranges
+
+			fun Char.isLetterOrDigit = isLetter() || this in '0'..'9'		//Calls and uses other Extension Function isLetter()
+
+		- Extension Functions are best found by either using Intellisense/AutoComplete or the online library.
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,602 @@
+Interface
+
+	Overview:
+
+        	- An interface enables completely unrelated classes to share functionality/behaviour:
+
+			1. Without having a shared superclass which contains that particular functionality/behaviour.
+			2. Without need to add/declare abstract functionality in superclasses going all the way back to Object.
+
+		- An interface enables the establishment of a contract between completely unrelated classes.
+		- An interface is a contract between groups of developers.
+		- An interface is considered the API (Application Programming Interface).
+        	- An interface is a reference type:
+
+			1. Is exactly the same (and should always be thought of) as an object reference variable.
+
+        		Except that:
+
+           			1. Only the methods and members defined by the interface are ever accessible.
+            			2. Only objects which implement the interface (or x1 of its subinterfaces - which would naturally contain the required interface) can be assigned to the reference variable.
+
+	Types:
+
+		Interfaces exist in x4 types:
+
+			1. Normal:	Implementing class must defined each abstract method.
+			2. Functional:	Containing only x1 abstract method, typically used within Lambda Expressions. May contain x1 or more Static and Default Methods.
+			3. Semantic:	Empty, indication only that a class exhibits certain functionality/behaviour e.g. Serializable.
+			4. Annotation:	Annotations are forms of interface, hence the particualr declarative syntax.
+
+	Header/Body:
+
+		Central Rules:
+
+			1. public:	Everything is implicitly public, keyword can be omitted. Only interface maybe public or default (package only).
+			2. static:	Everything is static except Abstract Methods and Default Methods.
+			3. Constants:	All fields are constants therefore must be initialised when declared.
+
+		Sample Structure:
+
+			[Access Modifier] interface [Identifier/Name] [Type Parameters] extends [Extended Interfaces [Comma Separated List]]
+			{
+				int i	= 1;					//Fields are all class variables and implicit static, final, public constants.
+				String 	= "Test";				//Fields are any element outside a method and must be initialised when declared.
+
+				void 			method1(int i, String sName);					//Abstract Methods
+				int			method2(double d, int i);					//No Braces but terminated with ;
+				Map<Integer, String> 	method3(int i, int j) throws IllegalArgumentException;		//Throw exception if required
+
+				static int staticMethod1()			//Static Methods
+				{}
+
+				default int defaultMethod1()			//Default Methods
+				{}
+
+				Inner Class					//Nested Types e.g. Helper Classes
+				Inner Interface
+				Inner Enum
+			}
+
+			[Access Modifier]:
+
+				Permitted:
+
+					public:		Must be the name of the file.
+					blank:		Package only.
+
+			[Identifier/Name]:
+
+				- Must not match any enclosing class or interface.
+
+			[Extended Interfaces [Comma Separated List]]:
+
+				- ...extends Interface1, Interface2, Interface3
+    	
+		Members:
+
+			- Components:
+
+				Permitted:			Not Permitted
+
+				1. Constants			1. Instance Variables.
+				2. Abstract Methods		2. Concrete Methods.
+				3. Default Methods		3. Final Methods.
+				4. Static Methods
+				5. Nested Types:
+
+					1. Inner Classes
+					2. Inner Interfaces
+					3. Inner Enums
+
+			- Fields:
+
+				Constants:		Class Variable only.
+							All implicit 'public', 'static' and 'final' i.e. a constant (modifiers can be omitted).
+							All members outside of a method are a constant.
+							No instance variables.
+							Must be initialised when declared.
+
+				Overload:             	N/A
+        			Override:             	N/A (All fields are static therefore specific to the interface, fields with same name in super interface are hidden).
+
+			- Methods:
+
+				All x3 types permitted:
+
+					Abstract:	Placeholder method signature.	
+
+					Static:		Utility Method:		[Accessible via interface direct: 	Interface.staticMethod();]
+
+					Default:	Core Method:		[Accessible via interface variable: 	InterfaceVariable.defaultMethod();]
+
+				Overload:             	All method types can be overloaded either locally within the interface or via inheritance.
+        			Override:             	Default only.
+
+				'public'		All methods are implicitly public, keyword can be omitted.
+				'final'			All methods cannot be made final.
+
+			- Default Methods:
+
+				Purpose:
+
+					- To enable the adding of functionality to an existing interface.
+					- Without the need to update or recompile those classes which already implement that interface.
+					- Default methods are considered 'core' methods rather than static methods which are considered 'utility' methods.
+
+				Parameters - Lambda Expressions:
+
+					- Default methods are permitted to except lambda expressions as parameters.
+					- (It maybe that static and abstract methods do not - TBT)	
+
+			- Comparison [Class]: Contains the following differences:
+
+				1. Static Memory Composition:		Interface consists of static memory only, therefore:
+
+									1. Fields:
+
+										Fields are all:
+
+										1. Class Variables.
+										2. Implicit 'static', 'final', 'public' constants.
+
+									2. Generic Types:
+
+										1. Generic Instances T are not permitted (given they are implicitly non-static).							
+										2. Non-Generic Types only.
+									
+				2. Abstract Methods:		No Concrete Methods.
+
+				3. Default Methods:		Added.
+
+	Extending/Inheritance:
+
+    		Central Rules:
+
+			1. Subinterface can inherit from single or multiple superinterface(s).
+			2. Subinterface aggregates all non-static members:		Abstract and default methods only.
+			3. Subinterface may override:					Default methods only.
+			4. Subinterface may overload:					Abstract and default methods only.
+			5. Subinterface must override:					Any ambiguous members if extending multiple interface(s).
+			6. Subinterface may override/overload:				Where it 'makes sense'.
+
+		Aggregation:
+
+			Subinterface inherits and aggregates all non-static members:
+			
+				Abstract Methods
+				Default Methods
+
+				Not:
+
+					Fields			[static constants are specific to interface]
+					Static Methods		[static methods are specific to interface]
+
+		Override:
+
+        		Subinterface may override:
+
+				Default Methods
+
+				Not:
+
+					Fields			[static constants are specific to interface]
+					Abstract Methods	[does not make sense given that abstract methods are empty placeholders]
+					Static Methods		[static methods are specific to interface]
+
+		Overload:
+
+			Subinterface may overload:
+
+				Abstract Methods
+				Default Methods
+
+				Not:
+					
+					Fields			[does not make sense given that constants are not methods nor could share different values]
+					Static Methods		[static methods are specific to interface]
+
+		Mulitple Inheritance:
+
+			Subinterface can inherit from single or multiple superinterface [separated using a comma separated list].
+
+				interface Interface extends Interface1, Interface2, Interface3
+
+		Ambiguity:
+
+			Applicable To:
+
+				1. Constants
+				2. Default Methods
+
+			If extending multiple interfaces, any ambiguous members which are declared in the separate interface(s) or superinterface(s) must be overriden:
+
+				1. Duplicate Constants:		[Matching Identifiers]						Must be overriden.
+				2. Duplicate Default Methods:	[Matching Header (Return Type, Identifer and Parameter List)]	Must be overriden.
+
+					InterfaceA:		default int defaultMethod(int i);
+					InterfaceB:		default int defaultMethod(int j);
+
+					InterfaceC extends InterfaceA, InterfaceB
+					{
+						default int defaultMethod(int i);	//Override
+					}
+
+			Duplicate Abstract/Static Methods are naturally unable to cause any ambiguity.
+
+		Clash:
+
+			Applicable To:
+
+				1. Abstract Methods
+				2. Default Methods
+			
+			If extending multiple interface(s), any abstract or default methods which have same signature but differing return type will lead to a clash:
+
+				Abstract Method:
+
+					InterfaceA:		int 	abstractMethod(int i);
+					InterfaceB:		double 	abstractMethod(int i);
+
+					InterfaceC extends InterfaceA, InterfaceB	//Compile Fail
+
+				Default Method:
+
+					InterfaceA:		default int 	defaultMethod(int i);
+					InterfaceB:		default double 	defaultMethod(int i);
+
+					InterfaceC extends InterfaceA, InterfaceB	//Compile Fail
+
+			It is not possible to override the method in the extended interface, it is not possible to extend both of these interface(s).
+
+		Default Methods:
+
+			When extending there are x3 options:
+
+				1. Inherit:	Do nothing and inherit the default method unaltered.
+				2. Override:	Re-define and override.
+				3. Abstract:	Re-declare and converted into abstract method:
+
+				interface Interface1
+				{
+					default int defaultMethod(int i){...}
+
+				interface Interface2 extends Interface1
+				{
+					int defaultMethod(int i);		//Default method converted to abstract method
+
+		Consolidation of Interfaces:
+
+			A number of interfaces maybe collated via either:
+
+				1. Multiple Inheritance/Extension:
+
+					interface Interface 	extends 	Interface1, Interface2, Interface3
+					class ClassA 		implements 	Interface
+
+				2. Multiple Implementation:
+
+					class ClassA 		implements 	Interface1, Interface2, Interface3
+
+			Ultimately providing all of the interfaces to the class (either way).
+
+
+
+
+
+
+	Class Implementation:
+
+		Central Rules:
+
+			1. Override:		Class must implement all abstract methods declared in the interface(s) and superinterface(s).
+			2. @Override:		Class must add @Override annotation to all implemented methods.
+			3. 'public'		Class must declare all implemented methods as 'public'.
+			4. Ambiguity:		Class must override any ambiguous members if implementing multiple interface(s).
+			5. Clash:		Class may not implement multiple interface(s) whose abstract or default methods clash i.e. same signature but differing return type.
+	
+		Aggregate Implementation:
+
+			The class must implement all aggregated abstract methods that are declared within its implemented interface(s) and any respective superinterface(s) combined.
+
+								SuperInterface1		SuperInterface2		SuperInterface3
+								|			|			|
+				class Class1 implements 	Interface1, 		Interface2, 		Interface3
+
+			The class can choose to override any abstract or default method contained within any interface(s) or superinterface(s) that its own superclass may have previously implemented.
+
+		Ambiguity:
+
+			If implementing multiple interfaces, any ambiguous or duplicate members which are declared in separate interface(s) or superinterface(s) must be overriden:
+
+				1. Duplicate Constants:					Must be overriden.
+				2. Duplicate Default Methods (identical signatures):	Must be overriden.
+
+			Duplicate Abstract/Static Methods are naturally unable to cause any ambiguity.
+
+		Abstract Class:
+
+			If the class does not override and implement all abstract methods then the class must be declared abstract.
+
+		Extending and Implementing:
+
+			It is possible to both extend and implement at the same time within the same class declaration:
+
+				class Class extends SuperClass implements Interface1, Interface2, Interface3
+
+		Declaration and Instantiation:
+
+			Declaration:		class MyClass implements MinMax
+						{
+							//Fields become 'part' of the class e.g. similar to the constants contained within a .h header file.
+
+							MyClass(int i)
+							{}
+
+							public void abstractMethod()		//All abstract must be declared public and be defined.
+							{}
+						}
+
+			Instantiation:		MyClass MyClassNumber = new MyClass(1);		//Class is declared and instantiated as normal.
+
+
+
+
+
+
+	Inline Interface Instantiation of Anonymous Object:
+
+		ClassA constructor is as follows:
+
+			ClassA(InterfaceA infInput)
+			{
+				...
+			}
+
+			//The constructor of ClassA requires an object containing the interface of InterfaceA.
+
+		Instantiation of ClassA can be passed an anonymous object which implements InterfaceA directly 'inline':
+
+			ClassA objClassA = new ClassA(new InterfaceA
+			{
+				//Override all of the abstract methods in InterfaceA
+			});
+
+
+
+
+
+    	Interface Variables:
+
+        	Central Rules:
+
+			- The interface variable itself cannot be instantiated via 'new', but an anonymous object can be assigned to an interface variable (but an 'instance' of an interface can be considered a Interface Variable).
+			- The interface variable can only exist as a reference variable (nothing physical).
+			- The interface variable can be used in all same places as an object variable.
+			- The interface variable of InterfaceA may be assigned:
+
+				An Interface:
+
+					1. InterfaceA:		Another interface variable of type InterfaceA.
+					2. SubinterfaceA:	Subinterface of InterfaceA which naturally contains the InterfaceA.
+
+				An Object:
+
+					3. InterfaceA:		A Class which implements InterfaceA directly.
+					4. SubInterfaceA:	A Class which implements SubinterfaceA which naturally contains the InterfaceA.
+
+					5. Anonymous Object:	via Anonymous Class:	Interface variable maybe assigned an 'anonymous object' defined by an Anonymous Class.
+					6. Anonymous Object:	via Lambda Expression:	Interface variable maybe assigned an 'anonymous object' defined by a Lambda Expression.
+
+					Whereby:
+
+						- A Class or SuperClass which ultimately at some point implements InterfaceA via either:
+						- A superclass may implement InterfaceA or SubinterfaceA whereby Class automatically inherits that InterfaceA.
+
+			- The interface variable (whenever encountered in documentation) should be thought of as simply 'ultimately an object, any object, but an object which implements that interface'.
+
+				method(InterfaceA infInterfaceA)
+
+				This method maybe passed:
+
+					- Not 'an object or instantiation of' InterfaceA itself.
+					- But any object which ultimately implements the interface InterfaceA.
+
+			- The interface variable may be a preference given that it gives more flexibility (and less brittle) going into the future.
+
+		Given:
+
+			- Any subinterface is simply an extension of the interface therefore naturally containing the superinterface and all of the interface abstract methods.
+			- Any superclass which implements the interface or subinterface will therefore already contain/implement the interface abstract methods:
+
+		Therefore:
+
+			- Any object will automatically inherit and already contain/implement the interface.
+			- Even if the superclass only implements a subinterface it will still contain the necessary interface and required abstract methods.
+
+		Examples:
+
+			1. Object is provided 'access' to the interface via a superclass implementing the interface directly.
+
+				Superclass......Interface
+				|
+				Object
+
+			2. Object is provided 'access' to the interface via a superclass implementing a subinterface of the interface.
+
+						Interface
+						|
+				Superclass......SubInterface
+				|
+				Object
+
+			3. Object is provided 'access' to the interface via implementing the interface directly.
+
+				Object..........Interface
+
+			4. Object is provided 'access' to the interface via implementing a subinterface of the interface.
+
+						Interface
+						|
+				Object..........SubInterface
+
+		Compatibility:
+
+			- Compatibility exists when an interface variable can hold references to differing classes.
+			- In order for compatibility the object must at some point implement/contain/define somewhere within its class hierachy (all the way back to Object) all the abstract methods declared within the interface.
+			- The interface variable is 'only interested' or 'able to provides access' to the abstract methods itself declares.
+			
+		Anonymous Objects
+	
+			- Given:
+
+				interface IntegerMath
+				{
+        				int operation(int a, int b);   
+    				}
+
+				class Calculator
+				{
+					int operateBinary(int a, int b, IntegerMath op)
+					{
+        					return op.operation(a, b);
+    					}
+ 
+    					public static void main(String... args)
+					{
+        					Calculator myApp 		= new Calculator();
+
+        					IntegerMath addition 		= (a, b) -> a + b;
+        					IntegerMath subtraction 	= (a, b) -> a - b;
+
+						System.out.println("40 + 2 	= " + myApp.operateBinary(40, 2, addition));
+						System.out.println("20 - 10 	= " + myApp.operateBinary(20, 10, subtraction));    
+					}
+				}
+
+			- The 'objects' assigned i.e. pointed to by the Interface Variables 'addition' and 'subtraction' can be considered as:
+
+				1. 'Anonymous Objects'
+				2. Objects which have not be given an identifier.
+				3. Objects which simply implement the interface 'IntegerMath' and no more.
+				4. Objects which are represented within the source code by the Interface Variables.
+
+			- Interface Variables should be thought of as 'instances' of the interface but not 'instantiations'.
+
+		Polymorphism:
+
+			- In polymorphic situations it is strongly recommended to use Interface Variables (Class/Instance/Local/Parameters) rather than instantiations of classes which implement those interfaces:
+			- Interface Variables lead to:
+
+				1. Flexibility:
+
+					- Interface Variables increase flexibility, whereby only the initial instantiation needs to be manually changed.
+
+						Set<String> s 	= new HashSet<String>();
+								= new LinkedHashSet<String>();
+								= new TreeSet<String>();
+								= new ...
+
+					- The rest of the context can be guaranteed to work without further alteration.
+
+				2. Reliability:
+
+					- Interface Variables restrict the permitted methods that maybe called by the object via the Interface Variable.
+					- Interface Variables form a contract and guarantee that a body of code may only contain Reference Variables which are able to call a fixed set of methods.
+					- Interface Variables lead to much less rigid code, whereby not becoming potentially reliant on any unique methods of classes.
+
+			- Example:
+
+				- Consider the collection HashSet<String>:
+
+					public static void main(String[] args)
+					{
+        					Set<String> s = new HashSet<String>();
+
+        					for (String a : args)
+               			    	    	    s.add(a);
+
+        					System.out.println(s.size() + " distinct words: " + s);
+    					}
+
+				- An Interface Variable of Set<String> 's' is used rather than an instance of HashSet<String>.
+				- This allows for more flexible, robust and maintainable programs.
+				- Such that:
+
+					1. If it was desired to have the Elements within s stored in order, then it only requires to change Line 1 to:
+
+						Set<String> s = new TreeSet<String>();
+
+					2. Without any concern that it would adversely affect any other aspect of the program.
+					3. No need to check and alter all occurences of 's' throughout the program.
+
+	Examples:
+
+		1. Object Comparison:
+
+			- Allow differing/unrelated but similar objects to be compared.
+			- Use a recursive interface parameter to ensure that able to compare objects.
+ 
+				public interface Relatable
+				{
+					public int getArea();
+        				public boolean isLargerThan(Relatable other);	//Ensures that any comparison is with compatible types only which implement Relatable
+											//Using Relatable as a parameter restricts to only objects which implement Relatable are passed to the abstract method
+				}
+
+				class Rectangle implements Relatable
+				{
+					int getArea(){...}						//Calculate area
+
+					public int isLargerThan(Relatable otherShape)
+					{
+						return (this.getArea() > otherShape.getArea());		//Calculate and return
+					}              
+    				}
+
+		2. Casting From Interface:
+
+			- The compiler does not know what object has been passed to the method.
+			- Therefore must cast to the required/expected type in order to invoke and assocaited methods with that type.
+
+				class Rectangle implements Relatable
+				{
+					int getArea(){...}						//Calculate area
+					int getHeight(){...}
+
+					public int isLargerThan(Relatable otherShape)
+					{
+						Rectangle otherRect = (Rectangle)otherShape;
+						...
+						otherRect.getHeight();
+					}              
+    				}
+
+		3. Casting From Object:
+
+			- If an Object is passed as an argument.
+			- If the Object contains an interface.
+			- Then is must be cast to the interface in order to obtain access to its methods.
+
+				class Rectangle implements Relatable
+				{
+					int getArea(){...}						//Calculate area
+					int getHeight(){...}
+
+					public int isLargerThan(Object o)
+					{
+						Relatable oRelatable = (Relatable) o;
+						...
+						oRelatable.getArea();
+					}              
+    				}
+
+		4. Evolving an Interface:
+
+			- If need to add additional functionality to an existing interface (whilst without needing to add abstract method - which would require all implementing classes to be updated).
+			- There are x2 options:
+
+				1. Static Method:	(Utility)
+				2. Default Method:	(Core)
+				3. Extend and create a subinterface with new abstract methods.
+

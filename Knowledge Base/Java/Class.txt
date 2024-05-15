@@ -1,0 +1,1243 @@
+Class - Non Generic
+
+	Building:
+
+		Header/Body:
+
+			[Access Modifier][final] class	[Identifier/Name] extends [Extended Class] implements [Implementing Interfaces [Comma Separated List]]
+
+			class Class
+			{
+				//Fields
+
+					Instance Variables	//Non-Static
+					Class 	 Variables	//Static
+
+				//Methods
+
+					Constructor
+					Method			//Non-Static
+					Method Static		//Static
+
+				//Nested Types
+
+					Inner Class
+					Inner Interface
+					Inner Enum
+			}
+
+			class Class
+			{
+				//Instance Variables
+				int 		i;				//Assigned Default: Yes
+				ClassA  	objClassA;			//Initialise:
+												1. Declared.
+												2. Non-Static Context:
+
+													Constructor (Argument or Literal)
+													Method
+
+				final int 	i;				//Assigned Default: No
+				final ClassA  	objClassA;			//Initialise:
+												1. Declared.
+												2. Class Instantiated:
+
+													Constructor (Argument or Literal)
+
+										//'final' declares that once initialised cannot be altered.
+
+
+
+				//Class Variables
+				static int	i;				//Assigned Default: Yes
+				static ClassA  	objClassA;			//Initialise:
+												1. Declared.
+												2. Anywhere:	[Non-Static or Static Context]
+
+													Constructor (Argument or Literal)
+													Method
+													Static Method
+													Static Initialisation Block
+
+				static final int 	i;			//Assigned Default: No
+				static final ClassA  	objClassA;		//Initialise: 
+												1. Declared
+												2. Class Loaded:
+
+													Static Initialisation Block
+
+										//'final' declares that once initialised cannot be altered.
+
+				//Static Initialisation Block
+				static
+				{
+					//Executed upon Class Load.
+					//Executed throughout Class in order they appear.
+				}
+				//Non-Static Initialisation Block
+				{
+					//Executed upon Class Instantiation.
+					//Included in all constructors.
+				}
+
+				//Constructors
+				Class (int i, int[] j, ClassA objClassA)	//Constructor, same name as class but no return type.
+				{...}
+				Class (int i, int[] j)				//Constructor Overload
+				{...}
+				private Class()					//Constructor Private (used in Factory Methods)
+				{...}
+
+
+				//Instance Methods
+				void method (int i)
+				{...}
+				void method (int i, int j)
+				{...}
+				@Override
+				void method (int i)
+				{...}
+
+
+				//Class Methods
+				static void method (int i)			//Static Methods:	Do not span sub/superclasses.
+				{...}						//
+				static void method (int i)			//	1. Specific:	Only have scope, relevance and specific to the class, not super/subclass.
+				{...}						//	2. Override:	Not possible.
+										//	3. Overload:	Only possible to overload locally within the class, not super/subclass.
+
+				//Nested Types
+
+					Inner Class
+					Inner Interface
+					Inner Enum
+			}
+
+			Compile Fail:
+
+				class Class
+				{
+					final int i;				//Compile Fail		Field must be initialised either when declared or in Constructor.	
+					static final String;			//Compile Fail		Field (a Constant) must be initialised either when declared or in Static Initialisation Block.		
+				}
+
+			Access Control:
+
+				Class/Interface Level:
+
+					1. public:		Application
+					2. Default/None:	Package
+
+				Member:
+
+					1. public:		Application
+					2. Default/None:	Package
+					3. protected:		Package and Subclass(es)
+					4. private:		Class
+
+					NB: Default/None a.k.a 'Package-Private'
+
+				Recommend:
+
+					1. private:
+
+						- Use 'private' unless have a good reason not to.
+
+					2. public:
+
+						- Avoid 'public' fields except for constants.
+						- Public fields increase dependencies to particular implemenation and brittleness, reducing flexibility.
+						- Public fields should not be used in production code.
+
+			Final:
+
+				Class maybe declared as 'final' preventing it from begin extended.
+
+			Fields:
+
+				Types:
+
+					1. Primitives			int i
+					2. Arrays			int[] arrInt
+					4. Object References		ClassA objClassA
+					5. Interface References		InterfaceA infInterfaceA
+
+					NB: Fields can be declared anywhere within in the class but recommend at beginnning.
+
+				Initialisation:
+									Recommened:		Secondary:			Tertiary:
+
+					Instance Variables:		Constructor		Non-Static Context		Declared | Initialisation Blocks | Final Methods
+					Class Variables:		Constructor		Static or Non-Static Context	Declared
+					Constants:			Declared		Static Block
+
+					If not assigned/initialised when declared:
+
+					1. If 'final'			Initial Default
+
+						If 'non-Static':	No		Must be initialised in when class is instantiated i.e. Constructor.
+						If 'Static':		No		Must be initialised in a Static Context and when class loaded e.g. Static Block or invoke a Static Method (which returns and assigns a value). A Constant.
+
+					2. If 'Static'
+
+						Yes:			Yes		Then assignable in static or non-static context i.e. anywhere.
+						No:			Yes		Then assignable in non-static context only.
+
+					NB:
+						Final:
+
+							- Anything 'final' NOT assigned a default value.
+							- Anything 'final':
+
+								If 'static':		Must be initialised when class loaded.
+								If 'non-static':	Must be initialised when class instantiated.
+
+							- Anything 'final' declares that once initialised cannot be altered.
+
+						Default Values:
+
+							- 0, '', false, null
+				
+					Recommended:
+
+						- All fields are initialised before they are used.
+						- All fields are initialised when declared.
+
+				Instance Variables:
+
+					- Initialisation Blocks:
+
+						- Identical to Static Initialiser Blocks but without 'static':
+
+							class Class
+							{
+								int i;
+
+								{
+									int = 10;
+								}
+								
+								Class()
+								{...}
+							}
+
+						- Initialisation Blocks are automatically copied to all Constructors.
+						- Therefore this block is run by all Constructors.
+
+					- Final Methods:
+
+						- Final method cannot be overriden by extended classes.
+
+							class Class
+							{
+    								int i = initInstanceVariable();
+        
+    								protected final int initInstanceVariable()
+								{...}
+							}
+
+						- Final method can be invoked by extended classes in order to reset/re-initialise the Instance Variable.
+						- NB:
+
+							- Invoking Non-Final methods during Instance initialisation is not recommended.
+							- Invoking Non-Final methods during Instance initialisation can cause issues.
+
+				Class Variables:
+
+					- Maybe referenced either via:
+
+						1. Class:	Class.iStaticField 	= 10;
+						2. Object:	objClass.iStaticField 	= 10;
+
+						NB: Reference via Class is recommended in order make it clear they are Class Varaiables and to maintain readability.
+
+					- Static Initialisation Blocks:
+
+						- Class Variables complex logic or computation in order to initialise value.
+
+							class Class
+							{
+								static
+								{...}
+							}
+
+						- Within the class:
+
+							1. Number:	Any number of static blocks.
+							2. Location:	Appear in any location.
+							3. Called:	Always called in the order they appear.
+
+					- Private Static Methods
+
+						- Useful when initialising Class Variables.
+						- For they enable quick re-initialisation back to a default is required.
+
+							class Class
+							{
+								static int i = privateStaticInitMethod();
+
+								private static int privateStaticInitMethod()
+								{
+									i = 10;
+									return i;
+								}
+							}
+
+						- Such that just recall this method at anytime in order to reset/re-initialise the Class Variable.
+
+				Constants:
+
+					- Constant is a field:
+
+						1. 'final'	Qualified with 'final'.
+						2. Initialised:	Initialised at Compile-Time.
+						3. Fixed:	Cannot be altered once initialised:
+
+					- Initialisation:
+
+						Non-Static Constant:	Must be initialised as object instantiated:		Declared	Initialisation Block		Constructor.
+						Static Constant:	Must be initialised as class is loaded:			Declared	Static Initialisation Block
+
+					- Non-Static Constant:
+
+						class Class()
+						{
+							final int i = 10;		//Initialise:	Declared
+
+							{
+								i = 10			//Initialise:	Initialisation Block (automatically copied to all Constructors).
+							}
+
+							Class(int i)
+							{
+								this.i = i;		//Initialise:	Constructor
+								this.i = 10;		//Fail:		Cannot alter once initialised
+							}
+						}
+
+					- Static Constant:
+
+						class Class()
+						{
+							static final int i = 10;		//Initialise:	Declared
+							static final int i = staticMethod();	//Initialise:	Declared
+
+							static
+							{
+								i = 10			//Initialise:	Static Initialisation Block (automatically run when Class loaded).
+							}
+
+							Class(int i)
+							{
+								this.i = i;		//Fail:		Field must be initialised when class is loaded not when instantiated
+								this.i = 10;		//Fail:		Cannot alter once initialised
+							}
+						}
+
+					- Convention to use UPPER_CASE for identifiers.
+					- Compile-Time Constants:
+
+						1. Set at compile time.
+						3. Value is set and replaced in all locations where the constant is used.
+						4. If altered all classes which use the constant will need to be re-compiled i.e. the value is not continually 're-read' during runtime.
+
+			Constructors:
+
+				Default Constructor:
+
+					- Default Constructor is a 'No Argument' Constructor automatically generated by the compiler.
+					- Default Constructor is only generated by the compiler if there are no Constructors at all in the class i.e:
+
+						1. No Constructors with 'No Arguments'.
+						2. No Constructors with 'Arguments'.
+
+					- If a class contains at least x1 explicit Constructor:
+
+						1. Default Constructor will not be automatically generated.
+						2. Attempts to utilise the Default Constructor will result in compile error:
+
+							class Shape()
+							{
+								Shape(int i, int j)		//Class contains x1 or more Parameterised Constructor(s).
+								{}
+							}
+
+							class Rectangle extends Shape
+							{
+								Shape objShapeA = new Shape();		//Compile Error 	Given that Shape contains at least x1 Constructor not possible to invoke Default Constructor.
+								Shape objShapeA = new Shape(10, 11);	//OK:			Must invoke defined Parameterised Constructor.
+							}
+
+					- Examples:
+
+						Super:	No Constructors
+
+								class Shape
+								{
+
+								}
+								class Rectangle extends Shape
+								{
+									Rectangle(){...}
+									Rectangle(int l, int w){...}
+								}
+
+							- Super Class:		Default Constructor generated.
+							- Extended Class:	Default Constructor automatically invoked by Extended Class.
+
+						Super:	x1 'No Argument' Constructor
+
+								class Shape
+								{
+									Shape(){...}
+								}
+								class Rectangle extends Shape
+								{
+									Rectangle(){...}
+									Rectangle(int l, int w){...}
+								}
+
+							- Super Class:		Default Constructor not generated, given that at least x1 Constructor explicitly defined.
+							- Extended Class:	'No Argument' Constructor automatically invoked by Extended Class.
+
+						Super:	x1 'No Argument' Constructor
+						  	x1 Parameterised Constructor
+
+								class Shape
+								{
+									Shape(){...}
+									Shape(int i){...}
+								}
+								class Rectangle extends Shape
+								{
+									Rectangle(){...}
+								}
+
+							- Super Class:		Default Constructor not generated, given that at least x1 Constructor explicitly defined.
+							- Extended Class:	'No Argument' Constructor automatically invoked by Extended Class.
+
+						Super:	x1 Parameterised Constructor
+
+								class Shape
+								{
+									Shape(int i){...}
+								}
+								class Rectangle extends Shape
+								{
+									Rectangle(int l)
+									{
+										super(l);
+									}
+								}
+
+							- Super Class:		Default Constructor not generated, given that at least x1 Constructor explicitly defined.
+							- Extended Class:	Must invoke super(int i) as the first statement.
+
+						Constructor Chain via Inheritance:
+
+								class Shape
+								{
+									Shape()
+									{
+										System.out.println("Shape constructor called");
+									}
+								}
+								class Rectangle extends Shape
+								{
+									Rectangle()
+									{
+										System.out.println("Rectangle constructor called");
+									}
+								}
+								class Polygon extends Rectangle
+								{
+									Polygon()
+									{
+										System.out.println("Polygon constructor called");
+									}
+								}
+
+								Polygon objPolygon = new Polygon();
+
+							- Output:
+
+								Polygon constructor called
+								Rectangle constructor called
+								Shape constructor called
+
+							- All 'No Argument' Constructors automatically called without invocation via .super().
+
+				Super Constructor:
+
+					- Rather than use either:
+
+						1. Superclass No-Argument Constructor.
+						2. Superclass Default No-Argument Constructor.
+
+						Explicitly call and define which superclass constructor and arguments to pass to superclass.
+
+					- If used, must always be the first statement within a constructor.
+
+						Class (int x, int y)
+						{
+							super(x, y, 10, 10);	//Must be first statement in constructor
+							...
+						}
+
+					- Therefore:
+
+						Only needs to explicitly call super() if Super Class:
+
+							1. Does not contain a Default Constructor.
+							2. Does not contain a 'No Argument' Constructor.
+							3. Only contains a Parameterised Constructor.
+
+				this:
+
+					- Used within Constructors and Methods only.
+					- Used to:
+
+						1. Shadow:
+
+							Parameters may shadow existing fields, 'this' enables the assignment of incoming arguments.
+
+								Class (int x, int y)
+								{
+									this.x = x;
+									this.y = y;
+								}
+
+						2. Explicit Constructor Invocation:
+
+							Call other constructors within the class, is used must be the first statement in constructor.
+
+								Class (int x, int y)
+								{
+									this(x, y, 10, 10);	//Must be first statement in constructor
+									...
+								}
+
+							Primarily for assigning default values to fields.
+
+						3. Constructor Chaining:
+
+							Prevent the need to duplicate code:
+
+								class Shape
+								{
+			    						Shape()			{...}
+			    						Shape(int i) 		{...}
+			    						Shape(int i, int j) 	{...}
+			    						Shape(int i, int j, int k)			//Rather than repeat Constructor code, simply invoke as required.
+			    						{
+										this();					//Invoke Default 'No-Argument' Constructor
+										this(i, j);				//Invoke the Parameterised Constructor
+
+										...					//Include and process parameter 'k'
+			    						}
+								}
+
+				super + this
+
+					- It is not possible for a Constructor to contain both 'super' and 'this' given that both statements must be first.
+
+						class Shape
+						{
+							Shape()
+							{...}
+							Shape(int h, int w)
+							{
+								this;
+								super();
+							}
+						}
+
+					- Compile Fail.
+
+				Non-Inheritance:
+
+					- Constructors are not inherited.
+					- Constructors are not static for they are associated instances of the class and called only once the class has been instantiated. 
+					- Constructors are specific to class only, it is only possible to invoke the immediate parent constructor via .super().
+
+			Methods:
+
+				Parameter Types:
+
+					1. Primitives			int 		i
+					2. Arrays			int[] 		arrInt
+					3. VarArgs			int... 		iValues
+					4. Object References		ClassA 		objClassA
+					5. Interface References		InterfaceA 	infInterfaceA
+					6. Method References		ClassA::methodName
+					7. Lambda Expressions		(Person a, Person b) -> {return a.getBirthday().compareTo(b.getBirthday());}
+
+				Scope/Access:
+
+					Instance Methods:	[All]
+
+						1. Instance Fields
+						2. Instance Methods
+						3. Class Fields
+						4. Class Methods
+
+					Class Methods:		[Class Only]
+
+						1. Class Fields
+						2. Class Methods
+
+					NB:
+
+						- Instance Fields/Methods are only accessible from a static context via an object reference.
+						- 'this' cannot be used within static context.
+
+				Primitives:
+
+					- Passed in ByValue.
+					- Therefore:
+
+						- Any primitive passed in as an argument cannot be altered by the method.
+						- Any primitive parameter:
+
+							1. Scope:	Method Only.
+							2. Value:	Alterations may be made to the parameter without effecting its original 'external' value.
+
+								int x = 10;
+
+								void Method(int i)
+								{
+									i = 11;
+								}
+
+								Method(i);
+
+								//x = 10, not 11.
+
+								NB: 'i' can be used as any other Local Variable, it has simply had it value initialised by the argument passed.
+
+				Object References:
+
+					- Passed in ByValue.
+					- Therefore:
+
+						- Any Object Reference passed in as an argument cannot be altered by the method i.e. it will always point to the same object.
+						- However the fields within the object maybe altered by the method.
+
+								Circle objCircleA = new Circle(10);
+
+								void setDiameter(objCircleA, 20);
+
+								//Where
+								void setDiameter(Circle objCircleB, int iDiameter)
+								{
+									objCircleB.iDiameter = iDiameter;
+
+									objCircleB = new Circle(50);
+								}
+
+						- objCircleA will not have another Circle object assigned to it indirectly within the method via objCircleB = new Circle(50);
+						- For the object assigned to the objCircleB is ByValue not ByReference.
+						- Therefore the diameter of objCircleA remains being 20 not 50.
+
+				ByVal:
+
+					- Method parameters are always passed in ByValue (not ByRef).
+
+						Primitives:	Receive a copy of the value passed in by the argument.
+						Objects:	Receive a copy of the reference address assigned to the object passed in as an argument.
+
+					- Method parameters are new variables newly declared for the scope of the method only.
+					- Method parameters receive a copy of the primitive value or object reference address contained within the the passed argument which is assigned to the local method parameter.
+
+						private void method(int iValue, ClassA objClassA)
+						{
+							iValue = 11;
+							objClassA = new ClassA("Property = 21");			//Stage 3
+						}
+
+						private static void main()
+						{
+							int iValue = 10;
+							ClassA objClassA = new ClassA("Property = 20");			//Stage 1
+
+							method(iValue, objClassA);					//Stage 2
+
+							System.out.println(iValue);	//Still equal 10.
+							System.out.println(objClassA);	//Still equal 20.		//Stage 4
+						}
+
+					- Stage:
+
+						1. objClassA is assigned an address.
+						2. objClassA is passed as an argument, a copy of the address is assigned to a new declaration of a local variable to be used within the method.
+						3. The local variable is assigned another address and its property is altered.
+						4. objClassA outside the method still points to the object instantiated at stage 1. objClassA within the method was a local variable that has now gone out of scope.
+
+					- Both method parameters are passed in ByValue and assigned to local variables within the parameter list:
+
+						iValue:		Receives a copy of the value 10 and assigned to local variable.
+						objClassA:	Receives a copy of the reference address and assigned to local variable.
+
+					- Consequently any changes to either parameter does not effect the value or the variables outside the scope of the method that were used as arguments.
+	
+					- Effectively the same as:
+
+						Primitive:
+
+							private static void main()
+							{
+								int A = 20;
+								int A_Method = A;
+
+								A_Method = 21;
+
+								System.out.println(A);		//Still equal 20.
+							}
+
+						Object:
+
+							private static void main()
+							{
+								ClassA objClassA 		= new ClassA("Property = 20");
+								ClassA objClassAMethod 		= objClassA;
+
+								ClassA objClassAMethod 		= new ClassA("Property = 21");
+
+								System.out.println(objClassA);	//Still equal 20.
+							}
+
+				VarArgs:
+
+					- Essentially an array.
+					- For use when do not know how many of the type will be passed to the method during runtime, either:
+
+						1. Zero
+						2. Arbitary Amount
+
+					- Removes the need for creating an array manually and then passing.
+					- Must be:
+
+						1. Only x1 Vararg per Parameter List.
+						2. Listed at the end of Parameter List.
+
+					- Declaration:
+
+						void Method(int i, int j, String... sNames)
+						{
+							int lLength = sNames.length;
+
+							String sName0 = sNames[0];
+							String sName1 = sNames[1];
+							String sName2 = sNames[2];
+						}
+
+					- Invocation:
+
+						1. Sequential List:	Class.Method(1, 2, "Paul", "John", "Bert");
+						2. Array:		Class.Method(i, 2, sNames);			//sNames already declared, instantiated and initialised.
+
+						The Vararg is treated as an array within Method() regardless on how it was declared.
+
+			Static Methods:
+
+				Overview:
+
+					- Class Methods.
+					- Common use of Static Methods is to access Static Fields.
+
+				Characteristics/Capbilities:
+
+					- A Static Method should be thought of as:
+
+						1. Context:				'A method in a Static Context/Memory' rather than something completely different to a normal method.
+						2. Characteristics/Capbilities:		'A Static Method has exactly the same characteristics/capabilities as a method just that only has access to Top Level Static Members' 
+
+				Referencing:
+
+					- Maybe referenced either via:
+
+						1. Class:	Class.staticMethod();
+						2. Object:	objClass.staticMethod;
+
+						NB: Reference via Class is recommended in order make it clear they are Class Methods and to maintain readability.
+
+			Comparison With [Generic Class]:
+
+				- Identical except for the introduction of Class and Local Type Parameters.
+
+		Extending:
+
+			Purpose:
+
+				1. Code Reuse.
+				2. Polymorphism i.e. Dynamic Method Dispatch
+				3. Encapsulation of members in Parent Class.
+				4. Method Override providing specific functionality whilst maintaining the functionality of the Base Class.
+
+			SuperClass Constructor:
+
+				- At least x1 (minimum) Superclass Constructor must be called in order to initialise this 'original part' of the extended class.
+				- This must occur all the way back to Object.
+				- All 'original' areas inherited within the class must be initialised.
+				- 'super' must be the first statement in Constructor and initialise any necessary fields of the parent class:
+
+					class ExtendedClass extends Class
+					{
+					    ExtendedClass()
+					    {
+						super(10);
+					...
+
+			Aggregation, Overloading, Overriding:
+
+				- 'protected''public' i.e. non-private members
+
+					Fields:
+
+						- Aggregated:		Yes
+						- Overload:		No
+						- Override:		Yes		Known as 'hiding' a field in superclass.
+
+					Methods:
+
+						- Aggregated:		Yes
+						- Overload:		Yes		Local and Superclass.
+						- Override:		Yes		Superclass
+
+					Static Methods:
+
+						- Aggregated:		No		Specific to class only.
+						- Overload:		Yes		Local.
+						- Override:		No 		For method is specific and invoked via direct reference to the class.
+
+					NB: Methods name should always begin with a verb.
+
+				- Overriden Method Access:
+
+					- Overriden Methods may alter their Access Level.
+					- Overriden Methods may only increase their Access (not decrease):
+
+						Parent Class		Extended Class (permitted)
+						_________________________________________________________
+
+						private			public 	protected  package-private  private
+						package-private		public 	protected  package-private
+						protected		public 	protected
+						public			public
+
+				- Overriding and Overloading Comparison:
+
+						class Shape
+						{
+	    					    int 	getObject(int i, int j);		//Initial Method
+
+	    					    int 	getObject(int i, double j);		//Overload:	OK
+	    					    double 	getObject(int i, int j);		//Overload:	Compile Fail (given that only Return Type is altered from Initial Method)
+
+	    					    Shape 	getObject(int i, int j)
+	    					    {
+							return this;
+	    					    }
+						}
+
+						class Rectangle extends Shape
+						{
+	    					    @Override
+	    					    int 	getObject(int i, int j)			//Override:	OK
+
+	    					    @Override
+	    					    double 	getObject(int i, int j)			//Override:	Compile Fail
+
+	    					    @Override
+	    					    Rectangle 	getObject(int i, int j)			//Override:	OK (Covariant Return Type)
+	    					    {
+							return this;
+	    					    }
+						}
+
+					Overloading:
+
+						- Return Type:		Must remain unaltered.
+						- Name:			Must remain unaltered.
+						- Parameter List:	Altered
+
+						"All aspects must remain the same except the Parameter List"
+
+					Overriding:
+
+						- Return Type:		Must remain unaltered.
+						- Name:			Must remain unaltered.
+						- Parameter List:	Must remain unaltered (unless it is a Covariant Return Type)
+
+						"All aspects must remain the same except Covariant Retyurn Types".
+
+				Overloading:
+
+					Method Ambiguity
+
+						- Java can only distiguish methods with a differing Method Signature:
+
+									|       Method Signature 	|
+							[Return Type] 	Identifier 	 (Parameter List)
+
+						- Altering just the Return Type leads to ambiguity:
+
+							class ClassA
+							{
+								int 	method1(int i)
+								double 	method1(int i)		//Compile Fail:		All aspects must remain the same except the Parameter List.
+							}
+
+						- Given that Overloaded methods naturally share the same name, it is only possible to overload a method which has a differing Parameter List via either:
+
+							1. Argument Number:	Changing the number of Arguments
+							2. Argument Type:	Changing the type of Arguments
+
+						- Fields may not be overloaded (only methods), fields are hidden.
+
+					Areas of Use:
+
+						1. Locally:		Overload methods within the same class/interface.
+						2. via Extension:	Overload methods that were contained within a superclass/superinterface.
+
+						NB: Overload methods should be used a minimal as possible to increase readability.
+
+					main():
+
+						- It is possible to Overload main(), however purpose or use is unknown, for the JVM only calls main(String[] args):
+
+							class Class
+							{  
+							    public static void main(String[] args){...}		//JVM only calls this main().
+							    public static void main(String args){...}		//Compile OK:	But use is unknown as is not called by JVM, only of use if called by program itself
+							    public static void main(){...}			//Compile OK:	But use is unknown as is not called by JVM, only of use if called by program itself
+							} 
+ 
+			Covariant Return Type:
+
+				- Overriding requires that all aspects remain unaltered:
+
+					1. Return Type
+					2. Name
+					3. Parameter List
+
+				- However since Java 5, it is possible to change just the Return Type as long as within the respective method:
+
+					1. Parent Class:	Return Type is the Class itself.
+					2. Extended Class:	Return Type is also the Class itself.
+
+					class Shape
+					{
+						public Shape getObject()
+						{...}
+					}
+
+					class Rectangle extends Shape
+					{
+						public Rectangle getObject()	//Return Type is altered in the 'same direction' as the extended class, whereby introducing a Covariant Return Type. 
+						{...}
+					}
+
+				- .getObject() is overriden and introduces a Covariant Return Type in Rectangle.
+
+			Compatibility:
+
+				- Compatibility exists when it is possible to assign a subclass object to a superclass reference variable:
+
+					SuperClass {}
+					SubClass extends SuperClass {}
+
+					class Class
+					{
+						SuperClass objSuperClass = new SubClass();
+					}
+
+				- The superclass is a constituent part of the extended class.
+				
+
+
+
+
+
+
+	Deploying:
+
+		Declare, Instantiate, Initialise:
+
+			For both Primitives and Objects there are x3 steps:
+
+				1. Declaration:		Associate an Identifier with a type.
+				2. Instantiation:	Allocate memory.
+				3. Initialisation:	Assign a value.
+
+			Primitives:
+
+				- x2 Stage process:
+
+					1. Declare/Instantiate:
+
+						int i;
+
+						1. Associate a Variable Identifier with a type.
+						2. Allocate memory.
+						3. Given default value: 0, '', false
+
+					2. Initialise:
+
+						i = 10;
+
+						1. Assign a value to that Identifier.
+
+				- Each stage can be completed separately or combined in same statement:
+
+					Separate:	int i;
+					Combined:	int i = 10;
+
+				- Memory:
+
+					Primitives allocate memory when declared.
+
+			Objects:
+
+				- x2 Stage process:
+
+					1. Declare:
+
+						ClassA objClassA;
+
+						1. Associate a Reference Variable Identifier with a type.
+						2. Do not allocate memory.
+						3. Given default value: null
+
+					2. Instantiate/Initialise:
+
+						objClassA = new ClassA(10);
+
+						1. Allocate memory.
+						2. Return memory address and assign to the Reference Variable.
+						3. Call type Constructor.
+
+						Instantiate:		new		//Allocating and returning a memory reference
+						Initialise:		ClassA(10)	//Call to Constructor
+
+				- Each stage can be completed separately or combined in same statement:
+
+					Separate:
+
+						ClassA objClassA;
+						objClassA = new ClassA(10);
+
+					Combined:
+
+						ClassA objClassA = new ClassA(10);
+
+				- Direct Expression:
+
+					- Instantiate/Initialise stage can be used directly within an expression:
+
+						Example 1:	int i = new ClassA().iValue;
+						Exmaple 2:	method(new ClassA(), 4);
+
+				- new:
+
+					- Allocates memory for that object.
+					- Returns a memory address reference.
+					- Invokes the object constructor.
+			
+				- Memory:
+
+					- Object References do not allocate memory when declared.
+					- Memory is only allocated when Instantiated/Initialised.
+
+				- Interface:
+
+					- Variable of a class should always be thought of as a fixed interface of that type.
+
+						String sTest = "Test";
+
+						Object oTest;
+
+						oTest = sTest;
+
+						oTest...
+
+					- In the above:
+
+						- It is only possible to access the members of Object through oTest (even though it has been assigned an instantiation of String).
+						- oTest should be thought of as an interface of Object (rather than some sort of 'global reference variable' that can hold anything), it is only possible to access methods available via/through the interface of Object.
+						- Even though oTest may point to a String instantiation/object, it is only possible to access that object through the interface of the reference variable pointing to it, in this case the interface of Object.
+
+		Interaction:
+
+			Fields:
+
+				- Dot Operator
+
+					int i = objClassA.iField1;
+					int j = objClassA.iField2;
+
+				- Direct Expression:
+
+					Any expression can be used which returns the appropriate type:
+
+					int k = new ClassA().iField3;
+					int l = ClassA().staticFactoryMethod().iField4;
+
+					NB:
+
+						- Any object that is created directly within an expression is not assigned to a declared Reference Variable.
+						- Therefore will be immediately collected by the Garbage Collector.
+
+			Static Fields:
+
+				- Static Fields are initialised when the classes are loaded/imported into program.					
+
+					int m = ClassA().iStaticField;
+					int m = objClassA.iStaticField;
+
+				- Static Fields available via:
+
+					1. Direct reference to the class.	//Recommended, for readability demonstrating that the method is a class method
+					2. Instance of the class.
+
+			Methods:
+
+				- Dot Operator:
+
+					objClassA.method();
+					objClassA.method(Argument List);
+ 
+				- Direct Expression:
+
+					Any expression can be used which returns the appropriate type:
+
+					int k = new ClassA().getValue();
+					int l = ClassA().staticFactoryMethod().getValue();
+
+					NB:
+
+						- Any object that is created directly within an expression is not assigned to a declared Reference Variable.
+						- Therefore will be immediately collected by the Garbage Collector.
+
+				- Return:
+
+					- Methods return to the invoking code upon:
+
+						1. Natural:		Reach end of method completing all statements within the method body.
+						2. return:		Reach return statement.
+						3. Exception:		Reach and throw an Exception.
+
+					- For Example:
+
+						return 1;		//Hardcoded value
+						return i;		//Primitive
+						return (i * 5);		//Expression
+						return objClassA;	//Class, or Extended Class Reference
+						return infInterfaceA;	//Interface, Extended Interface or Class that at minimum implements InterfaceA.
+
+						ClassA method()
+						{
+							return objClassA;
+							return objExtendedClassA;
+						}
+
+						InterfaceA method()
+						{
+							return infInterfaceA;
+							return infExtendedInterfaceA;
+							return objClassA (which as a minimum implements InterfaceA, be it InterfaceA directly or an Extended InterfaceA);
+						}
+
+				- A method is 'called' or 'invoked'.
+
+			Static Methods:
+
+				- Static Methods are initialised when the classes are loaded/imported into program.					
+
+					int m = ClassA().staticMethod();
+					int m = objClassA.staticMethod();
+
+				- Static Methods available via:
+
+					1. Direct reference to the class.	//Recommended, for readability demonstrating that the method is a class method
+					2. Instance of the class.
+							
+		Garbage Collection:
+
+			- An object is eligible for Garbage Collection when there are no Reference Variables to that object.
+			- An object may be pointed to by multiple Reference Variables.
+			- Reference Variables to an object are usually dropped when:
+
+				1. Variable goes out of scope.
+				2. Explicitly set to null.
+
+			- Garbage Collection runs automatically when appropriate.
+			- Garbage Collection can be run manually but may consume resources unnecessarily i.e. not recommended.
+
+		Ball Analogy:
+
+			- Each class should be thought of as a ball.
+			- This ball may contain other balls.
+			- This ball may have small flat surfaces or metal plates which contain a variety of connectors (an interface).
+			- This plate enables connection to other plates on other balls.
+			- The balls get continually extended (inflated) and may have a plate which was added long ago.
+
+		Plate Analogy:
+
+			- Each interface should be thought of as a square metal plate.
+			- This plate may have a number of different connectors for passing information back and forth.
+			- This plate can be extended and grown in size to accommodate more connectors.
+			- The original collection of connectors are untouched, the plate is just grown in area to enable more connectors to be added.
+			- Even though the plate has grown in size.
+
+	Abstract Class
+
+		Overview:
+
+			- An Abstract Class:
+
+				1. Instantiate:		Can not be instatiated.
+				2. Extended:		Can only be extended.
+				3. Abstract Methods:	May or may not include Abstract Methods.
+
+			- An Abstract Class is essentially a normal Class but containing Abstract Methods.
+
+		Extension:
+
+			- If a class extends an Abstract Class and not override/implement all Abstract Methods then itself must be declared Abstract.
+
+		Interface Implementation:
+
+			- An Abstract Class may implement an Interface, if the Abstract Class not implement all of the Abstract Methods within the Interface itself must be declared Abstract.
+
+		Abstract Class/Interface
+
+			- Similarities:
+
+				1. Can not be instantiated.
+				2. May contain Abstract Methods.
+
+			- Differences:
+
+								Abstract Class						Interface
+								___________________________________________________________________________
+
+				Memory Composition:		non-Static/Static					Static
+				Fields:				private/default/protected/public			public static final
+				Methods:			private/default/protected/public			public
+				Nested Class			private/default/protected/public			public
+				Parents:			x1							Multiple
+
+				Use:				Closely Related Classes					Unrelated Classes
+
+
+
+
+
+
+
+
+
+
+
+

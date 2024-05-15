@@ -1,0 +1,1654 @@
+Kubernetes:
+
+	Overview:
+
+		- Kubernetes is an open-source production-grade container orchestration platform for automating software deployment, scaling, and management.
+		- Kubernetes was originally designed by Google, written in Go and now managed by Cloud Native Computing Foundation. 
+		- Kubernetes automates and schedules the deployment, management and scaling of containers.
+		- Kubernetes automation significantly simplifies the development of container-based applications.
+		- Kubernetes cannot run containerised applications on its own, it requires software support typically provided by cloud service provider.
+		- Kubernetes enables running many different containers over multiple different nodes.
+		- Kubernetes is of most benefit if the design of the application requires:
+
+			1. Differing Images:		Run many containers with differing images.
+			2. Differing Computers:		Run many containers across multiple computers.
+			3. Dynamically Scale:		Easy scale (make copies of) individual containers.
+
+		- Kubernetes is not of benefit if the design of the application required horizontal scaling of the whole replication in order to scale e.g.
+
+			- Cloud service provider may be hosting an application of x3 containers:
+
+				   		Cloud Account____
+				   		|		 |
+				Browser ----------> Container 1	 |
+				   		|   Container 2	 |
+				   		|   Container 3	 |
+				   		|________________|
+
+			- Cloud service provider can only scale the application (e.g. if traffic increases) by making multiple whole copies of the application inconjunction with a Load Balancer.
+		
+						Cloud Account___________________________________
+						|			 _____________		|
+				Browser ----------> Load Balancer ------> Container 1 |		|
+						|	      |		| Container 2 |		|
+						|	      |		| Container 3 |		|
+						|	      |		|_____________|		|
+						|	      |		 _____________		|
+						|	      |---------> Container 1 |		|
+						|	      |		| Container 2 |		|
+						|	      |		| Container 3 |		|
+						|	      |		|_____________|		|
+						|	      |		 _____________		|
+						|	      |---------> Container 1 |		|
+						|	      		| Container 2 |		|
+						|	     		| Container 3 |		|
+						|	      		|_____________|		|
+						|_______________________________________________|
+
+			- The above is inefficent it would be ideal to be able to scale up individual containers rather than having to horizontally scale the whole application.
+			- Kubernetes provides an orchestration system that is able to scale individual containers which represent components/aspects of the application.
+
+	Kubernetes Cluster:
+
+		- Kubernetes cluster also known as Kube.
+		- Kubernetes cluster is the largest organisational entity within a kubernetes based application.
+		- Kubernetes cluster contains the overall application.
+		- Kubernetes cluster is not necessarily all housed within a single machine but distributed across a number of physical machines or VM's.
+		- Kubernetes cluster contains x2 core aspects:
+
+			1. Control Plane
+			2. Node(s)
+
+		- Kubernetes cluster has the following general architecture:
+
+					Kubernetes Cluster______________________________________________________________________________________________________
+					|			 												|
+					|			Node____________________________________		 Control Plane__________________	|
+					|			|	      				|		|			       	|	|
+					|			| kubelet <-------------------------------------|	| cloud-controller-manager ------------------->	Cloud Service Provider API
+			Browser ----------> Load Balancer ------> k-Proxy <-------------------------------------|   	| kube-controller-manager      	|	|
+					|	      |		| 	      	   			|	|	|  Node Controller(s)		|	|
+					|	      |		| Objects_______________________	|	|	|  Job Controller(s)		|	|
+					|	      | 	| |				|	|	|	|  Endpoints Controller(s)	|	|
+					|	      |		| | Pod_________________	|	|	|	|  Service Account Controller(s)|	|
+					|	      |		| | |			|	|	|	|	|  Token Controller(s)	       	|	|
+					|	      |		| | | Container 1 	|    	|	|	|	|			       	|	|
+					|	      |		| | | Container 2	|	|	|	|-------> kube-apiserver <----------------------------- kubectl
+					|	      |		| | | Container n	|    	|	|	|	| kube-scheduler	       	|	|       kubeadm
+					|	      |		| | |___________________| 	|	| 	|	| etcd			       	|	|	minikube
+					|	      |		| | 				|	|	|	|_______________________________|	|
+					|	      |		| | Services...			|	|	|						|
+					|	      |  	| | All other objects...	|	|	|						|
+					|   	      |		| |_____________________________|	|	|						|
+					|	      |		| 					|	|						|
+					|	      |		|_______________________________________| 	|						|
+					|	      |				   				|						|
+					|	      |		Node__________	   				|						|
+					|	      |		|	      |	   				|						|
+					|	      | 	| kubelet <-------------------------------------|						|
+					|	      |---------> k-proxy <-------------------------------------|						|
+					|	      |		|             |	   				|						|
+					|	      |		| Objects     |	   				|						|
+					|	      |		|_____________|	   				|						|
+					|	      |				   				|						|
+					|	      |		Node__________	   				|						|
+					|	      |		|	      |	   				|				        	|
+					|	      | 	| kubelet <-------------------------------------|						|
+					|	      |---------> k-proxy <-------------------------------------|	   					|
+					|	     		| 	      |											|
+					|	     		| Objects     |											|
+					|	      		|_____________|											|
+					|_______________________________________________________________________________________________________________________|
+
+	Kubernetes Cluster Components:
+
+		Control Plane:
+
+			- Control plane is a physical machine or VM.
+			- Control plane is the central orchestration and management of the overall cluster.
+			- Control plane 'is' kubernetes.
+			- Control plane manages all aspects of each nodes contents and work completed.
+			- Control plane components:
+
+				1. cloud-controller-manager
+				2. kube-controller-manager
+
+					- kube-controller-manager contains core built-in controllers.
+
+				3. kube-apiserver:
+
+					- kube-apiserver is the main API interface to the cluster.
+					- kube-apiserver monitors the status and correct operation of all nodes within cluster.
+					- kube-apiserver maintains a manifest of all the expected state and status of objects within the nodes.
+					- kube-apiserver continuously polls the nodes to ensure that they are running as expected.
+					- kube-apiserver will automatically restart any objects that are not as expected.
+					- kube-apiserver will delegate, distribute and assign all passed *.yml files e.g. 
+
+						> kubectl apply -f <filename>			//<filename> is passed to kube-apiserver
+
+				4. kube-scheduler
+				5. etcd
+
+			- Control plane is the sole interface/gateway that programmers will use to interact with the cluster i.e. programmers do not interact with nodes directly, it is all done via the control plane.
+			- Control plane decides which node will run which object/container (however this can be manually specified if required).
+			- Control plane contains cluster 'Controllers':
+
+				- Controllers are an abstract name given to entities within a control plane which continually work to maintain a desired state of objects and the overall system as described by a *.yml file.
+				- Controllers are an infinite control loop which check and regulate the state of object(s) or aspect of the system.
+				- Controllers reach or maintain system state via:
+
+					1. kube-apiserver:			Make requests to the kube-apiserver.
+					2. Direct:				Make changes to the system directly.
+
+				- Controllers track x1 or more objects.
+				- Controllers attempt to reach or maintain the 'spec' field as defined within an objects *.yml file.
+				- Controllers are typically used in high numbers to maintain all aspects of the cluster.
+				- Controllers should be discrete and simple rather than large monolithic interlinked sets.
+				- Controllers can fail therefore Kubernetes is designed to automatically restart controllers when required.
+				- Controllers can run within:
+
+					1. kube-controller-manager:		Controllers run within the control plane are core built-in controllers.
+					2. External:				Controllers can be run outside of the control plane enabling the extension of kubernetes. 
+					3. Custom:				Controllers can be custom created.
+
+		Node:
+
+			Overview:
+
+				- Node is a either:
+
+					1. Physical computer
+					2. VM (created by miniKube)
+
+				- Nodes are the primary constituient part of the cluster, together with other constructs e.g. load balancer, control plane form the overall organisational construct of a cluster.
+				- Nodes are effectively transparent to the application, the compiled source code and functionality of the application is run within containers within pods which are distributed across the nodes by the control plane. 
+
+			Node Components:
+
+				kubelet:
+
+					- kubelet is a program which runs on each node.
+					- kubelet is the local node manager.
+					- kubelet registers the node with kube-apiserver.
+					- kubelet receives the container manifest via x4 methods:
+
+						1. File:
+
+							- File path passed as a flag via the command line.
+							- File path is monitored regularly for updates.
+
+								- 20s [Default]
+								- Configurable via flag
+
+							- File path may contain multiple files.
+
+						2. HTTP Endpoint:
+
+							- HTTP Endpoint passed as a flag via the command line.
+							- HTTP Endpoint is monitored regularly for updates.
+
+								- 20s [Default]
+								- Configurable via flag
+
+						3. HTTP Server:
+
+							- HTTP Server can be listened to by a kubelet using a simple API.
+
+						4. PodSpec:
+
+							- PodSpec is the primary means of receiving a container manifest.
+							- PodSpec is a YAML or JSON Object.
+							- PodSpec describes the pod(s) and enclosed container(s) that are to be created and managed by the kubelet of that node.
+							- PodSpec is provided by various mechanisms, primarily the kube-apiserver.
+
+					- kubelet only manages containers that were create by the Kubernetes.
+
+				k-proxy:
+
+					- k-proxy is a program which runs on each node.
+					- k-proxy forms the single gateway into a node.
+					- k-proxy manages the routing of incoming requests to objects within the node.
+					- k-proxy manages all incoming/outgoing traffic into the node.
+					- k-proxy also known as kube-proxy.
+					- k-proxy reflects the services as defined in the kubernetes API.
+					- k-proxy can do both simple and round robin across a set of backends:
+
+						TCP
+						UDP
+						SCTP stream forwarding
+					
+					- k-proxy is configured via a service object which is defined by the user and registered with kube-apiserver.
+
+						NB:
+							- Service cluster IP/ports are stored within environment variables specifying ports opened by the service proxy.
+							- Service cluster IP's can be encorporated within a cluster DNS via an addon.
+
+				Container Runtime:
+
+					Node is required to install and utilise a container runtime, there are a number of differing container runtimes e.g.
+
+						1. Docker Engine
+						2. CRI-O
+						3. Containerd
+						4. Mirantis Container Runtime
+
+						Docker Engine:
+
+							- Node contains and runs a full copy of Docker for Linux which includes all aspects of Docker e.g.
+
+								1. docker-client
+								2. docker-server
+
+							- Node contains and runs its own instance of Docker just as Docker for Windows may be installed on local machine.
+							- Node contains and runs its own instance of Docker in order to be able to instantiate its own containers.
+							- Node does not run a Docker daemon.
+
+								Building Local Image:
+
+									- Node reaches out itself to DockerHub to pull down and build images.
+									- Node stores any downloaded images into a local cache (just as if running on a standalone local machine).
+
+								Internal Docker-Server:
+
+									- Node own internal docker-server can be accessible by a docker-client running on host OS i.e. it is possible to configure/point a docker-client running on a host OS to connect/interact with a docker-server running within a node:
+		
+										1. Open:	CLI
+										2. Type:	> eval $(minikube docker-env)
+										3. All subsequent commands will now be directed to and reference the docker-server running within the node.
+										4. Only effects the current CLI window.
+
+										NB: '> minikube docker-env' will return a list of all minikube environment variables.
+
+				Objects:
+
+					- Node may contain entities collectively known as 'objects' or 'resource types' e.g.
+
+						Object				Purpose
+						________________________________________________________________________
+
+						Pod				Host and run container(s)
+						Deployment
+						StatefulSet
+						ReplicaController
+						Volume
+						PersistentVolume
+						PersistentVolumeClaim
+						Secret
+						Service				Networking criteria within a node
+						  ClusterIP
+						  NodePort
+						  Load Balancer
+						  Ingress
+						...
+
+						NB: All object names are case sensitive when specified/referenced within *.yml files.
+
+					- Node objects are defined by their own respective configuration *.yaml or *.yml file.
+					- Node objects are uniquely identified via 'kind' and 'name' defined with *.yml file:
+
+						kind: Pod
+						metadata:
+			  			  name: serviceName-pod
+
+					- Node objects that are permitted to be created are determined by the API Version:
+
+						apiVersion: v1
+
+							componentStatus
+							configMap
+							Endpoints
+							Namespace
+							Pod
+							Event
+							...
+
+						apiVersion: apps/v1
+
+							ControllerRevision
+							StatefulSet
+							...
+
+					- Node objects communicate via a 'label selector system':
+
+						- Label selector system enables the routing of traffic and permit interobject communciation.
+						- Label selector system enables objects with a matching label to communicate and are allocated the respective networking capabilities e.g.
+
+							selector:
+			   				  component: web	//Label determines which objects this object will be able to communicate with.
+										//Label signifies that this object will form the component 'web' within the overall application.
+
+							selector:
+							  tier: frontend	//Label can be any key:value pair as long as it matches other key:value pairs defined in the other objects.
+
+			Node Interaction:
+
+				Nodes and their internal contents are not configured directly but are primarily configured via the control plane, however the following aspects can be accessed directly:
+
+					Debugging:
+
+						1. Logs:		Open and view logs within a container.
+						2. Shell:		Open a shell within a container and gain access to all of the debugging functionality of that shell.
+						3. Local Machine:	Interact with the container as if the container was running on a local machine.
+								
+						NB: Many of the commands available via the nodes own internal docker-client are accessible via kubectl.
+
+					Self-Heal Test:
+
+						- Manually kill/delete containers.
+						- Confirm that they automatically restore themselves.
+
+					Delete Cache:
+
+						- Delete cache images within node.
+						- Useful if a container continues to use a cached image and refuses to start with an updated image version.
+
+			Node Identification and Reference:
+
+				- Nodes are assigned an IP by miniKube when they are created.
+				- Nodes are externally referenced and identified via its IP address:
+
+					Browser: 	192.168.99.100:nodePort
+				 	 		192.168.99.100:31515
+					
+				- Nodes all have their own instance of k-proxy which forms the single gateway into the node.
+		
+		IP Addressing:
+
+			- IP addresses are assigned to the following components within a cluster:
+
+				Node:		Assigned by miniKube when they are created.		e.g. 192.168.99.100		Accessible by external browser
+				Pod:		Assigned by control plane.				e.g. 172.62.14.18		Internal to node only
+
+		Accounts:
+
+			- Kubernetes contains the following types of accounts:
+
+				1. User Account:		An account that is associated with a human where that human must login to verify.
+				2. Service Account:		An account that is associated with a pod or service.
+
+			- Kubernetes accounts by default do not automatically provide access to any aspects of the cluster, but must have role bindings assigned to them:
+
+				1. RoleBinding:			Authorises an account to carry out a certain set of actions within a single namespace.
+				2. ClusterRoleBinding:		Authorises an account to carry out a certain set of actions across the entire cluster.
+
+			- Kubernetes enables the assignment of specific role bindings to specific accounts to limit access.
+
+		Namespace:
+
+			- Namespace is an organisational unit of objects within a cluster.
+			- Namespace may be defined/allocated to a certain collection of objects which perform a specific function within the cluster.
+			- Namespace typically may be:
+
+				default:		Default namespace.
+				kube-public:		Public namespace.
+				kube-system:		System namespace contains low level plumbing and system level objects.
+
+			- Namespaces can be returned via:
+
+				> kubectl get namespaces
+
+	Node Objects:
+
+		Pod:
+
+			- Pod is an object that can contain x1 or more containers.
+			- Pod should contain containers which are tightly coupled e.g.
+
+				 Node______________________________________________________
+			  	|							   |
+				|   Pod_________________________________________________   |
+				|  |							|  |
+			   	|  |  Container: postgres	(Primary Container)	|  |
+			   	|  |  Container: logger		(Support Container)	|  |
+			   	|  |  Container: backup-manager	(Support Container)	|  |
+			   	|  |____________________________________________________|  |  
+			   	|__________________________________________________________|
+
+			- Pod above contains a logger and backup-manager which are completely dependent upon the postgres for existing.
+			- Pod is a wrapper, containers do not exist as naked entities within node but must exist within a pod.
+			- Pod *.yml file:
+
+				Filename: serviceName-pod.yml
+
+				apiVersion: v1
+				kind: Pod
+				metadata:
+			  	  name: serviceName-pod
+			  	  labels:
+			    	    component: web
+				spec:
+			  	  containers:
+			    	    - name: client
+			      	      image: DockerID/ImageName
+			      	      ports:
+				    - containerPort: 3000
+				...
+
+				NB: Spelling and indentation (x2 spaces) within YAML files are critical for correct operation. 
+
+			- Pod is limited in its ability to be updated via kubectl it is only possible to update the following aspects:
+
+				1. image
+				2. activeDeadlineSeconds
+				3. tolerations
+
+		Pod - Updating an Image:
+
+			- Updating an image within a running pod is not a trival procedure for the following reasons:
+
+				1. No Change:			Kubernetes will reject, do nothing and not apply update if the respective *.yml file contains no changes.
+				2. No Inherent Versioning:	Kubernetes *.yml file does not utilise any inherent versioning within the image version e.g. it is just left blank or :latest.
+				3. No Manual Reload:		Kubernetes does not have a command to force reload.
+
+			- Updating an image has the following options:
+
+				1. Manual Deletion
+
+					1. Manually delete a pod(s).
+					2. Re-apply recreating pods with latest image.
+
+					NB: This option is discouraged due to being prone to error e.g. deleting the wrong set of pods by mistake.
+
+				2. Tag Versioning
+
+					1. Tag built images with a version number e.g.
+
+						> docker build -t <DockerID>/<ImageName>[: Version Number]
+
+					2. Specify that version number in the *.yml file e.g.
+
+						containers:
+					  	  - name: <container name>
+					    	    image: <DockerID>/<Image Name>[: Version Number | Latest]
+
+					NB: This option is discouraged due to:
+
+						- Cumbersome:		Highly cumbersome and error prone procedure having to maintain *.yml file when in CI environment inconjunction with GitHub.
+						- Old Pods:		Old pods will still persist running and not be deleted.
+						- Old Images:		Old images will soon clutter DockHub.
+
+				3. Imperative Reload Command
+
+					1. Tag built images with a version number e.g.
+
+						> docker build -t <DockerID>/<ImageName>[: Version Number]
+
+					2. Use an imperative command to manually reload the image in the pod.
+
+					NB: This option is discouraged due to:
+
+						- Versioning:		Pod *.yml file will get out of date with the state of the cluster.
+						- Error Prone:		Error prone procedure.
+
+			- Option 3 is the 'least worse option', once within a production environment on a cloud platform the handling of the versioning can be automated. 
+			- Issue #33664 on kubernetes Github repo has full discussion and full details surrounding how best to get around this issue.
+
+		Service:
+
+			- Service defines the overall networking capability of a node.
+			- Service keeps track of the internal IP addressing of pods as they are created/destroyed.
+			- Service routes incoming requests from an external browser.
+			- Service enables an external browser to only need to reference the IP of the Node rather than keep track and use the continually shifting internal IP addressing.
+			- Service has the following x4 types:
+
+				1. ClusterIP:
+
+					- ClusterIP is an IP address that is internally associated with an object within the cluster.
+					- ClusterIP is an IP address that can be reached by all other objects within the cluster.
+					- ClusterIP is an IP address that cannot be accessed by any external entity outside of the cluster. 
+					- ClusterIP *.yml file:
+
+						Filename: serviceName-cluster-ip-service.yml
+
+						apiVersion: v1
+						kind: Service
+						metadata:
+			  			  name: serviceName-cluster-ip-service
+						spec:
+			  			  type: ClusterIP
+						  selector:
+						    component: web
+			  			  ports:
+			    			    - port: 3050
+			      			      targetPort: 3000
+
+					- ClusterIP operates as shown:
+									     ClusterIP__
+						Input Pods -----> port 3050 |		|
+									    |		|
+									    |___________| targetPort 3000 -----> Output Pods
+
+						NB: Input and Output Pods must all have the same selector component:web
+
+					- ClusterIP is referenced via its name i.e. its name can be assigned as an environment variable and used as a form of hostname/URL.
+
+				2. NodePort:
+
+					- NodePort exposes a container to external entities as shown:
+
+						Browser -> k-proxy -> nodePort -> Pod -> Container
+
+					- NodePort establishes the only accessible path/window into a pod for external entities.
+					- NodePort is only used within development environments for development purposes (not within production environments except for very limited set of circumstances).
+					- NodePort *.yml file:
+
+						Filename: serviceName-node-port.yml
+
+						apiVersion: v1
+						kind: Service
+						metadata:
+			  			  name: serviceName-node-port 
+						spec:
+			  			  type: NodePort
+						  selector:
+			    			    component: web			//Label Selector determines which objects will receive the output of this NodePort.
+			  			  ports:
+			    			    - port: 3050			//Port to accept all incoming traffic from all input pods. 
+			      			      targetPort: 3000			//Port to receive all incoming traffic on all output pods
+			      			      nodePort: 31515			//Port to accept all incoming traffic from external entities e.g. browser (if this is not defined then NodePort will assign a random one between 30000 - 32767).
+
+					- NodePort operates as shown:
+
+				 	 	 Local Machine________________________________________________________________________________________________________________________________
+			  			|							   								      	      	      |
+						|   		 Node______________________________________________________________________________________________________________________   |
+						|  		|													   		   |  |
+			   			|  		|   	 	   NodePort ____________________       Pod______________________________________________________________   |  |
+						| 		| Input Pods -----> port [3050] 		|     |									|  |  |
+						|  		| 		  | targetPort [3000] -----------------> [Port 3000] Container: postgres	(Primary Container)	|  |  |
+			   			| Browser --------> k-proxy ------> nodePort[30000-32767]	|     |		     Container: logger		(Support Container)	|  |  |
+			   			|  		|  		  |_____________________________|     |		     Container: backup-manager	(Support Container)	|  |  |
+						|		|						      |_________________________________________________________________|  |  |
+			   			|  		|__________________________________________________________________________________________________________________________|  |  
+			   			|_____________________________________________________________________________________________________________________________________________|
+
+				3. Load Balancer:
+
+					- Load Balancer is a legacy service for allowing traffic into a cluster.
+					- Load Balancer has been superceeded by Ingress.
+					- Load Balancer allows access from an external browser:
+
+						Browser -> Load Balancer -> Node(s) -> k-proxy -> Pod(s) -> Container(s)
+
+					- Load Balancer is a service which can to be 'overriden' by an external cloud service provider to attach/associate its own provisioned load balancer.
+
+				4. Ingress:
+
+					- Ingress supercedes Load Balancer.
+					- Ingress is a 'controller'.
+					- Ingress dictionary definition: 'the action or fact of going in or entering; the capacity or right of entrance.'
+					- Ingress exposes a set of services to external entities outside the cluster.
+					- Ingress has many implementations the most common is by Nginx.
+
+						1. ingress-nginx:		Project led by community:			githib.com/kuberenetes/ingress-nginx
+						2. kubernetes-ingress:		Project led by the actual company Nginx:	githib.com/nginxinc/kubernetes-ingress
+
+						NB: The above x2 ingress projects which have very similar name, but are completely separate and should not be confused when researching documentation:
+
+					- Ingress routing rules are defined within it's *.yml file whereby when passed into the kube-apiserver (via kubectl) an 'ingress controller' is generated:
+
+						1. *.yml File:		Ingress *.yml file is read in by kubectl and passed to the kube-apiserver.
+						2. Instantiation:	Ingress controller is instantiated by the kube-apiserver.
+						3. Operation:		Ingress controller instantiates an object which is the gateway into the cluster operating in the background routing incoming traffic as defined in the *.yml file.
+
+						NB: ingress-nginx:
+
+							- The controller and object which actually implements the routing of the incoming traffic are of the same physical entity.
+							- The setup is highly dependent on the cluster hosting environment e.g. local, GC, AWS, Azure...
+
+					- Ingress *.yml file:
+
+						Filename: ingress-service.yml
+
+						apiVersion: extensions/v1beta1
+						kind: Ingress
+						metadata:
+			  			  name: ingress-service
+						  annotations:						//Annotations specify higher level aspects of the ingress object that is created.
+						    kubernetes.io/ingress.class: nginx
+						    nginx.ingress.kubernetes.io/rewrite-target: /
+						spec:
+			  			  rules:
+						    - http:
+							paths:						//There are x2 possible paths of routing incoming traffic to services which are determined by assessing the target path of the incoming request.
+							  - path: /
+							    backend:
+							      serviceName: <service_name 1>		//The service that is to receive traffic which is prefix with / i.e. anything which does not contain the prefix /api (as that would be handled by the rule below).
+							      servicePort: 3000
+							  - path: /api/
+							    backend:
+							      serviceName: <service_name 2>		//The service that is to receive traffic which is prefix with /api/
+							      servicePort: 5000
+
+					- Ingress once successfully applied to the cluster a browser no longer requires the manually specify the port within its target URL given:
+
+						1. Ingress object is ready to accept incoming traffic on port 80 and 443.
+						2. Ingress object will automatically handle/route to the configured service/deployments.
+
+		Deployment:
+
+			- Deployment is a controller.
+			- Deployment maintains a set of x1 or more identical pods and maintaining the following aspects:
+
+				1. Total:		Maintains that the correct total number of pods are running.
+				2. Pod Template:	Maintains that the pods and their internal containers are always in a runnable state and as per the Pod Template defined within the *.yml i.e. not stopped or crashed.
+
+				 Deployment________________________________________________
+			  	|							   |
+				|   Pod_________________________________________________   |
+				|  |							|  |
+			   	|  |  Container: postgres	(Primary Container)	|  |
+			   	|  |  Container: logger		(Support Container)	|  |
+			   	|  |  Container: backup-manager	(Support Container)	|  |
+			   	|  |____________________________________________________|  |
+				|							   |
+				|   Pod_________________________________________________   |
+				|  |							|  |
+			   	|  |  Container: postgres	(Primary Container)	|  |
+			   	|  |  Container: logger		(Support Container)	|  |
+			   	|  |  Container: backup-manager	(Support Container)	|  |
+			   	|  |____________________________________________________|  |
+				|							   |
+				|   Pod_________________________________________________   |
+				|  |							|  |
+			   	|  |  Container: postgres	(Primary Container)	|  |
+			   	|  |  Container: logger		(Support Container)	|  |
+			   	|  |  Container: backup-manager	(Support Container)	|  |
+			   	|  |____________________________________________________|  | 
+			   	|__________________________________________________________|
+
+			- Deployment pods must all be identical i.e. all pods run the same identical sets of containers.
+			- Deployment utilise a 'Pod Template' which is a template which is applied to all pods within the deployment object e.g.
+
+				Pod Template
+				_____________________________________________________________
+
+				containers:	1
+				name:		<pod-name> 		e.g. client-pod
+				port:		3000
+				image:		<image-name> 		e.g. client-pod-image
+
+			- Deployment *.yml file:
+
+				Filename: client-deployment.yml
+
+				apiVersion: apps/v1
+				kind: Deployment
+				metadata:
+				  name: client-deployment
+				spec:
+				  replicas: 1						//Replicas:		Number of pods the Deployment will create
+				  selector:
+				    matchLabels:
+				      component: web					//Label Selector:	Deployment to have reference/handle to pods of the specified label 
+				  template:						//Pod Template:		All pods within template will get created within this deployment
+				    metadata:
+				      labels:
+					component: web
+				    spec:
+				      containers:
+					- name: client
+					  image: <Docker ID>/<Image Name>
+					  ports:
+				    	- containerPort: 3000
+					  env:
+					    - name: REDIS_HOST				//Environment Variable:	Name
+					      value: serviceName-cluster-ip-service	//Environment Variable:	Value
+					    - name: REDIS_PORT
+					      value: '6379'				//Environment Variable: All strings therefore numbers must be wrapped in ''
+					    - name: SECRET_PASSWORD			//Environment Variable: SECRET_PASSWORD was the name of the secret when created via kubectl.
+					      valueFrom:
+						secretKeyRef:
+						  name:<name_of_secret>			//Secret Name:		Name of the secret that was defined when the secret was created via kubectl.
+						  key: <key_of_secret>			//Secret Key:		Key of the key:value pair (as a secret can hold more than x1 key:value pair).
+
+				Pod Template:
+
+					The above *.yml file will create the following Pod Template:
+
+						Label:		All containers within the deployment will be labelled 'component: web'.
+						Containers:	All pods will have x1 container called 'client' using the image of '<Docker ID>/<Image Name>' and expose port 3000.
+
+				 		 Deployment________________________________________________
+			  			|							   |
+						|   Pod_________________________________________________   |
+						|  |							|  |
+			   			|  |  Container: client			(x1 Container)	|  |
+			   			|  |  Port: 	 3000			(Exposed Port)	|  |
+			   			|  |  Image: 	 <Docker ID>/<Image Name>		|  |
+			   			|  |____________________________________________________|  | 
+			   			|__________________________________________________________|
+
+				Pod Referencing/Handle Labelling:
+
+					Deployments do not specifically create all of their 'internal' pods, all pods are created by the control plane and the Deployment object has a reference label all of them such that: 
+
+						1. Deployment requests of the control plane to create all of the specified pods in its *.yml file.
+						2. Deployment requests that itself has handle i.e. has reference to all of the pods with the specified 'selector | matchLabels'.
+
+			- Deployment *.yml file (using base image Postgres):
+
+				Filename: redis-deployment.yml
+
+				apiVersion: apps/v1
+				kind: Deployment
+				metadata:
+				  name: postgres-deployment
+				spec:
+				  replicas: 1
+				  selector:
+				    matchLabels:
+				      component: postgres
+				  template:
+				    metadata:
+				      labels:
+					component: postgres
+				    spec:
+				      containers:
+					- name: postgres
+					  image: postgres				//DockerHub:		Pull down the base image of Postgres
+					  ports:
+					    - containerPort: 5432
+				      volumes:						//Volumes:		All pods that get created within this deployment are allocated a PersistentVolume as defined in the PersistentVolumeClaim associated with claimName.
+					- name: postgres-storage
+					  persistentVolumeClaim:
+					    claimName: database-persistent-volume-claim
+				      volumeMounts:
+					- name: postgres-storage			//Volume Mount:		Volume mount to be assigned is that defined within the PersistentVolumeClaim called 'postgres-storage' (above).
+					  mountPath: /var/lib/postgres/data		//			Location within the container where the volume would be referenced/accessed i.e. folder in the container which will link to the persistent memory on the host computer. 
+											//			In this instance the Postgres data store will be in the defined location '/var/lib/postgres/data'
+											//			Postgres will store its data in this location within the file system of the container but the actual physical data is redirected and stored in the volume on the host computer. 
+					  subPath: postgres				//			Subpath within the volume on the host computer that will contain the data for the instance of Postgres running within the container.
+
+			- Default Backend:
+
+				- Default backend is typically a deployment assigned a clusterIP, the deployment is running a 'default-backend' pod.
+				- Default backend is used to monitor the health of the overall cluster.
+				- Default backend is typically replaced by an express API server within production environment. 
+
+		Volume:
+
+			- Description:
+
+				General/Docker:
+
+					- Indirect Reference:		An indirect reference from the file system of a container to a folder situated on the host machine e.g. source code files located in the host OS whilst running, allowing for update without needing to rebuild and image.  
+					- Location:			Volume is the directory stored on the OS of the host machine.
+					- Definition:			'Mechanism to allow a container to access a file system outside of itself'.
+
+				Kubernetes:
+
+					- Definition:			'Mechanism to allow a container to access and store data at pod level'.
+
+			- Purpose of volumes include:
+
+				1. Data Separation:			Ability to maintain separate data store e.g. if the container crashes the data store is not lost.
+				2. Data Update:				Ability to update data store without needing to rebuild an image.
+
+			- Kubernetes volume needs to mitigate the following scenario:
+
+				1. Pod is established running a container which has its own database.
+				2. Pod crashes or stops.
+				3. Pod loses database completely (no carry over to a newly generated pod).
+
+			- Kubernetes utilises the following objects:
+
+				Object				Description
+				________________________________________________________________________________________________________________
+
+				Volume				- Data store is pod level.
+								- Data store will persist if containers within the pod are restarted but not pod itself.
+								- Data store will be lost if pod restarts, crashes or deletion.
+
+				PersistentVolume		- Data store is pod and container independent.
+								- Data store is situated externally on host machine.
+								- Data store will persist if either container or pod restarts, crashes or deletion.
+								- NB:
+									Should be used with caution given the following scenario:
+
+										1. *.yml file creates a Postgres database and points to volume on the host machine.
+										2. *.yml file set 'replicas: 2'.
+										3. *.yml file will create x2 Postgres databases which point to the same datastore.
+										4. This will create unknown/undefined behaviour and strongly not recommended.
+
+									There are special measures that can be applied to mitigate issue and enable concurrent access.
+
+				PersistentVolumeClaim		- Details an advertisement of the x2 types of PersistanceVolume that are available for use by all the pods within the cluster.
+				
+									1. Statically Provisioned:		Create collection of volumes ahead of time and immediately be available upon request.
+									2. Dynamically Provisioned:		Create dynamically as requested.
+
+								- Not an actual instance of storage but an advertisement of the PersistentVolumes available to all pods within the cluster.
+
+		PersistentVolumeClaim:
+
+			- PVC *.yml file:
+
+				Filename:database-persistent-volume-claim.yml
+
+				apiVersion: v1
+				kind: PersistentVolumeClaim
+				metadata:
+				  name: database-persistent-volume-claim
+				spec:
+				  accessModes:
+				    - ReadWriteOnce
+				  resources:
+				    requests:
+				      storage: 2Gi		//PersistenceVolume supplied by Kubernetes must be 2GB in size.
+				  storageClassName:		//PersistenceVolume to be created within the suppled storage class (if not defined, use default). 
+				    ...
+
+			- PVC Access Mode:
+
+				1. ReadWriteOnce:		PersistenceVolume supplied by control plane must be read/write and used by a single node only.
+				2. ReadOnlyMany:		PersistenceVolume supplied by control plane must be read only and used by multiple nodes.
+				3. ReadWriteMany:		PersistenceVolume supplied by control plane must be read/write and used by multiple nodes.
+
+			- PVC being invoked will attempt to obtain a 'slice' of the host hardrive to be allocated as persistent volume to be used by the pods (and their internal containers).
+
+		Secret:
+
+			- Secret is used store/recall encrypted passwords within the cluster rather than have them stored as plain text in *.yml files.
+			- Secret is not created using a *.yml file but an imperative command.
+			- Secret is created manually both on the development machine and when deploying on production machine via kubectl:
+
+				> kubectl create <type_of_object> <type_of_secret> <secret_name> --from-literal <key=value>
+				> kubectl create secret generic postgres-password --from-literal PGPASSWORD=password123
+
+					<type_of_secret>:	x3 types of secret:
+
+									Type				Description
+									______________________________________________________________________
+
+									generic
+									docker-registery		Non DockerHub private image repository
+									tls				HTTPS
+
+					<secret_name>:		Name of secret that is referenced within pod *.yml files.
+					--from-literal:		Information will be entered literally within this command rather than from a separate file.
+					<key=value>:		Key value pair of the secret.
+
+			- Secrets are then made available to objects via their *.yml file specified as an environment variable. 
+
+				...
+				spec:
+				  containers:
+				    - name: client
+			  	      image: <Docker ID>/<Image Name>
+				      env:
+					- name: SECRET_PASSWORD			//Environment Variable:		Name (defined when the secret was created via kubectl)
+					  valueFrom:
+					    secretKeyRef:
+					      name:<name_of_secret>		//Secret Name:			Name of the secret that was defined when the secret was created via kubectl.
+					      key: <key_of_secret>		//Secret Key:			Key of the key:value pair (as a secret can hold more than x1 key:value pair).
+				...
+
+			- Secrets are stored as environment variables and then retrieved by control plane when the *.yml file is parsed and the corresponding object is created.
+			- Secrets which typically contain a password need to be made available to all objects that may contain entities that will require that password:
+
+				Object		Container contains
+				__________________________________
+
+				Deployment	Server				//Deployment object requires password secret assigned to login to database.
+				Deployment	Postgres database		//Deployment object requires password secret that is assigned to overwrite the default password of the database.
+
+			- Secrets are generally stored within encrypted environment variables on the respective platform.
+			- Secrets are of course not hardcoded in object *.yml files but referenced using $ENVIRONMENT_VAR in the *.yml files of the objects that require access to those secrets.
+			- Secrets typically need to be manually created/inputed into the respective platform e.g. via a cloud service provider web interface.
+			- Secrets typically involve the few commands that need to be run imperatively.
+
+		Interobject Communication:
+
+			- Interobject communication within a cluster is primarily referenced via the name of the object as defined within its corresponding *.yml file e.g.
+
+				kind: Service
+				metadata:
+			  	  name: serviceName-cluster-ip-service
+
+			- Interobject communication uses the name as reference for other objects to connect to the objects associated with this clusterIP.
+
+		Multiple Objects within *.yml File:
+
+			- It is possible to combine multiple object definitions within a single *.yml file by inserting x3 dashes/hyphens inbetween definitions:
+
+				---
+
+			- Co-locating definitions within the same *.yml file has both advantages and disadvantages:
+
+				Advantages:
+
+					- Clutter:		Fewer *.yml files overall.
+					- Location:		All definitions located in x1 place.
+
+				Disadvantages:
+
+					- Find:			Reduced ability to find *.yml file for a particular object.
+					- Naming:		Single *.yml files have unique name which corresponds with the object.
+					- Error:		Increased potential for accidently altering another objects definition, as opposed to all being stored in complete distinct separate *.yml files.
+					- Documentation:	Reduced ability to document and identify the location of files e.g. should a new engineer be onboarded.
+
+	Administration:
+
+		miniKube:
+
+			- miniKube is a CLI.
+			- miniKube intended use:
+
+				- Single Node:				Ability to setup and run a local cluster with a single node on your local machine.
+				- Development/learning:			Ability to setup and run a local cluster in a local machine environment for learning, research and development.
+
+		kubectl:
+
+			- kubectl is a CLI.
+			- kubectl is 'cluster' 'control'.
+			- kubectl intended use:
+
+				- Management:				Run commands for the overall general management of Kubernetes cluster.
+				- Deployment:				Run commands to deploy applications e.g. passing in object *.yml files to the control plane.
+				- Logs					Run commands to inspect and view logs.
+				- Resources:				Run commands to inspect and manage cluster resource.
+				- Local/cloud:				Run commands against clusters running on local machine or in cloud.
+				- Development/production:		Run commands against clusters running in a development or production environment.
+
+	Miscellaneous:
+
+		Deployment Paradigms:
+
+			- Kubernetes supports both the declarative and imperative paradigms:
+
+				Declarative:
+
+					- Declarative deployments are those which are requested (as defined within a *.yml file) but the actual implementation is handled by the control plane.
+					- Declarative statements declare the desired system state but for the control plane to handle the explicit implementation.
+					- Declarative approach is one of the key advantages of kubernetes and generally as follows:
+
+						1. Update:		*.yml file(s) are updated.
+						2. Control Plane:	*.yml file(s) are passed to the control plane (via kubectl).
+						3. Cluster:		*.yml file(s) are used to update the cluster. 
+
+				Imperative:
+
+					- Imperative deployments are those which are manually inputted and implemented via explicit instructions. 
+
+			- Recommend:
+
+				- Declarative approach is the accepted and preferred approach within industry.
+				- Declarative approach ensures that the *.yml files are kept up to date.
+				- Declarative approach ensures that all updates specifically require modifiying and updating the *.yml file and running through kubernetes.
+				- Declarative approach prevents random changes to the cluster which are not stored/recorded and cannot be recalled.
+
+		Docker v Kubernetes:
+
+			- Kubernetes and Docker have the following key distinctions:
+
+							Docker/Docker-Compose			Kubernetes
+							_________________________________________________________________________
+
+				Image Build		Y					N
+
+				Configuration		x1 global (docker-compose.yml)		multiple *.yml per object
+
+				Internal/external	Automatic				Manual
+				Intercommunication
+
+			- Kubernetes is not able to directly build images.
+			- Kubernetes expects all images to be already built prior to deployment within a cluster.
+			- Kubernetes internal communication between objects/containers and external entities must all be defined within and handled by Service(s). Docker automatically creates these links between containers.
+
+		Development v Production:
+
+			- Kubernetes environments and management are significantly different depending on whether within development or production environment e.g.
+
+				Development:	miniKube
+
+				Production:	EKS:	Amazon Elastic Container Service for Kubernetes
+						GKE:	Google Cloud Kubernetes Engine
+
+						Within the production environment there are: 
+
+							1. Managed Solution:		EKS and GKE are collectively known as 'Managed Solutions' where all low level, critical and security aspects/plumbing is handled by the cloud service provider.
+							2. Unmanged Solutions:		Cloud service providers also provide 'Unmanaged Solutions' where all aspects are managed by the user however which require dedicated expertise. 
+
+		Environment Variables:
+
+			- Environment variables within kubernetes cluster are of container scope only.
+			- Environment variables within kubernetes cluster are only applicable and accessible to within the container only.
+			- Environment variables of the host machine are not accessible to containers therefore cannot be directly referenced within *.yml files.	
+			- Environment variables of the container are all stored as strings (not ints) consequently all numbers must be wrapped with ' ' e.g. '5423'
+
+		RBAC:
+
+			- RBAC (Role Based Access Control).
+			- RBAC provides functionality to limit what within a cluster can access and modify objects within that cluster.
+			- RBAC naturally becomes alot more relevant in the production environment given that it is exposed to the internet.
+			- RBAC limits what objects within the cluster can themselves create/modify/delete other objects within that cluster.
+			- RBAC is enabled by default on Google Cloud.
+			- RBAC requires permissions to be set to enable any piece of software running in a pod to make changes that cluster.
+
+		Monolith:
+
+			- Monolith is a large single piece of software which continually grows.
+			- Monolith runs in a single process.
+			- Monolith has many disadvanges including:
+
+				1. Scaling:		Impossible to scale individual feature (given that the whole application runs in its own single process).
+				2. Scaling:		Only possible by creating another instance, typically situated behind a load balancer.
+				3. Hardware:		Complex and expensive.
+				4. Upgrades:		Upgrades, patching and maintenance all require downtime.
+				5. Maintenance:		Private environments need to be managed and maintained requiring expertise in all locations of deployment.
+				...
+
+		Knative:
+
+			- Knative is an open source extension of Kubernetes.
+			- Knative enables any container to run as a serverless workload on any cloud platform that is able to run Kubernetes (regardless if the container is built around a serverless function or any other application code e.g. microservices).
+			- Knative 'abstracts away' the code.
+			- Knative handles the:
+
+				1. Network Routing
+				2. Event Triggers
+				3. Autoscaling of serverless execution
+
+			- Knative is transparent to developers (they just build a container as usual using Kubernetes and Knative does the rest, running it as a serverless function behind the scenes).	
+
+	How To's:
+
+		1. Apply object *.yml file to control plane:
+ 
+			> kubectl apply -f <filename>
+
+				apply:				Change the current configuration of the cluster.
+				-f:				File contains the changes to be applied.
+				<filename>:			Path to the file which contains the changes to be applied.
+
+				Returns:			objectType/objectName configured
+
+				Example:
+
+					> kubectl apply -f client-pod.yml
+
+					This will build the pod and containers within using the definitions within the YAML file.
+
+		2. Object Status:
+
+			> kubectl get pods
+
+				get:		Retrieve information on a group of running object types.
+				pods:		Object types to be queried <pods | services ...>.
+
+		3. Creating an object:
+
+			1. *.yml file:		Programmer passes a deployment file to control plane using the kubectl 'apply' command.
+			2. kube-apiserver:	kube-apiserver updates and maintains manifest of objects that should be created i.e. all *.yml files it has received.
+			3. kube-apiserver:	kube-apiserver instantiates the necessary object(s) on most appropriate node(s) in order to maintain overall container manifest.
+			4. kube-apiserver:	kube-apiserver instantiates the container as follows:
+
+							1. kube-apiserver:		kube-apiserver instantiates any necessary containers by utilising and invoking the local copy of Docker For Linux.
+							2. kube-apiserver:		kube-apiserver passes the nodes local docker-client the *.yml file.
+							3. docker-client:		docker-client passes *.yml file to docker-server.
+							4. docker-server:		docker-server pulls down the image from DockerHub and places within the nodes own image cache.
+							5. docker-server:		docker-server instantiates the image into a container.
+
+							NB: Kubernetes does not itself build images, only Docker has that capability.
+
+		4. Update single object:
+
+			1. *.yml file:		Update the *.yml file of the object to be modified.
+			2. kubectl:		Pass into the control plane:
+
+							> kubectl apply -f <filename>
+
+			3. Control plane:	If the 'kind' and 'name' of the object within the *.yml file already exist it will update otherwise create a new object.
+
+			NB: It is only possible to update the following aspects using the 'apply' command:
+
+				image
+				activeDeadlineSeconds
+				tolerations
+
+		5. Update multiple objects:
+
+			1. *.yml file(s):	Update the *.yml file(s) of the objects to be modified.
+			2. Directory:		Place the *.yml files in single directory.
+			3. kubectl:		Set kubectl to the parent directory.
+			4. kubectl:		Pass into the control plane the whole directory:
+
+							> kubectl apply -f <directory>
+
+			5. Control plane:	Contrl plane will update all *.yml files within <directory>.
+
+		6. Remove an object:
+
+			- Kubernetes utilises an imperative approach to delete an object (opposed to the declarative approach when creating objects).
+			- kubectl will delete any object that has matching 'kind' and 'name' as defined in supplied *.yml file of the object to be deleted.
+
+				> kubectl delete -f <*.yml file>
+
+					delete:			Delete a running object
+					-f:			Delete a object as specifed by a supplied *.yml file
+					<*.yml file>:		Path to the *.yml file that create the object to be deleted
+
+				Returns:	Status of deletion
+
+				NB: This process may hang for up to 10s which is accordance with the Docker behaviour of killing a container if it is unresponsive after 10s. 
+
+		7. Get status of all objects within cluster:
+
+			> kubectl get <object type>
+			> kubectl get pods
+			> kubectl get services
+			...
+
+			Returns:	Table of all <object type>s running in cluster.
+
+		8. Get status of all deployments within cluster:
+
+			> kubectl get deployments
+
+			Returns:	Table of all deployment running in cluster with the following columns.
+
+					NAME:		Name of deployment.
+					DESIRED:	Number of requested pods as specifed in the *.yml file under 'replicas'.
+					CURRENT:	Number of pods that are successfully running.
+					UP-TO-DATE:	Number of pods that are up to date in accordance with the *.yml file e.g. if a change was applied to the Pod Template within the *.yml file, this value may temporarily go low. 
+					AVAILABLE:	Number of pods whose internal containers are fully configured as specified and successfully running and ready to accept incoming traffic.
+
+		9. Get status of a single object within cluster:
+
+			> kubectl describe <object type> [object name]
+
+			Returns:	Detailed listing of pod containers, events and contents.
+
+		10. Test application using a browser:
+
+			1. Application Deployment:	Once all of the required pods have been deployed.
+			2. Application Test:		Test application by using a browser to connect to the primary node.
+			3. Application IP Address:	Nodes are allocated IP addresses by control plane and not accessible via 'localhost' as per Docker.
+			4. miniKube:			Use miniKube to return the primary node IP address:
+			
+					> minikube ip
+
+				Returns:	192.168.99.100 		(for example)
+
+			5. Browser:			Enter retruned IP address into browser (along with any required/expected IP port):
+
+				Browser:	192.168.99.100:31515	(for example)
+
+			6. Browser:			Browser will attempt to connect to the container within the pod running on node:
+
+						Node [192.168.99.100]____________________________________________________
+						|									 |
+						|		 			    Pod________________________	 |
+						|					    |			       | |
+				Browser ----------> kubeproxy ---> [port 31515] Service --->[port 3000] ---> Container | |
+						|					    |__________________________| |
+						|________________________________________________________________________|
+
+		11. Updating an image within running deployment object:
+
+			1. Update image
+
+				1. Update source code within the application.
+				2. Rebuild image using a version tag:
+
+					> docker build -t <DockerID>/<ImageName>:Version .
+
+			2. Upload to DockerHub
+
+					> docker push <DockerID>/<ImageName>:Version
+
+			3. Manual Reload:
+
+				> kubectl set image <object_type> / <object_name> <container_name> = <imageName>
+
+					set:			Change a property on object
+					image:			Change image property
+					<container_name>:	Container name to be updated as defined within the Pod Template of deployment *.yml file
+					<imageName>:		Image to be applied (including version tag)
+
+				Returns: '... image updated'
+
+				NB: Care should be taken to ensure that when attempting to imperatively set the image that the :latest tag does not prevent the latest image from being refreshed i.e. specific versioning maybe required.
+
+			4. Confirm:
+
+				> kubectl get pods
+
+				Return: Table showing all running pods including those with updated image whose age will have restarted.
+			 
+				> kubectl describe pod [object name]
+
+				Return:	Table of information of updated pod with container running the new image.
+
+		12. Get all logs of a container:
+
+			1. Get list of all running pods:
+
+				> kubectl get pods
+
+			2. Copy the name of the pod containing the desired container and insert into 'get logs' command:
+
+				> kubectl get logs <pod_name>
+				> kubectl get logs server-deployment-62573276cd67-wtgsj
+
+				Returns all of the internal logs of the container within that pod.
+
+		13. Get all persistent volume locations:
+
+			> kubectl get storageclass
+
+			Returns a table of all declared persistent volume storage locations including the default.
+ 
+			> kubectl describe storageclass
+
+			Returns detailed information of all declared persistent volume storage locations.
+
+			For full listing of storage class options:
+
+				https://kubernetes.io/docs/concepts/storage/storage-classes/
+
+			If the cluster is hosted on cloud service provider, the default location will be specific to that cloud service provider.
+
+		14. Get all running persistent volumes:
+
+			> kubectl get pv
+			> kubectl get pv claims
+
+			Returns: Table of all persistent volumes that have been created within application.
+
+			NAME:			Name of persistent volume
+			CAPACITY:		Size of persistent volume
+			ACCESS MODE:		Read/write access e.g. ReadWriteOnce | ReadOnlyMany | ReadWriteOnce
+			RECLAIM POLICY:		
+			STATUS:			Bound (In use)
+			CLAIM:			PersistentVolumeClaim *.yml file location
+			STORAGECLASS:
+			REASON:
+			AGE:
+
+		15. Get all running PersistentVolumeClaims:
+
+			> kubectl get pv claims
+
+			Returns: Table of all PersistentVolumeClaims that have been created within application with following headers:
+
+			NAME:
+			STATUS:
+			VOLUME:
+			CAPACITY:
+			AGE:
+
+		16. Get all running secrets:
+
+			> kubectl get secrets
+
+			Returns: Table of all secrets running in application with following headers:
+
+			NAME:
+			TYPE:
+			DATA:
+			AGE:
+
+		17. Open miniKube dashboard:
+
+			- miniKube dashboard returns a webpage of all current aspects of the cluster:
+
+				> minikube dashboard
+
+				Returns: Opens the default browser at 'minikube ip':30000 and displays all and detailed status and statistics of the cluster.
+
+			- miniKube dashboard contains the ability to update aspects of the cluster, however these updates are of an imperative nature which do not update respective *.yml files i.e. should be avoided.
+
+		18. Create a Service Account:
+
+			- Create a new service account called 'tiller' in the namespace 'kube-system'.
+
+				> kubectl create serviceaccount --namespace kube-system tiller
+
+			- Create a new ClusterRoleBinding called 'tiller-cluster-rule' and the role (set of permissions) 'cluster-admin' and assign to the service account 'tiller'.
+
+				> kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+
+				NB: The service account is referenced as: <namespace>:<service-account-name> e.g. 'kube-system:tiller'
+
+	Workflow - Test/Development/Demo/Reaesrch
+
+		- Kubernetes has the following general workflow for creating a simple container application:
+
+			1. Image:			Build and place image onto Dockerhub.
+			2. Pod *.yml file:		Define the container to be created within a pod *.yml file.
+			3. Service *.yml file:		Define the internal and external networking of the container to be created within a *.yml file.
+
+	Workflow - Production:
+
+		CI Components:
+
+			1. Project:		Create CI Project which is defined to consist of following x2 core components:
+
+				1. Source Code:		Source code tested locally using miniKube.
+				2. Deployment Files:	Deployment files for all objects that will constitute the overall application.
+
+			2. GitHub Repo:		Create GitHub repository.
+			3. Travis CI:		Create Travis CI project to monitor GitHub, rebuild images upon change to GitHub, push to DockerHub and deploy to cloud service provider.
+			4. Google Cloud:	Create Google Cloud project.
+
+		CI Pipeline/Workflow:
+
+			The main bulk of the work and all of the co-ordination is completed by Travis CI:
+
+			1. Local Machine:	Upload new or modified project to GitHub remote repo.
+			2. Travis CI:		Travis CI monitors the remote repo on GitHub, upon detecting that the project has changed, it does the following:
+
+							1. Test:	Build development images which contain the test suite, run the test suite:
+
+									1. Development Images:		Build.
+									2. Development Images:		Spin up and place in containers.
+									3. Development Images:		Test.
+
+							2. Production:	Build the production images, send off to DockerHub and inform Goolge Cloud to pull down and run.
+
+									4. Production Images:		Build.
+									5. Production Images:		Send to DockerHub.
+									6. Production Images:		Google Cloud is informed by Travis CI.
+									7. Production Images:		Google Cloud pulls down and runs production images within containers updating live application.
+
+			 GitHub ________________________		 Travis CI ________________________		 DockerHub______________		 Google CLoud___________
+			|				|		|			 	   |		|			|		|			|
+			| Project			|-------------->| 1. Build:	Development Images |----------->| Production Images	|-------------->| Production Images	|
+			| 	Source Code		|		| 2. Run:	Test Suite	   |		|			|		| Production Containers |
+			|	Deployment Files	|		| 3. Build:	Production Images  |		|			|		| Running Application	|
+			|_______________________________|		|__________________________________|		|_______________________|		|_______________________|
+				|
+				|
+			 Local Machine _________________
+			|				|
+			| Project			|
+			| 	Source Code		|
+			|	Deployment Files	|
+			|_______________________________|
+
+
+
+		Google Cloud:
+
+			- Google Cloud is a cloud service provider.
+			- Google Cloud utilises usage/price calculator.
+			- Google Cloud has following advantages:
+
+				1. Originator:		Google was the orginator and creator of Kubernetes, AWS has only recently added support.
+				2. Ease of Use:		Google Cloud provides easier use and management of Kubernetes cluster.
+				3. Documentation:	Google Cloud has good documentation for beginners.
+
+			- Google Cloud provides a 'Cloud Console' CLI which provides complete access to the VPC (Virtual Private Cloud) hosted on Google Cloud:
+
+				- URL:			console.cloud.google.com
+				- CLI:			CLI can be opened directly from the dashboard to the cloud-based cluster.
+				- kubectl Access:	CLI provides direct shell access to kubectl of the cloud-based cluster.
+
+			- Google Cloud provides 'Kubernetes Engine' for all setup and management of all aspects related to the production cloud based cluster. 
+			- Google Cloud needs to be configured with the follow commands via the 'Cloud Console' in order to point kubectl to the desired cluster:
+
+				> gcloud config set project <full-project-name>
+				> gcloud config set compute/zone <compute-zone>
+				> gcloud container clusters get-credentials <name-of-cluster>
+
+				For example, secrets can now be applied to the cluster via the standard secret command:
+
+				> kubectl create secret generic <secret_name> --from-literal <key=value>
+
+		Travis CI:
+
+			*.yml Workflow:
+
+				The Travis project .yml file will need to do the following:
+
+				1. Google Cloud SDK:		Download and install Google Cloud SDK CLI from Google Cloud. This will install Google Console which will provide good low level access via kubectl of cloud cluster.
+				2. Google Cloud SDK:		Configure Google Cloud SDK to be able to login to Google Cloud project (for the download will not include any login credentials).
+				3. Travis CI:			Login to the local instance of Docker running on Travis CI.
+				4. Build Test:			Build the development test version of the application.
+				5. Run Test(s):			Run the tests on the develpment version of application.
+				6. Build Production:		If all tests pass, build and tag all images in the production version of application:
+				7. DockerHub:			Push all production images to DockerHub.
+				8. Google Cloud:		Build all of the virtual infrastructure within cloud based cluster by applying all *.yml files.
+				9. Google Cloud:		Imperatively set the latest images on each deployment i.e. manually delete objects (to avoid the intermittent issue of the cluster not running the latest image). 
+
+			Google Cloud Account Login:
+
+				- Google Cloud account and Travis will need to communicate, consequently Travis will need to be able to login to the Google Cloud account.
+				- Google Cloud account login is generally implemented as follows:
+
+					1. Service Account:		Create a Google Cloud Service Account.
+					2. Account Credentials:		Download the service account credentials as a JSON file.
+					3. Travis CLI:			Download, install and use Travis CLI to encrypt and upload the JSON file.
+					4. Travis Access:		Add to .yml file the instructions to unencrypt JSON file and load it into the GCloud SDK enabling Travis access to the Google Cloud account.
+
+				- Google Cloud account login credentials is a highly sensitive file which must be encrypted and stored directly on the Travis CI servers.
+				- Google Cloud account login credentials of course must never be uploaded to GitHub or exposed to external network.				 
+
+			Google Cloud Service Account Login Credentials Encryption:
+
+				- Travis CI is required to hold a secure encrypted copy of the Google Cloud Account Login credentials.
+				- Travis CI has a CLI that can be downloaded to be used to enrypt and upload the JSON file.
+				- Travis CLI however requires Ruby to be installed on the host machine, Windows does not have Ruby pre-installed and is cumbersome to do so.
+				- Travis CLI however can be run within a temporary container which itself has Ruby installed, such that it is possible to spin up a container running Travis CLI, create a volume and have this instance on Travis CLI complete the encryption and upload as follows:
+
+					1. Terminal:
+
+						- Navigate to working directory.
+
+					2. Terminal - Create Container:
+
+						> docker run -it -v ${pwd}:app ruby:2.3. sh
+
+						- Create a container using ruby:2.3 as the base image.
+						- Create a volume between the container and external file system between the 'pwd' (present working directory) and the folder /app within the file system of the container.
+						- Set sh as the default command to start up the shell upon the container being instantiated.
+						- NB: () is used on Unix based system or Windows running Git Bash, alternatively it is {} on Windows machine.
+
+					3. Container Shell - Install Travis CLI:
+
+						# gem install travis --no-rdoc --no-ri
+
+						- Via the shell of the container install Travis CLI inside of the container.
+						- NB: --no-rdoc --no-ri: 	Do not install documentation only CLI program.
+						- NB: gem is a Dependency Manager for the Ruby language.
+
+					4. Container Shell - Travis CI Login:
+
+						# travis login
+
+						- Travis CLI running in temporary container needs to login to the Travis CI online account.
+						- Travis CI does not have a specific login credentials but uses the respective GitHub login credentials.
+						- Enter your Github Username/Password and any 2-factor authentication.
+						- Travis CLI will now be logged into the Travis CI online account that is to receive the JSON file.
+
+					5. Volume:
+
+						- Volume is used to enable access to the JSON file from within the container.
+						- Volume is set to contain the JSON file.
+						- Volume is the working directory that had already been setup as a volume (if not a volume would need to be created).
+
+					6. JSON File Rename:
+
+						- Rename the JSON file to a more managable: 'service-account.json'.
+
+					7. Container Shell:
+
+						- Once the renamed JSON file has been copied into the containers volume it should be accessible from within the container.
+						- Shell set to /app directory.
+
+						# ls
+
+						- Should display the file 'service-account.json'.
+
+					8. Container Shell - JSON File Encrypt and Upload:
+
+						- Travis CLI is used to encrypt and upload the JSON file once CLI is logged into Travis online account.
+						- Travis CLI is passed the JSON and the Travis/Github repo which the JSON file is to be associated with:
+
+						# travis encrypt-file <JSON-filename> -r <Github Repo>
+						# travis encrypt-file service-account.json -r Paul-Surridge/projectName
+
+						- The Github repo name is case sensitive.
+						- Travis CLI will return a long command which must be placed within the Travis .yml file in order to direct Travis to the encrypted file location on the Travis servers to use to connect to the Google Cloud account.
+
+							openssl aes-256-cbc -K $encrypted_023....
+
+					9. JSON File DELETE:
+
+						- JSON file should be deleted once it has been successfully encrypted and uploaded to Travis servers via Travis CLI.
+						- JSON file must never leave computer or be accidentally uploaded to Github. Therefore double check that it is fully gone including Recycle Bin.
+						- Travis CLI: # ls to confirm that the JSON file has been deleted. 
+
+					10. Github - .enc file: 
+
+						- Travis CLI will also generate a .enc (encrypted file) that needs to be placed onto Github remote repo.
+						- Travis CI will use this file to confirm account.
+
+			Config File: ./.travis.yml
+
+				Below is a sample *.yml file if deploying to Google Cloud in accordance with the YMAL workflow described above:
+
+				sudo: required
+				services:
+				  - docker
+				env:
+				  global:
+				    - SHA=$(git rev-parse HEAD)			//Environment Variable:		Create an environment variable called SHA which contain the SHA of the latest commit via the git CLI command 'git rev-parse HEAD'
+				    - CLOUDSDK_CORE_DISABLE_PROMPTS=1		//Environment Variable:		Ensure that when the gcloud environment is interacted from Travis CI, that gcloud does not produce any prompts awaiting input from user e.g. 'Are you sure you want to proceed...' 
+				before_install:					//The below commands cannot be traditionally derived but must be researched and obtained from Google documentation.
+										//The gcloud commands can also be entered directly into the 'Google Shell' available directly on the cloud-based cluster dashboard.
+
+				  - openssl aes-256-cbc -K $encrypted_023....						//Inform Travis on the location of the encrypted JSON file containing the Google Cloud account login credentials.
+				  - curl https://sdk.cloud.google.com | bash > /dev/null;				//Inform Travis to download and install the Google Cloud SDK (which includes the Google Console) into the local instance of our Travis project running on Travis CI.org.
+				  - source $HOME/google-cloud-sdk/path.bash.inc						//Inform Travis to obtain and run the file path.bash.inc within the default install directory of Google Cloud SDK. This will modify the shell within the local instance of Travis project running on Travis CI.org.
+				  - gcloud components update kubectl							//Inform Travis to use gcloud (which is the Google Cloud SDK just installed) to install kubectl within the local instance of Travis project running on Travis CI.org.
+				  - gcloud auth activate-service-account --key-file service-account.json		//Inform Travis to use the service account which corresponds to the credentials within the encryted 'service-account.json' file to enable access to the Google Cloud account/project running the application.
+				  - gcloud config set project <full-project-name>					//Inform Travis of the 'real' project name as it exists on Google Cloud, which can be found under Project ID on Google Cloud dashboard.
+				  - gcloud config set compute/zone <compute-zone>					//Inform Travis of the physical location where the Google Cloud cluster is to be located as found on Google Cloud Dashboard e.g. 'us-central1-a'.
+				  - gcloud container clusters get-credentials <name-of-cluster>				//Inform Travis of the name of the cluster on Google Cloud as found on the Google Cloud Dashboard e.g. 'multi-cluster'.
+				  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin	//Inform Travis of the credentials to login to the local Docker server running on Travis CI (as specified above under services: - docker) where the password will come from Standard In.
+															//Login credentials need to have been set as environment variables on the Travis Dashboard.
+															//Echo returns/inserts the values of the environment variables and passes them to stdin when logging in ('echo' to be fully researched).
+				  - docker build -t <temporary tag> -f ./project/Dockerfile.dev	./project		//Inform Travis to build and tag the development image using Dockerfile.dev within the build context of ./project.
+
+				script:
+				  - docker run -e CI=true <temporary tag> npm test					//Inform Travis to run the test suite on the instantiated development image.
+
+				deploy:
+				  provider: script				//Inform Travis to refer to a separate script file when deploying to a kubernetes cluster on Google Cloud.
+				  script: bash ./deploy.sh			//Inform Travis of the corresponding script to use during deployment e.g. 'deploy.sh' within the current directory.
+				  on:
+				    branch: master				//Inform Travis to only run the deployment script ./deploy.sh when uploading to the master branch in github (not say when uploading to a development/test branch).
+
+			Config File: ./deploy.sh
+
+				//Build all of the images within the overall application i.e. each image is created from the corresponding dockerfile and associated files/dependencies within a discrete subdirectory of the project.
+				//The second tag uses the continually unique git $SHA environment variable to ensure that the imperative 'kubectl set image' always loads the latest image.
+
+				docker build -t <temporary tag 1>:latest -t <temporary tag 1>:$SHA -f ./project/container1/Dockerfile 	./project/container1			//Build and tag the production image within the ./project/container1 build context.
+				docker build -t <temporary tag 2>:latest -t <temporary tag 2>:$SHA -f ./project/container2/Dockerfile	./project/container2			//Build and tag the production image within the ./project/container2 build context.
+				docker build -t <temporary tag 3>:latest -t <temporary tag 3>:$SHA -f ./project/container3/Dockerfile	./project/container3			//Build and tag the production image within the ./project/container3 build context.
+
+
+
+				//Once all of the application images have been created, push them off to DockerHub.
+				//Given that the images have x2 tags as shown above, one being :latest and the other the environment variable $SHA, each tagged image must be pushed to DockerHub separately.
+
+				docker push <temporary tag 1>:latest
+				docker push <temporary tag 2>:latest
+				docker push <temporary tag 3>:latest
+
+				docker push <temporary tag 1>:$SHA
+				docker push <temporary tag 2>:$SHA
+				docker push <temporary tag 3>:$SHA
+
+
+
+				//Create all of the objects by passing all of the deployment files of the application
+
+				kubectl apply -f <project-directory-containing-all-deployment-files>
+
+
+
+				//Imperatively set the latest images on each deployment i.e. manually delete objects (to avoid the intermittent issue of the cluster not running the latest image).
+				//The second tag which uses the continually unique git $SHA environment variable will ensure that the image tag is always unique and will be reloaded, if the tag was not unique Kubernetes would consider any latest image the same and not reload.
+				
+				kubectl set image <object_type> / <object_name_1> <container_name_1> = <imageName_1>:$SHA		//<object-name-1> as defined in metadata of the deployment file e.g. kubectl set image deployments/server-deployment server=Paul-Surridge/multi-server:$SHA
+				kubectl set image <object_type> / <object_name_2> <container_name_2> = <imageName_2>:$SHA
+				kubectl set image <object_type> / <object_name_3> <container_name_3> = <imageName_3>:$SHA
+
+			Debug of Production Cluster:
+
+				- The Git SHA tag can be used as an unique identifier to find the current versioning within all of the Deployments running on the cluster:
+
+					1. Deployment:		Get image e.g. multi-client:832ba92c
+					2. GitHub:		Get source code from GitHub using the SHA e.g. git checkout 832ba92c
+					3. Debug:		Review the source code accordingly.
+
+	Kubernetes Production Cluster Update:
+
+		The workflow in order to update an existing cluster on a production platform e.g. Google Cloud:
+
+			1. Github:	Checkout a feature branch.
+			2. Modify:	Modify the source code within one of the containers.
+			3. Commit:	Commit the source code to local repository.
+			4. Github:	Push the feature branch to Github.
+			5. Github:	Create a Pull Request.
+			6. Travis:	Wait for Travis CI to run the Test Suite to report green on Github.
+			7. Github:	Merge Pull Request.
+			8. Production:	Updated functionality should appear as expected.
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

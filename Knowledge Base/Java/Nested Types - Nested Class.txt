@@ -1,0 +1,738 @@
+Class - Nested Class
+
+	Overview:
+
+		- A nested class has x2 forms:
+
+			non-Static:	Inner Class
+			Static:		Static Nested Class
+
+		- A nested class (Static and non-Static) should be thought of simply as:
+
+			Templates:	They are just class templates.
+			Passive:	They are not 'physical' things which 'do' anthing, contain anything or alter state of the enclosing class as per a field/method.
+			Convenience:	They are placed in the enclosing class simply for convenience purposes e.g.
+
+				1. Helper Class.
+				2. Factory Methods (Builder Design Pattern).
+				3. Handle internal functionality/processing.
+
+		- Inner Class:
+
+			Inner Class is contained 'within' the enclosing class.
+			Inner Class is a member of the enclosing class.
+			Inner Class may be within another nested class and so on...
+			Inner Class must be referenced/accessed through the enclosing class.
+
+		- Static Nested Class:
+
+			Static Nested Class is a top-level class within a class.
+
+		- Interface:
+
+			All Nested Classes may implement Interfaces:
+
+				1. Inner Class
+				2. Static Nested Class
+				3. Local Class
+
+	Intended Use:
+
+		- Logical Grouping:
+
+			- If ClassA is useful to ClassB.
+			- Logical to embed ClassA within ClassB:
+
+				- Keep the x2 together.
+
+			- For Example:
+
+				'Helper Classes':	Internal classes which 'help' the enclosing class.
+
+		- Encapsulation:
+
+			- If ClassA requires access to the private members of ClassB.
+			- Logical to embed ClassA within ClassB:
+
+				- ClassA has access to ClassB's private members.
+				- ClassA can be made private.
+
+		- Readability/Maintainability:
+
+			- Nesting smaller classes within top-level classes places the code closer to where it is used.
+
+		- UI Interaction:
+
+			- Event handling mechanisms use them extensively.
+
+	Nested Types:
+
+		- x4 Types
+
+			1. non-Static:		'Inner Class':			A Class definition within the body of a class or Top Level Class.
+						'Local Class':			A Class definition within the body of a block.
+						'Anonymous Class':		A Class definition and instantiation of a Subclass or Interface within the body of an expression.
+						'Lambda Expression':		A Class definition and instantiation of a Functional Interface within the body of an expression.
+
+			2. Static:		'Static Nested Class'		A Class within the body of a Top Level Class.
+
+			class TopLevelClass
+			{
+				ClassA 
+    				class InnerClass
+				{
+					//Able to reference 'anything' within TopLevelClass:			non-Static and Static members 	[including private].
+				}
+
+				static class StaticNestedClass
+        			{
+					//Able to reference static members only within TopLevelClass: 		Static members only 		[including private].
+				}
+
+				void method()
+				{
+					class LocalClass
+					{
+
+					}
+				}
+			}
+
+		- Collectively known as 'Nested Classes'.
+
+		- Inner Class:
+
+			- Use when require access to enclosing class non-public fields/methods.
+
+		- Static Nested Class:
+
+			- Use when do not require access to enclosing class non-public fields/methods.
+
+	Access Modifiers:
+
+		A nested class can be declared all levels:
+
+			private
+			protected
+			None/Default (Package-Private)
+			public
+
+		NB: Top Level Class Only:
+
+			None/Default (Package-Private)
+			public
+
+	External Class:
+
+		- Nested Classes are treated just the same as any normal Top-Level Class once instantiated in an External Class.
+		- Nested Classes defined as a Static or non-Static member of the Enclosing Class becomes irrelevant once they are instantiated in an External Class.
+
+			e.g.	Is it possible to instantiate and use a non-Static Nested Class in Static Context in the External Class.
+
+				1. Inner Class.
+				2. External Class:	Inner Class declared and instantiated as a Static Member of External Class:	static ... objInnerClass
+				3. External Class:	objInnerClass may be used in Static Context even though was originally a non-Static Nested Class.
+
+		- Nested Classes may of course be declared Static or non-Static members of the External Class when instantiated:
+
+				OuterClass.NestedClass       	objNestedClass         	= new OuterClass().new NestedClass();
+			static  OuterClass.NestedClass       	objNestedClass         	= new OuterClass().new NestedClass();
+
+		- Nested Classes just follow the same rules as any static or non-Statically instantiated top-level class.
+
+	Nested Class Members:
+
+		non-Static Members:
+
+			- They are soley associated with the Nested Class.
+			- They are soley associated with instances of the Nested Class.
+			- They are stored within the 'non-Static' context of the Nested Class.
+			- Therefore:
+
+				- They cannot be referenced by an Outer Class/Block.
+				- They are not part of the 'static' context of Top Level Class.
+				- They are not stored within the 'static' memory of Top Level Class.
+				- They are not associated with instances of Top Level Class nor the Top Level Class.
+				- However they may depend i.e. be assigned a value by both a 'non-Static' or 'static' member of an Outer Class or Top Level Class.
+
+					Therefore within an External Class, any Inner Class must be instantiated along with a prior instance of Top Level Class.
+			
+			- In addition this illustrates why non-Static members can exist 'quite happily' in both Inner and Static Nested Class.
+
+		Static Members:
+
+			- Unlike 'non-Static' members of a Nested Class.
+
+				Inner Class:		May only have Static Constants
+				Static Nested Class:	May have Static Members (just like a normal Top Level Class).
+
+			- Static Constants:
+
+				- They are likely contained within the 'static' context of the Top Level Class.
+				- They are likely stored within the 'static' memory of Top Level Class.
+				- They could have effectively been declared and initialised within the Top Level Class.
+				- Hence they are permitted.
+
+			- However:
+
+				- All Static Nested Classes can only be contained within the Static Context/Memory of the Top Level Class.
+				- All Static Nested Classes are not associated with instances of Top Level Class.
+				- Therefore:
+
+					- They do not depend on any 'non-Static' Instance Members of Top Level Class.
+					- For 'non-Static' Instance members of an Top Level Class cannot be referenced within Static Nested Class.
+
+				- Therefore:
+
+					- Static Members are permitted in Static Nested Class.
+
+			NB: Static Nested Classes should be used rather than non-Static Nested Classes.
+
+	How Nested Classes Should Be Best Thought As:
+
+		Initial Starting Point:		Context
+
+			Inner Class:		Stored within the 'non-Static' context of Outer.
+			Static Nested Class:	Stored within the 'static' context of Outer.
+
+		Inner Class:
+
+			- Inner shares the same 'non-Static' and 'static' contexts as the Outer Class.
+			- Inner is 'non-Static' context of Outer and must be associated with Instances of Outer rather than the class Outer:	
+
+				Therefore:
+
+				1. Inner may only declare non-Static Members (not Static).			As:
+
+															non-Static Members:	Are associated with Inner only (rather than the class of Outer).
+															Static Members:		Are associated with the class of Outer (rather than just instances of Outer).
+
+				2. Inner may refer to both 'static' and 'non-Static' members of Outer		As Inner is within the 'non-Static' context of Outer, therefore naturally has access to both.
+				3. Outer may not declare Inner a 'static' member of Outer.			As Inner is an Instance Variable of Outer refered via 'this' and not possible to refer to 'this' within the static context.
+				4. Outer may only declare Inner a 'non-Static' instance of Inner:
+
+					Therefore:
+
+					1. Inner object may only be used in 'non-Static' context within Outer.
+
+				5. Outer must be instantiated before Inner within an External Class.
+
+			- It is a member of Outer:
+
+				Therefore:
+
+				1. Has access to Outer's private members.
+				2. Shadows Outer's private members.
+
+		Static Nested Class:
+
+			- Static Nested Class is within the 'static' context of Outer and must be associated with the Class rather than Instances of Outer.
+
+				Therefore:
+
+				1. Inner may declare both non-Static and Static Members.					As non-Static members are associated with the Inner Class as normal 
+				2. Inner may refer to only 'static' members of Outer.						As Inner is within Outer's 'static' context and must contain only static elements. 
+				3. Outer may declare both Inner a 'non-Static' and 'static' member of Outer.			As Inner is within Outer's 'static' context and may be contained within Outer's 'static' context.
+				4. Inner may be declared 'directly' within External without need to instantiate Outer first.	As Inner does not contain any 'non-Static' members of Outer.
+
+				NB: Of course it is possible to access non-Static members of Outer within a Static Nested Class via a local instantiation of Outer.
+
+	Layer of Rules:
+
+		General layer of rules that should be applied when assessing Nested Classes:
+
+			1. Static/non-Static Referencing:
+
+				Inner Class
+
+					Outer Member Referencing:
+
+						Inner Class:		Outer Members: non-Static and Static.		[including 'private']
+						Static Nested Class:	Outer Members: Static Only.			[including 'private']
+
+				Outer Class
+
+					Inner Member Referencing:
+
+											(Outer Context)				(Outer Context)
+						(Inner Object Declaration)		(non-Static)				(Static)
+						______________________________________________________________________________________________________________________
+
+						non-Static				Y					-
+						Static					Y					Y
+						Class					Y (Reference InnerStatic Members Only)	Y (Reference InnerStatic Members Only)
+
+						NB: It is always possible to access both the internal 'non-Static' and 'static' members of Inner regardless if Inner is declared as 'non-Static' or 'static'.
+
+					The above is summarised:
+	
+						Outer non-Static Context/Memory:	May reference Static and non-Static members of Outer.
+						Outer Static Context/Memory:		May reference Static members of Outer only.
+
+			2. Shadowing:
+
+				- Compiler initially refers to local scope, then any enclosing scope.
+				- This is applicable to any inner declaration e.g. a method or nested class, interface or enum...
+
+			3. Class Centric:
+
+				- Whether a Nested Class is declared a Static or non-Static member of Outer Class.
+				- This aspect is only relevant to the Outer Class in which these Nested Classes are declared.
+				- This is not relevant and has no bearing on any External Classes which may instantiate the Nested Classes.
+
+			4. 'private'
+
+				Given:
+
+					Enclosing Scope
+					Enclosed Scope
+
+				Both scopes have access to each others 'privates'.
+
+			5. Nested Class
+
+				non-Static:		non-Static Members Only
+				Static:			non-Static and Static Members
+
+			6. Static/non-Static Relevance
+
+				Whether a member is declared static or not only really becomes relevant to external classes which may use that class.
+
+			7. Context
+
+				Inner Class:		Considered a 'non-Static context' within Outer Class:		Therefore may reference both Static and non-Static members of Outer Class
+				Static Nested Class:	Considered a 'static context' within Outer Class:		Therefore may reference only Static members of Outer Class
+
+	Comparison:
+
+							(Inner Class)							(Static Nested Class)
+							_____________________________________________________________________________________
+
+		Inner:
+
+			Members:			non-Static							non-Static
+							non-Static Constants						Static					//In accordance with local Static Members within Blocks.
+							Static Constants						non-Static Constants
+															Static Constants
+
+			Outer Accees:
+
+				Of Immediate Block:
+				Of Immediate Class:	non-Static Members						Static Members Only			//non-Static Members via local instantiation of Outer.
+				Of Outer Class(es):	Static Members
+
+			Shadowing:			Applicable							Applicable
+
+		Outer:
+
+			Inner Instantiation:		non-Static Only							non-Static
+															Static
+
+			Inner Referencing:		via non-Static Object						via non-Static Object
+															via Static Object
+
+		External:
+
+			Instantiation:			Outer.Inner objInner = new Outer().new Inner(10);		Outer.InnerClass objInner = new Outer.InnerClass();
+
+			Access Modifiers:		Now Applicable							Now Applicable
+
+
+		Key Rules:
+
+			- Inner: Members:		Follows overall context.	i.e. 	Inner Class:		May contain Inner non-Static and Static Members.
+												Static Nested Class:	May contain Inner Static Members only.
+
+			- Inner: Outer Referencing:	Follows overall context.	i.e. 	Inner Class:		May reference Outer non-Static and Static Members.
+												Static Nested Class:	May reference Outer Static Members only.
+												
+			- Outer: Inner Referencing:	Only via Inner instantiation.
+
+	Serialisation:
+
+		- Serialisation of Nested Classes is strongly discouraged.
+		- Applicable to:
+
+			1. Inner Class
+			2. Local Class
+			3. Anonymous Class
+			4. Lambda Expressions
+
+			NB: Likely also just as applicable to Static Nested Class?
+
+		- Due to:
+
+			- Java Compiler creating 'Synthetic Constructs' when compiling the above entities.
+			- Whereby the 'Synthetic Constructs' vary depending on the Java Compiler implementation.
+			- Therefore:
+
+				- .class files can vary depending on the compiler.
+				- Compatibility issues may arise if the above are serialised and deserialised with an alternate JRM.
+
+
+
+
+
+
+
+
+
+
+	Inner Class
+
+		Key Characteristics:
+
+			- Everything is non-Static.
+			- Inner Class:			non-Static Members Only.
+			- Outer Class:			non-Static Instantiation Only. Object may only be used non-Static Context.
+
+		Summary:
+
+			Inner Class:
+
+				Members:
+
+					1. non-Static Members Only.
+					2. Constants.
+
+				Outer Class Referencing:
+
+					1. Able to reference all Static and non-Static Members in Outer Class.
+					2. Including 'private'.
+
+				Shadowing:
+
+					1. Permitted:		Inner Class may have same identifiers and shadow fields/methods in Outer Class, whereby:
+
+						1. Compiler:	Checks locally within Inner Class first.
+						2. Compiler:	If not found refer to Outer Class.
+
+						NB: This is applicable just the same to any inner declaration e.g. a method or nested class, interface or enum...
+							
+			Outer Class:
+
+				Inner Class Referencing:
+
+					It is only possible to reference Inner Class members via non-Static instantiation:
+
+					1. non-Static Object Only.
+					2. Including 'private'.
+
+			External Class
+
+				Instantiation:
+
+					1. Inner Class integral part of Outer Class.
+					2. Outer Class must be instantiated along with and before Inner Class:
+
+						OuterClass.InnerClass 	objInnerClass 		= new OuterClass().new InnerClass();
+
+						NB: Inner Class would normally be made private and unaccessible to External Classes, as the nested class is normally closely specific to Outer Class (rather than External Classes).
+
+				Standard Class:
+
+					Once instantiated within the External Class, Inner Class is treated just like any other Top-Level Class, however with following differences:
+
+					1. Declaration, Instantiation and Initialisation:
+
+						- Differing syntax.
+
+							1. Outer Class:		Declare, instantiate and initialise.
+							2. Inner Class:		Declare, instantiate and initialise in association with Outer Class object.
+
+						- For Example:
+
+							OuterClass.InnerClass 	objInnerClass = new OuterClass().new InnerClass();
+
+					2. Access Modifiers:
+
+						- Access Modifiers come into effect once within the External Class.
+						- Therefore:
+										Inner Class Member Access
+
+							Outer Class:		Full Access:			Access to all Inner Class members regardless of specified access, including 'private'.
+							External Class:		Restricted Access:		Access Modifers now come into affect.
+
+					3. Static Instances:
+
+						- A Nested Class is treated just like any other Top-Level Class and be declared as 'static' or 'non-Static' relevant to the External Class.
+						- Therefore:
+
+							Inner Class:		May be declared a Static or non-Static member of External Class.
+							Static Nested Class:	May be declared a Static or non-Static member of External Class.
+
+		In Detail:
+
+			Inner Class:
+
+				Permitted Members:
+
+					- Inner Class is not a completely separate 'entity' within the Outer Class but still an integral member within it.
+					- Inner Class shares the same 'static' or 'non-Static' contexts of the Outer Class.
+					- Inner Class is not declared as 'static' therefore becomes part of the 'non-Static' context of the Outer Class.
+					- Inner Class is associated with Instances of Outer Class rather than Outer Class itself.
+					- Therefore:
+
+						1. non-Static Context:		Inner Class must not contain members which belong in the Outer Class's Static Context.
+						2. non-Static Members:		Inner Class may only contain non-Static Members.
+						3. non-Static Body:		Inner Class body becomes a non-Static context within the overall Outer Class.
+
+					- For Example:
+
+						1. If any Inner Class member were to be declared 'static', it would automatically become part of the wider Outer Classes 'static' context.
+						2. This is not permitted given that that member would become associated with the class rather than instances of the Outer Class.
+
+					- Constants:
+
+						1. Constants:	static final int ISTATIC = 10;
+
+					- Blocks:
+
+						- non-Static Members only follows local Static Members within Blocks e.g.
+
+							non-Static Blocks:		Local non-Static Members Only
+							Static Blocks:			Local non-Static and Static Members.
+
+				Outer Class Referencing:
+
+					Summary:
+
+						- Inner Class able to reference all Static and non-Static Members of Outer Class.
+						- Including 'private'.
+						- All Fields:		Able to assign to/from all non-Static/static fields in the Outer Class.
+						- All Methods:		Able to call all methods in the Outer Class.
+
+					Means of Referencing:
+
+						- x3 ways of referencing the members of Outer Class:
+
+							1. Directly							//OK
+							2. Instantiation:	non-Statically				//OK
+							3. Instantiation:	Statically				//Fail		No Static Members within Inner Class
+							4. Class							//OK
+
+						- Directly:
+
+								iInnerField = iOuterField;				//OK
+									    = iOuterStaticField				//OK
+									    = outerMethod();				//OK
+									    = outerStaticMethod();			//OK
+
+						- Instantiation:
+
+							non-Static:
+
+								Outer objOuter = new Outer();				//OK
+
+								iInnerField = objOuter.iOuterField;			//OK
+									    = objOuter.iOuterStaticField;		//OK
+									    = objOuter.outerMethod();			//OK
+									    = objOuter.outerStaticMethod();		//OK
+
+							Static:
+
+								static Outer objStaticOuter = new Outer();		//Fail
+
+								iInnerField = objStaticOuter.iOuterField;		//Fail
+									    = objStaticOuter.iOuterStaticField;		//Fail
+									    = objStaticOuter.outerMethod();		//Fail
+									    = objStaticOuter.outerStaticMethod();	//Fail
+
+						- Class:
+
+								iInnerField = Outer.iOuterField;			//Fail		Not possible to reference non-Static field via Class
+									    = Outer.iOuterStaticField;			//OK
+									    = Outer.outerMethod();			//Fail		Not possible to reference non-Static field via Class
+									    = Outer.outerStaticMethod();		//OK
+
+			Outer Class
+
+				Inner Class Referencing:
+
+					Summary:
+
+						- Only able to reference Inner Class members via non-Static Instantiation only.
+						- Inner Class is not a standalone Top-Level Class.
+						- Inner Class is a non-Static member of Outer Class.
+						- Inner Class is associated with instances of the Outer Class rather than the Outer Class itself.
+						- Inner Class would therefore be referenced via 'this' from within the Outer Class.
+						- Declaring and instantiating a static member within Outer Class is within the 'static context' of Outer Class, and not possible to refer to 'this' from the 'static context'. 
+						- Therefore not possible to instantiate a static instance of a (non-Static) Inner Class:
+
+								InnerClass objInnerClass = new InnerClass();			//OK
+							static	InnerClass objInnerClass = new InnerClass();			//Fail:		Cannot reference non-Static 'this' from static context.
+
+						- A non-Static instantiation of Inner Class may not be used in any static context:
+
+							1. Outer Class: Static Method:				objInner may not be referenced in a static method.
+							2. Outer Class: Static Initialisation Block:		objInner may not be referenced in a static initialisation block.
+							3. In General:						objInner may not be used within any static context.
+
+					Means of Referencing:
+
+						- Only x1 way of referencing members of Inner Class:
+					
+							1. Directly:					//Fail:		Compilers are naturally class centric i.e. they look for members within their own local class rather than within any nested.
+							2. Instantiation:	non-Statically:		//OK
+							3. Instantiation:	Statically:		//Fail:		No static instance of (non-Static) Inner Class i.e. not able to refer to 'this' when declaring static objects.
+							4. Class:					//Fail:		No static members in (non-Static) Inner Class.
+				
+						- Directly:
+
+								iOuterField = iInnerField;				//Fail		Not possible to refernce Inner Class members
+									    = iInnerStaticField				//Fail		Not exist within Inner Class
+									    = innerMethod();				//Fail		Not possible to refernce Inner Class members
+									    = innerStaticMethod();			//Fail		Not exist within Inner Class
+
+						- Instantiation:
+
+							non-Static:
+
+								Inner objInner = new Inner();				//OK
+
+								iOuterField = objInner.iInnerField;			//OK
+									    = objInner.iInnerStaticField;		//OK
+									    = objInner.innerMethod();			//Fail		Not exist within Inner Class
+									    = objInner.innerStaticMethod();		//Fail		Not exist within Inner Class
+
+							Static:
+
+								static Inner objInner = new Inner();			//Fail		No static instantiation of Inner Class, unable to refer to 'this' within a static context
+
+								iOuterField = objInner.iInnerField;			//Fail		No static instantiation of Inner Class, unable to refer to 'this' within a static context
+									    = objInner.iInnerStaticField;		//Fail		Not exist within Inner Class
+									    = objInner.innerMethod();			//Fail		No static instantiation of Inner Class, unable to refer to 'this' within a static context
+									    = objInner.innerStaticMethod();		//Fail		Not exist within Inner Class
+
+						- Class:
+
+								iInnerField = Outer.iOuterField;			//Fail		Not possible to reference non-Static field via Class
+									    = Outer.iOuterStaticField;			//Fail		No static members within Inner Class
+									    = Outer.outerMethod();			//Fail		Not possible to reference non-Static field via Class
+									    = Outer.outerStaticMethod();		//Fail		No static members within Inner Class
+
+			External Class
+
+				- Inner Class is treated just like any other Top-Level Class once within an External Class.
+				- Except:
+
+					1. Declaration, instantiation and initialisation:
+
+						Outer Class:		InnerClass 		objInnerClass 	= new InnerClass(10);
+
+						External Class:		OuterClass 		objOuterClass 	= new OuterClass(10);				//x2 Step Process
+									OuterClass.InnerClass 	objInnerClass 	= objOuterClass.new InnerClass(10);
+
+									OuterClass.InnerClass 	objInnerClass 	= new OuterClass().new InnerClass(10);		//x1 Step Process
+
+					2. Access Modifiers:
+
+						Outer Class:		Not Applicable (Outer Class has access to all members, even 'private').
+
+						External Class:		Applicable
+
+					3. Static Instantiation:
+
+						Outer Class:		Not Permitted
+
+						External Class:		Permitted
+
+
+
+
+
+
+
+
+	Static Nested Class:
+
+		Inner Class Comparison:
+
+			Same as Inner Class (except):
+
+			Inner Class:
+
+				1. Members:
+
+					- non-Static and Static Members.
+					- Static Fields.
+					- Static Methods.
+					- Static Instantiation of Outer Class.
+
+				2. Outer Class Referencing:
+
+					- Reference of Outer Class Static Members only.
+					- Only way to reference Outer non-Static Members is via local instantiation of Outer.
+
+			Outer Class:
+
+				1. Inner Class Referencing:
+
+					1. Inner Class Referencing via non-Static and Static Instantiation of Inner Class.
+					2. Whereby being treated as any other non-Static or Static members of Outer within Outer.
+
+			External Class:
+
+				1. Declaration, Instantiation and Initialisation:
+
+					Inner Class:		
+
+						Outer                       objOuter            = new Outer();
+    						Outer.InnerClass            objInner            = objOuter.new InnerClass();
+    
+    						//x1-Step
+    						//Outer.InnerClass          objInner            = new Outer().new InnerClass();
+
+					Static Nested Class:
+
+						Outer.InnerClass            objInner            = new Outer.InnerClass();
+
+				2. Given that Static Nested Class can be instantiated without prior Outer Class, illustrates that Static Nested Class does not depend on Outer in anyway.  This is demonstrated by the fact that Static Nested
+					Class may not contain any of Outers 'non-Static' members.
+
+
+
+
+	Instantiation:
+
+		Within Top Level/Enclosing Form:
+    
+            		Top Level		Nested
+            		Memory			Class
+            		_______________________________________________
+
+            		non-Static		non-Static Only
+            		Static			Static Only
+    
+            		Within the Top Level/Enclosing Form, nested classes may only be instantiated within their respective memory locations where they are declared.
+    
+        	Within External Form:
+    
+            		Top Level		Nested
+            		Memory			Class
+            		_______________________________________________
+
+            		non-Static		non-Static + Static
+            		Static			non-Static + Static
+    
+           	 	An External Class, may placed a nested class from either non-Static/Static memory into either its own non-Static/Static memory.	
+
+		Syntax:
+
+			InnerClass1                                                         obj1 = new InnerClass1();
+    			InnerClass1.InnerClass2                                             obj2 = new InnerClass1().new InnerClass2();
+    			InnerClass1.InnerClass2.InnerClass3                                 obj3 = new InnerClass1().new InnerClass2().new InnerClass3();
+ 
+    			static StaticNestedClass1                                           obj4 = new StaticNestedClass1();
+    			static StaticNestedClass1.StaticNestedClass2                        obj5 = new StaticNestedClass1.StaticNestedClass2();
+    			static StaticNestedClass1.StaticNestedClass2.StaticNestedClass3     obj6 = new StaticNestedClass1.StaticNestedClass2.StaticNestedClass3();
+
+	Outstanding Queries/Unknowns:
+
+		1. Inner Class:
+
+			- What is the purpose of have both Static and non-Static nested classes?
+			- Given that both Nested Classes are merely templates (rather than an active member of the Outer class).
+			- Why are Inner Classes copied/reproduced in every instance of Outer.
+			- Would have thought all nested classes should be Static i.e. loaded once when Class is loaded.
+

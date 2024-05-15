@@ -1,0 +1,1085 @@
+Statements Expressions Loops
+
+	Statement:
+
+		- A complete unit of execution terminated with a ;
+		- x3 types:
+
+			1. Expression
+
+				i = j + methodSum(methodInvertSign(k + 1));
+
+			2. Declaration
+
+				int i;
+
+			3. Conditional
+
+				do
+				{
+				...
+				} while (Expression);
+
+				There are x3 types of Conditional Statements:
+
+					1. Decision Making:		if-then, if-then-else, switch
+					2. Looping:			for, while, do-while
+					3. Branching:			break, continue, return
+
+		Example:
+
+			|_________________________________________|	Statement
+		 	   |____________________________________|	Expression 1
+				|________________________________|	Expression 2
+					  |_____________________|	Expression 3
+							   |____|	Expression 4
+			i = j + methodSum(methodInvertSign(k + 1));
+
+		Heirachy:
+
+			- Variables, Operators and Method Invocations 	are elements of Expressions.
+			- Expressions 					are elements of Statements.
+			- Statements 					are elements of Blocks.
+
+	Expression:
+
+		- Expression is a construct which is made of:
+
+			1. Variables
+			2. Operators
+			3. Method Invocations
+			4. Object Creation Expressions
+			5. Anything...
+
+		- Expression evaluates/returns a single value as part of either:
+
+			1. x1 Single Statement
+			2. Compound Expression
+
+		- Expressions adhere to the order of precedence:
+
+			Postfix			expr++ expr--
+			Unary			++expr --expr +expr -expr ~ !
+			Multiplicative		* / %
+			Additive		+ -
+			Shift			<< >> >>>
+			Relational		< > <= >= instanceof
+			Equality		== !=
+			Bitwise AND		&
+			Bitwise XOR		^
+			Bitwise OR		|
+			Logical AND		&&
+			Logical OR		||
+			Ternary			? :
+			Assignment		= += -= *= /= %= &= ^= |= <<= >>= >>>=
+
+		- Expressions are evaluated left-right where the higher order operators are evaluated first.
+
+	Boolean Expressions:		
+
+		- Boolean expressions contain boolean terms which are individual terms, values, variables or expressions which overall resolve and return a boolean value e.g.
+
+			b1	= boolean variable
+				= i<0
+				= i>0
+				= i>=10
+				= i<=10
+				= i==10
+				= i!=10
+				= i instanceof Integer
+ 				= object.booleanMethod()
+
+		- Boolean expressions are evaluated as all other expressions using the standard order of precedence where those of higher order of precedence are applied/evaluated first e.g.
+
+						(i<=1 || j==10 && obj instanceof ClassA && !obj.IsProperty())
+
+			1. !:		Pass left-right and evaluate all terms which have an associated ! and apply the !
+
+						(i<=1 || j==10 && obj instanceof ClassA && b4)
+
+			2. Relational:	Pass left-right and evaluate all terms containing relational operators.
+
+						(b1 || j==10 && b3 && b4)
+
+			3. Equality:	Pass left-right and evaluate all terms containing equality operators.
+
+						(b1 || b2 && b3 && b4)
+
+			4. &&:		Pass left-right and apply the && to all terms which are grouped with &&.
+
+						(b1 || b6)
+
+			5. ||:		Pass left-right and apply the || to all terms which are grouped with ||.
+
+						(b7)
+
+		- Boolean expressions all reduce and return a single overall boolean value.
+
+	Boolean Expressions Utilising ():
+
+		- Boolean expressions ultilise () as all other expressions to group terms together to form their own internal nested expressions overriding the the order of precedence in any wider expression.
+
+			Non-Nested:	(b1 || b2 && b3)		Expressions which do not contain further nested expressions grouped by ()
+			Nested:		((b1 || b2) && b3)		Expressions which do contain further nested expressions grouped by ()
+
+		- Boolean expressions which contain () are evaluated as follows:
+
+			1. ():		Pass left-right and all non-nested expressions are evaluated using the standard order of precedence as described above returning a single boolean value.
+			2. Repeat:	Pass left-right repeatedly until there is only x1 single non-nested expression.
+
+						(!(b1 && (b2 || b3)) || (!b4)) && (b5 || b6) || (b7) && (b8 && b9)
+						(!(b1 && b10) || (!b4)) && (b11) || b12
+						(!(b13) || (!b4)) && (b11) || b12
+						(b14 || b15) && (b11) || b12
+						b16 && (b11) || b12
+						b17 || b12
+						b18
+
+		- Boolean expressions which contain multiple && or || can be grouped to resolve a single boolean value in x1 pass:
+
+			b1 || b2 || b3 || b4 	= b5
+			b1 && b2 && b3 && b4 	= b5
+
+		- Boolean expressions which only contain multiple && or || can ignore the ():
+
+			(b1 || b2) || ((b3 || b4) || b5)	= b1 || b2 || b3 || b4 || b5		= b6
+			(b1 && b2) && ((b3 && b4) && b5)	= b1 && b2 && b3 && b4 && b5		= b6
+
+	For Loop
+
+		private void method()
+		{
+			int 		iExt
+			ClassA		objExt
+			InterfaceB	itfExt
+
+			for(<initialiser> ; <condition> ; <mutator>)		//[Loop header]
+			{
+				<loop>
+			}
+		}
+
+		Sequence:
+
+			1. <initialiser>:	<initialiser> is run.
+            		2. <condition>:     	<condition> is immediately run, if:
+
+                    					True:    Run Loop
+                    					False:   Immediately exit loop, do not run loop even once and commence with the statements after the <loop> body
+
+            		3. [Loop]:            	[Loop] is run if <condition> is initially true.
+           		4. <mutator>:         	<mutator> is applied to all variables listed within the <mutator>.
+            		5. <condition>:     	<condition> is re-evaluated:
+
+                    					True:    Run Loop
+                    					False:   Immediately exit loop, do not run next loop and commence with the statements after the <loop> body
+
+		<initialiser>
+
+			Always Runs:	<initialiser> is always ran upon encountering the loop header.
+                  			<initialiser> is always ran even if the <condition> immediately fails and the loop immediately terminates without running a single loop.
+					<initialiser> is always ran therefore if it contains external variables they will be set to their initialised values as specified.
+
+			Variables:	<initialiser> may contain variables which are either all local or all external not combined:
+
+						Local Only:			for(int i = 0, j = 0 ; ...)					//Okay
+						External Only:			for(iExt1 = 0, iExtj = 0 ; ...)					//Okay
+
+						Local and External:		for(int i = 0, iExt1 = 0 ; ...)					//Fail
+										for(iExt1 = 0, int i = 0 ; ...)					//Fail
+
+					Local:
+
+						Declared and Initialised:	Local variables are declared and initialised within the same single statement.
+										Local variables only have scope within the loop.
+										Local variables must all be initialised a value, cannot be left as default or presumed to acquire the natural default e.g. 0/""/false/null.
+										Local variables must all be prefixed by x1 single type:
+
+											for(int i = 0, j = 0 ; ...)				//Okay
+											for(int i = 0, int j = 0 ; ...)				//Fail
+
+						Any but Same Type:		Local variables must be all of the same type.
+
+											for(int i = 0, j = 0 ; ...)				//OKay
+											for(int i = 0, double j = 0 ; ...)			//Fail
+
+										Local variables may be any variable e.g. any primitive, object, interface or generic object/interface:
+
+											for(double d = 0 ; ...)
+											for(char c = '1' ; c <= '9' ; c++)
+											for(String s = "abc" ; ...)
+											for(List<Integer> i = alExt ; ...)
+											for(List<Integer> al = new ArrayList<>() ; al.size() < iConditional ; al.add(1))
+					External:
+
+						Declared and Initialised:	External variables are declared and initialised external/prior to the loop as normal.
+										External variables may be assigned new values which will occur when execution reaches the loop header regardless if a loop is actually run.
+
+						Mixed Type:			External variables may be of mixed/differing types:
+
+											for(iExt = 10, dExt = 9 , alExt = new ArrayList<>() ; ...)	//Okay
+
+			Empty:		<initialiser> that is empty indicates:
+
+						External Variables Only:	Loop will contain external variables only.
+
+		<condition>
+
+			Always Runs:	<condition> always run upon encountering the loop header.
+
+						True:    Run Loop
+                                   		False:   Immediately exit loop, do not even run once
+
+						If the <condition> is immediately false even before the first loop has occurred execution will immediately move to next statement after loop	
+
+                                	<condition> may be any x1 single or multiple statements of collection which ultimately resolve to a boolean value:
+				
+						Primitives
+						Objects
+						Interfaces
+						Function calls
+
+			Empty:		<condition> that is empty indicates:
+
+						Infinite Loop:		Loop will continually run.
+						Break:			Loop will need to utilise 'unstructured' means of breaking the loop e.g. break to exit the loop.
+
+			Boolean:	<condition> must evaluate to a boolean, numerical values are not permitted e.g.
+
+						0:	Is not false
+						>0:	Is not true
+
+		<mutator>
+
+			End of Loop:	<mutator> runs at the 'end' of the loop.
+					<mutator> may not run at all if the <condition> is false without running an initial loop.
+
+			Variables:	<mutator> may contain:
+
+						Local variable
+						External variable 	(used in the loop)
+						External variable 	(not used in the loop)
+
+                                	<mutator> can contain and do essentially 'whatever it wants' it is just a section of code that runs at the END of each loop e.g.
+
+						Primitives:	Increment	Multiplication
+	                   	                		Decrement	Division
+        	                	        
+                	                	Objects:	Call Methods
+								Call Members
+
+						Overall 'anything which can be done within normal method/block context can be done within the <mutator>'.
+
+					<mutator> is purely a comma separated list/set of variable mutations which are run at the END of each loop.
+					<mutator> is only run at the end of each loop (not at the beginning or any other time) only after the first initial loop.
+
+			Empty:		<mutator> that is empty indicates:
+
+						Loop mutations:		Local or external variables will only occur within the loop itself:
+
+		<loop>
+
+			Mutations:	<loop> may contain its own mutations of local and/or external variables.
+
+			Statements:	<loop> may be either a single statement in which case {} can be omitted
+
+			Block:		<loop> is a block therefore adhering to all of the behaviour and properties of blocks.
+
+		Examples:
+
+			   for(int i=0 ; i<3 ; i++)			for(int i=0 ; i<=3 ; i++)
+
+			1. <initialiser>	i=0			<initialiser>		i=0
+			2. <condition>		true			<condition>		true
+			3. <loop>		i=0			<loop>			i=0
+
+			4. <mutator>		i=1			<mutator>		i=1
+			5. <condition>		true			<condition>		true
+			6. <loop>		i=1			<loop>			i=1
+
+			7. <mutator>		i=2			<mutator>		i=2
+			8. <condition>		true			<condition>		true
+			9. <loop>		i=2			<loop>			i=2
+
+			10. <mutator>		i=3			<mutator>		i=3
+			11. <condition>		false			<condition>		true
+			12. Exit					<loop>			i=3
+
+			13.						<mutator>		i=4
+			14.						<condition>		false
+			15.						Exit
+
+			- Loop will run with i=0,1,2			- Loop will run with i=0,1,2,3
+			- Loop will run 3-0 = 3 times			- Loop will run 3-0+1 = 4 times
+
+		Quick read/interpretation of loop header: 
+
+			Key Rules:
+
+				Low - High
+
+					Span
+
+						Initial
+						Condition
+						Sign
+							<	-1
+							<=	Ignore/nothing
+				 
+						Span:			Initial to Condition 	(if < Condition -1)
+												(if <= Ignore)
+
+					Number of Times:
+
+						Condition
+						Initial
+						Sign
+
+							<	Ignore/nothing
+							<=	+1
+
+						Number of Times:	Condition - Initial 	(if < Ignore/nothing)
+												(if <= +1)
+
+
+				High - Low
+
+					Span
+
+						Initial
+						Condition
+						Sign
+							>	-1
+							>=	Ignore/nothing
+				 
+						Span:			Initial to Condition 	(if > Condition +1)
+												(if >= Ignore)
+
+					Number of Times:
+
+						Initial
+						Condition
+						Sign
+
+							>	Ignore/nothing
+							>=	+1
+
+						Number of Times:	Initial - Condition 	(if > Ignore/nothing)
+												(if >= +1)
+
+			Low - High
+
+				for(int i=0 ; i<5 ; i++)				Run: x5			[0 1 2 3 4]
+				for(int i=0 ; i<=5 ; i++)				Run: x6			[0 1 2 3 4 5]
+
+				for(int i=1 ; i<5 ; i++)				Run: x4			[1 2 3 4]
+				for(int i=1 ; i<=5 ; i++)				Run: x5			[1 2 3 4 5]
+
+				for(int i=n ; i<m ; i++)				Run: x[m-n]		[n ... m-1]		[Inclusive]
+				for(int i=n ; i<=m ; i++)				Run: x[m-n+1]		[n ... m]		[Inclusive]
+
+				With o:
+
+					for(int i=1 ; i<5-2 ; i++)			Run: x2			[1 2]
+					for(int i=1 ; i<=5-2 ; i++)			Run: x3			[1 2 3]
+
+					for(int i=1 ; i<5+2 ; i++)			Run: x6			[1 2 3 4 5 6]
+					for(int i=1 ; i<=5+2 ; i++)			Run: x7			[1 2 3 4 5 6 7]
+
+					for(int i=n ; i<m+o ; i++)		<	Run: x[(m+o)-n]		[n ... (m+o)-1]		[Inclusive]
+					for(int i=n ; i<=m+o ; i++)		<=	Run: x[(m+o)-n+1]	[n ... (m+o)]		[Inclusive]
+
+			High - Low
+
+				for(int i=5 ; i>0 ; i--)				Run: x5			[5 4 3 2 1]
+				for(int i=5 ; i>=0 ; i--)				Run: x6			[5 4 3 2 1 0]
+
+				for(int i=5 ; i>1 ; i--)				Run: x4			[5 4 3 2]
+				for(int i=5 ; i>=1 ; i--)				Run: x5			[5 4 3 2 1]
+
+				for(int i=n ; i>m ; i--)				Run: x[m-n]		[n ... m+1]		[Inclusive]
+				for(int i=n ; i>=m ; i--)				Run: x[m-n+1]		[n ... m]		[Inclusive]
+
+				With o:
+
+					for(int i=5 ; i>1-2 ; i--)			Run: x6			[5 4 3 2 1 0]
+					for(int i=5 ; i>=1-2 ; i--)			Run: x7			[5 4 3 2 1 0 -1]
+
+					for(int i=5 ; i>1+2 ; i--)			Run: x2			[5 4]
+					for(int i=5 ; i>=1+2 ; i--)			Run: x3			[5 4 3]
+
+					for(int i=n ; i>m+o ; i--)		<	Run: x[n-(m+o)]		[n ... (m+o)+1]		[Inclusive]
+					for(int i=n ; i>=m+o ; i--)		<=	Run: x[n+1-(m+o)]	[n ... (m+o)]		[Inclusive]
+			Span:
+
+				Read the range/span of values that will be iterated:
+
+					for(int i=n ; i< m+o ; i++)
+						  |    |  |
+						  1    3  2
+
+				Read in following order:
+
+										Low - High			High - Low
+										______________________________________________
+
+					1. <initial>:				'n through to'			'n through to'
+					2. <condition>:				'm+o'				'm+o'			o maybe 0 -ve +ve
+					3. Relational Sign:		<	'-1'				'+1'
+									<=	Ignore/nothing			Ignore/nothing
+					4. Always inclusive.
+
+						Loop Header				Read
+						__________________________________________________________________________
+
+				Low - High	for(int i=n ; i<m-1 ; i++)		'n through to (m - 1) - 1 inclusive'
+						for(int i=n ; i<m-2 ; i++)		'n through to (m - 2) - 1 inclusive'
+
+						for(int i=n ; i<=m-1 ; i++)		'n through to (m - 1) inclusive'
+						for(int i=n ; i<=m-2 ; i++)		'n through to (m - 2) inclusive'
+					
+						for(int i=n ; i<m+o ; i++)		'n through to (m + o) - 1 inclusive'
+						for(int i=n ; i<=m-o ; i++)		'n through to (m - o) inclusive'
+
+
+				High - Low	for(int i=n ; i>m-1 ; i--)		'n through to (m - 1) + 1 inclusive'
+						for(int i=n ; i>m-2 ; i--)		'n through to (m - 2) + 1 inclusive'
+
+						for(int i=n ; i>=m-1 ; i--)		'n through to (m - 1) inclusive'
+						for(int i=n ; i>=m-2 ; i--)		'n through to (m - 2) inclusive'
+
+						for(int i=n ; i>m+o ; i++)		'n through to (m + o) + 1 inclusive'
+						for(int i=n ; i>=m-o ; i++)		'n through to (m - o) inclusive'
+
+		Techniques:
+
+			Char Incrementation:
+
+				- Utilise that chars hold numerical values on the ASCII chart.
+				- Utilise c++ to shift through subsequent (or otherwise) char values: 
+
+					for(char c = '1' ; c <= '9' ; c++)
+					{...}
+
+		How to read/interpret boolean expressions:
+
+			Top-Level Expression:
+
+				Top-level expression is the expression associated with the outermost () which is not nested nor form part of any further outer expresion e.g.
+
+					________Top Level Expression________
+				       |                                    |
+				for( ; (b1 && b2 || (b3 && (b4 || b5 && b6))) ; )
+							   |______________|
+								   |
+							   Nested Expression
+
+			Top-Level Standard Form:
+
+				Given that && has higher precedence than || the top level boolean expression will/should always be of the form:
+
+					( () || () || () || () )
+					( (b1 && b2 && ...) || (b3 && b4 && ...) || (b5 && b6 && ...) || (b7 && b8 && ...) )		i.e. a combination of nested && expressions || together
+
+			Nested Expressions:
+
+				- Nested expressions are unnecessary and only complicate the construct of the the expression.
+				- Nested expressions regardless of how deep/complicated can always be simplified into the standard form whilst providing the same overall conditional output.
+				- Nested expressions should ideally be rewritten in the standard form e.g.
+
+					  ( (b1 && b2 || (b3 && b4 || b5)) || (b6) )
+					= ( (b1 && b2) || (b3 && b4 || b5) || (b6) )
+					= ( (b1 && b2) || (b3 && b4) || (b5) || (b6) )
+
+					  ( (b1 && b2 || (b3 && b4 || (b5 || b6))) || (b7) )
+					= ( (b1 && b2 || (b3 && b4 || (b5) || (b6))) || (b7) )
+					= ( (b1 && b2) || (b3 && b4) || (b5) || (b6) || (b7) )
+
+					  ( (b1 && b2 || b3 && b4 && b5 || b6 && b7) )
+					= ( (b1 && b2) || (b3 && b4 && b5) || (b6 && b7) )
+
+					  ( b1 && b2 || b3 && b4 || b5 || b6 && b7 )
+					= ( (b1 && b2) || (b3 && b4) || b5 || (b6 && b7) )
+
+			How to Read/Interpret:
+
+				Simply pass through the whole expression:
+
+					1. Group all of the consecutive && terms as they appear. 	(regardless of any nesting ())
+					2. Group all single || terms as they appear. 			(regardless of any nesting ())	(Optional, only for clarity in overall conditional output)
+					3. Overall resulting in the standard form:
+
+						( (b1 && b2 && ...) || (b3 && b4 && ...) || (b5 && b6 && ...) || (b7 && b8 && ...) )
+
+					4. Single boolean terms form their 'own' expression consisting of a single term.
+
+				No Nesting:
+
+					If the top-level expression has no nested terms:
+
+						(b1 && b2 || b3 && b4 && b5 || b5 && b6 || b7 || b8 && b9)
+
+					Group all consecutive && as they appear:
+
+						( (b1 && b2) || (b3 && b4 && b5) || (b5 && b6) || (b7) || (b8) || (b9) )
+
+				Nesting:
+
+					If the top-level expression has nested terms:
+
+						( (b1 && b2 || (b3 && b4 && b5 || (b6 || b7))) || (b8) )
+
+					Group all consecutive && as they appear:
+
+						( (b1 && b2) || (b3 && b4 && b5) || (b6) || (b7) || (b8) )
+
+				Loop:
+					Loop will	When
+					_______________________________________
+
+					Run:		Any (&&)-group is high
+					Stop:		All (&&)-groups are low
+
+					The more terms in the overall expression the 'harder' it is for the loop to stop.
+
+		Language Inversion:
+
+			Convenient method of reading/interpreting boolean expressions:
+
+				Loop will run when:		As terms are read where:	&& = 'AND' 	|| = 'OR' 	'HIGH'
+				Loop will stop when:		As terms are read where:	&& = 'OR' 	|| = 'AND'	'LOW'
+
+			Convenient to apply (&&)-groups to all expressions (even those relatively simple), such that each (&&)-group has the standard worded statement:
+
+				Each (&&)-group:		Run:	(b1 AND b2 AND ... bn is HIGH) OR ...
+								Stop:	(b1 OR b2 OR ... bn is LOW) AND ...
+
+			<condition>				Loop will
+			_______________________________________________________________________________________________________________________
+
+			for( ; b1 || b2 ; )			Run:		'When b1 OR b2 is HIGH'
+								Stop:		'When b1 AND b2 is LOW'
+
+			for( ; b1 && b2 ; )			Run:		'When b1 AND b2 is HIGH'
+								Stop:		'When b1 OR b2 is LOW'
+
+			for( ; (b1 && b2) || b3 ; )		Run:		'When (b1 AND b2 is HIGH) 	OR 	(b3 is HIGH)'
+								Stop:		'When (b1 OR b2 is LOW)		AND 	(b3 is LOW)'
+
+									b1 b2 b3	Overall
+									-  -  -		-
+									-  -  1		1
+									-  1  -		-
+									-  1  1		1
+									1  -  -		-
+									1  -  1		1
+									1  1  -		1
+									1  1  1		1
+
+			for( ; b1 || (b2 && b3) ; )		Run:		'When (b1 is HIGH) 		OR 	(b2 AND b3 is HIGH)'
+								Stop:		'When (b1 is LOW) 		AND 	(b2 OR b3 is LOW)'
+
+									b1 b2 b3	Overall
+									-  -  -		-
+									-  -  1		-
+									-  1  -		-
+									-  1  1		1
+									1  -  -		1
+									1  -  1		1
+									1  1  -		1
+									1  1  1		1
+
+			for( ; (b1 && b2) || (b3 && b4) ; )	Run:		'When (b1 AND b2 is HIGH) 	OR 	(b3 AND b4 is HIGH)'		
+								Stop:		'When (b1 OR b2 is LOW) 	AND 	(b3 OR b4 is LOW)'
+
+		How to build Truth Table:
+
+			1. List all boolean terms:
+
+				b1 b2 b3 ... bn
+
+			2. List all permutations (2^n) where
+
+				1. LSB: 	Start with x1 0/-
+				2. Alternate:	x1 0/1
+				3. LSB-1: 	Start with x2 0/-
+				4. Alternate:	x2 0/1
+				5. Repeat until table complete
+
+				b1 b2 b3	b1 b2 b3	b1 b2 b3
+				      -		   -  -		-  -  -
+				      1		   -  1		-  -  1
+				      -		   1  -		-  1  -
+				      1		   1  1		-  1  1
+				      -		   -  -		1  -  -
+				      1		   -  1		1  -  1
+				      -		   1  -		1  1  -
+				      1		   1  1		1  1  1
+
+	while loop
+
+		private void method()
+		{
+			int 		iExt
+			ClassA		objExt
+			InterfaceB	itfExt
+
+			while(<condition>)		//[Loop header]
+			{
+				<loop>
+			}
+		}
+
+		Sequence:
+
+			1. <condition>:		<condition> is immediately run upon encountering the loop header.
+
+							True:		Run <loop>
+							False:		Immediately exit <loop> and commence with the statements after the <loop> body
+
+			2. [Loop]:            	[Loop] is run.
+           		3. <condition>:     	<condition> is re-evaluated:
+
+                    					True:    	Run Loop
+                    					False:   	Immediately exit <loop> and commence with the statements after the <loop> body
+
+		<condition>
+
+			Standard:	<condition> is the same as descibed above for For Loop, except:
+
+						Empty:		Empty <conditions> are not permitted.
+
+						Infinite:	If wish to implement an infinite loop set <condition> to true e.g. while(true)
+
+						Local:		Local variables can not be initialised within the <condition> e.g. while(int i < 10)		
+
+	do-while loop
+
+		private void method()
+		{
+			int 		iExt
+			ClassA		objExt
+			InterfaceB	itfExt
+
+			do
+			{
+
+			}while(<condition>);		//[Loop header]
+		}
+
+		Sequence:
+
+			1. [Loop]:            	[Loop] is run.
+			2. <condition>:		<condition> is evaluated.
+
+							True:		Run <loop> again
+							False:		Immediately exit and commence with the statements after the <loop> body
+
+		<condition>
+
+			Standard:	<condition> is the same as descibed above for while Loop, except:
+
+						;	Semicolon required after the <condition>
+
+	break
+
+		- break has x2 forms:
+
+			1. Labelled.
+			2. Unlabelled.
+
+			- Unlabelled:
+
+				Used to:
+
+				1. switch:	Exit switch statement (and prevent any 'fall through')
+				2. Loop:	Exit immediate loop only.
+
+				Loop:
+
+					- break exits immediate <loop> only.
+					- break does not exit of all nested loops.
+					- break cause continuation with the statements immediately after the immediate <loop>.
+
+						for(int i = 0 ; i<10 ; i++)
+            						for(int j = 0 ; j<10 ; j++)
+            						{
+                						if(j == 1)
+                    							break;
+          						} 
+
+					1. break
+					2. Immediately exit inner j loop
+					3. Continue with the statements immediately after the inner j <loop> which is (in this case) returning to the outer i <loop> header.
+
+			- Labelled:
+
+				- Labels are associated with a loop.
+				- Labels are not 'goto's'.
+				- Labels when invoked cause execution to jump to the immediate statements after the labels associated loop body.
+				- Labels can be used to jump to particular nested loops:
+
+					Label1:
+        				for (i = 0; i < 10 ; i++)
+						Label2:
+            					for (j = 0; j < 10 ; j++)
+                					for (k = 0; k < 10 ; k++)
+							{
+								if(k == 1)
+									break Label1;		//Exit all x3 loops and commence with System.out...
+								if(i == 2)
+									break Label2;		//Exit k-llop and j-loop and commence with the next iteration of the i-loop
+							}
+
+        				System.out.println("Found " at " + i + ", " + j + ", " + K);
+
+	continue:
+
+		- continue has x2 Forms:
+
+			1. Labelled.
+			2. Unlabelled.
+
+		- Unlabelled:
+
+			for (int i = 0; i < max; i++)
+			{
+            			if (i == 10)
+                			continue;
+
+				//Remaining Statements
+			}
+
+			1. continue.
+			2. Immediately return to immediate inner loop header.
+			3. <mutator> is run
+			4. <condition> is run
+
+				True:	Run <loop>
+				False:	Exit <loop> and run statements immediately after the <loop>
+
+		 - Labelled:
+
+			test:
+			for (int i = 0; i < max; i++)
+			{
+				while(n != 0)
+            				if (b1)
+                				continue test;
+
+				//Other Statements
+			}
+			
+			1. continue.
+			2. Execution ceases.
+			3. Inner loops are ceased.
+			4. Execution returns to start of the labels associated loop rather than to the statements immediately after the associated loop (as with break).
+
+	enhanced for:
+
+		- Use within Collections and Arrays.
+		- Compact and easy to read.
+
+			Array:
+
+				int[] numbers = {1,2,3,4,5,6,7,8,9,10};
+
+				for (int item : numbers) {
+             				System.out.println("Count is: " + item);
+         			}
+
+		- It systematically starts and iterates through all elements in array/collection.
+		- Variable 'item' temporarily holds the current element.			
+
+	
+	if, if-else:
+
+		- If only x1 statement after each term then braces maybe omitted:
+
+			if(<boolean_expression>)	return iResult;
+			else				return 0;
+
+		- Numerical values are not permitted:
+
+			0  != False
+			>0 != True
+
+		- Structural equivalents and non-equivalents:
+
+			if(<boolean expression>)		In accordance with the behaviours of the boolean expressions as described above.
+
+			------------------------------------------------------------------------------------------------------------------------
+
+			if(b1)	s1;
+			else	s2;
+
+			------------------------------------------------------------------------------------------------------------------------
+
+			if(b1)				== 	if(b1 && b2)
+			{					    s1;
+			    if(b2)
+				s1;
+			}
+
+			------------------------------------------------------------------------------------------------------------------------
+
+			if(b1)				==	if(b1)
+			{					{
+			    s1;					    s1;
+			}					}
+			else					else if(b2)
+			{					{
+			    if(b2)				    s2;
+				s2;				}
+			}
+
+			b1 b2	Run				b1 b2	Run
+			___________				___________
+			0  0	-				0  0	-
+			0  1	s2				0  1	s2
+			1  0	s1				1  0	s1
+			1  1	s1				1  1	s1
+
+			------------------------------------------------------------------------------------------------------------------------
+
+			if(b1)				==	if(b1)
+			{					{
+			    s1;					    s1;
+			}					}
+			else					else if(b2)
+			{					{
+			    if(b2) s2;				    s2;
+			    else   s3;				}
+			}					else s3
+
+			b1 b2	Run				b1 b2	Run
+			___________				___________
+			0  0	s3				0  0	s3
+			0  1	s2				0  1	s2
+			1  0	s1				1  0	s1
+			1  1	s1				1  1	s1
+
+			------------------------------------------------------------------------------------------------------------------------
+
+			if(b1)				==	if(b1)
+			{					{
+			    s1;					    s1;
+			}					}
+			else					else if(b2)
+			{					{
+			    if(b2)      s2;			    s2;
+			    else if(b3) s3;			}
+			    else	s4;			else if(b3)
+			}					{
+								    s3
+								}
+								else s4
+
+			b1 b2 b3	Run			b1 b2 b3	Run
+			___________________			___________________
+			0  0  0		s4			0  0  0		s4
+			0  0  1		s3			0  0  1		s3
+			0  1  0		s2			0  1  0		s2
+			0  1  1		s2			0  1  1		s2
+			1  0  0		s1			1  0  0		s1
+			1  0  1		s1			1  0  1		s1
+			1  1  0		s1			1  1  0		s1
+			1  1  1		s1			1  1  1		s1
+
+			------------------------------------------------------------------------------------------------------------------------
+
+			if(b1)				!=	if(b1 && b2)
+			{					    s1;
+			    if(b2)	s1;			else
+			    else	s2;		    	    s2;
+			}
+
+			b1 b2	Run				b1 b2	Run
+			___________				___________
+			0  0	-				0  0	s2
+			0  1	-				0  1	s2
+			1  0	s2				1  0	s2
+			1  1	s1				1  1	s1
+
+			------------------------------------------------------------------------------------------------------------------------
+
+			if(b1)				!=	if(b1 && b2)
+			{					{
+			    s1;					    s1;
+			}					}
+			else if(b2)				else
+			{					{
+			    s2				    	    s2;
+			}					}
+
+			b1 b2	Run				b1 b2	Run
+			___________				___________
+			0  0	-				0  0	s2
+			0  1	s2				0  1	s2
+			1  0	s1				1  0	s2
+			1  1	s1				1  1	s1
+
+			------------------------------------------------------------------------------------------------------------------------
+
+			if(b1)				!=	if(b1 && b2)
+			{					{
+			    if(b2)				    s1;
+				s1;
+			}					}
+			else					else
+			{					{
+			    s2;					    s2;
+			}					}
+
+			b1 b2	Run				b1 b2	Run
+			___________				___________
+			0  0	s2				0  0	s2
+			0  1	s2				0  1	s2
+			1  0	-				1  0	s2
+			1  1	s1				1  1	s1
+
+			------------------------------------------------------------------------------------------------------------------------
+
+		- General Rules:
+
+			- Nested if should only be combined with the enclosing if, if there is no else:
+
+				if(b1)			== 	if(b1 && b2)
+				{
+				    if(b2)
+				} 
+
+			- For the execution of any associated else will now depend upon a different overall conditional statement of the initial else.
+
+				i.e. (b1 && b2) rather than previously just (b1)
+
+	switch:
+
+		- Evaluation Expression may be:
+
+			byte		Byte
+			short		Short
+			char		Character
+			int		Integer
+			Strings
+			Enums
+
+		- Execution:
+
+			1. Expression:		Evaluated
+			2. Executes:		All statements that follow the matching 'case' label.
+			3. Exit:		Break is needed to exit switch block.
+
+		- Labels:
+
+			Labels are used as reference rather than blocks i.e. 
+
+				1. Braces are not required to demarcate the case's.
+				2. Multiple statements may exist between cases without the need for braces.
+
+		- Fall Through:
+
+			Given that referencing is via 'labelling', once a matching case is found all subsequent statements are executed known as 'fall thorugh'.
+
+		- For Example:
+
+			switch (month)
+			{
+            			case 1:  futureMonths.add("January");		break;
+            			case 2:  futureMonths.add("February");		break;
+            			case 3:  futureMonths.add("March");		break;
+            			case 4:  futureMonths.add("April");		break;
+            			default: futureMonths.add("May");		break;		//Final break not needed.
+			}
+
+			switch (month)
+			{
+            			case 1:  futureMonths.add("January");
+            			case 2:  futureMonths.add("February");
+            			case 3:  futureMonths.add("March");
+            			case 4:  futureMonths.add("April");
+            			default: futureMonths.add("All Months");	//Fall through adds all months.
+			}
+
+			switch (month)
+			{
+            			case 1:
+            			case 2:
+            			case 3:
+            			case 4:  futureMonths.add("Jan - April");	break;		
+            			default: futureMonths.add("Not Defined");
+			}
+
+			switch (month)
+			{
+            			case 1:	case 2:
+            			case 3: case 4:
+            			case 5:  futureMonths.add("Jan - May");		break;
+            			default: futureMonths.add("Not Defined");
+			}
+
+		- String Expression
+
+			- String Expression use String.equals() to compare.
+			- Ensure that the String Expression is not null, to prevent a NullPointerException being thrown.
+
+			switch (month.toLowerCase())
+			{
+            			case "jan": futureMonths.add(1);		break;
+				case "feb": futureMonths.add(2);		break;
+            			case "mar": futureMonths.add(3);		break;
+				case "apr": futureMonths.add(4);		break;
+            			case "may": futureMonths.add(5);		break;
+            			default:    futureMonths.add(0);
+			}
+
+		- if-then-else Comparison
+
+			- Decison should be base on:
+
+				1. Readability
+				2. Expression to be tested.
+
+					if-then-else:		Should be used if need to test a range of values or conditions
+					switch:			Should be used if need to test a single integer, Enum or String
+
+	return:
+
+		- Exit current method and return to where method was invoked.
+
+		- x2 Forms:
+
+			1. Return Nothing
+			2. Return Value or Expression that evaluates to the required return type.
+
+		- Return Value/Expression:
+
+			1. return 1;
+			2. return (10*10);
+			3. return (i++ * j);
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+

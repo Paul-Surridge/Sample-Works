@@ -1,0 +1,301 @@
+Collections - Collection
+
+	Overview:
+
+		- Collection represents a group of objects known as 'Elements'.
+		- Collection contains the basic operations naturally shared by all Collections.
+		- Collection is the root interface of the Collections Framework Hierachy.
+		- Collection is typically used as a Interface Variable in order to pass instantiations of Collections around a program where maximum generality is required.
+
+	API:
+
+			Return Type			Method						Description
+		____________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+		Add/Remove:
+
+			boolean				add(E element)					True if successful and the Collection is altered.
+			boolean 			addAll(Collection<? extends E> c)		Do not addAll() to itself, behaviour undefined.
+			boolean				remove(Object element)				True if successful and the Collection is altered. Using .equals() to check not ==.
+			boolean 			removeAll(Collection<?> c)			Remove all common Elements
+			default	boolean			removeIf(Predicate<? super E> filter)
+			boolean 			retainAll(Collection<?> c)			Remove all Elements not contained in c.
+			
+			void 				clear()
+		Query:
+
+			int				size()						Number of Elements in Collection, up to Integer.MAX_VALUE, known as Cardinality.
+			boolean				isEmpty()
+			boolean				contains(Object element)			Using .equals() to check not ==.
+			boolean 			containsAll(Collection<?> c)			True if Collection contains all Elements contained in c.
+
+		For Each:
+
+			default void			forEach​(Consumer<? super T> action)		Performs the given action for each element of the Iterable until all elements have been processed or the action throws an exception.
+
+		Iterator<E>:
+
+			Iterator<E>			iterator()					No Guarantee of order unless specified.
+
+		Spliterator<E>:
+
+			default	Spliterator<E>		spliterator()
+
+		Streams<E>:
+
+			default	Stream<E> 		stream()
+
+		Array Conversion:
+
+			Object[] 			toArray()					Order follows that returned by Iterator<E>. 'Safe' with no reference, association with underlying Collection.
+			<T> T[] 			toArray(T[] a)					Order follows that returned by Iterator<E>. Use 'a' if Collection fits otherwise generates/returns new array.
+			default <T> T[]			toArray(IntFunction<T[]> generator)		Order follows that returned by Iterator<E>. Use 'generator' to allocate returned array.
+
+		Misc:
+
+			boolean				equals(Object o)
+			int				hashCode()	
+
+
+	Implementations:
+
+		- Java API does not contain any direct implementations of Collection.
+		- 'Bags' or 'MultiSets' which are unordered collections that may contain duplicate Elements tend to implement this Interface directly.
+
+	Notes:
+
+		Custom Collections:
+
+			- Overall there are the following types of implementations:
+
+				1. Java API (pre-built)
+				2. Custom
+
+			- Custom Collection implementations must take care in ensuring:
+
+				1. Strict adherence to the specification and contracts as defined in Java API Specification..
+				2. Strict adherence to the overriding of any other methods which are associated with any overriden methods e.g.
+
+					1. Overriding equals()
+					2. Ensure hashCode() is also overriden as described in the specification.
+
+			- Constructors:
+
+				Implementations of Collection (or one of its Extended Interfaces) should always contain x2 Constructors:
+
+					Arguments		Description
+					_________________________________________________________________________________________________
+
+					1. None:		Void
+					2. x1 Collection:	Creates a new Collection containing the Elements in the supplied Argument.
+								Effectively a 'Copy Constructor', allowing the user to convert and generate a new Collection in an alternate Implementation Type
+
+				It is of course not possible to enforce this requirement (given that Interfaces do not specify the Constructor) but all implementations should follow this convention.
+
+		Optional Methods:
+
+			- Methods may be defined as 'optional'.
+			- Methods will throw an 'UnsupportedOperationException' opposed than any concrete implementation.
+
+		Multithreading:
+
+			- In general, undefined behaviour will occur upon invoking a method of a Collection whilst that Collection is being mutated via another thread.
+			- This inlcudes:
+
+				1. Indirect Invocations.
+				2. Passing the Collection to a method.
+				3. Using an existing Iterator.
+
+		Equality:
+
+			- Equality (and the methods which query the Collection) use .equals() rather than ==.
+
+				contains(Object o)
+				{
+				    returns true if the Collection contains at least one Element e such that (o==null ? e==null : o.equals(e));
+				}
+
+			- Reads:
+
+				If the supplied Element o is null:
+					Check for any null elements in the Collection.
+				Else:
+					Check for equality against each Element using .equals().
+
+			- NB: Implementations are not constrained to using .equals(), for example:
+
+				1. Hashcodes could be used as an alternative.
+				2. Object.hashCode specifies that x2 object with differing hashcodes cannot be equal.
+				3. Implementations may use whatever is deemed appropriate.
+
+		Traversing Collections:
+
+			There are x3 ways to traverse a Collection:
+
+				1. Streams/Pipelines (Aggregate Operations)
+
+					Backing Collection:
+
+						- Streams/Pipelines should not modify the Backing Collection.
+						- The behaviour is undefined if the Backing Collection is modified concurrently.
+
+					Parallel Computing:
+
+						- It is possible for Collection to return a .parallel stream for concurrnt applications.
+						- The Lambda Expression should not in anyway perform any changes to the underlying Collection in order to prevent issues when processed concurrently.
+						- Even if running a single thread do not alter the underlying Collection for it may inhibit future implementations of multi-threaded architecture.
+
+					Bulk Operations:
+
+						- The Collection interface contains a number of Collection-Wide or Bulk Operations.
+						- These operations are all mutative i.e. they alter the underlying collection.
+						- Therefore they should not be used in conjunction with streams/Lambda Expressions given that will inhibit future implementation of multi-threaded architecture.
+
+				2. For-Each
+				3. Iterators
+
+		Bulk Operations
+
+			- Bulk Operations perform on the whole Collection.
+
+				1. containAll()
+				2. addAll()
+				3. removeAll()
+				4. retainAll()
+				5. clear()
+
+			- Bulk Operations return true if the Collection is altered.
+			- Bulk Operations are quick, powerful methods:
+
+				c.removeAll(Collections.singleton(e));		//Remove all Elements of the specified Element e
+				c.removeAll(Collections.singleton(null));	//Remove all Elements which are null
+
+				NB: Singleton is an immutable Set containing only the specified Element.
+
+		toArray:
+
+			- toArray methods are intended to be a bridge between Collections and older code that requires an array.
+			- toArray methods allows the contents of a Collection to be translated into an array.
+
+				Object[] a = c.toArray();			//Simplest form whereby the Collection is simply translated into an array of Objects
+				String[] a = c.toArray(new String[0]);		//If the contents of the Collection is know to be of a particular type then that can be specified accordingly.
+
+		Parallel Stream:
+
+			- No Parallel Stream within Collection.
+			- Presumably so that not to impose this requirement on any custom extension or implmenation of Collection.
+
+		Unmodifiable Collection:
+
+			- A Collection whose all Mutator Methods throw UnsupportedOperationException.
+			- An Unmodifiable Colllection should ideally ensure that any View Collections are also Unmodifiable e.g.
+
+				List<String> sList 	= new List<String>;		//Unmodifiable List
+				List<String> sSubList 	= sList.subList();		//View Collection .subList() is also unmodifiable.
+
+		Immutable Collection:
+
+			- An Unmodifiable Collection is not an Immutable Collection.
+
+				Collection	Elements	Collection Immutable
+				____________________________________________________
+
+				Modifiable	Mutable		No
+				Modifiable	Unmutable	No
+				Unmodifiable	Mutable		No
+				Unmodifiable	Unmutable	Yes
+
+			- Immutable Collection is only when it can be guaranteed that the whole Collection and its Elements cannot be altered in anyway.
+			- Umodifiable Collection may have Elements which have spirious links or references to other parts of the program.
+			- For example:
+
+				- Repeated calls to list1.equals(list2) may differ should the Elements within the x2 Unmodifiable Lists be altered.
+				- Only x2 Immutable Lists would guarantee consistent result.
+
+		View Collections:
+
+			- Views of Collections.
+			- View Collections do not store Elements themselves directly.
+			- View Collections rely, refer to a backing Collection which holds the actual Elements.
+			- Operations that are not handled by the View Collection itself are therefore delegated to the Backing Collection e.g.
+
+				Collections.checkedCollection
+				Collections.synchronizedCollection
+				Collections.unmodifiableCollection
+
+				List.subList
+				NavigableSet.subSet
+				Map.entrySet
+
+			- Changes to the Backing Collection are reflected immediately in the View Collection.
+			- Changes to the View Collection are immediately completed on the Backing Collection.
+			- Although not technically Collections Iterator and ListIterator are View Collections and allow modiifcation to the Backing Collection during itertion. 
+
+		Unmodifiable View Collection:
+
+			- Where:
+
+				1. View Collection:	Unmodifiable
+				2. Backing Collection:	Unmodifiable or Modifiable
+
+			- Unmodifiable View Collections Mutator Methods throw UnsupportedOperationException.
+			- Unmodifiable View Collections delegate the querying/reading to teh Backing Collection.
+			- Unmodifiable View Collections effectively provide Read-Only Access to the Backing Collection e.g. a components that provides users with Read-Only Access to an internal Collection.
+
+				Collections.unmodifiableCollection
+				Collections.unmodifiableList
+
+			- Changes to the Backing Collection are immediately reflected through the Unmodifiable View Collection.
+				
+		Immutable View Collection:
+
+			- Where:
+
+				View Collection		Backing Collection					Immutable View Collection
+				_________________________________________________________________________________________________________
+
+				Unmodifiable		Mutable							No
+				Unmodifiable		Mutable	(but only reference with View Collection)	Yes (effectively immutable)
+				Unmodifiable		Unmutable						Yes
+
+		Serializability:
+
+			- Collection serializability is optional.
+			- Collection do not implement Serializable interface.
+			- Collection implmentations generally tend to implement Serializable.
+			- Typically:
+
+				1. Serializability is specified in API.
+				2. Serializability should not be assumed and not guaranteed.
+
+			- View Collections tends to be not serializable.
+
+		Conditional Serializability:
+
+			- Collection that implements Serializable Interface cannot be guaranteed to be Serializable, given:
+
+				1. Elements cannot be guaranteed to be Serializable.
+				2. It is not possible to statically check that all Elements are Serializable.
+
+			- Therefore:
+
+				Collection		Elements		Collection Serializable
+				__________________________________________________________________________
+
+				Serializable		Serializable		Yes
+				Serializable		Not All Serializable	Conditionally Serializable
+				Serializable		Empty			Yes
+
+			- SortedSet and SortedMap:
+
+				1. SortedSet and SortedMap can be created with a Comparator that imposes an ordering on the Elements or Map-Keys.
+				2. SortedSet and SortedMap are only Serializable only if the Comparator is Serializable also.
+
+		Synchronisation:
+
+			- Collections do not ultilse Synchronisation.
+			- Collections must be overriden accordingly to apply any Synchronisation.
+
+
+
+

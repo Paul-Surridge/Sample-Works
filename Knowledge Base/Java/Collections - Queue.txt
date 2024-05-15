@@ -1,0 +1,171 @@
+Collections - Queue:
+
+	Overview:
+
+		- Queue is a Collection for holding elements prior to some processing.
+		- Queue methods are split into x2 catagories:
+
+			1. Throws and Exception
+			2. Return a Special Value (null or false)
+
+	API:
+
+			Return Type		Method			Description
+		____________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+		Throw Exception:
+
+			boolean			add​(E e)		Inserts the specified element into this queue if it is possible to do so immediately without violating capacity restrictions, returning true upon success and throwing an IllegalStateException if no space is currently available.
+			E			remove()		Retrieves and removes the head of this queue.
+			E			element()		Retrieves, but does not remove, the head of this queue.
+
+		Return Special Value:
+
+			boolean			offer​(E e)		Inserts the specified element into this queue if it is possible to do so immediately without violating capacity restrictions.
+			E			poll()			Retrieves and removes the head of this queue, or returns null if this queue is empty.
+			E			peek()			Retrieves, but does not remove, the head of this queue, or returns null if this queue is empty.
+
+		Methods As Declared In:
+
+			java.util.Collection:
+
+				addAll, clear, contains, containsAll, equals, hashCode, isEmpty, iterator, parallelStream, remove, removeAll, removeIf, retainAll, size, spliterator, stream, toArray, toArray, toArray
+
+			java.lang.Iterable:
+
+				forEach
+
+	Implementations:
+
+		1. AbstractQueue
+		2. ArrayBlockingQueue
+		3. ArrayDeque
+		4. ConcurrentLinkedDeque
+		5. ConcurrentLinkedQueue
+		6. DelayQueue
+		7. LinkedBlockingDeque
+		8. LinkedBlockingQueue
+		9. LinkedList
+		10. LinkedTransferQueue
+		11. PriorityBlockingQueue
+		12. PriorityQueue
+		13. SynchronousQueue
+
+	Notes:
+
+		Form:
+
+						[Tail]				[Head]
+			Elements Added:		||||||||||||||||||||||||||||||||||||||		:Elements Removed
+
+		Ordering:
+
+			- Typically:
+
+				1. FIFO (not LIFO)
+				2. Natural
+				3. Comparator
+
+			- All implmentations must specifiy the ordering.
+
+		Priority Queues:
+
+			- Order according to value.
+
+		Bounded Queues:
+
+			- Implementations may restrict or bound the maximum number of Elements.
+
+				Bounded:	java.util.concurrent:		
+				Unbounded:	java.util
+
+			- Adding an Element to a Queue that has already reached maximum capacity throws IllegalStateException.
+
+		offer():
+
+			- offer() is soley intended for use with Bounded Queues.
+			- offer() provides the ability to check if it is possible to add Element.
+			- offer() returns false rather than throw an Exception.
+
+		remove() poll():
+
+			- remove() poll() remove and return the head of the Queue.
+			- remove() poll() remove the head as defined by the Queues ordering policy.
+			- remove() poll() only differ once a Queue is empty:
+
+				remove():	Throw NoSuchElementException
+				poll():		Return null
+
+		element() peek():
+
+			- element() peek() return but not remove the head of the Queue.
+			- element() peek() only differ once a Queue is empty:
+
+				element():	Throw NoSuchElementException
+				peek():		Return null
+
+		null Elements:
+
+			- Queues generally do not allow insertion of null Elements.
+			- Given that the Special Case return type could be a null.
+
+		LinkedList:
+
+			- LinkedList (which was retrofitted to implement Queue) for historical reasons permits null Elements.
+			- However this should not be used given that null is return by poll() and peek() methods. 
+
+		equals() hashCode():
+
+			- Queues do not override and provide Element based equals() and hashCode().
+			- Queues inherit the identity based versions from Object.
+
+		Concurrent Queues:
+
+			- Blocking Queues are common in concurrent programming.
+			- Blocking Queues wait for Elements to appear or for space to become available.
+			- Blocking Queues are defined in:
+
+				java.util.concurrent.BlockingQueue
+
+			- Blocking Queues extend Queue.
+
+	Examples:
+
+		Countdown Timer:
+
+			- Countdown the number of seconds as passed to the application via the command line.
+
+				public static void main(String[] args) throws InterruptedException
+				{
+        				int time 		= Integer.parseInt(args[0]);
+        				Queue<Integer> queue 	= new LinkedList<Integer>();
+
+        				for (int i = time; i >= 0; i--)
+            			    	    queue.add(i);
+
+        				while (!queue.isEmpty())
+					{
+            			    	    System.out.println(queue.remove());
+            			    	    Thread.sleep(1000);
+        				}
+    				}
+
+		Simple Sort:
+
+			- Sort the Collection c.
+			- Collection c is passed as Argument, placed into a PriorityQueue which naturally sorts the Elements either naturally or via Comparator.
+			- PriorityQueue is emptied and transfered in the ArrayList.
+
+				static <E> List<E> heapSort(Collection<E> c)
+				{
+    					Queue<E> queue = new PriorityQueue<E>(c);
+    					List<E> result = new ArrayList<E>();
+
+    					while (!queue.isEmpty())
+        				    result.add(queue.remove());
+
+    					return result;
+				}
+			
+
+			

@@ -1,0 +1,1075 @@
+Dynamic Programming
+
+	Overview:
+
+		Dynamic Programming is a technique that can be applied to any valid context e.g.
+
+			1. 1D/2D Array
+			2. String
+			3. Any problem which can be broken down into a smaller subset of problems which have the following x2 characteristics:
+
+				1. Identical Subproblems:
+
+					- The result of the problem can be found by applying the same procedure to smaller inputs.
+					- The result of the problem for these smaller inputs can combine to find the result of an incrementally larger input, this process is repeated until the initial (largest input) is found.
+
+				2. Optimal Substructure:
+
+					- The optimal solution to the problem is formed from the optimal solutions of its subproblems.
+					- The optimal solutions of the subproblems can be combined to find the optimal solution to the overall problem.
+
+				NB: Greedy and Divide and Conquer consist of subproblems but they do not overlap, therefore are not dynamic programming.
+
+			4. Any problem where the state transitions of the context/environment form a acyclic graph.
+
+		Dynamic Programming is a subset of 'Divide and Conquer' technique which involves breaking down an initial problem into a smaller subsets of the same problem but with smaller input values.
+		Dynamic Programming is considered more 'difficult' than Greedy or Divide and Conquer, therefore should only be considered once these two options have been discounted.
+		Dyanmic Programming is typically applied to the following question types:
+
+			Optimal:	What is the longest, shortest, maximum, minimum of something?
+					Recurrence Relation contains a search for the min/max of previous states:
+
+						dp(i) = Math.Max(dp(i-1), dp(i-2) ...)
+
+					Base case is typically 0 e.g. when going out of bounds
+
+			Counting:	What are the distinct number of ways something can be done?
+					Recurrence Relation contains the addition of previous states:
+
+						dp(i) = dp(i-1) + dp(i-2)
+
+					Base case is typically predefined with a value e.g. dp[1] = 1, dp[2] = 3
+
+		Dynamic programming has x2 approaches:
+
+			1. Top-Down:		Recursive: Utilising memoisation.
+			2. Bottom-Up:		Iteratively: Utilising tabulation.
+
+	Top-Down/Bottom-Up:
+
+		DP can be completed using one of two forms:
+
+			1. Top-Down: Recursion with Memoisation
+
+				- Initial input is root of call tree with the base cases (most trival/smallest/axiomatic input) forming the leaves with cached values terminating branches
+				- Easier to derive/write
+				- No ordering required
+				- Implemented via:	Recursion + HashMap
+				- Can be thought of as 'optimised backtracking' i.e.
+
+					- The problem can be solved using a backtracking algorithm inconjunction with memoisation/caching to improve time complexity.
+					- Where the results from the subproblems will always be consistent and optimal given a particular input.
+
+				Execution:
+
+					Even though it is called 'Top-Down' the result is still 'built up' from the bottom base cases.
+
+					1. Traverse to Base Case:		Traverse all the way down the call tree in DFS/preOrder until it reaches a base case.
+					2. Base Case in Memo:			Base case is already stored in the memo, therefore the recursive call simply returns the base case result.
+					3. Find Parent Result:			Base case result forms part of the result for the immediate parent node ('Base Case + 1' is a sense).
+					4. Store Parent Result:			Parent node result is stored in memo.
+					5. Traverse rest of call tree:		Rest of call tree is traversed is the input does not already exist in memo.
+					6. Built Final Result:			Until the result of all of the child nodes is known and used to construct the final result of the initial input.
+
+					Memoisation should be applied when the subproblems yield a result which is and always will be consistent for that particular input (where there will be no wavering aspects which will cause that to be otherwise). 
+
+			2. Bottom-Up: Tabulation
+
+				- Overall solution is built up from the base cases smallest/most trivial inputs to the overall solution
+				- Faster, less overhead, less space 
+				- Correct ordering required
+				- Implemented via:	Nested loops + Array
+
+			NB: A solution which can be found through just recursion (without memoisation) is not dyanmic programming it is just recursion.
+
+		Top-Down and Bottom-Up are interchangable i.e. what can/is implemented in Top-Down and be converted into Bottom-Up and vice versa.
+
+	Execution:
+
+		- Execution nature is actually very similar if not considered the same between Top-Down and Bottom-Up.
+		- Execution builds the Final Result from the base cases up i.e. bottom-up in both techniques.
+		- Execution should simply be categorised 'via Recursion + Memoisation' or 'Iteration'.
+
+	Context:
+
+		- Context is the environment or scenario that forms the particular question.
+		- Context is the description and general surrounding of the question being asked.
+		- Context will contain description of:
+
+			1. State
+			2. State Variables
+			3. Initial Input
+			4. Final Result (that is required)
+
+	Initial Input:
+
+		- Initial Input is the 'large' input that is presented in the question.
+		- Initial Input is what forms the Final Result.
+		- Incrementally (recursively or iteratively) from the base cases the Final Result to the Initial Input is found. 
+
+	State and State Variables:
+
+		State Variables:	State variables are any variable described within the question or any variable inherent within the input data structure.
+					State variables correspond to the number of dimensions a question has.
+					State variables should be able to completely describe the state i.e. the environment in that particular state.
+					State variables should never be constants.
+					State variables are the input(s) variables to each node on call tree. 
+
+		State:			State of the context.
+					State is determined by the particular value of the state variables.
+					State is determined by the particular value of the inputs.
+					State and the range of available states is determined by the range in the value of the state variables
+
+						State 1:	Base Case			Smallest/Trivial Input (determined axiomatically)
+						State 2:	Intermittent states		Incrementally larger inputs
+						State 3:	Intermittent states		...
+						State 4:	Intermittent states		...
+						...
+						State n:	When the environment is in the state of the initial input
+
+						For example:
+
+							State	fib()
+							-------------
+							1	1
+							2	1
+							3	2
+							4	3
+							...
+							n	fib(n-1) + fib(n-2)
+
+					State is the value of the input that is supplied to calculate the result of that input as built up from smaller inputs (which are typically cached).
+					State is the 'stage' within the overall process of cconstructing the Final Result for the Initial Input.
+					State is the node within the Call Tree.
+					State will have its own particular result (which is stored within cache).
+
+		States Total:		State Total i.e the total number of possible states the context may have is:
+
+						(State Variable 1 * Range of values for State Variable 1) * (State Variable 2 * Range of values for State Variable 2) * ... * (State Variable n * Range of values for State Variable n)
+
+						NB: Reducing the number of states will reduce the Time or Space (or both) Complexity, this process is known as State Reduction:
+
+							Space Complexity:	
+
+		State Reduction:	State Reduction is achieved via:
+
+						Context/Question:		Careful observation and assessment of the context and the associated question.
+						Recurrence Relation:		Careful observation and assessment within the Recurrence Relation.
+
+					State Reduction (unfortunately) can not be achieved using a standard form/approach but is generally identified via:
+
+						State Variable Relation:	Are there any relationship between the state variables which could be expressed within the Recurrence Relation to determine the value of another state variable?
+						Non-Iterative:			If the Recurrence Relation does not require iteration then it is likely that some form State Reduction is possible.
+
+					State Reduction effects on time/space complexity are generally only applicable as follows:
+
+						Space Complexity Reduction:	Applicable to Bottom-Up only
+						Time Complexity Reduction:	Applicable to both Bottom-Up and Top-Down
+
+		For example, state variables may include any of the following:
+
+			Index:
+
+				Given Initial Input:	[0 1 2 3 4 5 6], the only 'things' which can become a state variable for a 1D array is an index (there can be nothing else)
+
+				1: 	dp(4) 		produces the result if the input was [0 1 2 3 4]
+				2:	dp(2, 4) 	produces the result if the input was [2 3 4]
+
+				There may be 1 or more indexes used as would be described within the question.
+
+			Explicit Constraints:
+
+				Usually provided in the question:
+
+					"you are only allowed to complete k transactions"
+					"you are allowed to break up to k obstacles"
+					"true if currently holding a key, false if not"
+					"currently holding k packages"
+
+			Logs/Tracers
+
+				Anything which is used to keep track of items 'used' or 'visited' e.g. a bitmask whose individual bits are used to keep track of progress.
+
+	Recurrence Relation:
+
+		Recurrence relation is an equation/algorithm.
+		Recurrence relation is the relation that exists between states.
+		Recurrence relation is the relation that needs to be applied in order to derive the next state (or what/how the value/result of previous states need to be combined/constructed/arranged in order to produce the value/result of the current state).
+
+			dp(i) = dp(i-1) + dp(i-2)
+
+			Here,
+
+				i:	State variable
+				dp(i):	The value/result of the question when applied to state i is the combined value of the previous x2 states.
+
+			This is the fibonacci derivation where the value/result of fib(50) = fib(49) + fib(48) i.e. the value/result of state 50 is the combined value/result of state 49 and 48.
+
+		Recurrence relation is the relation that needs to be continually applied in order to find the value/result for the initial input.
+		Recurrence relation is used within both Top-Down or Bottom-Up.
+		Recurrence relation is typically the most difficult part of finding the solution to DP.
+		Recurrence relation is derived generally as follows:
+
+			1. Think around the general state i (which would be between the base case and the initial input).
+			2. Attempt to decipher how one would produce the value/result of state i from the previous value/results e.g. i-1, i-2, i-n.
+			3. What are the options that can be applied/deployed at each state?
+
+				Fibonacci:	State i is derived from the sum of the previous two states:
+
+							dp(i) = dp(i-1) + dp(i-2)
+
+				House Robber:	State i is derived from whatever is the greatest:
+
+							'What am I able to do in this state, what are the general decisions that I am able to apply and what are the outcomes of those decisons'
+							'What would be the value/result of this state given all of the options I have available that would have equally applicable to previous states'
+						
+							Decision				Value/Result (of this state)			Reason
+							---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+							1. Rob the current house		dp(i-2) + Amount in this house i		In order to be able to rob the current house I must have robbed the previous house, therefore I can only have dp(i-2) money in my pocket plus whatever I rob from the current house
+							2. Not rob the current house		dp(i-1)						I will not rob this house therefore I will only have in my pocket what I acquired from the previous house dp(i-1) 
+
+							dp(i) = max(dp(i-1), dp(i-2) + Amount in this house i)
+
+		Recurrence relation is/can be derived directly from the base cases:
+
+			1. Consider the Base Case(s) then attempt to decipher/discern the next immediate case, given that this may be perceptible and testable:
+
+				Base Case:			dp(0) = 1
+								dp(1) = 1
+
+				Next Immediate Case:		dp(2) = 2
+
+			2. It is clear to see that the next immediate case is the addition of the previous x2 base cases, therefore:
+
+				dp(2) = dp(1) + dp(0)
+
+			3. Therefore in general form:
+
+				dp(i) = dp(i-1) + dp(i-2)
+
+			NB: Deriving the recurrence relation from the base cases to the next immediate case may be the easiest means.
+
+		Recurrence Relation may be:
+
+			Static:		Does not include iteration.
+			Non-Static:	Does include iteration.
+
+		Recurrence Relation may at times reveal means to reduce the space complexity when used in Bottom-Up e.g.
+
+			- Recurrence Relation only uses a fixed range of previous results rather than the whole Results array, enabling a large amount of the need to store all values to be discarded e.g.
+			- Recurrence Relation of Fibnoacci only needs to use the last x2 elements, it is not required to store all presvious results:
+
+				Result(i) = dp(i-1) + dp(i-2) 
+
+				Therefore it is not necessary to store, say, all x100 previous results but the last x2, therefore Space Complexity goes from O(n) to O(1).			
+ 
+	Base Cases:
+
+		Base case is typically the most 'trival', 'smallest', 'largest' possible input or an input which satifies a particular criterion, whose result is self-evident or axiomatic.
+		Base case result is used to ultimately build up the results to the input value of the question being asked.
+		Base case is a state whose value/result can normally be solved 'by hand', is self-evident or axiomatic.
+		Base case is used to stop the recursion.
+		Base case is normally the easiest part of DP.
+		Base case is found by asking:
+
+			'What is the smallest/most triva/easiest input that there is that I could solve myself without DP'
+
+			Fibonacci:	dp(1) = 1
+					dp(2) = 1
+
+			House Robber:	dp(0) = Amount in house	(when there is only x1 house)
+					dp(1) = max(House 1 or House 2)
+
+		Base case can be derived by assessing the number of decisons I have per state e.g. if at each state I am able to move forward 1 or 2 steps then there are x2 base cases (for these are the smallest non-trivial environments) 
+		Base case and the need to identify the base case is common to all dynamic programming problems.
+		Base case is typically dependent on the expected return type of the question:
+
+			Return Type:		Base Case
+			__________________________________
+
+			int			0
+			String			""
+			Boolean			F
+			Array			[] (Empty Array)
+
+	dp():
+
+		dp() is the main function which is recursively called to derived the value/result of the initial input.
+		dp() contains the recurrence relation.
+		dp() input(s) are state variables.
+		dp() returns the value/result of the environment for that state as represented by state variables. 
+
+			dp(i):		Returns the value/result for the state i
+
+			dp(1):		Return 1
+			dp(2):		Return 1
+			dp(3):		Return 2
+			dp(4):		Return 3
+			...
+			dp(n):		Return dp(n-1) + dp(n-2)
+
+	dp[]:
+
+		dp[] is the array within Bottom-Up which is used to perform iterative calculations (via the recurrence relation) to find the value/result of the initial input
+		dp[] will contain the value/result of the individual states, where the state represents index:
+
+			dp[0] = 0
+			dp[1] = 1
+			dp[2] = 1
+			dp[3] = 2
+			dp[4] = 3
+			...
+			dp[n] = dp[n-1] + dp[n-2]
+
+	Value/Result:
+
+		Value/Result of a state is the optimal solution for that state.
+		Value/Result of a state is the optimal solution if that state was of the value of the initial input being asked by the question.
+		Value/Result is either:
+
+			Base Case:	Axiomatic value derived manually
+			Constructued:	Constructed/combined from previous states
+
+			NB: There is only value/result for each state.
+
+		Value/Result is the value returned by dp().
+		Value/Result is the value stored in the elements of dp[].
+
+	Call Tree:
+
+		Call Tree Root will always be arranged as follows:
+
+					       Root
+					________|_______
+				____________ 	    ________________
+			   ________	________ ________	________
+			 Base    Base Base    Base    Base    Base    Base
+
+		Call Tree Root is always the following:
+
+			1. Initial Input
+			2. Cover/span the whole context
+			3. Represent the result to the whole question
+
+				1D:	context[0]
+				2D:	context[0,0] where [row, col]
+
+		Base Case 
+
+			1. Smallest, most trivial, axiomatic value
+			2. Cover/span the smallest amount of the context
+
+				1D:	context[n-1]
+				2D:	context[n-1, m-1]
+
+		Therefore it should be noted that calculating the results only begins once reached the first base case (opposed to 'on the way down'). Result of each respective node is calculated 'on the way up'.
+
+	Dimensions:
+
+		Dimension correspond to the number of state variables a question has:
+
+			Dimensions = Number of State Variables
+
+		Dimensions of 1, typically displayed as an array:
+			 _ _ _ _ _ _ _
+			|_|_|_|_|_|_|_|
+
+			- Inputs to each recursive call: 	i			Index within 1D context (an array)
+
+		Dimensions of 2, typically displayed as a grid:
+			 _ _ _ _ _ _ _
+			|_|_|_|_|_|_|_|
+			|_|_|_|_|_|_|_|
+			|_|_|_|_|_|_|_|
+			|_|_|_|_|_|_|_|
+
+			- Inputs to each recursive call: 	i, j or [iRow, iCol]	Index within 2D context	(a grid)
+
+		The above approach should be employed when trying to visualise the behaviour of the question
+
+	2D DP:
+
+		- 2D DP is the same as 1D, except for the following:
+
+			Question:		Question contains and references x2 inputs which constitute the overall environment of the problem.
+
+							(Number of Inputs = Number of State Variables = Number of Dimensions)
+
+			Top-Down:		Top-Down recursive method contains x2 inputs.
+
+			Bottom-Up:		Bottom-Up contains a 2D array (grid) rather than a 1D array.
+
+			Recurrence Relation: 	Recurrence Relation needs to accommodate the 2 inputs.
+						Recurrence Relation needs to consider how the 2 inputs incrementally increase from the base cases to the initial inputs.
+						Recurrence Relation needs to decipher how results from smaller inputs combine to produce the result of larger inputs.
+						Recurrence Relation may be best (more easily) deciphered in the grid than by other means.
+						Recurrence Relation may still be deciphered 
+
+		- 2D DP has the same familarities as 1D:
+
+			Recurrence Relation needs to be deciphered just the same, this may be best done by simply examining the behaviour of the state variables and the generated results in the 2D Grid.
+
+		- 2D Grid:
+
+			 a t g c a t g		[Input 1]
+			 _ _ _ _ _ _ _
+		      t	|_|_|_|_|_|_|_|
+		      g	|_|_|_|_|_|_|_|
+		      a	|_|_|_|_|_|_|_|
+		      c	|_|_|_|_|_|_|_|
+
+		      [Input 2]
+
+				- Both inputs are represented as row/col, the value in each square is the result for the corresponding input sizes (as read from left-right top-bottom).
+				- Therefore the value of each square is the result of having the question applied to the corresponding inputs.
+				- Base case is the bottom-right hand corner i.e. the smallest input when:
+
+					Input 1: g
+					Input 2: c
+
+					These results can be derived axiomatically.
+
+				- Each square in grid corresponds to the particular input combination e.g.
+
+					[1, 3] is the result when:
+
+						Input 1:	catg
+						Input 2:	gac
+
+				- Squares out of bounds may be convenient to use when deciphering the recurrence relation, they represent when the input is empty.
+
+	Memoisation:
+
+		- Memoisation is utilised during recursive method calls.
+		- Memoisation is where the result of repeated input calculations are stored/retrieved (rather than repeatedly calculate the same input).
+		- Memoisation typically involve the utilisation of a O(1) lookup table e.g. hashmap.
+		- Memoisation can only be applied to immutable data e.g. integers/strings not whole arrays.
+		- Memoisation can be applied when the subproblems yield a result which is and always will be consistent for that particular input (where there will be no wavering aspects which will cause that to be otherwise). 
+		- Memoisation must be deployed if the solution is deemed as being Dynamic Programming, otherwise it is just considered 'brute force' recursion/backtracking.
+
+			Call Tree:
+
+				- To gain an understanding of how memoisation can be used.
+				- Create a call tree which illustrates how many times a recursive method is called and which arguments are passed.
+				- Given the below call tree, find the fib(7):
+
+					      	      fib(7)
+					 _______________|_______________
+					|				|
+					fib(5)				fib(6)
+					|_______			|_______
+					|	|			|	|
+					fib(3)	fib(4)			fib(4)	fib(5)
+					|	|			|	|
+
+
+				- It becomes apparent that fib() gets called and passed the same argument many times.
+
+			Hash Table:
+
+				- Therefore store the values of all outputs of fib() as they are calculated.
+				- Whereby:
+
+					If fib(x) has already been calculated:		Get value from hashtable.
+					If fib(x) has not already been calculated:	Calculate value and store in hashtable.
+
+			Paradigm:
+
+				- Each node should store its own result of the overall question being asked.
+				- So that any other node of the same value does not need to be re-calculated and can be pull out of memo object.
+
+					Original Input Value
+					|_______________________________________________________________
+					|				|				|
+					Calculated Input Value 1	Calculated Input Value 2	Calculated Input Value 3
+					|				|				|
+
+				- Therefore if the question being asked:
+
+					"What is the shortest path"				Each node should store the shortest path for that particular input value.
+					"What is the number of unique combinations" 		Each node should store the number of unique combination for that particular input value.
+
+				- The result is passed back up the tree to root to form the result using the original input value.
+				- Memoisation can only begin once a node contains only base case and its calculated value forms the initial entries in the memo hashtable.
+				- Components:
+
+					Question:		The original question being asked and purpose of recursion/memoisation.
+								The return type of the question maybe a boolean, integer or any other data type, each node must return the same data type.
+
+					Original Input:		The value that is originally supplied by the external program, it is the ultimate result that is required.
+
+					Node:			The intermediate or sub-input values to the recursive method calls.
+
+					Base Case:		The node is valid and its path from top root node satifies the original question.
+								The node will always be a leaf node.
+								The total number of base cases will always = Size of any results that need to be fully calculated (all other nodes are calculated after the base cases by extract the pre-calculate values from the memo hashtable).
+								The base cases form the foundation of the memo hashtable and recalled when building the paths of the higher values when being entered into the memo hashtable.
+
+					Invalid Case:		Node is invalid and path is invalid and does not satifies the original question.
+
+					Ongoing Case:		Node is valid and path is still valid but does not satisfy the original question, more recursive branching required to reach base or invalid case.
+
+	Tabulation:
+
+		- Tabulation involves tabulating all of the intermediary results before arriving at the ultimate answer.
+		- Tabulation is the most efficent means of computation opposed to recursion and memoisation.
+
+		Components:
+
+			- Question:		The question being asked or solution that needs to be found.
+			- Target:		The original input value of the question.
+			- Base Case:		The axiomatic base case which is the smallest input value for the question. It forms the starting point for the iterative population of the table towards reaching the answer to the target input value.
+			- Table:		The table which holds all of the intermediary calculated values towards calculating the solution of target input value:
+			
+							Dimensions:	Number of inputs of target.
+							Size/Range:	(0 - Target value dimension(s)).
+							Data Type:	Each element contains the data type expected to be returned by the question if the process was 'started' from that element, each element is initialised to the default value of that type.
+
+			- Iterative Logic:	The 'difficult bit' is working out the iterative logic in order to build up to the calculation of the target input value.
+
+		Process:
+
+			1. Table:		Build table.
+			2. Base Case:		Define base cases.
+			3. Iterative Logic:	Define iterative logic (typically by working with a relatively small target value to identify the necessary logic).
+			4. Iteration:		Run the iteration up to the target input value.
+
+		Example:
+
+			1. Table:	Interpret the problem as a table, for exmaple:
+
+						Fibonnaci:		Naturally would be a table of: 		1 Row 	n Col
+						Grid Traveller:		Naturally would be a table of: 		m Row 	n Co
+
+			2. Table Size:	The dimensions and size corresponds as follows:
+
+						Table Dimensions:	Number of inputs as defined within the problem.
+						Table Size/Range:	0 - Desired Target Value	 (it is necessary to calculate the intermediary values from 0 up to the desired target value)
+
+					Depiction:
+
+						canSum(7, [5, 3, 4]):
+
+							  0   1	  2   3	  4   5	  6   7
+							|   |	|   |	|   |	|   |	|
+
+							Table Dimensions:	Number of inputs:			1
+							Table Size/Range:	(0 - Desired Target Value):		7
+
+						gridTraveller(3, 6)
+							 _ _ _ _ _ _
+ 							|_|_|_|_|_|_|
+ 							|_|_|_|_|_|_|
+ 							|_|_|_|_|_|_|
+
+							Table Dimensions:	Number of inputs:			2
+							Table Size/Range:	(0 - Desired Target Value):		3 and 6
+ 
+					NB: When declaring the table, given arrays are 0-based, it may be more worthwhile to declare [Size+1] so that can ignore the 0th element and use the 1-Size elements.
+
+			3. Data Type:	Table elements should be of the same data type as the required answer to question.
+
+			4. Initialise:	Initialise the table to any default values if necessary e.g. to all 0's or false.		
+
+			5. Base Cases:	Define the base case, seed, smallest cases or smallest input values of the problem and the corresponding axiomatic answers, which may involve:
+
+						1. Smallest Case:	Start with the smallest case e.g. element 0, element 1 or 1,1.
+						2. Axiomatic Value:	Manually workout the answer for this case, typically this maybe an axiomatic value.
+						3. Starting Point:	Use base cases as a starting point for building up the values in the remaining elements.
+						4. Iterate:		Shift through all elements until reach the desired input target value.
+
+			6. Iterative Logic:
+
+					- Deriving the iterative logic is the most 'difficult aspect' of the overall implementation of tabulation.
+					- This needs to derived on an adhoc basis, there is no predefined approach to deriving the logic given the question.
+					- The best approach combines a number of aspects:
+
+						1. Consider the nature of the problem.
+						2. How is the target result derived, maybe work 'backwards'.
+						3. Produce a small table/range and manually attempt to workout the logic.
+						4. Build up say the first 0-10 elements to have confidence that the logic has been found.
+						5. Apply the solution to all of the elements in the initial 0-10 test table to attempt to find the iterative process.
+
+	Standard Approach 1: Framework
+
+		1. Assess:
+
+			Assess, identify and pull out the following aspects:
+
+				1. Context/Environment:
+
+					- What is the overall context (or environment) of the question being asked, what are you being asked to deal with?
+					- What does the overall context consist of?
+
+				2. State Variables:
+
+					- What are the state variables of this context?
+					- What are the 'things' or aspects which are liable to change over time?
+					- What are the 'things' or aspects which would constitute or represent an alternate overall state of the context?
+					- How many state variables are there therefore how many dimension are there?
+
+				3. Subproblems:
+
+					- What are the sub-problems?
+					- What are the optimum results of the sub-problems?
+					- How to these results combine to produce the optimum result of the next (slightly larger input)?
+					- How to these results combine to produce the optimum result for the initial input?
+					- Do the sub-problems i.e. the same question being asked of smaller inputs always yield the same/fixed optimal result. 
+
+				4. Insights:
+
+					- Assess the problem and ask 'what can we say about this problem/question/situation'
+					- Try to derive insights into how this situation evolves which may help in the derivation of the Recurrence Relation.
+
+		2. Call Tree:
+
+			Build the Call Tree with the final input naturally as the root in order to identify the following:
+
+					Base Cases:		Help identify base cases
+					Initial Input:		Help identify the Initial Input
+					State Transitions:	Help identify how the context may transition between states
+					Final Result:		Help identify how the Final Result is constructued from the optimal result of the subproblems of smaller inputs
+					Sub-problems:		Help identify how the sub-problems exist and overlap
+					Decisions:		Help identify the decisions that are available between states, the decisions which ultimately determine what states there are.
+
+				1. Initial Input:
+
+					- What is the initial input that would be the root of the Call Tree.
+					- What is the input whose answer you are ultimately trying to find from the built up optimum results of the same problem but using smaller inputs.
+
+				2. Final Result:
+
+					- What is the nature/type of the final result that the question is asking. 
+
+				3. Subproblem:
+
+					- What is the nature of the subproblem that can be applied to smaller inputs in order to build up and construct the answer to the initial input.
+
+				4. State Transitions:
+
+					- What are the decisions or pathways that are available from one state to the next?
+					- How are the input variables changed between states.
+
+				5. Decisions:
+
+					- What are the decisions that can be applied to the state variables that determine the structure of the call tree.
+					- What are the decisions that describe how the environment state shifts, changes and mutates between nodes of the call tree.
+					- What are the standard and consistent set of decisions that can be applied at each stage/state to enable to derivation of other states?
+
+				6. Base Cases:
+
+					- What are the base cases?
+					- What are the smallest input that can be found given this context?
+					- What are the smallest input that can be determined intuitively, self-evident or axiomatic?
+					- Are there one or more?
+					- Are there any invalid cases which need to be ignored?
+
+		3. Recurrence Relation:
+
+			Use all of the above aspects to derive the Recurrence Relation between states of environment:
+
+				- What are the options/decisions that are there available to mutate the inputs at each state?
+				- What is the relation between individual states?
+				- How do the inputs change overtime?
+				- How do the inputs and their own results combine to find the result of the next larger input?
+				- How do the results in the call tree get combined to find the result for the parent node?
+				- How do you build the result of state i from the result of previous smaller inputs
+
+					NB: It is only possible to build/find/calculate the result of a current state from the result of previous smaller states.
+
+				- Ensure that the recurrence relation wholley conforms with the question being asked and the options/behaviour available at each state.
+
+			[Return Type] Result = dp[Smaller Values] ...
+
+				Left Hand Side:
+
+					Return Type:
+
+						- The Return Type is:
+
+							1. Ultimate Question:		The Type of the ultimate question being asked.
+							2. Subproblems:			The Type of all of the subproblems being asked.
+							3. Map Values:			The Type of the Value Column in Memo Map.
+							4. Child Nodes:			The Type of the node values as illustrated in the derived Call Tree.
+
+				Right Hand Side:
+
+					The structure of the right hand side of the Recurrence Relation is derived from the Call Tree:
+
+						- Use the visible relationship between the parent node and all of the child nodes as derived from within the Call Tree in accordance and while taking consideration of the question being asked.
+						- Therefore
+
+							1. Draw out the initial call tree from the root manually on paper and the expected child nodes.
+							2. Determine how the result of the child nodes corresponds/produces the result of the parent/root node.
+
+					For Example:
+
+						'Find the minimum number of coins to make up a target value, e.g. Coins [1, 2, 5], Target 11'
+
+							This can be solved using dynamic programming given that:
+
+								'The optimum result of the subproblems/subvalues of Target can be used to build up and find the optimum result of the ultimate Target value (11)'
+
+							1. Return Type:
+
+								- The Return Type is an Int because the ultimate question is after an Int value.
+								- Therefore the Memo Value column is an Int.
+
+							2. Base Cases:
+
+								- What are the base cases/axiomatic examples, this must be derived from good ol' fashion human reasoning of the question:
+
+									Memo[1, 1]	//If Target = 1, then can only be made up of x1 coin
+									Memo[2, 1]	//If Target = 2, then can only be made up of x1 coin
+									Memo[5, 1]	//If Target = 5, then can only be made up of x1 coin
+
+							3. Call Tree:
+
+								The 'top' can be manually derived:
+
+											11
+										--------|--------
+										|	|	|
+										10	9	6
+
+								Here:
+
+									- The target is subtracted by the individual coin values [1, 2, 5] to produce the child nodes.
+									- The result for the root/parent is the smallest result from/of the child nodes.
+									- Therefore the Recurrence Realtion is:
+
+										iResult = Min(dp(Target-Coins[0]), dp(Target-Coins[1]), dp(Target-Coins[2]) ... )
+
+									- Therefore ultimately the section of code in the standard form for a Dynamic Programming question must perform the above (hopefully in the most concise way possible).
+
+		3. 2D Multi-Dimensional: [If Necessary]
+
+			- If necessary draw out an array or grid to help discern and test your hypothesis on how the final result for the initial input is derived via the Recurrence Relation.
+			- If necessary:
+
+				1. Choose a relatively small (medium size case) but not base case example which can all be solved axiomatically e.g.
+
+					Longest Common Subsequence:
+
+							a	c	e
+						   ----------------------
+						a |	3	2	1
+						b |	2	2	1
+						c |	2	2	1
+						d |	1	1	1
+						e |	1	1	1
+
+				2. Apply the question to each of the inputs sizes to have the relationship between states emerge:
+
+					- If the first letter match then:	Result = Diagonally down right + 1
+					- If the first letter not match then:	Result = Max(Result(Below) , Result(Right))
+
+				3. Thereby creating the Recurrence Relation:
+
+					if(s1[0] == s2[0])	Result[iRow, iCol] = Result[iRow + 1, iCol + 1] + 1
+					else			Result[iRow, iCol] = Math.max(dp(iRow + 1, iCol), dp(iRow, iCol + 1))
+
+			- This method/exercise of creating and manually populating/calculating the result array/grid of a managable range of input(s) is incredibly powerful in finding:
+
+				- Insights
+				- Behaviour between states
+				- State Transition:
+					How the results of the incrementally larger (overlapping) states are derived.
+				- Ultimately the Recurrence Relation
+
+			- Dare I say this is the only way to derive the Recurrence Relation.
+
+		4. Once all of the above has been discerned apply to standard forms below:
+
+			Top-Down:
+
+				class FindDPSolution
+				{
+    				    HashMap memo
+    				    Environment en
+    
+    				    private int dp(Input)					//Input = State (return type may be any type e.g. int/String)
+				    {
+				    	if(Input == Base Case)					//Base Case
+					    return Axoimatic result for base case
+
+					int Value/Result = Recurrence Relation			//Value/Result for this state which normally contains recursive calls passing smaller inputs
+
+					if(!memo.containsKey(Input))
+            				    memo.put(Input, Value/Result);
+
+        				return memo.get(Input);
+    				    }
+    
+    				    public int findDPSolution(Environment en, Initial Input)
+				    {
+        				this.en = en;
+        				return dp(Initial Input);				//Find and return the Value/Result for the state as represented by the initial input
+    				    }
+				}
+
+				Here:
+
+					1. Given that the Recurrence Relation is built up of smaller inputs (ultimately working towards to base case).
+					2. Execution will traverse down the left hand side of the call tree.
+					3. Eventually reaching the left most collection of a single or ultiple base cases.
+					4. The first 'rebound' will occur when all of the recursive calls in the recurrence relation are all base cases.
+					5. At which point the next immediate parent will be the first to have its result set in the memo.
+					6. Traversal will continue a 'pruned' call tree depending on how/when results are stored in memo.
+					7. Eventually return to and calculate the result for the initial input.
+
+			Bottom-Up:
+
+				class FindDPSolution
+				{    
+    				    public int findDPSolution(Environment en, Initial Input)
+				    {
+					Array[] dp = new Array(Initial Input.length)		//dp[] contains the value/results of all the intermittent states up to initial input
+
+					dp[0] = Axiomatic Value					//Base case axoimatic values placed directly into value/results array
+
+					for(i = Base Case + 1 -> Initial Input)
+        				    dp[i] = Recurrence Relation				//Populate the value/results array
+
+					return dp[Initial Input]				//Find and return the Value/Result for the state as represented by the initial input
+    				    }
+				}
+
+				Here:
+
+					1. The behaviour is ultimately the same as Top-Down except that the Result of each input is stored in the array directly (rather than the memo)
+					2. The results are gradually built up until reach the last element in the 'results' array which represents the initial input.
+	
+	Additional Considerations:
+
+		1. Criteria:	Does the question appear to be solvable via DP, does it generally have the following characteristics:
+
+					1. Overlapping Solutions:	Overall solution contains/comprised of overlapping subproblems
+					2. Optimal Substructure:	Overall solution is the combined optimal solution of the optimal solution of all subproblems
+					3. Optimal Solution:		The question requires finding the optimal solution of something:
+
+										Minimum:	What is the minimum/shortest/smallest value of something...
+										Maximum:	What is the maximum/longest/largest value of something
+										Total:		How many ways of doing something...
+										Possible:	Is it possible to reach a particular state of the input environment...
+
+					4. Decision Making:		Is there any dynamic decision making involved in order to achieve the overall solution i.e. is it necessary to factor in previous results:
+
+										No:		Greedy
+										Yes:		Dynamic Programming
+
+				 					Hence the name 'Dynamic Programming' where the input/algorithm/decision making is dynamic rather than static/constant.
+
+					NB: These are general guidelines which should be applied in accordance with ones own judgement
+
+		2. Mapping:	If so, then it is necessary to break apart the question and map it into the following components by:
+
+						- Assessing the question
+						- Extracting/confirming assumptions
+						- Identifying the components
+						- Ultimately building the correct call tree in order to buildin the source code and achieve the overall solution.
+
+			Rules:			What are all of the 'rules' of this particular environment/situation, what can I and can't do.
+						Having absolute clear understanding of these rules enables for the algorithm to emerge.
+
+			Insights:		Carefully assess the question, carefully identify and pull out and write down all specific or subtle insights being presented.
+						Carefully craft questions to elict all insights can from interviewer.
+
+			Overlap:		What are the overlapping aspects, what are the aspects whose optimal solutions combine to provide the optimal solution for the initial input.
+
+			Base Case:		What therefore derived from the overlap are the most trivial/smallest/axiomatic base cases.  Allow these base cases to be the foundation to the construction of the call tree.
+
+			Initial Input:		What is the initial input?
+						
+							Value:		Are we building up from the base cases until we are able to solve for a particular input?
+									Where the root of the call tree would naturally be that input of interest?
+									Where memoisation would naturally be used to store repeated calculations?
+
+							Empty:		Are we starting with an empty input e.g. 0 or an empty array?
+									Where the root of the call tree is that empty structure?
+									Where the base cases are the overall solutions we are trying to find?
+
+							State:		A situation may have a fixed number of states, where the base cases are the smallest most trivial state whose solution is self-evident and it is desired to find a more complicated state
+
+			Input Pass Down:	What gets passed down as input to the next recursive call?
+
+			Mutators:		What are the mutators that need to be continually applied to the input?
+						What are the 'legs' or 'edges' of the call tree?
+						
+			Nodes:			What will be returned from the call nodes either via direct calculation or cache?
+						Nodes within a call tree produced from dynamic programming do not 'store' anything unlike a graph node, they only return a value/result, a calculation given their input.
+
+			Cases:			What are the base cases?
+
+							Base Case:	The smallest input which is part of the initial input which can be solved axiomatically or through self-evident reasoning
+									This result is then used to form the foundation to being able to build up to the overall solution.
+
+						What are the invalid cases?
+						What are the ongoing cases?
+						How many base cases need to be found: 1 | Some | All?
+						The base/invalid/ongoing cases can all often be found from the description of the question or logical/axiomatic reasoning.
+
+			Level:			Does the level/depth of recusion need to be known?
+
+			Path:			Does a list of the mutations applied to reach the base case need to be known?
+
+			Return Type:		Does the rm() need to return a value?
+
+			Internal/External:	Does the input need to be passed down through the call tree or can be referenced via a variable declared external to rm()?
+
+			Bottom Up/Top Down:	Memoisation or Tabulation
+
+			Typical Questions:	Does the problem only have x1 base/invalid case?
+						Does the base case exist?
+						Does the initial input form a combination of the mutator elements?
+						Process/mutate an external data structure?
+
+		3. Program:	Construct program as required.
+
+			Call Tree:		Always start with the call tree, this is your guide to the overall operation of the program.
+						Illustrate how the overall solution will be found utilising all of the components above e.g.
+
+							Initial Input -> Base Case
+
+								1. Additive:		0/Empty 	-> 	Target Value
+								2. Subtractive:		Target Value	->	0/Empty
+
+							Invalid Case
+							Ongoing Case
+
+							Result Set:
+
+								1. Nodes/Inputs?
+								2. Base Case Paths?
+
+			Source Code:		Produce source in adherence to the call tree.
+
+			dp()			The dp() function is the core function which is the engine to solving and finding the overall solution:
+
+							
+
+			Optimisation:		Apply necessary optimisation techniques:
+
+							Memoisation:		Can any aspects of the overall calculation be stored/retrieved from within a hashmap rather than repeat identical calculation. 
+							Removal:		Can any values be removed during the calculation process?
+							Ignored:		Can any values be ignored during the calculation process?
+
+		
+
+	Example: Climbing Stairs:
+
+		Q: Given the array Cost which represents the cost per step on a flight of stairs, starting from step [0] or [1] what is the minimum cost to reach top if only allowed to take 1 or 2 steps at time?
+
+			Cost[1, 100, 1, 1, 1, 100, 1, 1, 100, 1]
+
+		Standard Approach 1: Framework
+
+			1. Assess Question
+			2. Identify:
+
+				Environment:		1D Array (Cost)
+				States:			0 - (Cost.length-1)
+				State Variables:	Index
+				Base Case:		A staircase of 1 step, which would be simply Cost[0]
+				Invalid Case:		Index < 0
+
+			3. Derive Recurrence Relation via asking:
+
+				Decisions/options available at each state:		Move forward 1 or 2 steps
+				How do you construct the value/result at state i:	Current cost + whatever is greater dp(i-1) or dp(i-2)
+
+			4. Call Tree:
+
+													dp(4)
+								---------------------------------------------------------------------------------------------
+								dp(3)											dp(2)
+							-------------------------------------
+							dp(2)				dp(1)
+						---------------------		----------------------
+						dp(1)		dp(0)		dp(0)		dp(-1)
+					----------------------
+					dp(0)		dp(-1)
+
+				Call Tree is as above where it would proceed up to dp(9).
+				Call Tree is read as follows:
+
+					dp(1) value/result = cost[1] + d(0) only
+					dp(4) value/result = cost[4] + Min(d(3) value/result || d(2) value/result))
+
+				Operation of the program does a complete traversal of the whole call tree via DFS where either all the way down to all base cases or just as far to those states already saved in memo. 
+
+			5. Source Code:
+
+				Top-Down:	The function dp() starts with the initial input of (Cost.length - 1)
+						The function dp() builds the entire call tree above, ultimately so that it can find the value/result of dp(8) and dp(7) so that they can be combined to find the value/result of dp(9). 
+
+
+			6. dp():
+
+				dp(0) represents and finds the value/result of an environment only contain element 0:		Cost[1]
+				dp(1) represents and finds the value/result of an environment only contain element 0 -> 1:	Cost[1, 100]
+				dp(2) represents and finds the value/result of an environment only contain element 0 -> 2:	Cost[1, 100, 1]
+				dp(9) represents and finds the value/result of an environment containing all elements 
+
+			7. Program Operation:
+
+				Program does a complete traversal of the call tree.
+				Program stops at any inputs which have already been calculated and therefore in the memo (including the base cases which are already manually entered into the memo).
+				Program needs to complete (an effective) traversal of the whole call tree in order to find the value/result of the child call node of the initial input in order to find the value/result of the initial input.
+
+	Example: Maximum Score from Performing Multiplication Operations (1770):
+
+		nums = [1 2 3]		multipliers = [3 2 1]
+
+		Standard Approach 1: Framework
+
+			1. Assess Question
+			2. Identify:
+
+				Environment:		1D Array (nums)		(multipliers are not the environment, they form part of the decision making that are applied to the environment) 
+				States:			0 - (nums.length-1)
+				State Variables:	Index
+							Start | End
+				Base Case:		nums is of size 1, which would return nums[0] * multipliers[i]
+
+			3. Derive Recurrence Relation via asking:
+
+				Decisions/options available at each state:		Get first or last from nums and mutltiply by multipliers[i]
+				How do you construct the value/result at state i:	Whatever is greater dp(start) or dp(end)
+
+					int iResult/Value = 
+
+	Example: 2D Longest Common Subsequence
+
+		Q: How many ways is it possible to climb N number of stairs if able to take either 1 or 2 steps:
+
+			1. Identify items:
+
+				Initial Input:		N
+				Mutators:		-1 and -2
+				Base Case:		Recursive Input = 0
+				Invalid Case:		Recursive Input < 0
+				Ongoing Case:		Recursive Input > 0
+				Level:			Not Needed
+				Path:			Not Needed
+				Return Type:		Not Needed
+				Internal/External:	Internal but with external counter
+
+			2. Answer:		How many base cases are there?
+			3. Memoisation:		Applicable?
+
+		Psuedo Code:
+
+			Place base cases into HashMap
+			
+			return int findSolution(input)
+			{
+			    if(Memo contains input)
+				return value
+
+			    Add to memo(input, value which would correspond to an input value of input)
+
+			    return memo value for input
+			}
+
+	

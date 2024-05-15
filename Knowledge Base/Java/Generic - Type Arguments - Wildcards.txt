@@ -1,0 +1,257 @@
+Generic - Type Arguments
+
+	Overview:
+
+		- Type Arguments are the types that are passed when invoking a Generic Class, Generic Interface to produce a Parameterised Type.
+		- Type Arguments can be supplied directly.
+
+			ClassA<Number> objClassA;			//Parameterised Type
+
+		- Type Arguments can be augmented with Wildcards to allow a large range of Type Arguments to be used.
+
+			ClassA<? extends Number> objClassA;		//Parameterised Type Variable objClassA may now hold/reference a greater range of Parameterised Types.
+
+	Applicable To:
+
+		Class:
+
+			1. Instance Variables
+			2. Class Variables
+
+				class Class
+				{
+			           	       GenericClassA<?> c1 = new GenericClassA<>();
+			    		static GenericClassA<?> c2 = new GenericClassA<>();
+				}
+
+		Method:
+
+			3. Parameters
+			4. Local Variables
+			5. Return (Not Recommended)
+
+				void method(GenericClassA<?> parameter)
+				{
+			    		GenericClassA<?> c1 = new GenericClassA<>();
+				}
+
+	Purpose:
+
+		1. Class Relationships:		To establish relationships between Variables of non-related Parameterised Types.
+		2. Type Argument Restriction:	To enable the restriction of what Type Arguments may be passed when invoking a Parameterised Type.
+
+		Fields/Local Variables:
+
+			1. Compatibilty:
+
+				- Given that Compatibility does not exist between Parameterised Types whose Type Arguments are compatible:
+
+					ClassA<Number>	cNumber
+					|
+					ClassA<Integer>	cInteger
+
+				- Such that:
+
+					cNumber = cInteger;		//Compile Fail
+
+				- Wilcards provide the ablitity of a Variable to assign/hold Parameterised Types which contain related Type Arguments.
+
+					ClassA<? extends Number>	cNumber
+					ClassA<Integer>			cInteger
+
+				- Such that:
+
+					cNumber = cInteger;		//OK
+
+		Parameters:
+
+			1. Variability:
+
+				- In accordance with the Compatibility purpose listed above, leads to greater range of Parameterised Types can be passed to a method:
+
+					Method							Type Arguments			Example
+					_______________________________________________________________________________________________________________________________________
+
+					void method(ClassA<?> objClassA)			Anything			ClassA<Object>, ClassA<String>, ClassA<Integer>...
+					void method(ClassA<? extends Number> objClassA)		Number or Extensions		ClassA<Number>, ClassA<Integer>, ClassA<Double>
+
+				- In accordance wth the Type Specifications listed below.
+
+	Type Specification:
+
+		Bounding		Syntax								Type Argument Restriction
+		_________________________________________________________________________________________________________________________________________________________________________________________
+
+		Unknown			<?>								None/Unknown
+
+		Upper 			<? extends ClassA>			Inclusive		1. ClassA
+													2. ClassA Extension 					(whereby naturally contains ClassA).
+
+		Upper 			<? extends InterfaceA>			Inclusive		1. InterfaceA.
+													2. InterfaceA Extension 				(whereby naturally contains InterfaceA).
+													3. Class which implements InterfaceA.
+													4. Class which implements InterfaceA Extension.		(whereby naturally contains InterfaceA).
+
+		Lower 			<? super   ClassA>			Inclusive		1. Class: 	Parent of ClassA.
+
+		Lower 			<? super   InterfaceA>			Inclusive		1. Interface:	Parent of InterfaceA.
+													2. Class:	Class which implements Parent of InterfaceA.
+		_________________________________________________________________________________________________________________________________________________________________________________________
+
+		Not Allowed:
+
+			1. Minmum Implementation	<? extends InterfaceA 	& InterfaceB ...>
+			2. Multiple Bound		<? extends ClassA 	& InterfaceA ...>
+			3. Upper and Lower Bound:	<? extends ClassA 	& super ClassB>
+
+	Restrictions:
+
+		Instantiations of Parameterised Types which contain a single direct Type Argument can of course set/get elements of that Type Argument:
+
+			Type Argument		Instantiation					Available Functionality
+			_______________________________________________________________________________________
+
+			Single/Direct		ClassA<String> 		 objClassA		get/set
+			Range			ClassA<? extends String> objClassA		get
+			
+		Instantiations of Paremeterised Types which define a range of possible Type Arguments are only able to retrieve/get elements of its Type Argument but not set for the compiler is unable to know what Type the Type Argument is in order to allocate memory.
+
+			class ClassA<E>
+			{
+			    E e;
+			    
+			    void get()
+			    {return e;}
+
+			    E set(E e)
+			    {}
+			}
+
+			class ClassB
+			{
+			    Class<? extends String> objClassA = new ClassA<>();
+
+			    void method()
+			    {
+				objClassA.get();		//OK
+				objClassA.set("Test");		//Fail
+			    }
+			}
+			    			    
+		
+	Initialisation:
+
+		ArrayList<? extends Number> 	arraylistIdentifer = new ArrayList<Double>(); 		//The identifier maybe initialised with any Parameterised Type whose Type Argument as permitted by the Type Specification
+		ArrayList<? super Number>	arraylistIdentifer = new ArrayList<Object>(); 		//The identifier maybe initialised with any Parameterised Type whose Type Argument as permitted by the Type Specification
+
+		ArrayList<Number>           	arraylistIdentifer = new ArrayList<>(); 		//The identifier maybe initialised with the Type Argument only
+
+	Extension Substitution:
+
+		- Once the Type Argument has been passed in accordance with the Type Specification.
+		- Type Argument is the type used throughout the Generic Type i.e. the memory allocate is in accordance with the Type Argument.
+		- However it is of course still possible to use/substitute any extension of the Type Argument e.g.
+
+			ArrayList<Number> arraylistIdentifer = new ArrayList<>();
+
+			arraylistIdentifer.add(new Integer(1));
+			arraylistIdentifer.add(new Double(1.0));
+			arraylistIdentifer.add(new Float(1.0));
+
+	Diamond Operator:
+
+		- If the Type Argument is the same and unambiguous as that declared in the Type Specification.
+		- Then it is not necessary to declare the Type Argument twice.
+
+			ArrayList<Number>           	arraylistIdentifer = new ArrayList<Number>();	//Incorrect 
+			ArrayList<Number>           	arraylistIdentifer = new ArrayList<>(); 
+
+	Parameterised Type Compatibility/Relationships
+
+		- Bounding:
+
+			Upper:		List<? extends Number>		//Any class that is a Number or below.
+			Lower:		List<? super Number>		//Any class which is a Number of above.
+			Unbounded:	List<?>				//Any class, a list of unknown type.
+
+			NB:
+			    1. It is not possible to declare both an upper and lower bound for a wildcard.
+			    2. Both Upper and Lower Bounds are inclusive of the bound (not exclusive when Lower Bounded).
+
+		- Unbounded:
+
+			- ? should not be confused or considered as an equivalence with Object.
+			- For:
+
+				List<Object> 		is not the supertype of 	List<Integer>, List<String>, List<Double>...
+				List<?> 		is the supertype of 		List<Integer>, List<String>, List<Double>...
+
+				List<Object>:		Does not represent a 		List of any object.
+				List<?>:		Does represent a 		List of any object.
+
+				NB: List<Object>:	"List of Object"
+			    	    List<?>:		"List of Unknown"
+
+		- Class Relationships:
+
+			- Use Wildcards to enable Compatibility between Generic Classes to enable the establishment of a relationship between Parameterised Types invoking non-related Parameter Arguments:
+
+				List<?>				List<?>
+				|				|
+				List<? extends Number>		List<? super Integer>
+				|				|
+				List<? extends Integer>		List<? super Number>
+				|				|
+				List<Integer>			List<Number>
+
+			- Given:
+
+				List<Object>	is not the supertype of 	List<Integer>, List<String>, List<Double>...
+
+			- But 
+
+				List<?>		is the supertype of 		List<Integer>, List<String>, List<Double>...
+
+			- Therefore use/treat wilcards as the ability to implement/utilise compatibility between Generic Classes i.e. where it is possible for Reference Variables of hold references to extended class:
+
+				List<?> ls = new ArrayList<Number>;
+
+				ls = new ArrayList<Integer>;
+				ls = new ArrayList<Double>;
+
+			- Here ls can hold/refer to any ArrayList, had ls been List<Object>, is would only have been able to contain an ArrayList of Object, not ArrayLists of other types.
+
+				ls.add(new Number(10));
+				ls.add(new Integer(10));
+				ls.add(new Double(10));
+				ls.add(new [Extension of Number]);
+
+			- Given that ls is an ArrayList of Number, the elements within ls can naturally hold any extended class of Number.
+
+				1. ls may reference any ArrayList of any type.
+				2. Once ls has been assigned an "ArrayList of Number".
+				3. The elements within ls can hold Number or an extention of Number.
+				
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

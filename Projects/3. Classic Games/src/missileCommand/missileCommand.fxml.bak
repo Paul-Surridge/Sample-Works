@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="apSpaceInvadersCSSID" fx:id="apMissileCommand" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="950.0" xmlns:fx="http://javafx.com/fxml" fx:controller="missileCommand.MissileCommand">
+  <children>
+    <ImageView id="imagsViewBackground" fitHeight="700.0" fitWidth="949.9999472718403" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/generic/Background%20-%20Light%20Grey.jpg" />
+      </image>
+    </ImageView>
+    <ImageView id="ivSpaceInvadersBackground" fitHeight="562.8699340820312" fitWidth="919.0" layoutX="14.0" layoutY="68.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/spaceInvaders/Background.png" />
+      </image>
+    </ImageView>
+    <ImageView id="ivHeader" fitHeight="62.89999771118164" fitWidth="950.0" pickOnBounds="true" AnchorPane.topAnchor="0.0">
+      <image>
+        <Image url="@../app/images/generic/Header.png" />
+      </image>
+    </ImageView>
+    <ImageView id="ivFooter" fitHeight="55.875" fitWidth="950.0000610351562" layoutX="1.0" pickOnBounds="true" AnchorPane.topAnchor="644.0">
+      <image>
+        <Image url="@../app/images/generic/Footer.png" />
+      </image>
+    </ImageView>
+    <ImageView id="ivExit" fx:id="ivCloseMissileCommand" fitHeight="38.0" fitWidth="38.0" layoutX="904.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/generic/Close.png" />
+      </image>
+    </ImageView>
+    <ImageView fx:id="ivCity1" fitHeight="111.0" fitWidth="100.0" layoutX="150.0" layoutY="513.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/spaceInvaders/City.png" />
+      </image>
+    </ImageView>
+    <ImageView fx:id="ivCity2" fitHeight="111.0" fitWidth="100.0" layoutX="288.0" layoutY="513.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/spaceInvaders/City.png" preserveRatio="false" smooth="false" />
+      </image>
+    </ImageView>
+    <ImageView id="ivCity3" fx:id="ivCity4" fitHeight="111.0" fitWidth="100.0" layoutX="555.0" layoutY="513.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/spaceInvaders/City.png" preserveRatio="false" smooth="false" />
+      </image>
+    </ImageView>
+    <ImageView id="ivCity4" fx:id="ivCity5" fitHeight="111.0" fitWidth="100.0" layoutX="688.0" layoutY="513.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/spaceInvaders/City.png" preserveRatio="false" smooth="false" />
+      </image>
+    </ImageView>
+    <ImageView id="ivCity2" fx:id="ivCity3" fitHeight="111.0" fitWidth="100.0" layoutX="423.0" layoutY="513.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/spaceInvaders/City.png" preserveRatio="false" smooth="false" />
+      </image>
+    </ImageView>
+    <Label id="labScore" fx:id="labCurrentScore" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="735.0" layoutY="13.0" prefHeight="40.0" prefWidth="157.0" text="" textAlignment="RIGHT">
+      <font>
+        <Font size="30.0" fx:id="x3" />
+      </font>
+      <textFill>
+        <Color blue="0.000" green="0.961" red="1.000" fx:id="x4" />
+      </textFill>
+    </Label>
+    <Label id="labIntroMessage" fx:id="labDisplayMessage" alignment="CENTER" contentDisplay="CENTER" font="$x3" layoutX="215.0" layoutY="250.0" opacity="0.0" prefHeight="40.0" prefWidth="520.0" text="Label" textAlignment="CENTER" textFill="$x4" />
+    <ImageView id="imageViewSpaceInvadersButton" fitHeight="85.0" fitWidth="231.99989318847656" layoutX="360.0" layoutY="10.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/missileCommand/MissileCommand%20-%20Logo.png" />
+      </image>
+    </ImageView>
+    <ImageView id="ivMissilesSelect" fitHeight="50.0" fitWidth="50.0" layoutX="817.0" layoutY="649.0" pickOnBounds="true" preserveRatio="false">
+      <image>
+        <Image url="@../app/images/spaceInvaders/Collect%20-%20Nuke.png" />
+      </image>
+    </ImageView>
+    <Label id="labScore" fx:id="labPlayerShipRightAmmunitionAmount" alignment="CENTER_RIGHT" contentDisplay="RIGHT" font="$x3" layoutX="863.0" layoutY="649.0" prefHeight="40.0" prefWidth="61.0" text="" textAlignment="CENTER" textFill="$x4" />
+    <ImageView id="ivPlayerShip" fx:id="ivPlayerShipLeft" fitHeight="77.0" fitWidth="77.0" layoutX="45.0" layoutY="541.0" pickOnBounds="true" preserveRatio="true" rotate="0.0">
+      <image>
+        <Image url="@../app/images/spaceInvaders/Player%20Ship.png" preserveRatio="false" smooth="false" />
+      </image>
+    </ImageView>
+    <Label id="labIntroMessage" fx:id="labGameOverMessage" alignment="CENTER" contentDisplay="CENTER" font="$x3" layoutX="132.0" layoutY="250.0" opacity="0.0" prefHeight="40.0" prefWidth="718.0" text="Press to play again or return to the main menu..." textAlignment="CENTER" textFill="$x4" />
+    <ImageView id="ivPlayerShip" fx:id="ivPlayerShipRight" fitHeight="77.0" fitWidth="77.0" layoutX="819.0" layoutY="541.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/spaceInvaders/Player%20Ship.png" preserveRatio="false" smooth="false" />
+      </image>
+    </ImageView>
+    <ImageView id="ivMissilesSelect" fitHeight="50.0" fitWidth="50.0" layoutX="87.0" layoutY="649.0" pickOnBounds="true" preserveRatio="false">
+      <image>
+        <Image url="@../app/images/spaceInvaders/Collect%20-%20Nuke.png" />
+      </image>
+    </ImageView>
+    <Label id="labScore" fx:id="labPlayerShipLeftAmmunitionAmount" alignment="CENTER_LEFT" contentDisplay="RIGHT" font="$x3" layoutX="26.0" layoutY="649.0" prefHeight="40.0" prefWidth="61.0" text="" textAlignment="CENTER">
+      <textFill>
+        <Color blue="0.000" green="0.961" red="1.000" fx:id="x2" />
+      </textFill>
+    </Label>
+    <Label fx:id="labShootingArea" layoutX="15.0" layoutY="68.0" prefHeight="512.0" prefWidth="919.0" text="" />
+    <Label id="labScore" fx:id="labLevel" alignment="TOP_CENTER" contentDisplay="RIGHT" layoutX="420.0" layoutY="110.0" minHeight="18.0" prefHeight="23.0" prefWidth="111.0" text="Level 5" textAlignment="CENTER" textFill="$x4">
+      <font>
+        <Font size="16.0" />
+      </font>
+    </Label>
+    <Button id="butTest" fx:id="btnPlayAgainNo" blendMode="HARD_LIGHT" layoutX="480.0" layoutY="301.0" mnemonicParsing="false" opacity="0.0" prefHeight="38.0" prefWidth="129.0" text="No" textFill="#cc0000">
+      <font>
+        <Font name="System Bold" size="24.0" fx:id="x1" />
+      </font>
+    </Button>
+    <Button id="butTest" fx:id="btnPlayAgainYes" blendMode="HARD_LIGHT" font="$x1" layoutX="342.0" layoutY="301.0" mnemonicParsing="false" opacity="0.0" prefHeight="38.0" prefWidth="129.0" text="Yes" textFill="#086600" />
+    <AnchorPane fx:id="apLevelCompleteScore" layoutX="160.0" layoutY="138.0" minHeight="268.0" minWidth="630.0" opacity="0.0" prefHeight="350.0" prefWidth="630.0">
+      <children>
+        <ImageView fx:id="ivLevelCompleteScoreBackground" fitHeight="351.8308787027995" fitWidth="629.0" layoutX="0.0" layoutY="0.0" opacity="0.5" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@../app/images/missileCommand/Background%20-%20Level%20Score.png" />
+          </image>
+        </ImageView>
+        <ImageView id="ivPlayerShip" fx:id="ivNumberOfPlayerShips" fitHeight="77.0" fitWidth="77.0" layoutX="51.0" layoutY="73.0" pickOnBounds="true" preserveRatio="true" rotate="0.0">
+          <image>
+            <Image url="@../app/images/spaceInvaders/Player%20Ship.png" preserveRatio="false" smooth="false" />
+          </image>
+        </ImageView>
+        <ImageView id="ivCity2" fx:id="ivNumberOfCities" fitHeight="111.0" fitWidth="100.0" layoutX="40.0" layoutY="229.0" pickOnBounds="true" preserveRatio="true">
+          <image>
+            <Image url="@../app/images/spaceInvaders/City.png" preserveRatio="false" smooth="false" />
+          </image>
+        </ImageView>
+        <ImageView id="ivMissilesSelect" fx:id="ivNumberOfNukes" fitHeight="50.0" fitWidth="50.0" layoutX="65.0" layoutY="157.0" pickOnBounds="true" preserveRatio="false">
+          <image>
+            <Image url="@../app/images/spaceInvaders/Collect%20-%20Nuke.png" />
+          </image>
+        </ImageView>
+        <Label id="labScore" fx:id="labLevelCompleteHeader" alignment="TOP_LEFT" contentDisplay="RIGHT" layoutX="32.0" layoutY="26.0" minHeight="18.0" prefHeight="38.0" prefWidth="217.0" text="Level Complete" textAlignment="CENTER" textFill="$x2">
+          <font>
+            <Font size="28.0" fx:id="x6" />
+          </font>
+        </Label>
+        <Label id="labScore" fx:id="labNumberOfPlayerShipsScore" alignment="TOP_LEFT" contentDisplay="RIGHT" layoutX="280.0" layoutY="93.0" minHeight="18.0" prefHeight="38.0" prefWidth="147.0" text="Level Score" textAlignment="CENTER" textFill="$x2">
+          <font>
+            <Font size="24.0" fx:id="x5" />
+          </font>
+        </Label>
+        <Label id="labScore" fx:id="labNumberOfNukesScore" alignment="TOP_LEFT" contentDisplay="RIGHT" font="$x5" layoutX="280.0" layoutY="163.0" minHeight="18.0" prefHeight="38.0" prefWidth="147.0" text="Level Score" textAlignment="CENTER" textFill="$x2" />
+        <Label id="labScore" fx:id="labNumberOfCitiesScore" alignment="TOP_LEFT" contentDisplay="RIGHT" font="$x5" layoutX="280.0" layoutY="260.0" minHeight="18.0" prefHeight="38.0" prefWidth="147.0" text="Level Score" textAlignment="CENTER" textFill="$x2" />
+        <Label id="labScore" fx:id="labNumberOfPlayerShips" alignment="TOP_CENTER" contentDisplay="RIGHT" font="$x5" layoutX="161.0" layoutY="93.0" minHeight="18.0" prefHeight="38.0" prefWidth="70.0" text="x2" textAlignment="CENTER" textFill="$x4" />
+        <Label id="labScore" fx:id="labNumberOfNukes" alignment="TOP_CENTER" contentDisplay="RIGHT" font="$x5" layoutX="161.0" layoutY="163.0" minHeight="18.0" prefHeight="38.0" prefWidth="70.0" text="x200" textAlignment="CENTER" textFill="$x4" />
+        <Label id="labScore" fx:id="labNumberOfCities" alignment="TOP_CENTER" contentDisplay="RIGHT" font="$x5" layoutX="161.0" layoutY="260.0" minHeight="18.0" prefHeight="38.0" prefWidth="70.0" text="x5" textAlignment="CENTER" textFill="$x4" />
+        <Label id="labScore" fx:id="labTotalScoreHeader" alignment="TOP_CENTER" contentDisplay="RIGHT" font="$x6" layoutX="501.0" layoutY="241.0" minHeight="18.0" prefHeight="38.0" prefWidth="89.0" text="Total" textAlignment="CENTER" textFill="$x2" />
+        <Label id="labScore" fx:id="labTotalScoreAmount" alignment="TOP_CENTER" contentDisplay="RIGHT" font="$x6" layoutX="477.0" layoutY="279.0" minHeight="18.0" prefHeight="38.0" prefWidth="135.0" text="10,152" textAlignment="CENTER" textFill="$x2" />
+        <Label id="labScore" fx:id="labLevelCompleteNumber" alignment="TOP_RIGHT" contentDisplay="RIGHT" font="$x6" layoutX="462.0" layoutY="26.0" minHeight="18.0" prefHeight="38.0" prefWidth="129.0" text="Level 2" textAlignment="CENTER" textFill="$x2" />
+      </children>
+    </AnchorPane>
+    <ProgressBar fx:id="pbarLevelProgression" layoutX="306.0" layoutY="100.0" prefHeight="11.0" prefWidth="338.0" progress="0.0" />
+  </children>
+</AnchorPane>

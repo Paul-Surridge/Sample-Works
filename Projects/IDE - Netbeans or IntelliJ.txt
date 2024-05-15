@@ -1,0 +1,16 @@
+Please Note:
+
+	- Netbeans IDE was used for the development of the x3 projects given that it freely supported embedded Java database:
+
+		Netbeans: 12.1
+		Java: 1.8.0_261
+		JDK: 8u261 Windows x64
+		JRE: SE Runtime Environment 1.8.0_261-b12
+		Scene Builder: 2.0
+
+	- However for convenience all x3 projects contain the following x2 folders:
+
+		nbproject:	Folder containing configuration for Netbeans
+		.idea:		Folder containing configuration for IntelliJ
+
+	- Therefore it should be possible to review/run all x3 projects straight away from within either Netbeans or Intellij.

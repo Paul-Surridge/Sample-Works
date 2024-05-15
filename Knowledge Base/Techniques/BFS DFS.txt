@@ -1,0 +1,408 @@
+BFS/DFS:
+
+	Overview:
+
+		Recursion within dynamic programming and graph traversal are fundamentally equivalent:
+
+			Dynamic Programming		Graph Traversal
+			_________________________________________________________________________________________________________________________________________________
+
+			Initial input			Starting node
+			Input				Current node
+			Base case			Target node
+			Invalid case			Unavilable node 		e.g. a blocked 'walled' node
+			Mutators			Paths to adjacent nodes 	e.g. the available means/options of traversing and arriving at the adjacent nodes
+			Mutation			Moving to an adjacent node
+			Parent rm() call		Previous node
+			Child rm() call			Adjacent/next node
+			No existing structure		Existing structure
+			    (only call methods)
+			Node have no inherent value	Nodes have an inherent value (which can be mutated)
+
+		BFS/DFS is a behaviour (rather than a direct algorithm or technique) for it can be implemented in a variety of ways which do not specifically implment the traversal in the same general ways.
+
+			BFS:	Fan Out
+				Traverse/visit all child nodes before moving onto the layer
+
+			DFS:	Go as far in one direction until can no longer go in one direction at which point go back a level and try the next available route in the parent node
+
+		BFS/DFS can be identical in implementation but using differing underlying datastructure:
+
+			BFS:	Queue
+			DFS:	Stack 
+
+		BFS/DFS can be applied to any graph which includes many data types:
+
+			Graph (Irregular)
+				Cyclic
+				Non-Cyclic
+			Tree
+			Binary Tree
+				preOrder:	DFS
+				inOrder:	Ascending order if Binary Search Tree
+				postOrder
+				levelOrder:	BFS
+			1D Array
+			2D Array
+
+		BFS/DFS may employ a 'visited' flag to ensure that cycles do not form, used in graphs which are
+
+			1. Undirected.
+			2. Direct but contain cycles.
+
+		Traversal:
+
+			Graph:
+
+				- BFS/DFS can be implemented recursively or iteratively:
+
+					Recursive:
+
+						B/DFS(Node n)
+						{
+							process n
+
+							Add all child nodes of n to stack/queue
+
+							while(stack/queue is not empty)
+								B/DFS(stack/queue pop/poll)
+						}
+
+					Iterative:
+
+						B/DFS(Node nStart)
+						{
+							Add the nStart to stack/queue
+
+							while(stack/queue is not empty)
+							{
+								n = stack/queue pop/poll
+
+								process n
+
+								Add all child nodes of n to stack/queue
+							}
+						}
+
+				- BFS/DFS can be implemented recursively or iteratively:
+
+					Recursive:
+
+						B/DFS(Node n)
+						{
+							process n
+
+							for(i -> n.children)
+								stack/queue.add(n.child[i])
+
+							while(!stack/queue.isEmpty())
+								B/DFS(stack/queue.pop()/poll())
+						}
+
+					Iterative:
+
+						B/DFS(Node nStart)
+						{
+							stack/queue.add(nStart)
+
+							while(!stack/queue.isEmpty())
+							{
+								n = stack/queue.pop()/poll()
+
+								process n
+
+								for(i -> n.children)
+									stack/queue.add(n.child[i])
+							}
+						}
+
+			Tree/Binary Tree:
+
+				- Trees implement x4 sequences of traversal:
+
+					1. preOrder:
+					2. inOrder:		Binary Tree Only: Return ascending order if Binary Search Tree
+					3. postOrder
+					4. levelOrder:		Use general graph BFS
+
+					NB: 1-3 are all forms of DFS
+
+				- Trees can use the general graph algorithms for implementing DFS/BFS as shown above, however should the number of child nodes be fixed then the following can be used: 
+				
+							a
+						_________________
+						b		c
+					_________________ _______________
+					d		e f		g
+
+					1. PreOrder:
+
+						void preOrder(Node n)
+						{
+							if node == null
+								return
+
+							process n
+
+							preOrder(node.child1)
+							preOrder(node.child2)
+							...
+							preOrder(node.childn)
+						}
+
+						Traversal: a b d e c f g
+
+					2. InOrder:
+
+						void inOrder(Node n)
+						{
+							if node == null
+								return
+
+							inOrder(node.child1)
+							process n
+							inOrder(node.child2)
+						}
+
+						Traversal: d b e a f c g			//'left - right irrespective of level'
+												//If BST then prints all nodes in order
+
+					3. PostOrder:
+
+						void postOrder(Node n)
+						{
+							if node == null
+								return
+
+							postOrder(node.child1)
+							postOrder(node.child2)
+							...
+							postOrder(node.childn)
+
+							process n
+						}
+
+						Traversal: d e b f g c a
+
+					4. Level Order:
+
+						Use the general graph BFT algorithm above.
+	
+		Techniques:
+
+			- Windows Files Traversal:
+
+				function void traverseAndProcess(Node n)
+				{
+					for(i = 0 to n.numberOfChildren)
+					{
+						check/process(n.child[i])
+
+						if(n.child[i] == parent)
+							traverseAndProcess(parent.child[i])
+					}
+				}
+
+				- The above will traverse all nodes as follows:
+
+					root
+                    			1
+                    			2
+                    			3
+                    			4 - Parent
+                    			9   5
+                    			10  6
+                    			11  7
+                    			12  8
+                    			13
+                    			14 - Parent
+                    			18  15
+                    			19  16
+                        		    17
+
+			- Tree Search (using a boolean):
+
+				function void search(Node n, int iTarget)
+				{
+					if(n == null)
+						return;
+
+					if(n.value == iTarget)
+					{
+						bfound 		= true
+						nTargetNode 	= node
+					}
+					else
+					{
+						for(i -> n.children && !bFound)
+							search(node.child[i], n.value);
+					}
+				}
+
+				function boolean search(Node n, int iTarget)
+				{
+					bFound1 = isTargetCriteria1Found(n, iTarget);
+					bFound2 = isTargetCriteria2Found(n, iTarget);
+
+					if(bFound1 && bFound2)
+						return;
+
+					for(i -> n.children.isValid() && !bFound1 && !bFound2)
+						search(node.child[i], iTarget);
+
+					return (bFound1 && bFound2);
+				}
+
+		Problems:
+
+			- Path Finding:		Does a valid path exist between x2 nodes.
+			- Path Finding:		Does a valid sequence of nodes exist in the graph e.g. word search.
+			- Path Mutation:	Mutate the nodes on the path between root and destination.
+
+	Depth First Search
+
+		- DFS 'digs' as deep as possible from the source node before 'backtracking' to previous nodes and then taking the next avilable/unvisited child node whereby changing direction.
+
+			1. Source Node:		Declare a source node or 'starting point' node.	
+			2. Process:		Select and process a neighbour node, any neighbour node, no preference.
+			3. Traverse:		Continue to move in that direction until it is no longer possible to move in that direction (when nodes as represented in a grid).
+			4. Change Direction:	Once it is no longer possible to traverse in any particular direction:
+
+							1. If the node has more neighbour nodes (in alternate direction(s)).
+							2. Randomally select a new direction and repeat.
+							3. Else recursively refer back along the previous path until find a node with unexplored neighbours until reach the source node.
+
+			5. Finish:		Once all potential paths from the source node have been followed then the DFT has completed.
+			6. Inaccessible Nodes:	All accessible nodes have now been followed, not all nodes may have been accessible from that particular source node.		
+
+		- Implementation:
+
+			Stack via recursion or iteration:
+
+				1. Source Node:		Declare a source node or 'starting point' node.
+				2. Stack:		Push source node onto stack.
+				3. Stack:		Pop node from stack and set as 'current node'.
+				4. Process:		Process the current node.
+				5. Stack:		Push all neighbour nodes of current node onto stack (order of neighbours being added is irrelevant - only effects the order in which nodes are visited/processed).
+				6. Stack:		[Repeat step 3]
+				7. Finished:		Continue until the stack is empty at which point all accessible nodes have been visited and processed.
+
+			Cycles:
+
+				- Cycles within directed graphs can be detected by placing the value of node within a HashSet and checking accordingly during the traversal.
+
+	Breadth First Search
+
+		- BFS 'spreads' out from the source node.
+		- BFS visit all neighbour/adjoining nodes. These neighbour nodes become the 'frontier'.
+
+			1. Source Node:		Declare a source node or 'starting point' as the 'current node'.
+			2. Process:		Process all neighbour nodes in any order.
+			3. Traverse:		Once all neighbour nodes are processed, each neighbour node in turn becomes the 'current node'.
+			4. Repeat:		Repeat whereby the neighbour nodes of each neighbour node of the source node is processed.
+			5. Repeat:		Repeat until all accessible nodes have been processed.
+
+		- BFS can utilise either:
+
+			1. Stack
+			2. Stack implicitly created by the recursive calls (less common)
+
+		- BFS most common application is in finding the shortest path between nodes.
+
+		- Implementation:
+
+			Queue via recursion or iteration:
+
+			1. Source Node:		Declare a source node or 'starting point' node.
+			2. Queue:		Add source node to queue.
+			3. Queue:		Remove node from queue and set as 'current node'.
+			4. Process:		Process the current node.
+			5. Queue:		Add all neighbour nodes of current node to back of queue (order of neighbours being added is irrelevant - only effects the order in which nodes are visited/processed).
+			6. Queue:		[Repeat step 3]
+			7. Finished:		Continue until the queue is empty at which point all accessible nodes have been visited and processed.
+
+			Cycles:
+
+				- Cycles within directed graphs can be detected by placing the value of node within a HashSet and checking accordingly during the traversal.
+
+		- DFT and BFT are identical except:
+
+				BFT:	Use Queue	add/poll
+				DFT:	Use Stack	push/pop
+
+			public void BFS_DFS()
+   			{
+        			Node nNode;
+
+        			queue.add(nRoot);						//Add root
+
+        			while(!queue.isEmpty())
+        			{
+            				nNode = queue.pollFirst();				//Poll/Pop
+
+            				System.out.println("Visited: " + nNode);		//Process Node
+
+            				for(int i = 0 ; i<nNode.numberOfChildren() ; i++)	//Add/Push all child nodes of Node
+                				queue.add(nNode.get(i));
+        			}
+    			}
+			public void BFS_DFS(Node nParent)
+    			{
+        			System.out.println("Visited: " + nParent);			//Process Node
+
+        			for(int i = 0 ; i<nParent.numberOfChildren() ; i++)		//Add/Push all child nodes of Node
+            				queue.add(nParent.get(i));
+
+        			if(!queue.isEmpty())
+            				BFS_DFS(queue.pollFirst());				//Poll/Pop
+    			}
+
+	Complexity: DFS/BFS Graphs (in general)
+
+		Time: 		O(V + E)
+		Space:		O(V)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

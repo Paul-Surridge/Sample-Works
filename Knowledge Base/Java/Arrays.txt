@@ -1,0 +1,698 @@
+Arrays
+
+	Key Rules:
+
+		Container:	Holds a fixed number of a single type.
+		Length:		Fixed once declared.
+		Offset:		0
+
+			0 1 2 3 4 5 6 7 8 9	(Indices/Index)
+			x x x x x x x x x x	(Elements)
+
+		Length: 	10
+		Indices:	0-9
+		Elements:	Individual items within the array
+		Index:		Unique location/postion of element within the array
+
+			Index 8 is the 9th element
+
+		Objects:	Arrays are implicit objects within java therefore have a number of methods/fields associated with them:
+
+			AnArray.length;
+
+	Declaration - Allocate Memory - Initialise:
+
+		Single Dimension:
+
+			Creating an array consists of x3 stages:
+
+				1. Declare:		Inform the compiler that this identifier will hold an array of the specified type.
+				2. Allocate Memory:	Inform the compiler to physically allocate/reserve memory of the specified size.
+				3. Initialise:		Set the values of the elements in array.
+
+				These stages can be completed individually or combined.  
+
+			x1 Step:
+
+				Form 1:		int[] iResults = {1, 2, 3, 4, 5};	//Declare, allocate memory and initialise.
+				Form 2:		int[] iResults = new int[]{1, 2};	//Declare, allocate memory and initialise, the new int[] is superfluous, therefore only Form 1 will be listed in any examples.
+											//This form is useful when need to pass an array as argument in method call withour prior explicit instantiation:	a.sum(new int[]{1, 2});
+
+				Array size is inferred by the number of elements in bulk initialisation.
+
+			x2 Steps:
+
+				Form 1: [Discrete Initialisation]
+
+					int[] iResults = new int[10];		//Declare and allocate memory
+					iResults[0] = 10;			//Initialise
+					iResults[1] = 11;
+					...
+					iResults[9] = 19;
+
+					NB:
+
+						- Default Values:		All elements are initially initialised to default 0/false/null.
+						- Array Size Type:		Array size can be a literal, constant or expression which returns a type which can be widened to an integer.
+						- Initialisation:		Mass initialisation using {} is only possible when the array is being declared, allocated and initialised in x1 statement, alternatively elements must be initialised individually.
+
+				Form 2: [Bulk Initialisation]
+
+					int[] iResults[]			//Declare
+					iResults = new int[]{1, 2};		//Allocate memory and initialise
+
+			x3 Steps:
+
+				int[] iResults;				//Declare
+				iResults = new int[10];			//Allocate Memory
+				iResults[0] = 10;			//Initialise
+				iResults[1] = 11;
+				...
+				iResults[9] = 19;
+
+			Alternate Syntax:
+
+				It is possible to declare array with [] associated with the indentifier rather than the type:
+
+					int[] AnArray;
+					int   AnArray[];	//Discouraged
+
+				It only informs the compiler that this variable will be used to hold an array.
+
+		Multi Dimensional:
+
+			Dimension Mismatch:
+			
+				int[][] iResults = new int[][];
+
+				The number of dimensions must of course be consistent.
+
+			Initial Dimension Array Size:
+
+				int[][]   iResults = new int[10][];
+				int[][][] iResults = new int[10][][];
+
+				The first dimension must always be specified when allocating memory, regardless of the total number of dimensions.
+
+			Bulk Initialisation:
+
+				int[][] iResults = {	{1, 2, 3},
+                             				{4, 5, 6},
+                             				{7, 8, 9} };
+
+				The mass initialisation of x2 dimensional arrays can be as shown.
+
+			Arrays of Arrays:
+
+				int[][] iResults = {	{1, 2, 3, 4, 5},
+                             				{1, 2, 3},
+                             				{1, 2, 3, 4},
+                             				{1, 2, 3, 4, 5}	};
+
+				Given that multidimensional arrays are 'an array of arrays', it is possible to have each element contain an array of differing size.
+
+				This is applicable to arrays of dimension greater than x2 i.e. 'an array of arrays containing arrays':
+
+					int[][][] name = { {{1,2}, {1,2}, {1,2}, {1,2}, {1,2}},
+                                         		   {{1,2,3}, {1,2,3,4}, {1}, {1,2}, {1,2,3,4,5,6}, {1,2,3}, {1,2,3,4}} };
+
+			Separate Dimension Declarations:
+
+				int[] iResults[];
+
+				This declares a x2 dimensional array of iResults[][], the separate dimensions are combined highlighting that multidimensional arrays are arrays of arrays.
+
+				iResults = new int[10];			//Compile Fail		Given that iResults is [][] not just []
+				iResults = new int[10][100];		//OK
+	
+
+	Consideration Steps:
+
+		Factors:			Considerations		Syntax
+						_________________________________________________________________________________________________________________________________________
+
+			Declaration:		Scope			Fixed:			What is the desired scope of the array, the syntax of the declaration is always constant.
+			Allocation:		Size			Variable:		When is the size of the array known.
+			Initialisation:		Values			Variable:		When are the values known.
+
+		Thought Process:
+
+			When creating an array:
+
+			1. Scope	What is the scope of array?
+			2. Size		When is the size of the array known?
+			3. Values:	When are the values known?
+
+
+													Scope
+								 _________________________________________|_____________________________________________________
+								|												|
+			Size:					Known												Unknown
+					 _______________________|_______________________					 	 _______________________|_______________________
+					|						|						|						|
+			Values:		Known						Unknown						Known						Unknown/Partially Unknown
+					|						|						|						|
+			Stages:		x1						x2 						x1						x3
+					|						|						|						|
+			Stage 1:	int[] name = {Bulk Init};			int[] name = new int[Size];			int[] name = {Bulk Init};			int[] name;
+											|												|
+			Stage 2:							name[0] = Value0;	//Once values known							name = new int[Size]	//Once size known
+											name[1] = Value1;										|
+											...												|
+			Stage 3:																			name[0] = Value0;	//Once values known
+																							name[1] = Value1;
+																							...
+	Examples:
+
+		Rules:
+
+			Declaration:
+
+				1. []				The [] are always associated with the type not the identifier:
+
+									int[] names;
+
+									Not:	int[10] names;
+									Not:	int names[10];
+
+				2. Dimensions Only:		The declaration the specifies the number of dimensions only (not the size of the dimensions):
+
+									Single Dimension:	int[] names;
+									Not:			int[10] names;
+
+									Multi Dimension:	int[][][] names;
+									Not			int[10][][] names;
+
+				3. Dimension Mismatch:		No mismatch in the number of dimensions.
+
+									Multi Dimension:	int[][][] name;
+												name = new int[10][]
+
+				4. Default Values:		If array is not mass initialised when declared, then automatically set to default value 0/false/null.
+
+									Single Dimension:	int[] name;
+												name = new int[10];	//Automatically filled with default 0's	
+			Alocation:
+
+				5. new int[x][][]:		When using 'new' to allocate memory, the 1st dimension must always be defined when declared:
+
+									Single Dimension:	int[] name;
+												name = new int[10];	//First dimension (even though only x1) must be defined
+
+									Multi Dimension:	int[][][] name;
+												name = new int[10][][];	//First dimension must be defined)
+
+									Not:
+										int[x][][] name = { {{1,2}, {1,2}, {1,2}, {1,2}, {1,2}},
+                                         		   					    {{1,2,3}, {1,2,3,4}, {1}, {1,2}, {1,2,3,4,5,6}, {1,2,3}, {1,2,3,4}} };
+
+									For of course the declarative type nevers contains the size of the multidimensional array, only the number of dimensions.
+
+				6. Size:			The size of the dimensions of the array are only ever defined when allocating memory (not when declaring the type).
+
+									int[] names;
+									names = new int[10];
+
+									Not:	int[10] names;
+									Not:	int names[10];
+
+				7. Size Definition:		The size is specified either:
+
+									Implicitly:	When within a x1 stage bulk initialisation.
+									Explicitly:	When using 'new' without any bulk initialisation.
+
+				8. Size Type:			The size can be a literal, constant or expression which returns a type which can be widened to an integer.
+
+				9. new int[]:			The 'new int[]' is only needed when allocating memory to a variable that was declared within another statement:
+
+									int[] iResults = new int[]{1, 2};	//Not Needed	x1 statement
+
+									int[] iResults;
+                    							iResults = new int[]{1,2};         	//Needed	x2 statements
+
+								All places of use:
+
+									1. int[] names = new int[10];
+
+									2. int[] names;
+									   names = new int[10];
+
+									3. int[] names;
+									   names = new int[]{1, 2, 3, 4, 5};
+
+								Only x1 place where it is superfluous:
+
+									1. int[] names = new int[]{1, 2, 3, 4, 5};
+
+			Initialisation:
+			
+				10. Bulk Initialisation:	Bulk initialisation can only occur when allocating memory. 
+
+									x1 Stage:
+
+										Single Dimension:	int[] names = {1, 2, 3, 4, 5};
+
+										Multi Dimension:	int[][] names = { {1, 2, 3},
+        	                     											 {4, 5, 6},
+                	             											 {7, 8, 9} };
+									x2 Stage:
+
+										Single Dimension:	int[] names;
+													names = {1, 2, 3, 4, 5};
+
+								Bulk initialisation is possible in any number of dimensions (not just x2), where each element contains its own array the further the dimensions increase.
+
+									int[][][] name = { {{1,2}, {1,2}, {1,2}, {1,2}, {1,2}},
+                                         						   {{1,2,3}, {1,2,3,4}, {1}, {1,2}, {1,2,3,4,5,6}, {1,2,3}, {1,2,3,4}} };
+
+								Bulk initialisation with implicit size allocation can only occur within following situations:
+
+									1. int[] names = {1, 2, 3, 4, 5};
+
+									2. int[] names;
+									   names = new int[]{1, 2, 3, 4, 5};
+
+									Not:
+										int[] names;
+										names = {1, 2, 3, 4, 5};
+
+								Bulk initialisation is only permitted when the size is implicit:
+
+									1. int[] names = {1, 2, 3, 4, 5};
+									2. int[] names = new int[]{1, 2, 3, 4, 5};
+
+										Not:	int[] names = new int[5]{1, 2, 3, 4, 5};	//Compile Fail
+
+									3. int[] names;
+									   names[] = new int[]{1, 2, 3, 4, 5};
+
+										Not:	names = new int[5]{1, 2, 3, 4, 5};		//Compile Fail
+
+				11. Object Arrays:		Primitives and Objects are declared and initialised in arrays using the same syntax and rules:
+
+									ClassA[] Results = {new ClassA(), new ClassA(), new ClassA()};
+
+								Only difference is of course need to instantiate each element accordingly.
+
+			
+
+			
+
+		Single Dimension
+
+
+			int[] iResults = new int[];				//Fail:		Break Rule 1
+			int[] iResults = new int[10];				//OK:		Literal:	Dimension is defined using a literal
+			int[] iResults = new int[SIZE_OF_RESULTS];		//OK:		Constant:	Dimension is defined using a constant
+			int[] iResults = new int[j * k * method()];		//OK:		Expression:	Dimension is defined using an expression, any expression can be used as long as evaluates to a type that can be narrowed to int)
+
+			int[] iResults = {1, 2, 3, 4, 5};			//OK:		Mass initialisation, dimension is inferred.
+						
+			int[] iResults1, iResults2, iResults3, iResults4 = new int[2];		//OK:		Multiple declaration
+
+			int[] iResults = new int[10];
+       			iResults = {1, 2, 3, 4, 5};				//Fail:		Break Rule 3
+
+
+			int[] iResults = new int[10];	
+			iResults[0] = 1;					//OK:		If the elements are not mass initialised when declared then elements mst be initialised individually
+			iResults[1] = 2;
+			iResults[2] = 3;
+			iResults[3] = 4;
+			iResults[4] = 5;	
+
+		Multi-Dimensional
+
+			int[][] iResults = new int[];				//Fail:		Mismatch of dimensions
+			int[][] iResults = new int[10];				//Fail:		Mismatch of dimensions
+			int[][] iResults = new int[][10];			//Fail:		Initial dimension size not defined
+			int[][] iResults = new int[][];				//Fail:		Initial dimension size not defined
+
+			int[][] iResults = new int[10][];			//OK:		Size of second dimension will be defined when initialised
+
+
+
+			int[][] iResults = new int[][];				//Fail:		Initialisation must occur within the same statement
+			iResults = {	{1, 2, 3, 4, 5},
+					{1, 2, 3},
+					{1, 2, 3, 4},
+					{1, 2, 3, 4, 5}};
+
+			int[][] iResults = {	{1, 2, 3, 4, 5},		//OK:		Initialisation must occur within the same statement
+						{1, 2, 3},
+						{1, 2, 3, 4},
+						{1, 2, 3, 4, 5}	};
+
+	Multi-Dimensional Arrays
+
+		Construct:	Arrays of Arrays
+		Irregular:	Therefore maybe of varying length:
+
+			_ _ _ _ _ _ _ _
+			_ _ _ _
+			_ _ _ _ _ _
+			_ _ _ _ _ _ _ _
+
+	For Loop Iteration:
+
+		Single Dimension:	array[]
+
+			for(int i = 0 ; i < array.length ; i++)
+				array[i]...
+
+		x2 Dimension:		array2D[][]
+
+			for(int i = 0 ; i < array.length ; i++)
+
+				array1D[] = array2D[i];
+
+				for(int j = 0 ; j < array.length ; i++)
+					arrayiD[j]...
+
+			- The .length corresponds to the first dimension of a multi dimensional array.
+			- Given that a 2D array is an array of arrays, 'pull out' the 1D arrays from the 2D array, followed by processing the individual 1D arrays.
+
+	Array Manipulations:
+
+		Class: System
+
+			System class has arraycopy method for efficient copy and reproduction of an array:
+
+				public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
+
+		Class: java.util.Arrays
+
+			Arrays class has improved utilities over System.
+
+				1. Search:	Search for an element:			(binarysearch())
+				2. Compare:	Compare upon whether arrays are equal:	(equals())
+				3. Fill:	Set all elements:			(fill())
+				4. Sort:	Sequential or parallel:			(sort() or parallelSort())
+
+			Arrays is a large class with many useful methods:
+				
+				Return 			Method(s)		Description
+				__________________________________________________________________________________________________________________________________________________________________________________________________________
+
+			Conversion:
+
+				List<T> View		asList<T... a>		Return List<T> View which is backed by the array itself i.e. change the List and it alters the underlying Array.
+
+			Searching:
+
+				int			binarysearch()		Return index of sought Element
+							...
+
+			Comparing:
+
+				boolean			compare()		Compare Arrays of varying types, unsigned, comparators.
+							...
+
+			Copying:
+
+				type[]			copyOf()		Returns a copy of the array, truncating or padding with zeros (if necessary) so the copy has the specified length.
+							copyOfRange()		Returns a copy of a specified range of the array.
+							...
+
+		Examples:
+
+			- Arrays.sort() only allows the passing of Comparators where the array is of non-primitive elements.
+			- Reverse an array of any primitive which implement a sign:
+
+			private static int[] reverseIntArray(int[] arr)
+    			{
+        			for(int i = 0 ; i < arr.length ; i++)
+            			    arr[i] *= -1;
+        
+        			Arrays.sort(arr);
+        
+        			for(int i = 0 ; i < arr.length ; i++)
+            			    arr[i] *= -1;
+        
+        			return arr;
+    			}
+
+	Permutations:
+
+		- Permutations of an array are all of the unique orderings of that array:
+
+			a = [1,3,5]
+
+			[1,3,5]
+			[1,5,3]
+
+			[3,1,5]
+			[3,5,1]
+
+			[5,1,3]
+			[5,3,1]
+
+			NB: It is presumed all elements in array are unique
+
+		- Permutations are n! in amount.
+
+	Sets:
+
+		- Sets of an array are any consecutive or non-consecutive elements from that array of n length:
+
+			a = [1,2,3,4,5]
+
+			Sets of length 2:
+
+				[1,2]
+				[2,3]
+				[3,4]
+				[4,5]
+				...
+
+			Empty Set:	[]
+			Full Set	[1,2,3,4,5]
+			Power Set:	The set of all sets from set/array
+
+			Set length:	0 >= a.length
+
+		- Sets are unordered therefore:
+
+			[1,2] = [2,1]	i.e. both are considered the same set
+
+		- Sets (appear) to also be known as combinations (to be confirmed).
+
+	Array Types:
+
+		Static Array:
+
+			- Static array are a fixed length container of n indexable elements within the range [0, n-1]. 
+			- Static array are a contiguous piece of memory utilising contiguous addresses.
+			- Static array typical areas of use:
+
+				Storing/accessing sequential data
+				Buffers IO
+				Temporary storage
+				Lookup table
+				Inverse lookup tables
+				Return multiple values from a function
+				Cache to hold the return values from subproblems in dynamic programming
+
+			- Static array time complexity
+
+						Static Array		Dynamic Array
+				______________________________________________________
+
+				Access		O(1)			O(1)		//Index therefore constant time
+				Search		O(n)			O(n)		//Worse case may need to search whole array (if element does not exist)
+				Insertion	n/a			O(n)		//Worse case may insert at index 0 and need to shift remaining n elements
+				Appending	n/a			O(1)		//Index allow for simply placing additional element at end (even if need to resize the dynamic arrays internal static array, this happens sufficiently rarely that it is considered constant time)
+				Deletion	n/a			O(n)		//Worse case may delete index 0 and need to shift remaining n elements
+
+		Associative Array:
+
+			- Associative array is an abstract data type, also called Map or Dictionary  of (key, value) pairs:
+
+				Key	Value
+				_____________
+				k1	v1
+				k2	v2
+				k3	v3
+				k4	v1
+
+				Keys must be unique, Values may be same/repeated.
+
+			- Associative array have four basic operations:
+
+							Array		Red-Black Tree		HashMap
+							_______________________________________________
+
+				insert(key, value)	O(n)		O(log(n))		O(1)
+				remove(key)		O(n)		O(log(n))		O(1)
+				update(key, value)	O(n)		O(log(n))		O(1)
+				lookup(key)		O(n)		O(log(n))		O(1)
+
+			- Associative array are typically used for Memoisation using a HashMap for fast lookup/recall.
+			- Associative array include:
+
+				JSON:		Popular web-communication standard is an associative array.
+				NoSQL:		Entire database uses associative arrays to store (key, value) pairs
+
+		Suffix Array (SA):
+
+			- Suffix is a non-empty substring at the end of a string.
+			- Suffix definition:
+
+				Given:	HORSE
+
+				A suffix is any substring which is the 'right most' side of the original string:
+
+					0 HORSE		//Element 0 is always the whole string
+					1 ORSE
+					2 RSE
+					3 SE
+					4 E
+
+				A suffix may also be defined as the whole word itself.
+
+			- Suffix array is the sorted array of suffixes.
+			- Suffix array is the actual rearranged index values (the suffixes can be dropped if not needed).
+			- Suffix array are sorted using alphabetical or lexicographical value:
+
+				- Trailing 'space' represents 'no character' which of course has no value.
+				- Therefore shorter suffixes (which begin with the same initial letter) will always come 'first'.
+
+					Given: 	Loose
+
+								Unsorted	SA (Sorted) (Ascending total ASCII value)
+								___________________________
+							
+						Loose	->	0 Loose		4 e
+								1 oose		0 Loose
+								2 ose		1 ose
+								3 se		2 oose
+								4 e		3 se
+
+					The substring 'ose' is of lower in value than 'oose', therefore becomes prior 'oose'. 
+
+			- Suffix array example:
+
+				- Given: HORSE
+
+							Unsorted	SA (Sorted)
+							___________________________
+							
+					HORSE	->	0 HORSE		4 E
+							1 ORSE		0 HORSE
+							2 RSE		1 ORSE
+							3 SE		2 RSE
+							4 E		3 SE
+
+							NB: Unsorted is arranged as shown whereby the index 0 contains the whole string and then each incremental index contains each shortened suffix.
+
+				- The actual suffix array is the array of sorted indices:
+
+					4 0 1 2 3
+
+				- Suffix array provides a compressed representation of the sorted suffixes without the need to actually store the suffix strings (by imposing the above methodology all that is needed is the original string and the SA).
+				- Suffix array provides a space efficent alternative to a suffix tree (which is itself a compressed version of a trie).
+				- Suffix array provides the same level of functionality as a suffix tree along with additional capability of Longest Common Prefix (LCP).
+
+		Longest Common Prefix Array (LCP):
+
+			- Overview:
+
+				1. Once all the possible suffixes have been sorted into alphabetical order.
+				2. How many characters does each suffix have in common with its immediate previous adjacent index e.g.
+
+					Given:	ABABBAB
+
+							Alphabetical Ordered
+					SA	LCP	Suffix
+					_______________________________________________________
+
+					5	0	AB		//The first index of the LCP is 0 (undefined)
+					0	2	ABABBAB		//The matching characters include both the AB of first position ABABBAB has the x2 initial characters AB in common with the immediate previous adjacent index.
+					2	2	ABBAB
+					6	0	B
+					4	1	BAB
+					1	3	BABBAB
+					3	1	BBAB
+
+			- LCP values are calculate as follows:
+
+				LCP[i].value = LCP[i-1].suffix have in common with LCP[i].suffix
+
+				"The LCP value is going from left-to-right how many characters does the suffix string have in common with is previous suffix string."
+
+			- LCP calculation of common characters starts from the left hand side i.e. the start:
+
+				[i-1]	BAB
+				[i]	BABBAB
+
+				Here LCP[i].value has x3 matching characters from the start e.g given ABABBAB
+
+							Alphabetical Ordered
+						LCP	Suffix
+						______________
+
+						0	AB
+						2	ABABBAB		//Both initial characters of first suffix match i.e. AB
+
+						0	AC							
+						1	ABABBAB		//Only initial first character A matches.
+
+						0	BA
+						0	ABABBAB		//Neither initial characters of first suffix match.				
+
+					1. How 'far along' do the characters in the previous suffix AB 'go' in the current suffix:  ABABBAB
+					2. In this instance it is x2 (both characters in previous array)
+
+			- LPC prefix definition:
+
+				- The definition of a prefix in LCP (Longest Common Prefix):
+
+					Given:	HORSE
+
+				- A prefix is any substring which is the 'left most' side of the original string:
+
+					HORS
+					HOR
+					HO
+					H
+
+				- Technically a prefix may also be defined as the whole word itself.
+
+			- LCP construction can be implemented using a variety of algorithms, ranging from O(nlog(n)) to O(n) e.g.
+
+				Given:	HORSE
+
+				1. The LCP array will always be the same length of the original string.
+
+					HORSE 	(length 5)
+					LCP	(length 5)
+
+				2. Suffixes:	Generate the suffixes
+
+					HORSE	->	0 HORSE
+							1 ORSE
+							2 RSE
+							3 SE
+							4 E
+
+				3. Sort:	Sort the suffixes into alphabetical/lexiograpical order generating the corresponding Suffix Array
+
+							0 HORSE		4 E
+							1 ORSE		0 HORSE
+							2 RSE		1 ORSE
+							3 SE		2 RSE
+							4 E		3 SE
+
+				4. LCP:		Compare all of the sorted suffixes generating the corresponding LCP array.
+
+									Alphabetical Ordered
+							LCP		Suffix
+							____________________________________
+
+							0		E
+							0		HORSE
+							0		ORSE
+							0		RSE
+							0		SE
+
+							NB: HORSE may not be the best example word (for it does not generate any values in the LCP array), but is clear in illustrating the overall sequence.

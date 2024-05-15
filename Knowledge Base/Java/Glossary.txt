@@ -1,0 +1,1009 @@
+Glossary:
+
+	[]/():					Inclusive/Exclusive notation:
+
+							String s = "ThisIsAString"
+
+							s = s[1,4]			//Range: 1-4 		s becomes: "hisI"	
+							s = s[1,4)			//Range: 1-3 		s becomes: "his"	
+							s = s(1,4]			//Range: 2-4 		s becomes: "isI"	
+							s = s(1,4)			//Range: 2-3 		s becomes: "is"
+
+							[]: Inclusive
+							(): Exclusive
+
+	Abstraction:				Abstraction is the concept where:
+
+							- A component represents, defines or embodies the overarching 'contract', specification of required functionality of a set of objects.
+							- Only functionality matters, implementation does not.
+							- Abstraction is the opposite direction of specificity.
+
+						Interfaces and Abstract Class:
+
+							- Interfaces and Abstract Classes are abstractions of the classes that implement/extend them.
+							- Interfaces and Abstract Classes define the 'contract' of the group of objects that implement them:
+
+								Car				Shape [Interface]
+								|________ _ _			|________ _ _
+								|	|			|	|
+								Ford	Nissan			Square	Circle
+
+							- The abstraction of Ford and Nissan is Car, for Car defines the 'contract' of what Ford and Nissan should functionally be.
+							- The 'contract' as defined by Car is implemented by Ford and Nissan.
+
+	Accessor Method:			Accessor Methods return a field rather than change its state.
+
+	Aggregate Operations:			Aggregate Operations are staggered and combine into one expression.
+
+							String sTest = objClassA.methodReturnInteger(10).toString();
+
+						Aggregate Operations are typically associated with Streams.
+
+	Amortise:				Amortisation is the gradual paying off a technical debt.
+
+	Arbitary Object:			An unnamed and anonymous object that is instantiated and intialised without being given a name:
+
+							Method Parameter:
+
+								void method(new String("Test"));
+
+							Method Parameter with Anonymous Class/Lambda Expression:
+
+								ClassA objInstanceVariable = (new ClassA(10)
+    								{
+        								@Override
+       	 								public void method()
+        								{
+            								    System.out.println("Hello World!");
+        								}
+    								});
+
+							Interface Initialisation:
+
+								InterfaceA itfInterfaceA = (new InterfaceA()
+    								{
+        								@Override
+        								public void method1(int i)
+        								{
+            								    System.out.println("Hello World!");
+        								}
+    								})
+
+								Whereby assign an unnamed and anonymous object which implements InterfaceA.
+
+	Argument:				A value that is passed to a method from the caller method.
+
+	Artifact:				Artifact is a 'decorative man-made object' or any output produced by a build/compile process in order to test, deploy, distribute e.g.
+
+							1. Archive file e.g. *.jar containing a Library of *.class files and other resources.
+							2. Executable *.exe.
+							3. Documentation.
+
+	Associative Array:			Abstract data type, also called Maps or Dictionaries of (key, value) pairs:
+
+							Key	Value
+							_____________
+							k1	v1
+							k2	v2
+							k3	v3
+							k4	v1
+
+						Keys must be unique, Values may be same/repeated. 
+
+	Backing Collection:			An underlying Collection contained within a View Collection, the actual Collection that physically contains the elements referenced via View Collection.
+
+	Backward Compatibility:			A property that maybe applied to new hardware or software which can support an aspect of previous iteration e.g.
+
+							1. Year 2010:	Compiler-v1 and Language-v1 is released.
+							2. Year 2012:	Compiler-v2 and Language-v2 is updated and released.
+
+							Compiler-v2 can still compile Language-v1, Compiler-v1 is backward compatible with Language-v1.
+
+	Balanced Braces:			Braces that overall compose a block and are equally and appropriately distributed enabling compliation.
+
+	Bijection:				A mapping of objects to a unique set of ordered integers e.g. an indexed array. Each object must map to exactly x1 integer:
+
+							ObjectG	-> 0
+							ObjectW	-> 1
+							ObjectH	-> 2
+							ObjectE	-> 3
+							ObjectF	-> 4
+							...
+
+	Block:					A section of code containing 0 or more statements within {} which can replaced by a x1 single line of code e.g.
+		
+							1. If Clause
+							2. Else Clause
+							3. Loop
+							4. ...
+
+							A Class or Method is not a block, for the section between {} cannot be replaced with x1 single statement.
+
+	Boundary:				Boundary is the division or layer between components.
+						Boundary is fractal e.g. the utmost external boundary of the program is the UI.
+
+	Build:					Build is the resultant file/bundle from the compliation of source code and may also include additional external files which have been pulled in for the application to run. 
+
+	Bulk Operations:			Operations which perform an action over the whole Collection e.g.
+
+							containsAll()
+							addAll()
+							retainAll()
+							removeAll()
+							...
+
+	ByteCode:				Intermediate language generated from the source code, which is interpreted by the JIT within the JVM into the required native instruction set:
+
+							Source Code > ByteCode > [JIT] > Native Instruction Set
+
+	Callback Function:			The function that is passed as an argument to another function and gets called upon a specific condition or event, typically used/associated with event listeners e.g.
+
+							void callBackFunction()
+							{
+			   	 			    Console.send("Button clicked");
+							}
+
+							Button.addEventListener('click', callBackFunction())
+
+						Upon the button being clicked the callBackFunction() is invoked i.e. the function that is 'called back' at a later time upon a specific event.
+
+	Canary Deployment:			Deployment strategy that reduces the risk of releasing new software by restricting the release to a small subset of users.
+
+	Canonical:				Conforming to well-established approach, patterns, standards or rules.
+
+	Cardinality:				Size of a Set.
+
+	Class Variable:				A collective name for any variable which is placed within static memory and specific to the class (and naturally not extended classes) e.g.
+
+							class ClassA
+							{
+								static int 	i;
+								static double 	j;
+
+								static String	sTest;
+								static ClassB	objClassB;
+
+	Class Method:				A collective name for any method which is placed within static memory and specific to the class (and naturally not extended classes) e.g.
+
+							class ClassA
+							{
+								static int staticMethod()
+								{...}
+							}
+
+	Class Members:				A collective name for members within a class placed within static memory.
+
+	Class Type Parameter:			A Type Parameter which is declared within the header of a generic class and has scope within that class.
+
+	Cohesion:				A measure of how much a function/module/component forms a self-contained whole.
+						A measure of the dependency of a module on external aspects.
+						A measure of the closeness in meaning/association of the components in the module.
+						A module which is entirely self contained, independent and able to complete all of it calculations using simply its input would be consider of perfect cohesion i.e. atomic in nature.
+						There are a number of levels of cohesion, where the components of the module have been grouped:
+
+							[Worst]		1. Coincidental:		Components are arbitrary.
+									2. Logical:			Components broadly belong to the same catagory but different in nature e.g. mouse/keyboard form input devices.
+									3. Temporal:			Components are processed at the same time e.g. function is called after catching an exception.
+									4. Procedural/Sequential:	Components always occur sequentially e.g. function checks the file permissions before opening a file.
+									5. Data/Information:		Components operate on the same data.
+									6. Functional:			Components contribute to a single well-defined task.
+							[Best]		7. Atomic:			Components do not utilise any external aspects except the input to compute and generate its output.
+
+	Combination:				Combination is the specific 'make-up' of characters irrespective of order e.g. given a set [A B C D], if considering only x2 letters out of the x4:
+
+							AB	BA	CA	DA
+							AC	BC	CB	DB
+							AD	BD	CD	DC
+
+							Here:
+
+								Permutations:	12
+								Combinations:	6	Given AB and BA are the same combination (but not the same permutation).
+
+						Given a set [A B C]:
+
+							Permutations are:
+
+									[A B C]	[B A C] [C B A]
+									[A C B]	[B C A] [C A B]
+
+							Therefore a set of N size will have N! permutations (but only one combination).
+
+	Compatible:				Two objects are compatible if one is the extension of another and it is possible to assign a subclass to a superclass reference variable.
+
+	Compile-Time Constant:			A constant field that is defined and set at compile time, replacing its value wherever the constant is used.
+						If wish to alter the value of the constant then all classes which use the constant will need to be re-compiled i.e. the value is not continually 're-read' during runtime.
+
+	Component:				Component may be any functional entity that may exist within a Java program irrespective of fractal level.
+						Component may be the functional grouping of other components.
+						Component performs a functional task within a program.
+
+	Concrete Method:			A method that has been implemented, opposite to Abstract Method.
+
+	Constant:				A field designated 'static' and 'final':
+
+							class Class()
+							{
+								static final int i = 10;
+
+								Class()
+								{
+									i = 11;		//Compile Fail
+								}
+							}
+
+							NB: Must be initialised when declared and cannot be reassigned (even within own class).
+
+	Covariant Return Type:			The return type of a method is overriden within an extended class to return a reference to the extended class.
+
+							class Number
+							{
+								public Number methodName()
+								{...}
+							}
+
+							class ExtendedNumber extends Number
+							{
+								public ExtendedNumber methodName()	//methodName is overridden, introducing a covariant return type. 
+								{...}
+							}
+
+						The return type is allowed to vary in the same direction as the extended class.
+
+	Declaration:				The header of the generic class, interface or Mmethod:
+
+							class 			genericClass		<T extends Number, V extends T>
+							interface 		genericInterface	<T extends Comparable<T>>
+							<K extends Number> K 	genericMethod(K k, T t)
+
+							Method signature is the name and any parameters excluding the return type.
+
+	Declarative Programming:		A paradigm where the source code is expressed in a more higher/expressive level rather than the raw/explicit impementation (imperiative programming) e.g.
+						
+							- More abstraction.
+							- More of a script.
+							- More human readable.
+							- More closely linked and have meaning within the problem domain.
+							- More easily understood independently and in isolation.
+							- Provides insight into the problem being solved but not how the system is doing so.
+						
+						Languages and applications tend to implement a blend of declarative and imperative styles.
+
+	Declare:				Specify/announce to the compiler that a type will be used in the program e.g.
+
+							class MyClass
+							{
+								int i;
+
+	Default Constructor:			If no constructor is declared then the compiler provides an automatic Default Constructor which has no arguments:
+
+							Class(){}
+
+						Default Constructor will attempt to call the superclass's no-argument constructor:
+
+							- If the superclass has no no-argument constructor, it will call the superclasses own Default Constructor.
+							- If the subclass has no superclass, then naturally refers to Object, which does have Default Constructor.
+
+	Degenerate:				Characteristic of tests created within TDD where degenerate is the most absurdly simple starting point.
+
+	Dependency:				Dependency is any component that another component 'depends upon' in order to function correctly or at all e.g.
+
+							Class:
+
+								ClassA contains an instance of ClassB
+
+								- ClassA operation is dependent upon ClassB operating correctly.
+								- ClassA is dependent on ClassB.
+								- ClassA dependency is ClassB
+
+							Module:
+
+								Module 1
+									JavaFX		//Transitive Dependency 1
+									Logging		//Transitive Dependency 2
+									Spring		//Transitive Dependency 3
+
+								Module 2
+									Module 1	//Dependency 1
+
+								- Module 1 has x3 dependencies.
+								- Module 2 has x4 dependencies, this includes Module 1 and the x3 transitive dependencies of Module 1.
+
+							Application:
+
+								Application may utilise a number of additional 3rd party libraries, frameworks or binaries to be installed to operate correctly.
+
+	Deployed:				Software that has been deployed onto infrastructure but not necessarily released for consumption by end-users.
+
+	Destructive Method:			A method which alters/modifies the group of objects contained within the Collection e.g. modifies the Backing Map, Set, List etc...
+
+	Disjoint Set:				Set whose x2 internal sets do not intersect, the intersection returns a null set.
+
+	Dynamic Method Despatch:		A outcome derived from polymorphism, where:
+
+							- Base class variable:		Can be assigned either an instance of itself or an extension of itself, where calling an overriden method on that variable will depending on what instance is currently assigned to it.
+							- Interface variable:		Can be assigned any instance which contains that interface, whereby calling an overriden method on that variable will depending on what instance is currently assigned to it.
+
+	Dynamic Programming:			A methodology/paradigm which can be applied when a solution involves a number of overlapping simliar or identical sub-problems.
+
+	Eager Initialisation:			A field that is initialised and assigned a value when declared, rather than until it's actually used. Opposite of Lazy Initialisation.
+
+	Early Binding:				A variable is assigned an object at compile time, aka Static Binding
+
+	Element:				A fundamental component of a group or collection of entities e.g.:
+
+							- Array:		Individual items in an array, stream, collection
+							- Expression:		General term for items within an expression.
+							- Annotation:		Name/Value pairs within Annotations.
+
+	Encapsulation:				Encapsulation is the concept where:
+
+							- The data/methods are enclosed within a protective scope.
+							- The data/methods accessed through well-defined interface.
+							- The purposes of encapsulation include:
+
+								1. Security
+								2. Robustness
+								3. Maintainability
+
+							- A class is the prime example of encapsulation.
+
+						This can be contrasted with abstraction:
+
+							Concept			Hides
+							_______________________________________________
+
+							Encapsulation:		Data and implementation
+							Abstraction:		Data
+
+	Enumeration:				Predecessor of the Iterator.
+
+	Environment Variables:			High level variables associated with common aspects of an operating system or microservice environment:
+
+							Global:			Accessible and intended for use by all programs/processes.
+							Registry:		Stored in the registry.
+							Set/Get:		Retrieved and set through functionality built into the operating system or microservice e.g. on Windows via Command Prompt.
+							Name/Value Pair:	Data stored as name/value pairs.
+							Program Operation:	Programs typically use environment variables during start to configure itself:
+
+											1. Program e.g. a server starts up.
+											2. Program reviews the variables of the environment it is currently withing.
+											3. Program adjusts/configures itself accordingly.
+
+	Explicit Constructor Invocation:	Call other constructors from within an existing contructor via 'this' e.g.
+
+							Class (int x, int y)
+							{
+								this(x, y, 10, 10);	//Must be first statement in constructor
+								...
+							}
+
+							Primarily for assigning default values to fields.
+
+	Fall Through:				Switch Statement Block will execute all statements after a matching case label unless control flow is altered e.g. encountering a 'break' statement.
+
+	Field:					A collective name of a type which holds/describes the 'state' of the object:
+
+									Non-Static		Static
+									Memory			Memory
+									______________________________________
+
+							Field:		Instance Variable	Class Variable
+
+	Forest:					A collection of individual trees (components) which comprise of an overall graph i.e. a graph can consist of individual trees also called components.
+ 
+	Framework:				A collection of software components which provide an overall functional service but introduce an inversion of control:
+
+							e.g. Spring is a framework for it deploys a IoC Container i.e. the container determines the overall flow and execution of the application.
+
+						Framework and library are very similar:
+
+										IoC
+							_________________________________________________________________________________________________________________________________________________________________________________________________________
+
+							Framework:		Y		Flow of program is handled by the framework		Active collection of Java components which form the 'framework' in which the project will operate within.
+							Library:		N		Flow of program is handled by the developer		Passive collection of Java components for use and importation into an existing project.
+
+						Frameworks are 'opinionated' which introduce a set of requirements imposed on the overall architecture and flow of the application.
+						Frameworks require the developer to build source code to be inserted/plugged in and ran within the frameworks infrastructure. Libraries are the reverse whereby source code is imported into a project at the developers discretion.
+
+	Fully Qualified Name:			The full reference to a class including its package:
+
+							graphics.Rectangle myRect = new graphics.Rectangle();
+
+	Functional Interface:			An Interface with only x1 Abstract Method, but may have multiple Static or Default Methods, typically used inconjunction with Lambda Expression.
+
+	Header:					The complete declaration of the class, interface or method containing all modifiers:
+
+							public class MyClass<K, V> extends Number implements Comparable<K>
+							{...}
+							public <K, V> boolean GenericMethod(K obj1, V obj2)
+							{...}
+
+	Heap Pollution:				A Parameterised Type variable does not refer to non-Parameterised Type leading to Heap Pollution e.g. assigning raw types to parameterised types leading to:
+
+							1. Unchecked Warning:	Compiler generates an unchecked warning.
+							2. Unverified:		An operation (cast/method call) involving a Parameterised Type cannot be verified.
+
+							- No Compile Warnings = No Heap Pollution.
+							- Code compiled in sections may not report Unchecked Warning.
+							- Code should be compiled as a whole to report any Unchecked Warning.
+
+	Helper Class:				A nested class which 'helps' its enclosing class by providing close functionality specific to the enclosing class. Packaged within the enclosing class for convenience/readability.
+
+	Host:					A computer on a network that contains and partakes in application level activity as either a server, client or both.
+						
+							Server:		Host that offers resources to the other hosts. Typically a server accepts connections from clients who request a service function.
+							Client:		Host that attempts to establish connections with a server.
+
+						A network node is any device within a network, every network host is a node but not every network node is a host e.g.
+
+							Network infrastructure hardware such as modems, ethernet hubs and network switches are not directly or actively participating in application-level activity
+							and do not necessarily have a network address consequently not considered to be network hosts.
+
+	Imperative Programming:			A paradigm where the source code is expressed in a more lower/explicit implementation level rather than high level/declarative programming e.g.
+						
+							- More specific to completing low level tasks.
+							- Explicit commands and statements which perform specific actions.
+							- Explicit commands and statements which may or may not have meaning within the problem domain.
+							- Provides insight into the underlying exact operation of a system i.e. what it is actually doing but not the problem being solved.
+
+	Implementation Types:			Implementation Types are the actual classes that implement a particular interface which can be instantiated and assigned to an interface variable of that interface e.g.
+
+							Interface	Implementation Types
+							______________________________________________
+
+							Set<String> s 	= new HashSet<String>();
+									= new LinkedHashSet<String>();
+									= new TreeSet<String>();
+									= new ...
+
+						The above are concrete implmentation types of the interface Set<E>.
+
+	Import Wildcard Character:		Asterisk to invoke all package members of a package be imported by the source file.
+
+	Inclusive/Exclusive:			Notation to describe which elements (typically within an array) are to accessed:
+
+							[]	Inclusive
+							()	Exclusive
+
+							[2 , 7)		Include index 2 but not 7
+							(2 , 7]		Include index 7 but not 2
+							[2 , 7]		Include both index 2 and 7
+							(2 , 7)		Exclude both index 2 and 7
+
+	Initialise:				Assign a types first value i.e. actually have it refer to a physical piece of memory and the value it holds:
+
+							class MyClass
+							{
+							    int i = 1;
+
+	Inner Class:				Nested class within non-static memory.
+
+	In Place Operations:			When processing values which are already in place e.g. working on or processing and array of existing values. Opposed to producing a deep copy of the array to produce a 'working' which will become the final processed 'output' array.
+
+	Instance Variable:			A collective name for any variable which is unique to each instantiation of the class e.g.
+
+							class ClassA
+							{
+							    int 	i;
+							    double 	j;
+
+							    String	sTest;
+							    ClassB	objClassB;
+
+	Instance Method:			A collective name for any method which is not placed in static memory e.g.
+
+							class ClassA
+							{
+								int nonStaticMethod()
+								{...}
+							}
+
+	Instance Members:			A collective name for any members placed in non-static memory e.g.
+
+							Instance Variable
+							Instance Method
+
+	Integer Division:			A convention where the it is assumed the following:
+
+							5 / 2 = 2
+							4 / 2 = 2
+
+						The division excludes the remainder. This is applicable to when the 'middle' of a data structure is unclear e.g. Linked List, where the middle is deemed 'to the right ' of centre:
+
+							O -> O -> O -> O -> O -> O
+								       |
+								       Middle 
+
+	Interface Type Parameter:		A Type Parameter which is declared within the header of a generic interface and has scope within that interface.
+
+	ISO:					ISO is an identical copy or image of all the files an folders on a CD/DVD and forms a complete replication of that disk.
+
+	Tree Invariant:				A property/rule of a tree that must be met after every operation.
+
+	Inversion of Control:			The relinquishment of the control, flow and execution of the program from the developer over to a framework or other application.
+
+	Java API:				Java class library that is supplied within the JDK.
+
+	JDBC:					Java Database Connectivity is an API to connect and execute queries with a database. It is a part of JavaSE and uses JDBC drivers (which use a particular API) to connect with the database.
+
+	JCP:					Java Community Process is the formal process of allowing a JSR to be submitted as proposals for enhancements of the Java language, libraries or components.
+
+	JEP:					JDK Enhancement Proposal is a formal proposal which maybe included within an update to the language.
+
+	JSR:					Java Service/Specification Request is a document or formal request to have a feature or specific functionality to be added to the Java language, libraries or other components.
+						
+							- JSR is part of the Java Community Process where interested parties can submit such requests.
+							- JSR are typically registered using a number e.g. JSR250
+
+	Late Binding:				An variable is assigned an object at run time, e.g. assigning an extended class to a base class variable also known as Dynamic Binding.
+
+	Lazy Loading/Initialisation:		A field that is not initialised and assigned a value until it is used, the Field remains at its default 0/''/false/null until it's actually used. Opposite of Eager Initialisation.
+
+	Lexicographical Ordering:		Lexicographical ordering may also be considered as 'dictionary ordering', where the individual digits/characters are compared within the overall number as written:
+
+							Given:				1, 2, 227, 225, 10
+							Lexicographical ordering:	1, 10, 2, 225, 227
+
+							- Individual ASCII values are compared, if the first numbers/characters are the same then the second numbers/characters are compared and so on.
+							- Length of a number/string is irrelevant for the ordering, just as in a dictionary.
+
+	Local:					A component which is contained within a method or block i.e. not whose immediate enclosing entity is a class form.
+
+	Local Type Parameter:			A Type Parameter which is declared within the header of a generic method and has scope within that method.
+
+	Member:					A collective name for all permitted components within a class:
+
+							Fields
+							Methods
+							Nested Types
+
+								Nested Classes
+								Nested Abstract Classes
+								Nested Interfaces
+								Nested Enums
+
+	Memoisation:				An technique for optimising dynamic programming, whereby the solutions to repeated/identical sub-problems are stored and recalled rather than be repeatedly calculated. 'Memo' refers to a memo which acts as a reminder.
+
+	Method:					There are x6 types of method:
+
+							Constructor:		public 			<class-name> 	( <parameter-list> ) {};
+							Procedure:		public void 		<name> 		( <parameter-list> ) {};
+							Function:		public <return-type> 	<name> 		( <parameter-list> ) {};
+							Abstract:
+
+								Interface:	public <return-type> 	<name> 		( <parameter-list> );
+								Class:		abstract <return-type> 	<name> 		( <parameter-list> );
+
+							Default:		default <return-type> 	<name> 		( <parameter-list> );
+							Static:			static <return-type> 	<name> 		( <parameter-list> );
+
+	Method Reference:			A means of invoking an interfaces method via :: without need to use lambda expression:
+
+							myDeck.sort(Comparator.comparing((card) -> card.getRank()));
+							myDeck.sort(Comparator.comparing(Card::getRank));
+
+	Misplaced Responsibility:		Design flaw in which a function claims to perform a task/computation but does not actually perform the task/computation. The task/computation it is performed elsewhere.
+
+	Modal:					A window that is a child of parent window that usurps the control focus of the parent window i.e. no longer able to click/access the contents of the parent window while the child window is open.
+
+	Monostate:				A class that is guaranteed to be the only x1 in existence throughout the application i.e. all members are in static memory.
+
+	MTTR:					Mean Time To Repair refers to the amount of time required to repair a system and restore it to full functionality.
+						
+							- MTTR clock starts ticking when the repairs start and it goes on until operations are restored.
+							- MTTR includes repair time, testing period, and return to the normal operating condition.
+
+	Mutator Method:				A method which alters the value assigned to a variable regardless if the variable is a simple primitive, object, array or Collection.
+
+	Mutually Comparable:			Classes may be different but are still mutually comparable.
+
+	Naive:					Naive approach/algorithm is a very basic/brute force unsophisticated implmentation, the approach may work but may be very inefficent in time/space, there may be much more optimal implmentations available.
+
+	Nested:					A component which is contained within a Class/Interface/Enum whose immediate enclosing scope is another Class/Interface/Enum (not a Method/Block).
+
+	Nested Class:				Collective name for a class which is nested within either the non-static or static memory of another class form:
+
+									Non-Static		Static
+									Memory			Memory
+									______________________________________
+
+							Nested Class:	Inner Class		Static Nested Class
+
+	Nested Interface:        	 	An interface whose declaration occurs within another class form.
+
+	Nested Type:				Collective name for any nested component e.g.
+
+							Class Form:
+								Nested Class	(Inner Class | Static Nested Class)
+								Nested Abstract Class
+								Nested Enum
+								Nested Interface
+
+							Method/Block:
+								Local Class
+								Anonymous Class
+								Lambda Expression
+
+	No-Argument Constructor:		A constructor without any arguments:
+
+							class Class()
+							{
+							    Class()
+							    {...}
+							}
+
+	Non-Destructive Method:			A method which does not alter nor modify the group of objects contained within the Collection i.e. does not modify the Backing Map, Set, List etc...
+
+	Non-Reifiable Type:			A type whose type information is removed due to Erasure:
+
+							List<String>
+							List<Number>
+
+							Cannot be used within:
+
+								1. instanceof().
+								2. Element within an array.
+
+	Object Orientated:			Language which follows all OOP concepts but does not have 'built-in' objects e.g.
+
+							Java, C#, Smalltalk ...
+
+	Object Based:				Language which does not follows all OOP but does have 'built-in' objects e.g.
+
+							JavaScript, VBScript ...
+
+	Opinion:				Form, layout, abstraction that is imposed.
+
+	Opinionated View:			Architecture and a collection of abstractions for an application to follow which is applied to all of the associated projects/applications.
+
+	Overload:				Overloading is a technique applied to methods defined in class forms where further methods are defined with matching name but alternate parameter list:
+
+							class ClassA
+							{
+							    int 	method1(int i)				//OK
+							    double	method1(int i, double d)		//OK
+							    long	method1(int i, double d)		//Fail
+							}
+							class ClassB extends ClassA
+							{
+							    int 	method1(int i)				//Fail
+							    int 	method1(int i, int j)			//OK
+							    int		method1(int i, int j, double d)		//OK
+							}
+
+							Overloaded methods encompass methods defined either locally or within base classes where:
+
+								1. Identifer:		Must Match
+								2. Parameter List:	Must Not Match
+								3. Return Type:		Irrelevant
+
+								NB: It is not possible to just change the return type to create another overloaded method.
+
+	Override:				Overriding is a technique applied to methods and fields in class forms where an extended form overrides a method/field with the same name and parameter list:
+
+							class ClassA
+							{
+							    int i;
+							    int 	method1(int i)
+							    double	method2(int i, double d)
+							}
+							class ClassB extends ClassA
+							{
+							    int i;					//OK - Field Overriden but IDE may warn that field in superclass is hidden.
+							    int 	method1(int i)			//OK - Method Overriden.
+							    double 	method1(int i)			//Fail - Attempted overload of method1() locally.
+							    int		method2(int i, int j)		//Fail - Attempted overload of method2() in superclass.
+							}
+
+							Overriding requires all x3 components matching:
+
+								1. Identifier:		Must Match
+								2. Parameter List:	Must Match
+								3. Return Type:		Must Match
+
+	Package Manager:			A collection of software tools that automate the following general aspects of other programs:
+
+							- Installing
+							- Upgrading
+							- Configuring
+							- Removing
+
+						Package managers utilises packages which are archives of software programs and other metadata including:
+
+							- Programs Name
+							- Description of Purpose
+							- Version Number
+							- Vendor
+							- Checksum
+							- Dependencies
+
+						Package managers typically maintain a local database of all relevant information concerning the current install.
+						Package managers are intended to avoid manual installs and updates.
+
+	Parameter:				Type defined within the Parameter List of a header of a method.
+
+	Parameterised Type:			A generic type which can be passed a range of other types as parameters as defined by the generic type e.g.
+					
+							Box<Integer> objBoxOfIntegers;		//Box<Integer> = Parameterised Type
+
+	Parse:					Itemises data into constituent pieces e.g. a sentence into individual words.
+
+	Permutation:				Permutation is the specific 'arrangement' of characters e.g. given a set [A B C D], if considering only x2 letters out of the x4:
+
+							AB	BA	CA	DA
+							AC	BC	CB	DB
+							AD	BD	CD	DC
+
+							Here:
+
+								Permutations:	12
+								Combinations:	6	Given AB and BA are the same combination (but not the same permutation).
+
+						Given a set [A B C]:
+
+							Permutations are:
+
+									[A B C]	[B A C] [C B A]
+									[A C B]	[B C A] [C A B]
+
+							Therefore a set of N size will have N! permutations (but only one combination).
+
+	Piecewise:				Creation of an object in incremental stages.
+
+	POJO:					Plain Old Java Object.
+
+	Predicate:				Conditional statement, condition or test. To 'base something on' e.g.
+
+							if(predicate)
+							while(predicate)
+
+	Prefix/Suffix:				Any portion of an array or string which starts from either the element 0 or ends with element length-1:	
+
+							iNums = [2 58 64 52 67 85 12]
+
+							Prefix: Any subarray/string which starts from element 0 up to and including the last element:
+								[2 58 64]
+								[2 58 64 52]
+								[2]
+
+							Suffix:	Any subarray/string which starts from element (0 - length-1) up to and including the last element:
+								[67 85 12]
+								[12]
+								[85 12]
+
+	Process:				Process is an instance of a computer program that is being executed by one or more threads (OS dependent).
+						Process contains the program code and its activity.
+						Process is the execution of a passive collection of instructions stored in a file on disk which have been loaded into memory.
+						Process is associated with the instance rather than the program overall i.e. several instances of the same program may be opened each running on their own process.
+
+	Property:				A field with both a 'getter' and 'setter'.
+
+	PWD:					Present Working Directory as currently designated by Terminal. Reference not avaialble within Windows based Terminals e.g. Command Prompt, PowerShell...
+
+	Raw Type:				A generic class that has been instantiated without a Type Argument.
+
+							Box objBoxOfIntegers = new Box();
+
+	Refactoring:				A change to improve the organisation, efficiency or structure of source code that has no effect upon the behaviour.
+
+	Reference Variable:			A variable that can hold an address referencing a data type e.g.
+
+							ClassA objClassA;
+							ClassB objClassB;
+
+							InterfaceA infInterfaceA;
+
+	Reifiable Type:				A type which is not effected by erasure and is fully known at compile time e.g. primitives, non-generic types, raw types.
+
+	Relationship:				Two objects are related if one is the superclass of the other.
+
+	Release:				A build and any associated configuration files are combined to form a 'Release' which can be deployed and used within an execution/runtime environment that is actually accessible to end users.
+
+	Runtime:				The runtime or execution environment that is part of a language which actually executes code and is present at run-time e.g.
+
+							- Java:		Runtime includes the virtual machine and the standard library.
+							- C:		Runtime includes:
+
+										1. Loader 		(which is part of the operating system).
+										2. Runtime library 	(which implements the parts of the C language which are not built into the executable by the compiler).
+
+	Scale Horizontally:			An application increases capacity by creating/deploying more instances of itself e.g.
+
+							1. An Interface may encountered significant IO traffic.
+							2. An Interface will replicate itself and spread the traffic across multiple instances in order to spread the load.
+
+	Service:				An application running at the network application layer and above providing a function, capability or (service) typically using a client–server or peer-to-peer architecture based on application layer network protocols.
+
+	Subset:					Any combination of the elements from the original array, including the empty set and whole original set:
+
+							[]...[1,2,3]
+
+						Subset are duplicates is they contain the same elements but in differing order:
+
+							[1,2] = [2,1] = Duplicate Subset
+
+						PowerSet is the set of all subsets of a set. 
+
+	Shim:					A small library which transparently intercepts an API performing:
+
+							1. Parameters:		Changes the parameters passed.
+							2. Process:		Process and handle the operation itself.
+							3. Redirect:		Redirects the operation elsewhere.
+							4. Compatibility:	Enable programs to run on different software platforms than they were originally developed.
+
+	Signature:				Method name and parameter list only (not the return type) e.g.
+
+							genericMethod1(K obj1, V obj2)
+
+	Simple Name:				Class form name only (excluding any full qualification) e.g.
+
+							Rectangle(10, 10);
+
+	Singleton:				An immutable Set with a single specified Element.
+
+	Shadowing:				Method parameter has the same identifier as an outer field e.g.
+
+							public class Circle
+							{
+   						 	    int x, y, radius;
+    									
+							    void setOrigin(int x, int y)
+							    {...}
+							}
+
+							Generally recommend to be avoided in order to improve readability.
+
+	Shell:					A command prompt or terminal based program which wraps and provides direct access to a low level aspect of an operating system e.g. the kernal.
+
+	Statically Typed:			Language property where all variables must be declared before they can be used.
+
+	Stream:					A sequence of elements carried from a source (e.g. Collection) via a Pipeline, composed of aggregate operations which may accept Lambda Expressions enabling highly compact, concise and customisable queries.
+
+	Strongly Typed:				Broad language characteristics, including:
+
+							- Explicit declaration of data types.
+							- Types cannot mutate overtime i.e. once declared to hold an int, it must always hold an int.
+							- Compile time is able to identify potential errors rather than runtime.
+
+	Stub:					Empty placeholder construct awaiting implementation but will still compile e.g. a class with overriden methods which simply return 0 or null.
+
+	Subsequence:				Sequence of characters that exists between x2 pointers within a string but does not need to be all characters between those two pointers:
+
+							String:			"ThisIsAString"
+							Subsequence[4,8):	"IsaS"
+							Subsequence[4,8):	"Isa"
+							Subsequence[4,8):	"aS"
+							Subsequence[4,8):	"S"
+
+						Substring indicates no need for continuous characters from within the original string.
+
+	Substring:				String that exists between x2 pointers within a string:
+
+							String:			"ThisIsAString"
+							Substring[4,8):		"IsaS"
+
+						Substring indicates continuous characters from within the original string.
+
+	Successor:				Successor node is one of the possible x2 child nodes of a root/parent node.
+
+	Technical Debt:				Errors, faults and weaknesses in the code that accrue over time due to inefficient:
+
+							- Communication
+							- Team management
+							- Qualifications
+							- Rushed release of products.
+
+						Debt continuously grows until refactoring is performed and the notion of a 'debt' is the time/money accrued that is required to implement corrections/maintenance at a later date.
+
+	Tooling:				Collective name that includes anything other than the source code and its associated runtime environment e.g.
+	
+							- Build Tools
+							- Monitoring
+							- Debug
+							- Testing
+
+	Top Level Type:				Collective name for the components which can exist at top level within the Java language and not defined within another class e.g.
+
+							- class
+							- abstract class
+							- enum
+							- interface
+							- annotation
+
+	Torrent Files:				Torrent files are small files that direct to the location of (typically much larger) files, similar to URL.
+						Torrent files include file names, locations and sizes but not the actual file itself.
+						Torrent files require a torrent program to download the file referenced in the torrent file.
+						Torrent files may download alot quicker than compared to within the browser.
+						Torrent downloads may be more preferable when have a slow internet connection.
+
+	Tractable:				Non-exponential algorithm in time/space complexity.
+
+	Tuple:					Data structure with multiple characteristics:
+
+							1. Ordered collection of objects.
+							2. A comma separated list of objects enclosed within [].
+							3. Typesafe, iterable, immutable, serialisable.
+
+							For Example: ["Sophia", "Female", 22, "Marketing Manager"]	//Quartet Tulpe
+
+							Java does not support tuples directly, but has libraries/classes that implement the tuple data structure.
+
+	Type Argument:				Type passed to a generic type when declared to form a particular parameterised type.
+			
+	Type Argument List:			Comma separated list of type arguments defined and passed to the generic type.
+			
+	Type Invocation:			Process where a type argument is passed to the generic class but NOT instaniated:
+
+							Box<T>	->  Box<Integer>
+
+	Type Parameter:				Generic placeholder which illustrates where the generic components exist and are used within the generic type.
+
+							class MyClass<T>
+
+							T is the Type Parameter within the class and where T occurs.
+
+	Type Parameter List:			Comma separated list of type parameters declared at top of generic type definition.
+
+	Type Specification:			Bounds or any other specification applied to a type parameter/argument e.g.
+
+							interface<	(T extends ClassA)	>		T must be of ClassA or subclass
+							interface<	(T extends InterfaceA)	>		T must implement InterfaceA or subinterface
+			
+	Type Variable:				The placeholder 'objT' within a Class or Interface e.g.
+
+							class Class<T>
+							{
+								T objT
+								...
+
+	Type Witness:				The qualifer which can be added/omitted when invoking a generic method: <Integer, String>
+
+							bReturn = GenericClass.<Integer, String>genericMethod1(1, "Argument");
+        						bReturn = GenericClass.genericMethod1(1, "Argument");
+
+	Underflow:				Result of trying to extract, remove or evaluate an element on a stack or similar data type which does not exist i.e. it is an empty stack, opposite of overflow.
+
+	Value:					Generic name for any physical piece of memory and its value that has been assigned to a variable e.g.
+
+							int i = 10;
+							ClassA objClassA = new ClassA(10);
+
+							A 'value' does not need to be a number, it can be anything that initialises/assigns a value or object to a variable.
+
+	Variable:				Collective name of the following:
+
+							Instance Variable
+							Class Variable
+							Local Variable
+							Parameter
+	
+	View Collection:			Wrapper representation of a Collection providing an alternate view of the underlying backing collection.  Modifications to the View Collection are immediately affected on backing collection.
+
+	Weakly Typed:				Broad language characteristics, including:
+
+							- Explicit declaration of data types not required.
+							- Types can mutate overtime.
+							- Errors may not be detected during compile time but rather runtime.
+
+	Well Formed:				Braces/Brackets/Square Brackets are balanced with the equal number on either side.
+
+	Wholesale:				The creation of an object in x1 single stage.
+
+	Wiki:					Database/website/resource that allows Users to add/remove/edit its content.
+
+	Wildcard:				Applicable for defining any bounds/restrictions of the type argument that can be passed when declaring a parameterised type in the following:
+
+							- Instance Variables
+							- Class Variables
+							- Local Variables
+							- Parameters
+							- Return (Not Recommended)
+
+	Workload:				General name for any program, task or process running on a computer.
+
+	Zero:					Zero is represented within computer science literature with a small dot inside, this is to distinguish it from capital letter O.
+
+
+	

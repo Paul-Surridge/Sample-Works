@@ -1,0 +1,565 @@
+Keywords
+
+	equals()
+
+		Overview:
+
+			- Method of Object.
+			- Typically used extensively in Comparators.
+
+		Object:
+
+			- Method Definition:
+
+				public boolean equals(Object o)
+				{
+			    	    return this == o;
+				}
+
+			- Object defines .equals() purely as the comparison of the memory reference.
+
+			- Object must not be null when calling equals e.g.:
+
+				if(oObject.peek().equals(iValue))		//If the return of .peek() is null then exception is thrown (it does not simply return false)
+
+		equals() hashCode():
+
+			- If .equals() is overriden then .hashCode() should be overriden.
+			- If x2 objects are equal() then they must return the same hashCode().
+
+		Examples:
+
+			Example 1:
+
+				@Override
+				public boolean equals(Object o)
+				{
+			    	    if( (o == null) || (this.getClass() != o.getClass()) )		//Check for null and class mismatch.
+					return false;
+
+			    	    if(this == o)							//Check memory address.
+					return true;
+
+			    	    if(...)								//Compare Fields
+				}
+
+			Example 2:
+
+				@Override
+   				public boolean equals(Object o)
+				{
+        
+        			    //NB Must override hashCode as per Object API.
+
+        			    if(o instanceof ContextMenuNodeIconMenuItem)
+        			    {
+            				ContextMenuNodeIconMenuItem objCompare = (ContextMenuNodeIconMenuItem)o;
+            
+            				if( (objCompare.niNodeIcon == niNodeIcon) && (objCompare.iScope == iScope) && (objCompare.iDepth == iDepth) )
+                				return true;
+        			    }
+        
+        			    return false;
+    				}
+
+	Final
+
+								Final Apply-able		Functional Effect						Reason Not Permitted
+								_______________________________________________________________________________________________________________________________________________________________________________
+		Top Level
+
+				Class				Y				Class may not be extended.
+				Abstract Class			-												Final + Abstract
+				Interface			-												Final + Interface
+				Enum				-												Final + Enum
+
+		non-Static	Field				Y				Field may not be altered once initialised i.e. a Constant
+		    Static	Field				Y				Field may not be altered once initialised i.e. a Constant
+
+		non-Static	Initialiser Block		-												Final Initialiser
+		    Static	Initialiser Block		-												Final Initialiser
+
+		non-Static	Method				Y				Method may not be overriden
+		    Static	Method				Y				Method may not be overriden
+
+				Method Parameter		Y				Parameter may not be altered within method
+
+		non-Static	Nested Class			Y				Class may not be extended within its enclosing scope
+		    Static	Nested Class			Y				Class may not be extended within its enclosing scope
+
+		non-Static	Nested Interface		-												Final + Interface
+		    Static	Nested Interface		-												Final + Interface
+
+		non-Static	Nested Enum			-												Final + Enum
+		    Static	Nested Enum			-												Final + Enum
+
+		non-Static	Nested Abstract Class		-												Final + Abstract
+		    Static	Nested Abstract Class		-												Final + Abstract
+
+		non-Static	Local Abstract Class		-												Final + Abstract
+	 	    Static	Local Abstract Class		-												Final + Abstract
+
+		non-Static	Local Class			Y				Class may not be extended within its enclosing scope
+
+				Anonymous Class			-												Final cannot be used within syntax of Anonymous Class
+				Lambda Expression		-												Final cannot be used within syntax of Lambda Expression
+
+				Block				-												Final cannot be used within syntax of Block
+
+				Type Parameter/Argument		Y				Type Parameter may not be altered within method
+
+		Constants:
+
+			- 'final' may be applied optionally to any of the following at all times (irrespective of where they appear):
+
+				Component:			Top Level Memory		Functional Effect
+				_______________________________________________________________________________________________________________________________________________
+
+				1. Top Level Class						Class may not be extended
+
+			    	2. Field			non-Static | Static		Field may not be altered once initialised i.e. a Constant
+
+			   	3. Method			non-Static | Static		Method cannot be overriden
+
+					4. Method Parameter					Parameter may not be altered within method
+					5. Local Class						Class may not be extended within its enclosing scope
+
+			    	6. Nested Class		non-Static | Static		Class may not be extended within its enclosing scope
+
+			- 'final' effectively turns components into Constants within their own immediate scopes which cannot be extended/overriden/altered.
+
+			- 'final' can be summarised as:
+
+				Value:		Stop a value from changing.
+				Method:		Stop a method from being overridden.
+				Inheritance:	Stop a class/interface from being extended.
+
+		Final Blank Variables:
+
+			- It is possible to declare a final variable which is left uninitialised which must be assigned a value within the constructor.
+			- Technique suitable when instances have unique value which is supplied when created and must not be changed
+
+				class Student
+				{  
+					int iId;  
+					String sName;  
+					final String PAN_CARD_NUMBER; 
+
+					Student (int iId, String sName, String PAN_CARD_NUMBER)
+					{
+						this.iId = iId;
+						this.sName = sName;
+						this.PAN_CARD_NUMBER = PAN_CARD_NUMBER;
+					}
+				}
+
+	null:
+
+		Overview:
+
+			- null is not a keyword.
+			- null is not an instance of any Java type:
+
+				null instanceOf [Java Type]		//Always returns false
+
+			- null is a special Null Type.
+			- null is not an instantiation of the Null Type.
+			- null is a literal of the Null Type.
+
+		Null Type:
+
+			- Java contains x3 types:
+
+				1. Primitive Type
+				2. Reference Type
+				3. Special Null Type
+
+			- Null Types have no explicit name(s), therefore:
+
+				1. Declare:		It is not possible to declare a variable of Null Type.
+				2. Instantiate:		It is not possible to instantiate a class belonging to a Null Type.
+				3. Cast:		It is not possible to cast and object to a class belonging to a Null Type.
+
+			- Null Type only exists as a literal represented as ASCII characters:
+
+				null
+
+			- Programmers should ignore the concept of the Null Type and simply just consider it as a literal:
+
+				null
+
+		Areas of Use:
+
+			1. Default Value:
+
+				- null is the default value assigned to:
+
+					1. Instance Variables
+					2. Class Variables
+					3. Array Element
+
+			2. Method Return:
+
+				- Method may attempt to obtain a resource or other component.
+				- Method may return null if unsuccessfull.
+
+			3. Conditional Check:
+
+				- If Statement:
+
+					if(iTest == null)
+        				{...}
+
+				- Checking for end of file/buffer:
+
+					while ((line = reader.readLine()) != null) {
+   				    	    process(line);
+					}
+
+				- null is useful for IO given that a blank line does not mean null:
+
+					"" != null
+
+			4. Collections:
+
+				- null may be stored in a Collection depending on the implemenation.
+				- Care should be taken if a Collection permits null Elements for:
+
+					1. If an Element does not exist in a Collection, null is also returned.
+					2. Creating possible ambiguity.
+
+			5 Overall:
+
+				- null is used to:
+
+					1. Uninitialized State:		Default value that is assigned to Reference Variables that have not been initialised and assigned a value.
+					2. Conditional Check:		Check whether an object has been initialised before processing and/or prevent NullPointerException.
+					3. Termination Condition:	Signify that a process has ended and can be terminated.
+					4. Non-Existing Object:		Signify that a resource or object is not available.
+					5. Unknown Value:		Signify that a resource or object state is unknown.
+
+	super
+
+		Overview:
+
+			- super refers to the immediate Parent Class.
+			- super typical usage:
+
+				1. Parent Class:	Reference members in immediate Parent Class.
+				2. Type Arguments:	Define the range of permitted types that can be supplied as Type Arguments to a Generic Type.
+
+		Areas of Use:
+
+			1. Constructor:
+
+				- Upon instantiating a Class its immediate Parent is implicitly instantiated (all way back to Object).
+				- Compiler implicitly calls super() if not defined.
+
+					class ClassA
+					{
+			   	    	    ClassA(int i)
+			   	    	    {...}
+
+			   	   	    ClassA(int i, int j)
+			   	    	    {...}
+					}
+
+					class ClassB extends ClassA
+					{
+			   	    	    ClassB(int i)
+			   	   	    {
+						super(i, 10);		//Manually explicitly 'choose' which Constructor in Parent Class to call.
+			   	    	    }
+					}
+
+			2. Method:
+
+					super.method(i, 10);			//Parent Definition of .method()
+					method(i, 10);				//Local [overriden] Definition of .method()
+
+				- Extended Class may override a method in Parent Class.
+				- Explicitly distinguish which method to call.
+
+			3. Field:
+
+					i = super.iField;			//Parent Value of iField
+					i = iField;				//Local Value of iField
+
+				- Extended Class may override a method in Parent Class.
+				- Explicitly distinguish which method to call.
+
+			4. Type Argument:
+
+				Class/Instance Variable:
+
+					ClassGeneric<? super ClassA> 
+			   		{...}
+
+				Method:
+
+					void method(ClassGeneric<? super ClassA> objClassA)
+					{
+				    	    ClassGeneric<? super ClassA> 
+				    	    {...}
+					}
+
+
+				Bounding		Syntax							Type Argument Restriction
+				____________________________________________________________________________________________________________________________________________
+
+				Lower 			<? super ClassA>		Inclusive		1. Class: 	Parent of ClassA.
+
+				Lower 			<? super InterfaceA>		Inclusive		1. Interface:	Parent of InterfaceA.
+														2. Class:	Class which implements Parent of InterfaceA.
+
+	this
+
+		Overview:
+
+			- this is a multipurpose keyword.
+			- this nominally refers to the current object.
+			- this cannot be use in Static Memory given that it of course refers to the current instance.
+			- this is used in the following general areas:
+
+				1. Local Reference:		Refer to itself and its own local components (non-Static and Static Memory):
+
+									1. Constructor
+									2. Constructor Chaining
+									3. Instance Variable
+									4. Instance Method
+									5. Class Variable
+									6. Class Method
+
+				2. Pass As Argument:		Pass the current instance itself as an argument within:
+
+									1. Constructor
+									2. Method
+
+				3. Method Return:		Return the current instance itself as the object of a method.
+
+			- this is final i.e. in whatever context is it used the passed object is a constant and cannot be altered.
+			- this can be used in a synchronised lock.
+								
+		Areas of Use:
+
+			1. Instance Variable:
+
+				class Shape
+				{
+			    	    int i;
+
+			    	    Shape(int i)
+			    	    {
+					this.i = i;
+			    	    }
+				}
+
+			2. Class Variable:
+
+				class Shape
+				{
+			    	    static int i;
+
+			    	    Shape(int i)
+			    	    {
+					this.i = i;
+			    	    }
+				}
+
+			3. Method:
+
+				class Shape
+				{
+			    	    int i;
+
+			    	    Shape(int i)
+			    	    {
+					this.i = i * this.method(i);		//Optionally append this before .method(), compiler does it anyway.
+			    	    }
+
+			   	    int method(int j)
+			    	    {
+					j * 10;
+			    	    }
+				}
+
+			4. Constructor:
+
+				class Shape
+				{
+			    	    int i;
+
+			    	    Shape()
+			    	    Shape(int i)
+			    	    {
+					this.i = i;				//Compile Error, invocations of Constructors via this() must always be first statement(s).
+					this();					//Invoke the Default 'No-Argument' Constructor
+			    	    }
+				}
+
+				class Shape
+				{
+			    	    Shape(int i)
+			    	    {
+					...
+			    	    }
+			    	    Shape()
+			    	    {
+					this(10);				//Invoke the Parameterised Constructor
+			    	    }
+				}
+
+				NB: 'this' must always be the first statement. 
+
+			5. Constructor Chaining:
+
+				class Shape
+				{
+			    	    Shape()			{...}
+			    	    Shape(int i) 		{...}
+			    	    Shape(int i, int j) 	{...}
+			    	    Shape(int i, int j, int k)			//Rather than repeat Constructor code, simply invoke as required.
+			    	    {
+					this();					//Invoke Default 'No-Argument' Constructor
+					this(i, j);				//Invoke the Parameterised Constructor
+
+					...					//Include and process parameter 'k'
+			    	    }
+				}
+
+				NB: 'this' must always be the first statement.
+
+			6. Method Argument:
+
+				class Shape
+				{
+			    	    Shape()
+			    	    {
+					Box.putInBox(this);
+			    	    }
+				}
+
+				class Box
+				{
+			    	    static void putInBox(Shape s)
+			    	    {...}
+				}
+
+			7. Constructor Argument:
+
+				class Shape
+				{
+			    	    Shape()
+			    	    {
+					Box objBox = new Box(this);
+			    	    }
+				}
+
+				class Box
+				{
+			    	    Box(Shape s)
+			    	    {...}
+				}
+
+			8. Method Return:
+
+				class Shape
+				{
+			    	    Shape increaseShapeSize(int iFactor)
+			    	    {
+					...
+
+					return this;
+			    	    }
+				}	
+
+	Composition v Aggregation:
+
+		Overview:
+
+			- Composition/Aggregation describes the nature of the relationship and dependency between objects.
+
+		Real World:
+
+			With respect to a Chess Board:
+
+				Chess Board Square:		Composite		
+				Chess Board Piece:		Aggregate
+
+		Java:
+
+			Objects may contain other objects:
+
+				class ClassA
+				{
+			    	    ClassB b = new ClassB();		//Composite
+			    	    ClassC c;				//Aggregate
+
+			    	    ClassA(ClassC c)
+			    	    {
+					this.c = c;
+			    	    }
+				}
+
+			- Composite
+
+				ClassB:
+
+					- Located:		Internal to ClassA.
+					- Deletion:		ClassA can be deleted which does result in ClassB automatically being deleted.
+					- Instantiation:	ClassB instantiated internally within ClassA.
+					- Lifespan:		ClassB b can be 'alive' only if ClassA is 'alive'.
+					- Existence:		ClassB b can exist only if ClassA exists.
+					- Operation:		ClassB and ClassC cannot fully operate on their own as separate entities.
+					- Integration:		High.
+					- Coupling:		Tight.
+
+				Example:
+
+					Human body has a composite relationship with its internal organs.
+
+			- Aggregation:
+
+				ClassC:
+
+					- Located:		External to ClassA.
+					- Deletion:		ClassA can be deleted but does not result in ClassC automatically being deleted. 
+					- Instantiation:	ClassC instantiated externally to ClassA.
+					- Lifespan:		ClassC c can be 'alive' regardless if ClassA is 'alive'.
+					- Existence:		ClassC c can exist regardless if ClassA exists.
+					- Operation:		ClassB and ClassC can operate on their own as separate entities.
+					- Integration:		Low.
+					- Coupling:		Loose.
+
+				Example:
+
+					Computer Workstation has a composite relationship with the components that make up that work station e.g. desk, chair, lamp, PC ...
+
+	Garbage Collection:
+
+			- An object is eligible for Garbage Collection when there are no Reference Variables to that object.
+			- An object may be pointed to by multiple Reference Variables.
+			- Reference Variables to an object are usually dropped when:
+
+				1. Variable goes out of scope.
+				2. Explicitly set to null.
+
+			- Garbage Collection runs automatically when appropriate.
+			- Garbage Collection can be run manually but may consume resources unnecessarily i.e. not recommended.
+
+	Escape Sequences
+
+		Backspace		\b
+		Tab			\t
+		Line Feed		\n
+		Form Feed		\f
+		Carriage Return		\r
+		Double Quote		\"
+		Single Quote		\'
+		Backslash		\\
+
+		NUL:			\0 (not null)
+
+		For Example:
+
+			System.out.println("She said \"Hello!\" to me.");

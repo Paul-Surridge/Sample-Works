@@ -1,0 +1,368 @@
+Kotlin
+
+	Nullable and non-Nullable:
+
+		- Nullable and non-Nullable are states that can be applied to variables:
+
+			var iTest1 = 10					//non-Nullable (Default)	Can not be used in any context where may potentially be assigned null
+			var iTest2: Int? = 10				//Nullable
+
+			iTest1 = null					//Compile Fail
+			iTest2 = null					//Compile OK
+
+			fun strLength(s: String): Int = s.length	//Compile fail if strLength() is ever passed a Nullable variable
+
+		- Nullable types can be checked in the normal way:
+
+			fun describeString(s: String?): String
+			{
+    			    if (s != null && s.length > 0)	return "String of length ${s.length}"
+    			    else				return "Empty or null string"
+			}
+
+		- Nullable types ensure that compiler will not allow potentially unsafe operations:
+
+			fun isNameFoo(n: Name?) = n.value == "foo"	//Compile will fail given that n maybe potentially a null but no check is carried out using ?. or !! or if-check
+
+		- Nullable and non-Nullable types use annotations to set type accordingly at compile time:
+
+			@Nullable
+			@NotNullable
+
+			For example:
+
+				fun foo(): String = "foo"		//Function returns non-nullable String
+				fun bar(): String? = "bar"		//Function returns nullable String
+
+				Compiler generates:
+
+					@NotNull
+					public static final String foo()
+					{ return "foo" }
+
+					@Nullable
+					public static final String bar()
+					{ return "bar" }
+
+				At runtime both nullable and non-nullable Strings are just java Strings (there is no difference), the annotations are only used by the compiler to check appropriate use, therefore the use of annotation induces no performance overhead.
+
+			NB: There are Optional types which are a class which provide the same functionality as the use of annotations but have greater performance overhead given that they create an additional object (and are effective wrappers).
+
+		- Nullable and non-Nullable can be applied to collections:
+
+					List			Elements
+					------------------------------------
+			List<Int?>	non-nullable		nullable
+			List<Int>?	nullable		non-nullable
+			List<Int?>?	nullable		nullable
+			
+			For example:
+
+				fun foo(list1: List<Int?>, list2: List<Int>?)
+				{
+				    list1.size
+				    list2?.size				//List2 may be null therefore a safe call needs to be applied to the initial variable before it attempts to refer to size, if List2 is null then the statement is ignored
+
+				    val i: Int? = list1.get(0)		//List1 may return a null therefore i must be defined as nullable
+				    val j: Int? = list2?.get(0)		//List2 may itself be null therefore j must be defined as nullable
+				}
+
+			Whenever a nullable variable is defined, all returns from that variable must be checked via ?. or !! or if-check
+
+		- Nullable and non-Nullable need to be taken into consideration when communicating between Kotlin and Java:
+
+			- Kotlin compiler denotes all types using the annotations:
+
+				@Nullable	->	Type?
+				@NotNullable	->	Type
+
+				These annotations can be applied directly within the Java source code, in which case those types can then be included within Kotlin just as if they were normal Kotlin non-Nullable/Nullable types.
+
+			- If a type in Java is not annotated (which may be the vast majority) then:
+
+				1. Java Behaviour:		The type will behave in Kotlin just as it would if compiled/run from within Java.
+				2. Platform Type:		The type is known as a 'Platform Type'.
+				3. !				The type will be referred by the compiler as Type!, a type of 'unknown' nullability, it is neither nullable nor non-nullable. The ! is notation (not syntax) and is only used in compiler error messages (not within source code i.e. it is not possible declare a variable of Type!).
+
+			- When Kotlin was first designed it was intended to interpret all types in Java as nullable, however this led to various issues:
+
+				1. !				The code became full of ! (and was not particularly readable).
+				2. Generics:			The approach did not work well with generics.
+
+				Therefore the notion of the 'Platform Type' was used, which refers to any type that 'comes from' or defined within Java.
+
+		- Nullable and non-Nullable encorporate 'Platform Types', which are types defined within Java but referenced within Kotlin:
+
+			Java:
+
+				public class Session {
+				    public String getDescription() {...}
+				}
+
+			Kotlin:
+
+				val session = Session()					//Session is a platform type (a type defined within Java)
+				val description: Boolean = session.description		//Compile Fail
+				val description: String = session.description		//Compile OK
+				val description = session.description			//Compile OK
+
+		- Nullable and non-Nullable 'Platform Types' operate just in the same way as if called from Java as if called from Kotlin:
+
+			Java:
+
+				public class Session {
+				    public String getDescription() {return null;}
+				}
+
+			Kotlin:
+
+				val session = Session()
+				val description = session.description			//Compiler infers that 'description' is String!, it will behave in Kotlin just as it would in Java.
+
+				println(description.length)				//Compiler will de-reference 'description' just as it can in Java, but it generates NullPointerException (just as it would in Java). 
+				println(description?.length)				//Compiler will use 'safe operator' inconjunction with Platform Types where simply null is returned (and 'null' is printed) rather than generating a NPE.
+
+			Therefore:
+
+				1. Kotlin is unable to fully eliminate NPE given the need to conveniently interface with Java types.
+				2. If Kotlin needs to interface with Java then NPE can still occur.
+
+		- Nullable and non-Nullable has the following ways to increase NPE saftey when dealing with 'Platform Types':
+
+			1. Java-side: 		Annotations		
+			2. Kotlin-side:		Explicit Specification of Types (when being assigned values from Platform Types) 
+
+			Annotation:
+
+				- Annotate the type definitions in Java with @Nullable @NotNullable and Kotlin will interpret those classes accordingly.
+				- Annotation can be applied to any appropriate/applicable type e.g. function return types or parameter types.
+				- Annotations can differing depending upon the framework:
+
+					JetBrains/Android:		@Nullable	@NotNull
+					JSR-305/FindBugs:		@Nullable	@CheckForNull
+					Lombok:						@NonNull
+
+				- Annotating all of your types in a Java class may be cumbersome/impracticle/time consuming, therefore a default can be defined while annotating those which differ from the default (JSR-305):
+
+					@ParametersAreNonnullByDefault
+					@MyNonnullByDefault
+
+					Defaults can be applied at package level:
+
+						@MyNonnullByDefault
+						package mypackage
+
+				- Annotation further research should be directed to the Kotlin documentation for full JSR-305 support.
+				- Annotation example:
+
+					Java:
+
+						public class Session {
+					  	    @Nullable
+					    	    String getDescription() {
+							return null
+					    	    }
+						}
+
+					Kotlin:
+
+						val session = Session()
+						val description = session.description		//Returns a 'String?' of value null
+
+						println(description.length)			//Compile Fail, compiler interprets the return of 'session.description' as String?, therefore the . operator can not be used without null check.
+						println(description?.length)			//Compile OK (null check can be completed by other means if preferred)
+
+					Java:
+
+						@MyNonnullByDefault
+						public class Session {
+					    	    public void setDescription(String description) {
+							this.description = description
+					    	    }
+						}
+
+					Kotlin:
+
+						val session = Session()
+						session.setDescription(null)			//Warning will be generated: 'Expected type doesn't accept nulls in Java, but the value may be null in Kotlin
+
+						Here:
+
+							1. The Java source code is expecting all values to be non-Null therefore the null being passed as an argument will generate a warning.
+							2. This warning can be changed to an error if preferred via modification to build.gradle script:
+
+								compileKotlin {
+								    kotlinOptions {
+									freeCompilerArgs += "-Xjsr305=strict"
+
+							3. The above will now generate an error and prevent compliation:
+
+								'Error: Null can not be a value of a non-null type String'
+
+			Explicit Specification of Types:
+
+				- Explicit Specification of Types may be preferred when annotations are not possible e.g. closed library or part of program that do not wish to touch.
+				- Explicit Specification of Types results in the following x2 outcomes:
+
+					Java:
+
+						public class Session {
+					  	    @Nullable
+					    	    String getDescription() {
+							return null
+					    	    }
+						}
+
+					Kotlin:
+
+						val session = Session()
+						val description: String? = session.description		//Prints 'null'
+						val description: String = session.description		//Throws IllegalStateException: session.description must not be null
+
+					Here:
+
+						1. If String? is explicitly defined rather than just leaving 'description' to be inferred, then null is assigned.
+						2. If String is explicitly defined then the Kotlin compiler completes further checks on the return value from the Platform Type, in this case throw exception as value is null.
+
+						NB: The IllegalStateException generates more information about the details of the error rather than a vague NPE.
+
+			Intrinsic Checks:
+
+				- Intrinsic checks are carried out by the compiler when reading both to and from Java:
+
+					val session = Session()					//Session is a Platform Type
+					val description: String = session.description		//1
+					println(description)
+
+					Here:
+
+						1. Given that 'description' is explicitly defined as String (non-Nullable), the compiler generates and calls the following check:
+
+							Intrinsics.checkExpressionValueIsNotNull(description, "session.description");
+
+						2. This additional check generates and throw exception if value is null.
+
+				- Intrinsic Checks are intended to allow any null errors to be caught and identified with detailed error messages compared to NPE.
+				- Intrinsic Checks can be turned off if preferred e.g. in general in order to improve performance, do not use Java libaries or mix with java source code. 
+
+		- Nullable and non-Nullable example:
+
+			data class Employee (val name: String, var salary: Int)
+
+			fun employeeById(id: Int) = when(id)
+			{
+    			    1 -> Employee("Mary", 20)
+    			    2 -> null
+    			    3 -> Employee("John", 21)
+    			    4 -> Employee("Ann", 23)
+    			    else -> null
+			}
+
+			fun salaryById(id: Int) = employeeById(id)?.salary ?: 0
+    
+			fun main() { 
+    			    println((1..5).sumOf { id -> salaryById(id) })
+			}
+
+			Here:
+
+				1. The return of employeeById() (Employee object) is checked for null.
+				2. If null is returned by employeeById() then 0 is returned by salaryById()
+
+		- Nullable and non-Nullable should have careful consideration within general developement, I should imagine the following applies:
+
+			1. non-Nullable default:	non-Nullable should be your default, the first type that you define.
+			2. Nullable when necessary:	Nullable should only be used or applied to variables when absolutely necessary given the amount of extra amount necessary to check/maintain/handle potential nulls.
+
+	Safe Call:
+
+		- Safe Call operator '?.' is used whenever wish to access/call (dereference) any of the members of a nullable variable in a safe manner without generating a potential NullPointerException:
+
+			For example:
+
+				val s: String?
+
+				if(s != null)
+				    println(s.length)
+
+			The above can be replaced with the 'Safe Call Operator/Expression':
+
+				println(s?.length)
+
+			The Safe Call simply checks the value assigned to the variable, where:
+
+				s		Return
+				------------------------
+				null		null
+				non-null	s.length
+
+			Both of the statements are equivalent:
+
+				val s: String?
+
+				val length = if(s != null) s.length else null
+				val length = s?.length
+
+		- Safe Call operator is only applicable to nullable variables.
+		- Safe Call operator returns either an object or null.
+		- Safe Call operator always returns another nullable type (given that the safe call operator may return null)
+
+			val length = s?.length			//length will be inferred as Int?
+
+		- Safe Call can be chained should a single property be null:
+
+			person.company?.address()?.country
+
+			NB: It is presumed that if one of the intermittent safe calls (e.g. address()?) returns null then the whole statement immediately returns null i.e. it does not try to execute 'null.country'
+
+		- Safe Call can be applied to:
+
+			1. Properties:		s?.length
+			2. Member Functions:	s?.upperCase()
+			3. Member Extensions:	s?.count()
+
+			Any member/property of the object.
+
+	
+	non-Null Assertion !!:
+
+		- non-Null Assertion operator !! allows for NullPointerException to be manually/explicitly thrown:
+
+			For example:
+
+				val s: String?
+
+				s!!				//Equivalent to if(s==null) throw NullPointerException
+
+				println(s.length)		//s is smart casted to String
+
+			This may be simplified to:
+
+				println(s!!.length)
+
+			This usage is generally not recommended in order to avoid NullPointerException from being generated, it is recommended to just carry out manual checking instead:
+
+				if(s != null)
+				     println(s.length)
+
+		- non-Null Assertion operator can be applied to any stage within a call chain that may return a null:
+
+				val value = list.getSelectedValue()!!
+
+			NB: It is bad practice to have multiple not-null assertions in x1 statement, for it will not be possible to identify the source should a NullPointerException be thrown:
+
+				val value = list.person!!.address!!.country!!
+
+	Elvis Operator:
+
+		- Elvis Operator '?:' enables the returning of a default value should a safe call return null:
+
+			var s: String? = null
+    			println(s?.length ?: 0)
+
+			Here:
+
+				1. s is a nullable String set to null.
+				2. s is safe called to return its length property.
+				3. s?.length returns null.
+				4. Default value 0 is therefore returned.

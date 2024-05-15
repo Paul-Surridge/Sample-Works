@@ -1,0 +1,1597 @@
+Git - Concepts and Commands:
+
+	History:
+
+		Version Control System:
+
+			- VCS is a centralised repository.
+			- VCS requires a continual connnection to the repository.
+			- VCS include SVN, Tortoise, RCS...
+
+				- RCS is a local VCS stored locally on machine and still distributed with many computers today.
+				- RCS operates via storing patch sets which contain the incremental differences as files are modified.
+				- RCS reverts a file to any historical state simply by taking account of the accumulative patches.
+
+		Centralised Version Control System:
+
+			- CVCS emerged once it was necessary to collaborate with other developers who did not have access to the Local VCS.
+			- CVCS include:
+
+				CVS
+				Subversion
+				Perforce
+
+			- CVCS uses a central server that holds all of the files, which multiple clients that check out the files from that central place.
+			- CVCS was the standard for many years.
+
+		Distributed Version Control System:
+
+			- DVCS is most commonly used for open source and commercial software development.
+			- DVCS does not require a continual connnection to the repository.
+			- DVCS allows:
+
+				1. Full access to all files.
+				2. Full access to all iterations.
+				3. Full access to all branches.
+				4. Full access of all users to self contained history of all changes.
+				5. Visibility of work progress within the project.
+				6. Asynchronous update of repository from any time/location.
+
+			- DVCS still has a central server as a point of failure.
+			- DVCS however mirror the repository on multiple servers improving redundancy.
+			- DVCS system include:
+
+				Git
+				Mercurial
+				Bazaar
+				Darcs
+				BitKeeper
+
+			- DVCS can utilise several remote repositories, therefore it is possile to:
+
+				Collaborate:		Collaborate with various developer groups in differing ways simultaneously.
+				Workflows:		Establish differing workflows which is not possible to do in CVCS e.g. heirachical models.
+
+		Delta Based Version Control:
+
+			- DBVC is a method of version control implemented by:
+
+				CVS
+				Subversion
+				Perforce
+				Bazaar
+
+			- DBVC stores the changes made overtime to files in a List.
+			- DBVC stores each change as a delta (as in calculus).
+
+		Git Emergence:
+
+			- BitKeeper was used during the early development of the Linux Kernel.
+			- However relationship between Linux Community and BitKeeper broke down leading to the Linux Community to develop an alternative to BitKeeper which had the following qualities:
+
+				Speed
+				Simple Design
+				Strong Support for Non-Linear Development e.g. 1000's of parallel branches
+				Fully Distributed
+				Efficient with speed/size regardless of project size e.g. Linux OS
+
+			- Git was born in 2005.
+
+		Git Hosting:
+
+			- git is distinct from a git hosting platform.
+			- git is a program for the direct managment of the repository regardless if that repository is situated locally or remotely across a network on a hosting platform e.g.
+
+				GitHub
+				GitLab
+				BitBucket
+				DevOps Azure
+
+			- git may utilise commands/actions/terminology not necessarily core to git but relevant o the actual hosting platform e.g. 'pull request' is an action associated with the hosting platform rather than git directly.
+
+	Patch:
+
+		- Patch is an accumulation of the individual -/+ changes that have been applied to a file compared to the previous commit i.e. the state of the file currently in the repo.
+		- Patch is additive i.e. patches could be combined where the -/+ are summed together to form x1 single patch.
+		- Patch is generated/saved to the staging area via '$ git add', when committed this patch is then appended to the history of the file in the repo. 
+		- Patch can be thought of as taking a snapshot of the file but not of the whole file just the -/+ changes.
+		- Patch/Diff/Snapshot are synonymous.
+
+	Patch Set:
+
+		- Patch Set is the set of patches that may constitute a commit.
+		- Patch Set is a component of the commit object which is stored in the git object database.
+
+	Text/Binary Files:
+
+		- git is primarily suitable for text files.
+		- git is not suitable for binary files e.g. spreadsheets, video files, powerpoint, database, build artifacts (alternate/separate version control measures should be deployed accordingly).
+		- git should not become bloated with binaries hence the use of .gitignore.
+		- git repository should only contain the text files necessary to build/compile the project.
+
+	.gitignore
+
+		- .gitignore is a file that lists the files/directories/extensions that are not to be included within the Git version control.
+		- .gitignore contain all of the rules of the repository that will apply to all contributors.
+		- .gitignore templates are available which define a standard template that would normally be applied to a particular language.
+		- .gitignore utilises glob pattern matching:
+
+			#comment
+			[Blank Lines] 	#Ignored
+			.../		#Directory
+			!		#Negate (include)
+
+			*.c		#Ignore all *.c files
+			!keep.c		#However do not ignore and include this particular file
+			/logs		#Ignore the directory 'logs' in the root only but not and further subdirectories named 'logs' in the repo e.g. /source/logs
+			doc/*.txt	#Ignore all *.txt files in the directory 'doc' only, however including all *txt in all subdirectories e.g. doc/spreadsheets/*.txt 
+
+	Repo:
+
+		- Repo is the ultimate location whare all aspects surrounding a project are stored e.g.
+
+			1. Source Code
+			2. Documentation
+			3. History
+			4. ...
+
+		- Repo is the central location/mechanism to enable the project to remain organised and protected.
+		- Repo is ultimately the original file(s) combined with a patch set which is an accumulation of subsequent patches:
+
+			1. File:			File is initially added to the repo.
+							File as a whole represents the initial patch consisting of only (+) additions.
+
+			2. File modified.
+
+			3. $ git add <file>		git compares the state of the file in the repo with the newly modified state of the of file.
+							git generates a patch that contains the -/+ differences between these x2 states of the file.
+							git adds/places a copy of this patch into the staging area.
+
+			4. File modified (again):	File may be further modified whereby requiring '$ git add' to again generate and add/place the current/new patch into the staging area.
+
+			5. $ git commit -m "message":	Commit will move the patch from the staging area to the repo, adding the patch to the previous patches in the repo.
+
+							The repo will gradually build up the collection of patches:
+
+								Patch		Content
+								_____________________________
+
+								1		Original File		(via Commit 1)
+								2		Mod. 1			(via Commit 2)
+								3		Mod. 1			(via Commit 3)
+								...
+								n		Mod. n			(via Commit n)
+
+								e.g. Much like how a bank balance is calculated via -/+ ammounts to arrive at the current balance, a repo contains all of the patches which constitute the current state of the file.
+
+							This structure/approach enables the ability to easily revert to a previous version by 'removing' layers of patches. 
+
+		- Repo can be initialised via x2 different means:
+
+			1. Local Folder:		Local folder with pre-existing files is targetted by git and declared/initialised as a local repo.
+
+								$ git init
+
+									- Instruct Git to initialise PWD as new Git repository.
+									- Instruct Git to begin tracking this new repository.
+									- A hidden subfolder containing internal data structure for version control is added to PWD.
+
+			2. Remote Download:		Remote pre-existing repo is cloned, downloaded and placed into a local 'working directory' which forms the basis for all further development. This repo can now be:
+
+								1. Unbranched:		[main] remain unbranched whereby further commits simply add directly to the [main] branch.
+								2. Branched:		[main] is branched to create a [feature] branch where works/commits are completed and merged back into [main] followed by pull request.
+
+		- Repo is a directed acyclic graph (DAG) i.e. a tree using a linked list structure of commits.
+
+			Time --->
+
+				C1 --->	C2 --->	C3 --->	C4 --->	C5 --->	C6 --->	C7 --->	C8 --->	C9 [Detached HEAD]			[main]
+					|			|
+					|			C6 --->	C10 -->	C11 [Detached HEAD]					[feature - login]
+					|
+					C3 --->	C12 -->	C13 -->	C14 -->	C15 [HEAD]							[feature - auth]*
+							|
+							C13 -->	C16 -->	C17 -->	C18 -->	C19 -->	C20 [Detached HEAD]			[feature - help]
+									|
+									C17 -->	C21 -->	C22 -->	C23 -->	C24 -->	C25 [Detached HEAD]	[feature - background]
+
+
+					Upstream 	------>		[Stream flows in direction of development]
+					Downstream	<------
+
+					* Currently active branch in git
+
+			Working Tree:
+
+				- Working tree is the DAG that is local on your machine in the Working Directory.
+				- Working tree is the initial clone of the remote repo plus your own evolutions of the that tree e.g. new commits, branches
+
+	Repository Structure:
+
+		- git surveys/monitors the whole folder which has been initialised/designated a repository.
+		- git catagorises the files of the folder as shown:
+
+			Untracked/Ignored:______________Tracked:________________________________________________________________________
+			|				|										|
+			|	-	-	-	|	-	-	-	-	-	-				|
+			|	-	-	-	|	-	-	-							|
+			|	-	-		|	-	-	Modified________________________________________________|
+			|	-			|	-	-	|							|
+			|	-			|	-	-	|	-	-	-	-	-	-	|
+			|				|			|	-	-	-	-	-	-	|
+			|	(??)			|	|  |		|	-	Staged__________________________________|
+			|				|			|	-	|					|
+			|				|			|	-	|	-	-	-	-	|
+			|				|			|	-	|	-	-	-	-	|
+			|				|			|		|	-	Staged + Modified_______|
+			|				|			|	| M|	|	-	|			|
+			|				|			|		|	-	|	-	-	|
+			|				|			|		|		|	-		|
+			|				|			|		|	|M |	|	|MM|		|
+			|_______________________________|_______________________|_______________|_______________|_______________________|
+
+		- $ git status -s
+
+			??	File has been added to folder, not currently in the repo and is untracked/ignored.
+			A	File has been added to the staging area for the first time.
+			AM	File has been added to the staging area for the first time but also subsequently modified.
+			M	File has been modified and patch placed into staging area.
+			 M	File has been modified but patch not placed into staging area.
+			MM	File has been modified and patch placed into the staging but then subsequently modified.
+
+			For further details on the above status, please refer below.
+
+	Staging Area:
+
+		- Staging area is an intermediate location to store the latest patch.
+		- Staging area contains the latest patch which is the current -/+ between the state of the file in the working directory and that in the repo.
+		- Staging area contains the patch that would be included in the next commit.
+		- Staging area is also known as the 'index'.
+		- Staging area is 'added' the current patch of either individual, selection or all files within the working directory:
+		
+			$ git add <filename>
+			$ git add "Source Code - 1.java"							[Add single file]
+			$ git add "Source Code - 1.java" "Source Code - 2.java" "Source Code - 3.java"		[Add multiple files]
+			$ git add .										[Add all files in the current working directory]
+
+			NB:
+				- Case sensitive.
+				- "" required for all arguments which contain spaces.
+				- File extension needed.
+				- File will now remain tracked until it is manually removed from the repo.
+				- File if further modified after being added to the staging area will need to be added again in order for the current patch to be included in the next commit:
+
+					1. File created:	v1
+					2. File added
+					3. File modified:	v1.1
+					4. File commited
+					5. File v1 will be committed to repo, not v1.1.
+
+	Clone:
+
+		- Cloning a repo is the wholesale download and replication of a remote repo into a local repo within the working directory.
+		- Cloning a repo creates copy of the complete repo including all files and all history identical to that on the remote repo including:
+
+			1. Files
+			2. History
+			3. Branches
+			4. [All aspects]
+
+		- Cloning a repo is such that should the remote server fail it would be possible to fully reconstitute the repo on the server via the local repo (hence the distributed nature of git):
+
+			$ git clone <url>									[Create a clone of remote repository in PWD on local machine]
+													<url>:	[Repository remote location on (e.g. GitHub) to be cloned and downloaded]
+
+			$ git clone https://github.com/paul-surridge/remote-repo				
+
+	Commit:
+
+		- Commit is an object containing the following core properties:
+
+			1. Author
+			2. Date/Time
+			3. Change Set
+			4. Parent Commit
+			5. Hash ID (Object Name)
+			6. Commit Message (Subject/Body)
+
+		- Commits are a 'snapshot' of the state of the file system at a given moment in time.
+		- Commits can contain the patch of x1, some or all files in the repo.
+		- Commits commit the patches within the Staging Area to the repo database.
+		- Commits should be as granular as possible.
+		- Commits only save the files that have changed, files which have not changed are referred/linking back to the last commit the file was either added for the first time or committed.
+		- Commits are stored as a sequential linked list of objects in the repo object database located within the .git folder.
+		- Commits are stored/retrieved/referenced using a hash generated by SHA-1 which is generated from the file contents and its directory structure e.g.
+
+			Commit 86:		8304e9c271a5e5ab4fda797304cd7bcca7158c87
+
+			NB: SHA-1 serves as a checksum to ensure the integrity of the files and their subsequent modifications i.e. any change/corruption in the files is rapidly detected by git.
+
+		- Commits hash have many synonyms:
+
+			1. Object Name
+			2. Commit Name
+			3. Commit ID
+			4. Hash ID
+			5. Reference ID
+
+		- Commits hash can be represented using 'Short Links':
+
+			Reference Type			Raw Reference						Short Link
+			_______________________________________________________________________________________________________________
+
+			Commit URL			desktop/desktop@8304e9c					8304e9c
+			SHA				8304e9c271a5e5ab4fda797304cd7bcca7158c87		8304e9c
+			User@SHA			desktop@8304e9c271a5e5ab4fda797304cd7bcca7158c87	desktop@8304e9c
+			Username/Repository@SHA		User/Repository@SHA:desktop/desktop@8304e9c		desktop/desktop@8304e9c
+
+		- Commits are an additive process i.e. git only 'adds' making it difficult to actually lose/delete/messup files/data contained within a repo.
+		- Commits should have the following considerations:
+
+			1. Commit Content:		Commit content should be carefully considered including:
+
+								1. Appropriate Amount:		Appropriate amount of changes that would be expected to be included a single commit.
+								2. Organisation:		Well organised and related to the same topic.
+								3. Small:			Granular and not consist of a large amount of crammed modifications in a single commit.
+								4. Staging Area:		Efficient use of the staging area to ensure that a minimal amount of related files/content are actually modified within a single commit.
+
+							Commit content can be granulary defined to include whole files or individual patches in those files e.g.
+
+								$ git add -p <filename>		Allows for the stepping through and discrete selection/addition of individual patches to the staging area.
+
+							Commit content should be arranged to enable the crafting of a commit history that is very granular and targetted in order to enable:
+
+								Readability		Maintainability
+								Comprehension		Extensibility
+								Clarity			Confidence
+								Value
+
+			2. Commit Message:		Commit Message should aim to be:
+
+								Subject:
+
+									Clear:		Immediately clear, accurate and concise to recall what was included and purpose of the commit.
+									Readable:	Immediately possible to read and gain a good comprehension of the repo history.
+									Encapsulate:	Immediately encapsulate all of the modifications included in the commit.
+
+								Body:
+
+									Short:		Less than x80 characters (anything greater may suggest that the commit is too large/complicated).
+									Modifications:	What are the new modifications.
+									Reasons:	What are the reasons behind the need for the modifications.
+									Notifications	What are the notifications that any future programmer should be aware or on lookout for.
+
+							Commit Message can be entered when the commit command is executed or via a file that is automatically opened by git in designated text editor:
+
+								File:	COMMIT_EDITMSG -- .git
+
+									When entering Commit Message via the automatically opened .git file, structure the message at top of file as shown:
+
+										[Commit Message]
+										[x1 empty line]		//Use an empty line to delineate between the subject and body.		
+										[Commit body]
+
+							Commit Messages are intended to be simple/brief summary of what modifications have been applied to the repo:
+
+								1. No Period:		Do not end Commit Message with a period (.)
+								2. Present Tense:	Use 'active voice' (present tense) e.g. 'add' not 'added', 'merge' not 'merged'.  This empathsises that the Commit is an expression of intention or proposal to apply a change for the owner to confirm and merge.
+
+		- Commit commands:
+
+			$ git commit						[Staging area is commited to repo database]
+			$ git commit -v 					[All +/- is placed in the commit message body]
+			$ git commit -am "Commit Message"			[Skip the staging area]
+										[Place all tracked files into the staging area and commits all]
+
+		- Commit removal:
+
+			$ git rm -n | --dry-run
+			$ git rm -q | --quiet
+			$ git rm 	    --cached
+			$ git rm -f | --force
+			$ git rm -r
+			$ git rm      --ignore-unmatch
+			$ git rm      --pathspec-from-file <file>
+			$ git rm      --pathspec-file-nul <file>
+
+	HEAD:
+
+		- HEAD is the pointer that points to the last commit on the active branch:
+
+			[main]		C1 --->	C2 --->	C3 --->	C4 --->	C5 -- (HEAD)
+
+		- HEAD should not be visualised as the 'last commit' but to exist just after the last commit.
+		- HEAD is commonly used in commands inconjunction with ~ (tilde) to imply 'subtraction':
+
+			$ git rebase -i HEAD~4
+
+							|-----------------------|
+				[main]		C1 --->	C2 --->	C3 --->	C4 --->	C5 (HEAD)
+
+						HEAD~4:	'HEAD minus 4 is the commit which is the start of the span/range of the interactive rebase, where C5 is considered commit 1 not 0'
+
+			$ git reset --hard HEAD~1
+
+										||
+				[main]		C1 --->	C2 --->	C3 --->	C4 --->	C5 (HEAD)
+
+						HEAD~1:	'HEAD minus 1 is the commit which the branch will be reset to'
+
+	.git Folder:
+
+		- .git folder is/contains the local repo.
+		- .git folder contains everything associated with the repo including:
+
+			Object Database
+			Metadata
+
+		- .git folder is what is copied when a repo is cloned.
+
+	git Configuration:
+
+		- git configuration has x3 levels:
+
+			1. Global:	C:\Program Files\Git\etc\gitconfig
+
+						- Applied to all users.
+						- Applied to all repos.
+
+							$ git config --system
+
+							NB: Require administrator privilege
+
+			2. User:	C:\Users\Paul Surridge\.gitconfig
+
+						- Applied to user only.
+						- Applied to user repos only
+
+							$ git config --global
+
+			3. Repo		...\Repo\.git\config
+
+						- Applied to repo only
+
+							$ git config --local
+
+			Configuration levels override the higher level e.g. --local overrides --global which overrides --system.
+
+		- git configuration access:
+
+			Command			Command Line Interpreter
+			________________________________________________
+
+			$ git config --system	CLI can be pointed to any location
+			$ git config --global	CLI can be pointed to any location
+			$ git config --local	CLI must be pointed to the target local repo
+
+		- git configuration get/set:
+
+			Get:
+
+				$ git config --list							[Get all current properties]
+
+				NB: May return duplicate keys given git may use key for varying levels.
+
+			Set:
+
+				$ git config --global user.name "Paul-Surridge"				[Set the property:	user.name]
+				$ git config --global user.email "Paul-Surridge@email.com"		[Set the property:	user.email]
+				$ git config --global core.editor "Notepad"				[Set the property:	core.editor]
+
+	Working Directory:
+
+		- Working directory is the local directory on local machine which contains the project which is being version controlled by git.
+		- Working directory contains all of the associated files which constitute the project.
+
+			Clean:		When there are no modifications within the working directory which have not been committed to the current branch.
+					When there is no difference between the working directory and the repo e.g. when the repo is first cloned or all files in the working directory have been commited.
+					
+						Working directory == Repo	[Staging Area = Empty]
+
+			Dirty:		When there are modifications within the working directory which have not been committed to the current branch.
+					When there is a difference between the working directory and the repo.
+
+						Working directory != Repo	[Staging Area = Contains patches]
+
+	Revision:
+
+		- Revision is the particular overall combined state of the files within the repo:
+
+			Working		C1 --->	C2 ---> C3 --->
+			Dir.		_______________________
+
+			File A		v1	-	v1.1
+			File B		v1	v1.1	-
+			File C		v1	-	v1.1
+			File D		v1	v1.1	v1.2
+
+					Rev1	Rev2	Rev3
+
+		- Revision is associated with the incremental progress of the commits.
+		- Revision incrementation conincides with the progression of the commits.
+		- Revision is not specifically an individual commit for a commit may only contain the modification of a subset of the files in the repo.
+
+			Rev 1:		File A - v1
+					File B - v1
+					File C - v1
+					File D - v1
+
+			Rev 2:		File A - v1
+					File B - v1.1
+					File C - v1
+					File D - v1.1
+
+			Rev 3:		File A - v1.1
+					File B - v1.1
+					File C - v1.1
+					File D - v1.2
+
+		- Revision is the state of all files in the repo at that particular time of the commit.
+
+	Diff:
+
+		- Diff is the difference between entities:
+
+			$ git diff				[Diff between the working file and the patch in staging area]
+			$ git diff --cached			[Diff between the staging area and the last commit]
+			$ git diff --staged			[Diff between the staging area and the last commit]
+
+	Merge:
+
+		- Merging x2 branches involves x3 commmits:
+
+			1. Common Ancestor:	C2	Latest commit that both branch A and B share.
+			2. Main:		C4	Latest commit on Main branch
+			3. Feature:		C7	Latest commit on Feature branch
+
+				[feature]			C2 ----- C5 ----- C6 --------------------- C7 --->		
+								|
+				[main]			C1 ---- C2---------------------- C3 ----- C4 ------------>		
+
+				[main][merged]		C1 ---- C2 ----- C5 ----- C6 --- C3 ----- C4 ----- C7 --->
+
+		- Merging may involve differing procedures:
+
+			1. Fast Forward
+			2. Merge Commit
+
+		- Merging via Fast Forward:
+
+			- Fast forward merge is the most simpliest and straight forward merge where the commits on branch B are simply added onto branch A
+			- Fast forward merge is available when the common ancestor is also the last commit.
+
+				[feature]		    	C2 ----- C4 ----- C5 --------------- C5 -->
+						    		|
+				[main]			C1 ---- C2 --------------------------------------->
+
+				[main][merged]		C1 ---- C2 ----- C3 ----- C4 --------------- C5 -->
+
+		- Merging via Merge Commit:
+
+			- Merge commit is a more common merging procedure where a new 'Merge Commit' is created and added to the merge history:
+
+				[feature]			C2 ------ C6 ---------- C7						
+								|			|
+				[main][merged]		C1 ---- C2 -- C3 ------ C4 ---- C8 ----- C9 ------>				
+
+			- Merge commit (C8) is not an accumulation of the intermediate commits on both branches but should be considered as a 'knot' which ties both branches.
+			- Merge commit still leads to the need to review both branches to understand the overall commit history of Main, compared to a Rebase which actually combines the x2 branches into x1 branch and forms x1 branch history. 
+			- Merge commit is created by git (not a human).
+
+		- Merge is always with completed from the receiving branches perspective, 'merge' should be thought as 'pull into':
+
+				[feature] 		--- C ----- C -- C ----- C ---- C		[Pulled in branch]
+							      				|
+				[main][merged]		--- C --- C ----- C -- C ------ C ----- C --->	[Receiving branch]
+
+			1. If Feature is to be merged into Main.
+			2. Programmer merges/pulls Feature into Main (not vice versa).
+			3. Therefore it is necessary for git to be on the 'receiving branch' i.e. Main when running the 'merge/pull' command e.g.
+
+				1. $ git switch main
+				2. $ git merge "Feature"
+
+		- Merge fails if the 'pulled in' branch does not have an ancestor which is also an ancestor of the 'receiving' branch e.g.
+
+				[feature]			C -----	C -- C ----- C ---- C
+								|			    |
+				[main][merged]		C ----- C1 --- C ----- C -- C ----- C ----- C --->
+
+							C1: Common ancestor of both Main and Feature
+
+				If for whatever reason Main and Feature do not share a common ancestor then it is not possible to merge Feature into Main.
+
+		- Merge commands:
+
+			$ git pull
+
+				- Pull down and refresh the local repo so that it contains any subsequent commits (which may have been added by other Developers). 
+				- 'Pull' is from the perspective of the local repo i.e. 'pull' from the remote repo into the local repo.
+
+			$ git push
+
+				- Push the Local Branch onto the Master Branch.
+				- Refresh the Master Branch so that it matches any local Commits (added by the Local Developer) on Local Branch.
+				- 'Push' is relevant to the Master Branch i.e. 'push' the Local Branch onto the Master Branch.
+
+				- Push up and refresh the remote repo so that it contains all of the commits which exist in your local repo but not in the remote repo.
+				- 'Push' is from the perspective of the local repo i.e. 'push' from the local repo into the remote repo.
+
+			$ git push origin master
+
+				- Push the local repo to the remote repo (say on GitHub).
+
+	Merge Conflict:
+
+		- Merge conflict occurs when integrating commits from differing sources via:
+
+			$ git merge
+			$ git rebase
+			$ git pull
+			$ git stash apply
+			$ git cherry-pick
+
+		- Merge conflict occurs at the branch level when branches are recombined e.g.
+
+			Modification		Description
+			_______________________________________________________________________________________________________________________________________
+
+			Line			Line in file has x2 differing modifications which have occurred in concurrent commits on differing branches e.g.
+
+							[feature]		C ----- C2 ------ C3
+								 		|		  |
+							[main]		C ----- C --- C1 -------- C4 ------>
+
+							C1:	(old):	<div>One<\div>		C2:	(old):	<div>One<\div>
+								(new):	<div>Two<\div>			(new):	<div>Three<\div>
+
+							C4: 	Merge Conflict
+
+			File			File has been modified in x1 branch but deleted in another branch.
+
+		- Merge conflicts can be more easily visualised using GUI based git repository tools e.g. git tower (git-tower.com)
+		- Merge conflicts can be reported when:
+
+			$ git status		Return all current merge conflict on current head and (presumed) any tracked branch.
+			$ git merge		Return all current merge conflict on current head and the origin branch. Merge will be automatically aborted.
+
+			Within the file, git will highlight the conflicting line(s) between the x2 branch e.g. [HEAD] and [Branch1] e.g.
+
+				[Rest of program]
+
+				===
+					Modified Line	(Developer 1)
+				===
+					Modified Line	(Developer 2)
+				===
+
+				[Rest of program]
+
+			[Or]
+
+				<<<<<<<<<<<<< HEAD
+					<div>Two<\div>
+				=============
+					<div>Three<\div>
+				>>>>>>>>>>>>> Branch1
+
+		- Merge conflicts can be 'undone' and reverted back to the state prior to the merge conflict:
+
+			$ git merge --abort
+			$ git rebase --abort
+
+			Presume:
+
+				- Undo the exact modification that caused the conflict to be altered back to the state prior the conflict.
+				- Undo the local branch on your local machine (rather than alter/revert the target branch - which may contain the commit generated by someone else)
+				- [To be evaluated/investigated]
+
+		- Merge conflicts can be resolved via:
+
+			1. Manual:	Manual discussion with the team members whose work conflicts and manual modification of the offending lines.
+			2. Tools:	Tools do exist that enable more rapid resolution of merge conflicts, providing ability to observe the conflicting lines side-by-side, select or manually define the final lines.
+			3. GUI:		GUI based interfaces for git e.g. git tower.
+
+		- Merge conflict tools can be associated/set within git (via $ git mergetool) to define/set which tool to open should git encounter a merge conflict.
+		- Merge conflict should ideally be minimised/prevented via good communication between developers i.e. ensure no more than x1 developer is working on same section.
+		- Merge conflict can been resolved via
+
+			$ git add	[TBC]
+
+	Rebase:
+
+		- Rebase is an alternative to merging.
+		- Rebase is a means of integrating/combining x2 branches where the resultant branch appears as x1 branch history without the record of multiple branches and multiple branch histories.
+
+			Step 1: Given x2 branches:
+
+				[feature]			C2 ---- C3 ----- C4 --->
+								|
+				[main]			C1 ---- C2 --- C5 ------------->
+
+			Step 2: Commits on Main are removed and stored:
+
+				[feature]			C2 ---- C3 ----- C4 --->
+								|
+				[main]			C1 ---- C2 -------------------->		Temp Location: C5
+
+			Step 3: Commits on Feature added to Main:
+
+				[main]			C1 ---- C2 ---- C3 ----- C4 --->		Temp Location: C5
+
+			Step 4: Commits from Branch A are reapplied after the commits from Branch B:
+
+				[main][Rebased]:	C1 ---- C2 ---- C3 ----- C4 ----- C5 --->
+
+			Step 5: Main is now considered 'rebased' from an initial base commit of C1 to C5.
+
+					In the rebasing operation:
+
+						- C5 above is no longer the same C5 from Step 1.
+						- C5 is altered so that its parent is now C4 rather than C2.
+
+					Commits only have a small number of important properties which define a particular commit:
+
+						Authour		Change Set
+						Date		Parent Commit/ID
+
+					Rebasing C5 will cause the Parent to be altered consequently a new hash for C5 will need to be generated.
+
+		- Rebasing and Local/Remote Repo:
+
+			Given that rebasing recreates the hash of C5 as described above:
+
+				1. Rebasing should only be applied to your own local repo.
+				2. Rebasing should only be applied to a feature branch that only yourself has been building.
+				3. Rebasing should only be applied as a form of 'tidy up' of your own local repo before it is merged into a shared team branch.
+				4. Rebasing should only be applied to remove all of the development/test branches that you may have used during development of a particular branch which are no longer relevant and can be removed to simply branch history.
+				3. Rebasing should not be applied to commits that already may exist elsewhere on other team members machines.
+				4. Rebasing should not be applied to commits that have already been pushed/shared/exist on a remote repository.
+
+			Rebasing commits of a cloned repo that may already exist on other team members machines would cause those commits to go out of sync and lead to further issues/complications. 
+
+	Interactive Rebase
+
+		- Interactive rebase enables the optimisation and clean up of a commit history.
+		- Interactive rebase enables the modification of a commit history via:
+
+			1. Message:	Commit message can be changed/modified/updated
+			2. Delete:	Commit can be deleted/removed from commit history
+			3. Reorder:	Commit ordering can be rearranged
+			4. Combine:	Commit can be combined into x1
+			5. Edit/Split:	Commit can be edit/split into multiple individual commits
+
+		- Interactive rebase generates new commits therefore new hash ID's (as with Rebase described above):
+
+			1. Interactive rebase should only be applied to local feature branch.
+			2. Interactive rebase should not be applied to commits that have already been pushed/shared on a public/team repo.
+
+		- Interactive rebase is intended for modification of commits older than the last commit, the last commit can be modified via other commands e.g.
+
+			$ git commit ammend
+
+		- Interactive rebase is generally used as follows:
+
+			1. Log:		Return the current log:
+
+						$ git log --oneline
+
+						de135b4 (HEAD -> master) Commit message [latest]
+						7b2317c Commit message [HEAD - 1]
+						6bcf265 Commit message [HEAD - 2]
+						...
+						0023acc Initial commit message [HEAD - n]
+
+			2. Range:	Define range and base commit that you wish to 'interact with' and modify:
+
+						$ git rebase -i HEAD~4
+
+							|-----------------------|		[Range]
+						C1 --->	C2 --->	C3 --->	C4 --->	C5 (HEAD)
+
+							C3:	Commit that is to be modified/rebased
+							C2:	Commit that is to be modified/rebased parent
+
+							NB: The range needs to include the parent of the commit to be modified/updated.
+	
+			3. Session:	Rebase session will start and git will open Editor Window enabling the update/modification of the aspects of the commits.
+
+			4. Modify:	Follow the command instructions and ammend the 'pick' word accordingly.
+
+			5. Save:	Once the commit action keyword has been a entered (overriding 'pick'), save and close the editor window.
+
+			6. Modify:	git will open another Editor Window allowing for the modification to be entered (at top of .git file), save and close.
+
+			7. Log:		Return the current log and the commit will have been modified.
+
+	Cherry-Picking:
+
+		- Cherry picking is the operation of selecting individual commits to be pulled into a branch (rather than the whole branch) e.g.
+
+			[feature]		C2 ----- C5 ----- C6 --- C7 ---->
+						|
+			[main]		C1 ---- C2 -- C3 ---- C4 ----->
+
+
+			[feature]		C2 ----- C5 ----- C6 --- C7 ---->
+						|		  |________
+					       	|	       		   |
+			[main]		C1 ---- C2 -- C3 ---- C4 --------- C6 --->
+
+		- Cherry picking allows C6 to be merged into Main opposed to the whole branch which would also include C2, C5 and C7.
+		- Cherry picking should not be considered an alternative to merge/rebase but for specific situations e.g.
+
+			- Error:	Commit was made on the wrong branch e.g. a commit was made on Main rather than a Feature branch.
+			- ...
+
+		- Cherry picking is implemented as follows:
+
+			1. Main Branch:		Initially on Main branch.
+			2. Error Commit:	Commit has been placed in error on Main instead of Feature.
+			3. Switch Branch:	Switch to Feature branch.
+			4. Commit Hash:		Find and copy the error commit hash (which is currently on Main).
+			5. Cherry Pick:		Run cherry pick command:
+
+							$ git cherry-pick <commit-hash>
+
+			6. Reassign:		Commit has now been COPIED from Main to Feature.
+			7. Delete Old:		Commit on Main still persists, it is necessary to delete the error commit on Main via:
+		
+							$ git reset --hard HEAD~1		Delete the last commit on the head branch.
+
+	Repo History
+
+		- git enables the query, search and find of the repo history.
+		- git enables the query of the following:
+
+			1. Date:		--before / --after
+			2. Commit Message:	--grep
+			3. Author:		--author
+			4. File:		-- <filename>
+			5. Branch:		<branchname1>..<branchname2>
+
+			NB: All of these criteria can be combined &&'d into the same command simply via concatenation of the flags. 
+
+			$ git log		Returns the log for repository including the SHA for all commits.
+
+		- git search by date:
+
+			$ git log --after="2021-10-2"
+			$ git log --after="2021-10-2" --before="2021-11-2"
+			$ git log --after="2021-10-2" --before="2021-11-2" --author="Paul Surridge"
+
+		- git search by commit message:
+
+			$ git log --grep="refactor"
+			$ git log --grep="[regular expression]"
+
+		- git search by authour:
+
+			$ git log --author="Paul Surridge"
+
+		- git search by file:
+
+			$ git log -- ReadMe.md
+
+			Returns all of the individual commits that have been applied to a particular file, useful for trying to find when a fault ocurred in a file.
+
+		- git branch comparison:
+
+			$ git log feature/login..main
+
+			Return all commits in main but not in the branch feature/login i.e. all of the commits that occurred in main after feature/login was branched.
+
+	Reflog:
+
+		- Reflog is a diary/log of the HEAD pointer, all movements of the HEAD pointer are stored in the Reflog, therefore this includes all core actions:
+
+			Commit		Rebase		Checkout	Reset
+			Merge		Cherry-Pick	Switch
+
+		- Reflog should be a core location for evaluating the actions and fault finding what has occurred within a repo e.g.
+
+			1. Recovering Deleted Commits
+			2. Recovering Deleted Branches
+
+	Submodules:
+
+		- Submodules enable the importation and access of other 3rd party source code into your own project and repo e.g.
+
+			Frameworks
+			Libraries
+
+			NB: It is possible to manually import other files into own local repo via manual copy/paste however this may incur risk:
+
+				1. Project Mixing:		Projects should remain separate, files of own project should not become mixed with that of another 3rd party framework/library/project.
+				2. Project Maintenace:		Projects are discrete, the 3rd party library/framework is a project in itself hence should not come within the version control context of another/own local repo.
+				3. Out-of-date:			Framework/library may get updated by the maintainers of that project and no longer match the local files requiring another manual (possibly error prone) manual copy/paste.
+
+		- Submodules are a much more all encompassing, definite and clean way of importing 3rd party repos.
+		- Submodules are fully self-contained discrete/operational repos with full functionality but are nested within your own local (parent) repo e.g.
+
+			1. Local Folder:	Create a folder in the local repo to house/contain the submodule.
+
+			2. Submodule:		Create/add the submodule in local folder:
+
+							$ git submodule add <url>
+							$ git submodule add https://github.com/vendor/framework
+
+			3. Clone:		Remote repo is now cloned into folder in local repo.
+
+			4. Submodule:		Folder in local repo will now contain a fully self-contained clone of the remote 3rd party repo which includes all the respective/expected .git and .gitignore folders etc...
+
+			5. Local Repo Config	Local repo config is ammended accordingly, new files are created and added to:
+
+							1. Working Directory
+
+								Folder:			Contains a cloned self-contained repo of the 3rd party repo as a submodule
+
+							2. Local repo:
+
+								\.gitmodules		Contains information about the submodules contained in the local repo e.g. <local-path> and <remote URL>
+								\.git\config		Contains appended information about submodules
+								\.git\modules\		Contains replication/copy of the submodule as located in the <local-path>
+
+						NB: Files located in the hidden .git folder can be opened via CMD and using 'type <filename>' for review purposes only.
+						NB: Files located in the hidden .git folder should never be manually adjusted, only via git CLI commands or GUI based interface.
+
+			6. Commit:		Submodule has already been added it to the staging area (via the original command ar step 2) but will need to be committed just as if it was a file modification.
+ 
+		- Submodules do not store the actual files from the 3rd party repo, only:
+
+			1. Remote URL:		Remote URL of the 3rd party repo that the submodule is referenced.
+			2. Local Path:		Local path within the local repo where the submodule is stored.
+			3. Checkout Revision:	Checkout revision i.e. the last commit (I presume) of the remote repo.
+			4. Working Files:	Working files/copies from the remote repo are stored locally to be used in own project.
+
+		- Submodules persistent state:
+
+			1. Submodules are checked out on a particular commit (the commit which is the HEAD at the time the submodule is checked out) rather than the branch.
+			2. Submodules do not continually update themselves as and when the 3rd party repo is naturally updated.
+			3. Submodules do not continually reference the last commit of their corresponding repo if the repo (which contains a submodule) is again cloned itself.
+			4. Submodules will continue to point to and reference a particular commit i.e. the commit that was the last commit when the submodule was checked out.
+			5. Submodules are typically libraries/frameworks and it may be desired to only use a framework at a specific revision which does not further change at all.
+			6. This is to ensure that the dependencies within the submodule are always consistent, stable and do not change at any time.
+			7. This is prevent the risk of any subsequent updates of the submodule files within their orginal repo inadvertently having an adversed effect on the operation of your own local repo/project.
+
+		- Submodules are not part of the local (parent) repo version control context, therefore:
+
+			1. Version Control:	No version control from the local (parent) repo is applied to the files in the submodule.
+			2. Config:		Config of the local repo is the only aspect of the local repo that is modified when the submodule is cloned and downloaded.
+
+		- Submodules are not included in remote clones:
+
+			1. Clone of a remote repo will not download the file contents of the submodules.
+			2. Submodules (as described above) are not part of the repo, therefore downloading/cloning a repo will not pull down the submodules.
+			3. Submodules folders will appear in the cloned repo but will be empty.
+			4. It is necessary to explicitly download these files via:
+
+				1. cd:		Change to the submodule folder in local (that is currently empty).
+				2. Initialise:	Initialise the submodule folder and download the actual 3rd party repo as a submodule:
+
+							$ git submodule update --init -- recursive
+
+				3. Download:	Download of the repo will begin and download all files within that 3rd party repo recursively and populate the submodule folder.
+
+			5. Alternatively the submodules could be automatically included in the initial clone of the remote repo by appending additional options:
+
+				$ git clone --recurse-submodules https://github.com/vendor/framework
+
+	Branching:
+
+		Overview:
+
+			- Repo can contain multiple branches.
+			- Repo can only have x1 branch active at any one time which contains the 'HEAD' (as described above):
+
+				HEAD:		Active branch.
+						Checked out branch.
+						Branch you are currently referencing.
+						Branch that new commits will be applied.
+
+			- Repo can report which is the active branch via:
+
+				$ git status
+
+		Local Branches
+
+			- Local branches represent the bulk of the branches that one will work with during development.
+			- Local branches are branches situated in the local repo.
+			- Local branches are the only branches that can be created from the local instance of git (not possible to create branches on remote repo).
+
+		Remote Branches
+
+			- Remote branches are those located within the remote repo.
+			- Remote branches can not be created from a local machine.
+			- Remote branches can only be created by publishing/pushing your local branch to the remote repo.
+
+		Branch Creation
+
+			- Branches can only be created locally within your own local repo.
+			- Branches are created using:
+
+				$ git branch <new_branch_name>				Create a new local branch from the HEAD which is pointing to the currently active branch.
+				$ git branch <new_branch_name> [commit_name]		Create a new local branch from previous commit as referenced by the commit_name (SHA-1).
+
+			- Branches can be created from a commit via either:
+
+				Commit		Description
+				_________________________________________________________________________________________________________________________________________________
+
+				Head:		Create a new branch starting from the last/head commit of a branch
+				Ancestor:	Create a new branch starting from an ancestor of the last/head commit of a branch i.e. some previous commit generated in the past.
+
+			- Branch name cannot contain spaces (presume no names in git can have spaces).
+
+		Branch Checkout
+
+			- Branch checkout is specifically:
+
+				$ git checkout -b <branch name>
+				$ git checkout -b feature				Create a branch called 'branch name'
+
+		Branch Switching
+
+			- Local repo can contain multiple local branches.
+			- Local repo can be instructed to switch between available branches in that local repo using either:
+
+				$ git switch <branch_name>
+				$ git checkout <branch_Name>
+
+				NB: It is recommended to use switch as it is less ambiguous compared to checkout
+
+		Branch Renaming
+
+			- Branch renaming is only directly permitted on local branches, renaming remote branches requires the manual deletion/creation of a new branch:
+
+				Local Branch
+
+					$ git branch -m <new_branch_name>			Rename current head branch
+					$ git branch -m <existing_branch> <new_branch_name>	Rename <existing_branch> branch
+
+				Remote Branch (x2 stage process)
+
+					1. $ git push origin --delete <existing_branch_name>	Delete the existing branch that wish to rename
+					2. $ git push -u origin <new_branch_name>		Push new local branch with the correct name
+
+		Branch Show/Status
+
+			- Show all existing branches in the local repo:
+
+				$ git branch
+
+			- Show all existing branches in the local repo and the current active head branch.
+			- Show all branches that are stored and being worked on locally.
+
+		Branch Push
+
+			- Branches can be pushed/published/uploaded to a remote repo.
+			- Branches cannot be created directly on a remote repo.
+			- Branches can only be created locally and then pushed to the remote repo via:
+
+				$ git push -u origin <local_branch_name>
+
+			- Branching can be simplified via the use of branch tracking to ensure consistency and always 'pointing to' and referencing the correct local/remote branches:
+
+				$ git push
+
+		Branch Pull
+
+			- Branches can be pulled/downloaded from a remote repo.
+			- Branches on remote repo can be pulled from a remote repo via:
+
+				$ git pull <remote_branch_name> 
+
+			- Branching can be simplified via the use of branch tracking to ensure consistency and always 'pointing to' and referencing the correct local/remote branches:
+
+				$ git pull
+
+		Branch Tracking
+
+			- Branch tracking is a means of declaring and establishing a formal link between a local branch and remote branch.
+			- Branch tracking enables local and remote branches (which are stored as completely separate objects and not 'aware' of each other) to form an associative link.
+			- Branch tracking is a means of informing the local instance of git that any subsequent command e.g. 'push'/'pulls' are to be associated with the tracked remote branch.
+			- Branch tracking allows for much simpler commands to be used without the need to specify any additional flags, locations or target branches.
+			- Branch tracking ensures that the local branch is always associated and merged with the correct remote branch.
+
+				$ git branch --track <local_branch_name> <remote_branch_name>
+
+					1. Local branch is both:
+
+						- Created from the remote branch.
+						- Tracking the remote branch.
+
+					2. Subsequent commands applied to the local branch are automatically associated with the remote branch.
+
+				$ git checkout --track <remote_branch_name>
+
+					1. Local branch is both:
+
+						- Created from the remote branch using the remote branch name/path.
+						- Tracking the remote branch.
+
+					2. Subsequent commands applied to the local branch are automatically associated with the remote branch.
+
+			- Branch tracking also enable the local instance of git to inform on differences/divergences between the local commits and remote commits via '$ git status':
+
+				$ git status
+
+				> Your branch and <remote_branch_name> have diverged, and have 1 and 2 different commits each, respectively.
+
+				$ git branch -v
+
+				> * <remote_branch_name> <object_name>	[ahead 1, behind 2]
+
+				Response is with respect to local branch:
+
+					1. 'Local branch is ahead x1 commit':		There is x1 commit on local but not on remote
+					2. 'Local branch is behind x2 commits':		There is x2 commit on remote but not on local
+
+		Branch Deletion
+
+			- Branch deletion can be applied to both local and remote branches:
+
+				Local Branch:
+
+					- Local branch deletion is via:
+
+						$ git branch -d <local_branch_name>
+
+					- Local branch deletion is not possible on the head branch.
+					- Local branch deletion of the head requires switching away to an unused branch first and then deleting:
+
+						1. $ git switch <local_branch_name_other>
+						2. $ git branch -d <local_branch_name_head>
+
+					- Local branch deletion of multiple commits require the -f flag (forest) to signifiy that all commits wll be removed.
+					- Local branch deletion of multiple commits (which are not replicated elsewhere) is a destructive action but the commits can still be retrieved (if need be).
+
+				Remote Branch:
+
+					- Remote branch deletion is via:
+
+						$ git push origin --delete <remote_branch_name>
+
+			- Branch deletion does not automatically delete any tracker branches i.e. deleting a remote branch will not also delete any tracked local branches (this must be manually completed).
+
+		Branch Merging
+
+			- Branch merging is the most common method of integrating changes in another branch into your own local branch:
+
+				1. $ git switch <branch_A_name>		Switch to the branch that is to receive the commits from another branch.
+				2. $ git merge <branch_B_name>		Merge or 'pull in' the commits from another branch into the branch you are currently on.
+
+			- Branch merging generates its own commit consequently will require a 'merge commit message' to be entered via:
+
+				1. Window:	A separate local window will open to a COMMIT_EDITMSG.git file which enables a commit message (subject/body) to be entered.
+				2. Command:	Append the message to the merge command (presume via the -m flag)
+
+			- Branch merging is generally as follows:
+
+				[feature]		C2 --->	C3 ---> C4 ---> C5 ---------->
+							|			|
+				[main]		C1 --->	C2 -------------------> C5 ---------->
+
+						C5 is the merge commit created when Feature branch is merged into the Main branch.
+
+		Branch Rebasing
+
+			- Branch rebasing is an alternate method to merging for integrating x2 branches.
+
+			- Branch rebasing is a preference rather than a requirement i.e. the choice to either rebase or merge will depend upon team convention or other preferential reasons.
+
+			- Branch rebasing does not include a 'Merge Commit', there is no 'branching' in the history of the repo, the lineage of the repo is recomposed with the commits from the other branch:
+
+				[feature]			C2 --->	C3 ---> C4 ---> C5 ---------->
+								|
+				[main]			C1 ---> C2 ---------------------------------->
+
+				[main][Rebased]:		C1 ---> C2 --->	C3 ---> C4 ---> C5 ---------->
+
+			- Branch rebasing is as follows:
+
+				1. $ git switch <Main>		Switch to the branch that is to receive the commits from another branch.
+				2. $ git rebase <Feature>	Rebase Feature by pulling its commits into Main i.e. the base of Feature is no longer C2 but now C1.
+
+		Branch Compare
+
+			- Branch comparison is via:
+
+				$ git log <local_branch_name>..<remote_branch_name>		Returns summary of the commits in <remote_branch_name> but not in <local_branch_name>
+
+				NB: This command can be reversed to compare/find what commits are in the <local_branch_name> but not in the <remote_branch_name>
+					
+		Branching Strategy
+
+			- Branching strategy depends on:
+
+				Team		Project Structure	Integration Processes
+				Team Size	Release Management
+
+			- Branching strategy should include/consider:
+
+				Minimal Branching:		Minimal branching should be employed.
+								Minimal branching should ensure that branch life duration should be as short lived as possible.
+								Minimal branching should ensure that branch length should be as short as possible i.e. as fewer commits on a branch as possible.
+								Minimal branching should include ensuring that branches are merged at end of the day.
+
+									'Lots of branches everywhere on peoples machines -> bad'
+
+				Release Structure		Branching should follow/mirror any release structure that the overall project adheres to i.e. the expected release structuring as set by the company.
+
+				Quality Commits:		Branching should ensure that only the highest quality commits ever get any where near the main branch e.g. complete testing, source code reviewed.
+								Branching should therefore utilise a separate 'development' branch.
+
+			- Branching strategy should be team specific:
+
+				Written Convention:		Written convention which specifies the best practice to avoid mistakes, misunderstanding and collisions etc...
+								Written convention assists in 'onboarding' new engineers.
+								Written convention is something which all members of the team can agree, adhere and work towards.
+
+				git agnostic:			git is agnostic about how branching is used, git supplies the ability to branch source code, it is up to the team to decide how best to ultilise and organise their implementation.			
+
+			- Branching strategies include:
+
+				1. Mainline Development		Continuous deployment.
+								Always/continually integrating your own work into main live production branch i.e. that of the whole team.
+								Minimal branches.
+								Small commits.
+								High-quality testing.
+								High-quality QA standards.
+
+								C ----> C ----> C ----> C ----> C ----> 	[main]
+
+				2. State, Release and Feature Branching
+
+								Branches are used to establish structure and worflow within the team.
+								Branches are used to
+
+									Experiment:		Branch is used to try out new ideas and experiments.
+									Feature:		Branch is used to develop and commission a new feature.
+									Release:		Branch is used to build and commission a new release before it is formally deployed.
+
+								Branches are designated specific roles e.g.
+
+									[feature]			C -----	C -----	C		C -----	C				[Short Running Branch(es)]
+									[develop]		C ------C----------------------	C ------C-------------- C			
+									[main]		C ------C--------------------------------------------------------------	C		[Long Running Branch]
+
+								Branches can be broadly classed as either long/short running:
+
+									Long Running:		Long running branches exist for the complete lifetime of the project.
+												Long running branches mirror/reflect/follow the broad large scale development stages of the overall project e.g.
+
+													[production]
+													[staging]
+													[release]
+
+												Long running branch will be included (x1 minimum) in all projects e.g.
+
+													Central Branch: (Every project has a central branch)
+
+														[main]
+														[mainline]
+														[master]
+													
+													Integration Branch:
+
+														[production]
+														[staging]
+														or other...
+
+												Long running branches should not have any direct commits added to them (only via merging/rebasing) due to:
+
+													Quality:		Quality is maintained, source code is fully tested and reviewed before it gets near [production][main].
+													Release Structure:	Release structure determines when large commits are added i.e. source code is bundled/batched together in accordance to the overall projects release structure.
+																Release structure needs to be clearly demarcated/represented/highlighted on [main] opposed to having large number of individual commits (which would be difficult to discern the state of the released software).
+
+									Short Running:		Short running branches are typically used for:
+
+													1. New features
+													2. Refactoring
+													3. Bug fix
+													4. Experimentation
+
+												Short running branches are forked from long running branches e.g. central or integration branches detailed above.
+												Short running branches are deleted once reintegrated back into the long running branch via merge/rebase.
+
+				Real World:			The above x2 strategies are typically at opposite ends of the spectrum of strategies.
+								Real world strategies would likely be a combination of the x2.
+
+			- Branch Strategy Examples:
+
+				GitHub Flow:			GitHub Flow is very lean and simple.
+								GitHub Flow has only x1 long running branch with multiple sequential short running branches:
+
+									[feature][bug fix]		C -----	C -----	C	      	C ----- C					[Multiple Short Running Branches]			
+									[main]			C ----- C ---------------------	C -----	C ----------------------------- C		[x1 Long Running Branch (only)]
+
+				GitFlow:			GitFlow has more structure.
+								GitFlow has multiple long running branches with multiple sequential short running branches:
+
+															[feature branch]		[release branch]
+															|				|
+									[feature][Bug Fix]				C -----	C -----	C		C -----	C			[Short Running Branch(es)]
+									[develop]			C -----------------------------	C --------------------- C			[Long Running Branch]	
+									[main]			C ---------------------------------------------------------------------	C		[Long Running Branch]
+
+								GitFlow generally ensures that all development is completed on a separate [develop] branch and then only applied and tagged to [main] when release is fully ready.
+
+	Remote Repo:
+
+		- Remote repo is the abstract name for the repo that is being mirrored across a network:
+
+			$ git remote -v
+
+				- Show details of remote repo associated with this local git repo.
+
+			$ git remote add origin <GitHub Repository Link>
+
+				- Associate local git repo with remote repo on GitHub.
+
+			$ git remote remove origin
+
+				- Delete the remote repo on GitHub associated with this local git repo.
+				- This may just delete the association rather than the actual repository on GitHub?
+
+	Status:
+
+		- Status of the repo can be acquired via many means:
+
+			$ rev-parse HEAD					Returns the SHA of the latest commit.
+
+			$ git status						(Undefined: --long)
+			$ git status -b | --branch
+			$ git status -s | --short
+			$ git status -v | --verbose
+			$ git status 	--long
+			$ git status 	--show-stash
+			$ git status 	--ahead-behind
+			$ git status 	--porcelain[=<version>]
+
+			$ git status -u |	--untracked-file[all]
+			$ git status -u |	--untracked-file[normal]	(Default)
+			$ git status -u |	--untracked-file[no]
+
+			$ git status 	--ignored[traditional]			(Default)
+			$ git status 	--ignored[matching]
+			$ git status 	--ignored[no]
+
+			$ git status 	--ignore-submodules[all]		(Default)
+			$ git status 	--ignore-submodules[dirty]
+			$ git status 	--ignore-submodules[untracked]
+			$ git status 	--column[=<style>]
+			$ git status 	--no-renames
+			$ git status -M |	--find-renames[=<n>]
+
+			$ git status 	--show-ignored-directory		(Deprecated)
+			$ git status 	--ignore=matching			(Use)
+
+			$ git status 	--no-lock-index				(Deprecated)
+			$ git status 	--no-optional-locks status		(Use)
+	
+			$ git status -z |	--null
+
+		- Status of all files contained within the folder compared to the file contained in the repo (via last commit or initialisation).
+
+			$ git status -s
+						Description
+						__________________________________________________________________________________________________________________________________________________________________________					
+
+				|??|		File is in the folder and is untracked.
+						File may have just been added to the folder.
+						File maybe in a folder where the repo has just been initialised.
+
+				|A |		File as a whole represents the patch and patch has been placed into the staging area for first time:
+
+							1. File placed into folder.
+							2. File added to the staging area.
+							3. File patch consists the whole file in its entirety.
+
+							[Or]
+
+							1. File placed into folder.
+							2. File added to the staging area.
+							3. File modified.
+							4. File patch added again to staging area.
+
+								[Step 3-4 maybe repeated multiple times]
+
+							5. Ultimately it is still the first time that the file is being added to the staging area.
+
+								Repo		Staging
+										Area
+								__________________________________
+
+								-	(+)	Patch (Whole File) 	== File In Folder
+
+				|AM|		File as a whole represents the patch and placed into the staging area for first time but file has also been further modified and no longer matches the patch in staging area:
+
+							1. File placed into folder.
+							2. File added to the staging area.
+							3. File modified.
+							4. File patch added to staging area.
+
+								[Step 3-4 maybe repeated multiple times]
+
+							5. File modified (again).
+
+								Repo		Staging
+										Area
+								_______________________
+
+								-	(+)	Patch (Whole File) 	!= File In Folder
+
+				| M|		File has been modified and itself has a corresponding patch compared to that in the repo but patch has not been added/moved to the staging area:								-
+
+							1. File been committed.
+							2. File modified.
+							3. File patch has not been added to the staging area.
+
+								Repo		Staging
+										Area
+								_______________________
+
+								Patch(es)(+)	- 			!= File In Folder
+
+				|M |		File has been modified and patch has been added to the staging area.
+
+							1. File been committed.
+							2. File modified.
+							3. File patch added to the staging area.
+
+								[Step 3-4 maybe repeated multiple times]
+
+								Repo		Staging
+										Area
+								_______________________
+
+								Patch(es)(+)	Patch 			== File In Folder
+
+				|MM|		File has been modified, patch placed into the staging area and modified again.
+
+							1. File been committed.
+							2. File modified.
+							3. File patch added to the staging area.
+
+								[Step 2-3 maybe repeated multiple times]
+
+							4. File modified (again).
+
+								Repo		Staging
+										Area
+								_______________________
+
+								Patch(es)(+)	Patch			!= File In Folder
+
+				|  |		File is unmodified and matches the patch in the repo from the last commit.
+
+							1. File been committed
+
+								Repo		Staging
+										Area
+								_______________________
+
+								Patch(es)(+)	-			== File In Folder
+
+			Summary:
+
+				Left Column:
+
+					Represents:	[Staging Area]
+
+					|A |	Staging area contains the patch of the file in working dir. for the first time.
+					|M |	Staging area contains the patch of the file in working dir.
+
+				Right Column:
+
+					Represents:	[Modification of file in working dir.]
+
+							Left Column		Right Column
+							__________________________________________________________________________________
+
+							Empty			Represents the file in folder compared to the repo.
+							Populated		Represents the file in folder compared to the staging area.
+
+					| M|	File in folder is modified compared to the file in repo.
+					|AM|	File in folder is modified compared to the file in the staging area (which has also been added for the first time).
+					|MM|	File in folder is modified compared to the file in the staging area.
+
+				Empty/Populated:
+
+					|  |	File in folder  = File in repo
+				       !|  |	File in folder != File in repo	i.e. if the status is anything other than empty then the file in folder has been modified compared to the file in the repo.
+
+				Up to date:
+
+					1. $ git status -s	[Enter]
+					2. If nothing is returned then all is up to date:
+
+						Working Directory 	= Repo
+						Staging Area 		= Empty
+
+	Help - Canonical Resource(s):
+
+		- Git:
+
+			1. Built In Local Manuals/Help
+
+				git help <verb>
+				git <verb> --help
+				git man git <verb>
+
+				git help <command>		Command specific help	(Opens broswer to specific position in installed guides)
+				git help <concept>		Concept specific help	(Opens broswer to specific position in installed guides)
+		
+				git --help			Overview of help, usage, returns all available options/switches
+				git help -a			Subcommands
+				git help -g			Concept Guides
+				git help git			Overview of system
+				git help --all			Command
+
+				git <command> help -a		List of commands
+
+				git help tutorial		Opens 	file:///C:/Program%20Files/Git/mingw64/share/doc/git-doc/user-manual.html
+				git help everyday		Opens 	file:///C:/Program%20Files/Git/mingw64/share/doc/git-doc/giteveryday.html
+				git help revisions		Opens 	file:///C:/Program%20Files/Git/mingw64/share/doc/git-doc/gitrevisions.html
+				git help workflows		Opens 	file:///C:/Program%20Files/Git/mingw64/share/doc/git-doc/gitworkflows.html
+
+				Command Line - Notation:
+
+					Notation	Example						Description
+					____________________________________________________________________________________________________________________________
+
+					Text		Text without brackets or braces			Must Type		Items you must type as shown.
+					<>		<Text inside angle brackets>			Must Supply Value	Placeholder for which you must supply a value.
+					[]		[Text inside square brackets]			Optional items
+					{}		{Text inside braces}				Must Choose One		Set of required items.
+					|		Vertical bar (|)				Must Choose One		Separator for mutually exclusive items.
+					...		Ellipsis (…)					Multiple Use		Items that can be repeated and used multiple times.
+		
+			2. ProGit (2nd Ed.) Chacon Straub
+
+				*.pdf
+				Book
+				Online
+
+			3. Online Documentation and Reference Material:
+
+				https://git-scm.com/docs
+
+			4. Release Notes
+			5. FAQ's
+			6. Forums
+			7. Freenode.net
+
+				https://irc.freenode.net
+
+				Forum run by knowledgable git developers, search #git and #github
+
+		- GitHub:	
+
+			1. GitHub Documentation
+
+				https://docs.github.com/en
+
+			2. 'The Official GitHub Training Manual'
+
+				'GitHub - Training Manual.pdf'
+
+		- GitHub Desktop:
+
+			1. Documentation 
+
+				GitHub Desktop: 	Help | Show User Guides			https://docs.github.com/en/desktop
+				GitHub Desktop: 	Help | Show keyboard shortcuts		https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/overview/keyboard-shortcuts
+				GitHub Desktop: 	Help | Show logs
+
+		- GitHub CLI:
+
+			1. Built In Local Manuals/Help
+
+				gh <command> <subcommand> --help	Command specific help
+				gh help					Overview of help, usage, returns all available options/switches
+
+			2. Online Documentation and Reference Material
+
+				https://cli.github.com/manual/

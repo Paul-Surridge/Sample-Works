@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="anchorPaneSplashCSSID" fx:id="apPong" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="950.0" xmlns:fx="http://javafx.com/fxml" fx:controller="pong.Pong">
+  <children>
+    <ImageView id="imagsViewBackground" fitHeight="700.0" fitWidth="949.9999472718403" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/generic/Background%20-%20Light%20Grey.jpg" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewSplashBackground" fitHeight="562.0" fitWidth="919.0" layoutX="17.0" layoutY="68.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/generic/Translucent%20Border%20-%20Large.png" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewHeader" fitHeight="62.89999771118164" fitWidth="950.0" pickOnBounds="true" AnchorPane.topAnchor="0.0">
+      <image>
+        <Image url="@../app/images/generic/Header.png" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewFooter" fitHeight="55.875" fitWidth="950.0000610351562" layoutX="1.0" pickOnBounds="true" AnchorPane.topAnchor="644.0">
+      <image>
+        <Image url="@../app/images/generic/Footer.png" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewExit" fx:id="ivClosePong" fitHeight="38.0" fitWidth="38.0" layoutX="905.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/generic/Close.png" />
+      </image>
+    </ImageView>
+    <ImageView id="" fitHeight="62.899993896484375" fitWidth="231.99989318847656" layoutX="359.0" layoutY="-2.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/splash/Game%20Select%20-%20Pong.png" />
+      </image>
+    </ImageView>
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="BLACK" height="540.0" layoutX="30.0" layoutY="80.0" stroke="WHITE" strokeType="INSIDE" width="900.0" />
+    <Label id="" fx:id="labSpaceInvadersLoadingStatus" alignment="CENTER" layoutX="536.0" layoutY="340.0" prefHeight="37.746665954589844" prefWidth="359.0" text="" textAlignment="CENTER" textFill="WHITE">
+      <font>
+        <Font name="Air" size="36.0" />
+      </font>
+    </Label>
+    <Rectangle fx:id="recPlayer1" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="60.0" layoutX="55.0" layoutY="299.0" stroke="WHITE" strokeType="INSIDE" width="20.0" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="98.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="138.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="178.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="218.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="258.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="298.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="338.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="378.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="418.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="458.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="498.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="538.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Line endX="0.0" endY="28.0" layoutX="475.0" layoutY="578.0" startX="0.0" stroke="WHITE" strokeDashOffset="0.0" strokeWidth="1.3" />
+    <Rectangle fx:id="recPlayer2" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="60.0" layoutX="885.0" layoutY="299.0" stroke="WHITE" strokeType="INSIDE" width="20.0" />
+    <TextField fx:id="tfKeyboardInput" layoutX="35.0" layoutY="661.0" opacity="0.0" prefWidth="20.0" />
+    <Button id="butTest" fx:id="btnGameStop" blendMode="HARD_LIGHT" layoutX="794.0" layoutY="653.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="129.0" text="Game Stop" textFill="#cc0000">
+      <font>
+        <Font name="System Bold" size="16.0" fx:id="x3" />
+      </font>
+    </Button>
+    <Label fx:id="labPlayer1Score" alignment="CENTER" contentDisplay="CENTER" layoutX="414.0" layoutY="92.0" prefHeight="55.875" prefWidth="42.0" text="2" textAlignment="CENTER" textFill="WHITE">
+      <font>
+        <Font name="System Bold" size="48.0" fx:id="x1" />
+      </font>
+    </Label>
+    <Label id="labPlayer1Score" fx:id="labPlayer2Score" alignment="CENTER" contentDisplay="CENTER" font="$x1" layoutX="494.0" layoutY="92.0" prefHeight="55.875" prefWidth="42.0" text="2" textAlignment="CENTER" textFill="WHITE" />
+    <Label id="labPlayer1Score" fx:id="labInGameMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="215.0" layoutY="308.0" prefHeight="75.0" prefWidth="519.0" text="3" textAlignment="CENTER" textFill="WHITE">
+      <font>
+        <Font name="System Bold" size="56.0" />
+      </font>
+    </Label>
+    <Line id="lPlayer1GoalHit" fx:id="linePlayer2GoalHit" endX="0.0" endY="535.0" layoutX="30.0" layoutY="81.0" opacity="1.0" startX="0.0" startY="0.0" strokeWidth="5.9">
+      <stroke>
+        <Color blue="0.000" green="0.961" red="1.000" fx:id="x2" />
+      </stroke>
+    </Line>
+    <Line id="lPlayer1GoalHit" fx:id="linePlayer1GoalHit" endX="0.0" endY="535.0" layoutX="927.0" layoutY="83.0" opacity="1.0" startX="0.0" startY="0.0" stroke="#fff500" strokeWidth="5.9" />
+    <RadioButton fx:id="radPracticeMode" layoutX="550.0" layoutY="653.0" mnemonicParsing="false" text="Practice Mode" textFill="WHITE">
+      <toggleGroup>
+        <ToggleGroup fx:id="toggleGroupGameMode" />
+      </toggleGroup>
+    </RadioButton>
+    <RadioButton fx:id="radPlayMode" layoutX="550.0" layoutY="673.0" mnemonicParsing="false" selected="true" text="Play Mode" textFill="WHITE" toggleGroup="$toggleGroupGameMode" />
+    <Slider id="slBallSpeed" fx:id="sliBallSpeed" blockIncrement="1.0" layoutX="55.0" layoutY="676.0" majorTickUnit="1.0" max="10.0" min="1.0" minorTickCount="1" showTickLabels="false" showTickMarks="true" snapToTicks="true" />
+    <Label layoutX="55.0" layoutY="656.0" text="Ball Speed" textFill="WHITE" />
+    <Slider fx:id="sliBatSize" blockIncrement="1.0" layoutX="215.0" layoutY="676.0" majorTickUnit="1.0" max="10.0" min="1.0" minorTickCount="0" showTickMarks="true" snapToTicks="true" />
+    <Label layoutX="215.0" layoutY="656.0" text="Bat Size" textFill="WHITE" />
+    <Slider id="sliBestOf" fx:id="sliBestOfAmount" blockIncrement="1.0" layoutX="375.0" layoutY="676.0" majorTickUnit="1.0" max="11.0" min="3.0" minorTickCount="0" showTickMarks="true" snapToTicks="true" />
+    <Label layoutX="375.0" layoutY="656.0" text="Best Of..." textFill="WHITE" />
+    <Label fx:id="labBallSpeed" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="171.0" layoutY="656.0" minWidth="5.89990234375" prefWidth="19.999900000002526" text="1" textAlignment="RIGHT" textFill="WHITE" />
+    <Label fx:id="labBatSize" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="331.0" layoutY="656.0" minWidth="5.89990234375" prefWidth="19.999900000002526" text="1" textAlignment="RIGHT" textFill="WHITE" />
+    <Label fx:id="labBestOfAmount" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="491.0" layoutY="656.0" minWidth="5.89990234375" prefWidth="19.999900000002526" text="3" textAlignment="RIGHT" textFill="WHITE" />
+    <Button id="butTest" fx:id="btnGameStart" blendMode="HARD_LIGHT" font="$x3" layoutX="656.0" layoutY="653.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="129.0" text="Game Start" textFill="#086600" />
+  </children>
+</AnchorPane>

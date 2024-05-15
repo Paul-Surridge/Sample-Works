@@ -1,0 +1,172 @@
+JDK - JRE - JVM
+
+	JDK:
+
+		- JDK includes a JRE (and in turn JVM) which is compatible with the particular platform that it has been downloaded for.
+		- JDK is distinguished by editions:
+
+			SE:	Standard Edition
+			EE:	Enterprise Edition
+			ME:	Micro Edition
+
+	JVM:
+
+		- JVM is an abstract Machine which is implemented by the JRE
+		- JVM runs to a configuration/specification as defined by the JRE
+		- JVM is platform specific.
+		- JVM does not physically exist on-disk i.e. it is instantiated by the JRE and run within RAM.
+		- JVM calls main()
+		- JVM allocates following memory areas:
+
+			1. Class/Method:		Class Structures e.g. Runtime Constant Pool, Fields and Methods.
+			2. Heap:			Objects.
+			3. Stack:			Method Calls/Returns, Local Variables, Partial Results.
+							Thread has own JVM Stack.
+							Frame is created upon invoking a Method.
+							Frame is destroyed upon returning from a Method.
+
+			4. Program Counter: 		Register containing the address of the instructions currently being executed.
+			5. Native Method Stack:		Native Method Calls/Returns, Local Variables, Partial Results.
+
+		- JVM contains:
+
+			1. JIT 'compiler':
+
+				Source Code > ByteCode > [JIT] > Native Instruction Set
+
+			2. ClassLoaders (x3):
+
+				1. Bootstrap:			Loads rt.jar which contains all classes contained in Java SE e.g. java.lang, java.util...
+				2. Extension:			Loads $JAVA_HOME/jre/lib/ext.
+				3. System/Application:		Loads *.class files contained within ClassPath.
+
+				ClassLoaders are class extensions of one another:
+
+				Bootstrap		(Super Class)
+				|
+				Extension
+				|
+				System/Application
+
+	JRE:
+
+		- JRE is the environment which runs the compiled Bytecode.
+		- JRE loads Java programs for the JVM to execute.
+		- JRE is the overall 'container' of the following components:
+
+			1. JVM:					Manages and ensures that Java Applications have necessary resources and perform optimumly within whatever device/cloud environment.
+			2. Java Class Libraries
+			3. Class Loader:			Loads program classes and connects them to with the core Java Class Libraries.
+
+		- JRE responsibilies:
+
+			1. System Resource Access/Management:	Ensure that the JVM and in turn the Java Application has access to the system resources as required.
+
+		- JRE replaces the previous traditional role of the OS in supplying the necessary system resource, dependencies.
+
+			- Traditionally a program would rely and run on top of the OS.
+			- Java programs now run within the JRE and now assumes this role.
+			- Each layer of software would provide specialist services to the layer above.
+			- JRE provides specialist services to the Java program.
+ 
+		- JRE allows for the configuration of the JVM.
+		- JRE allows for the WORA, 'Write Once Run Anywhere' paradigm.
+		- JRE comes installed with default JVM.
+		- JRE can be downloaded separately from the JDK and may choose from a variety of JVM's.
+		- JRE smoothes over the diversity of operating systems, ensuring that Java programs can run on virtually any OS without modification.
+		- JRE provides value-added services:
+
+			1. Memory Management:		Programmers do not need to manually allocate/deallocate memory.
+
+		- JRE can be considered as a 'meta-OS' for Java programs.
+		- JRE can be considered an Abstraction of all the differing underlying OS's that Java may run within.
+		- JRE is physically on-disk on hardrive:
+
+			1. User:	Runs Java program.
+			2. JRE:		Starts.
+			3. JRE: 	Class Loader verifies and combines the compiled Bytecode with necessary Java Class Libraries.
+			4. JRE:		Instantiates and starts the JVM in accordance with the JVM's particular setup and configuration/specification (within RAM as opposed to JRE on-disk).
+			5. JVM:		Java program runs within JVM.
+
+		- JRE will typically be of concern/managed by SysAdmin/Devops who manage the systems necessary to execute software or users of the actual Java programs, the JVM and JDK is more of concern for Java program developers.
+		- JRE provides monitoring and configuration options i.e. it provides the configuration settings for the running of the Java program:
+
+			1. Memory Usage.
+			2. Performance.
+			...
+
+		- JRE is updated and associated with each version of Java e.g.
+
+			JRE		Java
+			Version		Version
+			_______________________
+
+			1.8		8
+
+		- JRE is normally the same for all JDK's i.e. it is the same JRE for Java SE, Java EE, however mobile devices have their own JRE for Java ME (which is normally pre-installed on the mobile device and not for separate download).
+		- JRE is interacted and configured directly via the Command Line:
+
+			java -version:		Returns JRE Version
+
+		- JRE memory coonsists of x3 components:
+
+			1. Metaspace:		Class Definitions, also kown as 'Permgen'
+			2. Heap:		Objects, Variable Content.				Ensure Heap is big enough to ensure the most efficent Garbage Collection.
+			3. Stack:		Function Execution and Local Variable Content.		Ensure Stack is big enough to ensure no Stack Overflow.
+
+			- It can become important to ensure that these aspects are configured appropriately for the Java program that is being run.
+			- They can be configured/set via flags:
+
+				java -MaxMetaspaceSize
+				java -Xms
+				java -Xmx
+				java -Xss
+
+		- JRE provides a number of Tools for monitoring a Java programs performance running within the JVM:
+
+			- VisualVM:	Inspects a running JVM
+			- Tools:	Inspects and tracks Hotsopts, memory leaks and memory consumption.
+
+		- Topography:
+
+			JRE
+			 __________________________________________________________________
+			|
+			|	Java Class Libraries
+			|	 _______________
+			|	|		|
+			|	|	AWT	|
+			|	|	.net	|
+			|	|	IO	|
+			|	|	...	|
+			|	|_______________|
+			|		|
+			|	 _______|_______________________
+			|	|				|
+			|	|	Class Loader		|
+			|	|	Bytecode Verification	|
+			|	|_______________________________|
+			|		|
+			|		|
+			|	JVM	|
+			|	 _______|_______________________
+			|	|				|
+			|	|	Java Interpreter	|
+			|	|	Garbage Collection	|
+			|	|	Threading		|
+			|	|	...			|
+			|	|_______________________________|
+			|
+			|
+	
+	Current Install:
+
+		Netbeans:		12.1
+		Java:			1.8.0_261
+		JDK:			8u261 Windows x64
+		JRE:			SE Runtime Environment 1.8.0_261-b12
+		Derby
+
+
+
+

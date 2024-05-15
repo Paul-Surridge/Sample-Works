@@ -1,0 +1,1155 @@
+Spring
+
+	Bean:
+
+		- Bean is an instantiation assembled, managed and housed within a container, bean may be any:
+
+			1. Primitive
+			2. Object (POJO)
+
+		- Bean is not a wrapper object that encloses another java object but simply an object defined and contained within a container.
+		- Bean is simply the name of an object within a container, it is the name Spring gives to objects within the container.
+		- Beans are referenced/tagged with an ID, name and/or alias.
+		- Beans are given a default ID if one not explicitly defined within the metadata.
+		- Beans are typically multiple, a container needs to have at least x1 bean but even the most simplest of enterprise applications have multiple beans.
+		- Beans can be classed as 'collaborators' which are simply beans injected/provided to other beans as properties. 
+		- Beans can cause a graph of beans to be instantiated, as a chain of beans dependencies can be formed.
+		- Beans are injected into the container by the container itself i.e. the container context.
+
+	Bean Declaration/Definition:
+
+		- Bean is defined via x1 of the following x3 methods:
+
+			External Files:
+
+				1. External Files:		*.xml/*.groovy file which defines the outline of the bean e.g. its wiring to other beans/dependencies, scope and package location of its full implementation.
+				
+			Internal Annotations:
+				
+				2. Configuration Classes:	Classes annotated with @Configuration with internal @Bean methods
+				3. Components:			Classes annotated with @Component, @Controller...
+
+		- Bean is declared and defined as follows:
+
+			1. *.xml/*.groovy:	Declare and define beans within a separate *.xml file (e.g. beans.xml).
+
+							<bean class="<package1.package2.class1>">				//Declare a bean of class1
+							<bean id="<bean_id>" class="<package1.package2.class2>">		//Declare a bean of <bean_id> of class2
+							<bean id="<bean_id>" class="<package1.package2.class3>">		//Declare a bean of <bean_name> of class3
+							    <property name=<bean_name> ref=<bean_reference>>
+							</bean>
+
+			2. Annotations:		Declare and define beans by using annotations directly within the source code.
+
+							1. @Bean (Bean Methods):
+
+								- Bean methods 'produce', 'generate' and return object/primitive beans.
+								- Bean methods are invoked to instantiate and return a bean which are injected into variables.
+								- Bean methods are registered by Spring when a container is instantiated.
+								- Bean methods are typically collated into a single location e.g. a configuration class.
+								- Bean methods are useful when additional initialisation needs to be applied to a bean before it is injected.
+
+								Object:
+
+									@Bean						//Bean Method returns an object as a bean
+									public ClassA methodName() {
+								    	    return new ClassA();
+									}
+
+									@Bean						//Bean Method returns an object which implements an interface as a bean
+									public InterfaceA methodName() {
+								    	    return new InterfaceAImpl();
+									}
+
+								Primitive:
+
+									@Bean						//Bean Method returns a primitive as a bean
+									public int returnField() {
+								    	    return ifield;
+									}
+
+							2. @Component:
+
+								- @Component is an annotation which declares the annotated entity as a component which is automatically registered by Spring within a @ComponentScan:
+
+									@Component					//Class declared a bean/component of the container
+									public class className
+									{...}
+
+						Configuration Classes:
+
+							- Configuration classes are collations of @Bean i.e. dedicated classes which contain all of the bean declarations used throughout the container.
+							- Configuration classes can be imported into other configuration classes via the @import annotation known as 'Modularising Configuration':
+
+								@Import(ConfigurationClass1.class)
+								public class ConfigurationClass2
+								{...}
+
+	Bean Lifecycle:
+
+		General bean lifecycle as follows:
+
+			1. Application starts up.
+			2. Container surveys the project/source code, collating/registering all locations where a bean can be instantiated and returned.
+			3. Application is running.
+			4. Container instantiates beans as the running of the application dictates.
+			5. Upon encountering a bean that needs to be instantiated.
+
+				1. Container utilises the bean register looks up location/how the bean is instantiated.
+				2. Container invokes mechanism.
+				3. Bean is returned to calling code.
+				4. Bean is injected into variable.
+
+				If this bean has dependecies of its own, then those dependency beans are recursively pre-instantiated potentially generating a chain/graph of 'wired' dependency beans 'going back for as far a necessary'.
+			
+			6. Container destroys bean when required.
+
+		General bean lifecycle as derived from bean definitions as follows:
+
+			1. Beans - Definition:		Define beans to be made available within container via:												[Compile Time Checking]
+
+								1. *.xml file:					Contain bean definitions within an external *.xml file.					-
+								2. Java Source Code - Annotations:		Contain bean definitions within the java source code, identified using annotations.	Y
+
+			2. Container:			Instantiate Spring IoC container and register all bean definitions in the java source code.
+
+			3. Beans - Instantiation:	Instantiate beans within container as instantiated within the source code during runtime:
+
+								1. *.xml file:					Reference bean definitions in external *.xml file.
+								2. Java Source Code - Annotations:		Reference bean definitions registered by Spring via annotations.
+
+	Bean Instantiation + Return:
+
+		- Bean instantiation + Return is the process where the container invokes an action/means in order to instantiate and return a bean (to ultimately be injected elsewhere):
+
+			Returns Bean					Description
+			------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			- via *.xml + Constructor:			Constructor on the bean is used to return an instance of that bean, the constructor on the bean is called as normal passing in 0 or more dependencies that the bean needs to instantiate and return that particular instance.
+			- via *.xml + Static Factory Method:		Constructor on the bean maybe hidden/private and a static factory method on the bean is called passing in 0 or more dependencies that the method may or may not need to instantiate and return that particular instance.
+			- via *.xml + Instance Factory Method:		Constructor on the bean maybe hidden/private and a factory method on an instance of the bean is called passing in 0 or more dependencies that the method may or may not need to instantiate and return that particular instance.
+			- via @Bean					'Bean Method' contained in a @Configuration class is a factory method returning an instance of the declared bean.
+			- via @Component				'Component Scanning' searches the project source code for classes annotated with @Component or a specialisation e.g. @Controller, @Service, presumably the constructor of that class is called as normal as described above.
+
+			The container pre-instantiates and injects any arguments that are defined as parameters/dependencies that the bean needs to instantiate and return that particular instance.
+
+		- Bean instantiation is of course distinguished from bean injection:
+
+			Instantiation:		Instantiation is the actual creation/allocation of the bean in memory.
+			Injection:		Injection is the action/process of having the container assign the instance to a variable/parameter within a class/bean within the source code.
+
+		- Bean instantiation is carried out by the container:
+
+			1. Source Code:		Bean is declared as a field/property/dependency within a class/bean, therefore the container will need to be inject an instance of that bean into that location/variable.
+			2. Register:		Container looks through its register of beans to find a matching id, name or alias.
+			3. Instantiation:	Once found using the metadata contained within the corresponding/associated BeanDefinition object is used to create an instance of that bean.
+			4. Injection:		Created bean in now inserted/injected into the location/variable.
+
+		- Bean Instantiation can be any Java bean i.e. any normal class can be pulled into a container, it does not need to have any particular interface or be constructed in any particular fashion.
+
+	Bean Injection:
+
+		- Beans are injected into source code:
+			
+			Returns Bean*						XML Element							Arguments (Injected Beans)							Description
+			------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			- via *.xml + Constructor Arguments:			<constructor-arg/>						Arguments injected into local reference variable in constructor via this.	Container instantiates 'behind the scenes' and passes arguments into constructor.
+			- via *.xml + Static Factory Method Arguments:		<constructor-arg/> + <factory-method/>				Arguments may or may not be used to generate and return bean.			Container instantiates 'behind the scenes' and passes arguments into static factory method.
+			- via *.xml + Instance Factory Method Arguments:	<constructor-arg/> + <factory-method/> + <factory-bean/>	Arguments may or may not be used to generate and return bean.			Container instantiates 'behind the scenes' and passes arguments into instance factory method.
+			- via @Bean Method Arguments:				-								Arguments may or may not be used to generate and return bean.			Container instantiates 'behind the scenes' and passes arguments into bean factory method contained within @Configuration class.
+
+
+			Insert Directly Into Bean Reference Variable*
+			-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			- via *.xml + Setter Method Arguments:			<property/>							Arguments injected into local reference variable in setter method via this.	Container instantiates 'behind the scenes' and passes arguments into a setter method.
+			- via @Autowired:					-								-										Container instantiates 'behind the scenes' and inserts bean directly into fields/properties annotated with @Autowired.
+
+
+			*Returns Bean:		Beans are injected as arguments into method parameters for the method to ultimately generate/build and return another bean to be injected/used elsewhere.
+			*Insert Directly:	Beans are injected directly into existing reference variables.
+
+	Bean Setting:
+
+		- Bean setting of bean instances into reference variables as declared within a class is:
+
+			- via Constructor Arguments:			Reference variable is declared within class and the constructor arguments are assigned to variable as normal using 'this' (or directly if have differing identifers).
+			- via Setter Method Arguments:			"
+			- via Static Factory Method Arguments:		"
+			- via Instance Factory Method Arguments:	"
+			- via Autowiring:				Bean is inserted/set directly into reference variable annotated with @Autowire
+
+			NB: Autowiring is an automated process where the container makes a series of judgements and makes a 'best guess' as to the instance of which object to inject, manual/explicit definition in XML/Java maybe necessary if container is unable to autowire.
+
+	Bean Definition Object:
+
+		- Beans as defined within sources of configuration are represented as 'BeanDefinition' objects which broadly contain the metadata of the respective bean:
+
+			Name:			Package-qualified class name i.e. the actual implementation of that bean.
+			Behaviourial:		How the bean should behave within container e.g. scope, lifecycle callbacks ...
+			References:		References to other internal beans/properties i.e. collaboration beans.
+			Misc:			All other remaining metadata pertaining to that specific bean.
+
+		- BeanDefinition properties include:
+
+			Class				Autowiring Mode
+			Name				Lazy Initaialisation Mode
+			Scope				Initialisation Method
+			Constructor Arguments		Destruction Method
+			Properties
+
+	Bean Naming:
+
+		- Bean naming should adhere as follows:
+
+			Identifiers:		Each bean has x1 or more identifiers either:
+
+							1. No ID:		Container autogenerates a unique ID/Name.
+							2. No ID but name(s):	Container autogenerates a unique ID (as it is not given) while still using the additional name(s) as alias.
+							3. ID but no name:	Developer specified ID only.
+							4. ID but x1 name:	Developer specified ID and x1 name (alias).
+							5. ID but >1 names:	Developer specified ID and multiple names (alias).
+
+						NB:
+
+							- All identfiers must be unique in the container.
+							- If it is required for the bean to be searchable via ref element in *.xml file or Service Locator lookup a name must be provided.
+							- Reasons for not providing a name include 'inner beans' and 'autowiring collaborations'
+
+			Naming Convention:	Use standard Java camel case as naming a field e.g.
+
+							accountManager, accountService, userDao, loginController
+
+						Good naming convention is of course critical for ensuring clarity in reading/understanding the configuration and if using Spring AOP when applying advice to a set of beans related by name.
+
+		- Bean naming within XML configuration:
+
+			<bean id="..." class="..." name="Paul Bob Alice"> 
+
+				id:	Alphanumeric, may also contain special characters
+				name:	One or more alias, separated using , ; or white space
+
+			NB: id attribute is defined as an xsd:string type, however uniqueness is enforced by the container (not XML parser)
+
+		- Bean naming as described above is automatically applied when running component scanning in the classpath i.e.
+
+			1. Run component scan.
+			2. Unnamed components have unique name automatically generated by taking the simple class name and setting the first character to lower case.
+				
+			NB: If in (unusual case) that first and second characters in class name are both upper case e.g. MYClass, then this is preserved (as defined by java.beans.Introspector.decapitalize)
+
+	Bean Aliasing:
+
+		- Bean Aliasing can be defined/applied to beans that have been defined elsewhere e.g.
+
+			1. Bean ClassA may have been defined in another file/location.
+			2. Bean ClassA can have an alias applied to it in another file/location than where it was initially declared.
+
+		- Bean Aliasing is desirable to be applied to beans defined elsewhere e.g. in large systems where configuration is split amongst each subsystem and each subsystem having its own naming convention.
+
+			<alias name="fromName" alias="toName"/>
+
+			Therefore any bean within container called 'fromName' will also be known/referenced using 'toName'.
+
+		- Bean Aliasing allows for 'namespaces' to be created for each subsystem and the overall application e.g.
+
+			An application may have only x1 central database but need to be accessed by x2 subsystems and the overall main application:
+
+			Container		Bean
+			---------------------------------------
+			Subsystem A:		'subsystemA-dataSource'
+			Subsystem B:		'subsystemB-dataSource'
+			Main Application:	'main-dataSource'
+
+			Configuration:
+
+				<alias name="main-dataSource" alias="subsystemA-dataSource"/>
+				<alias name="main-dataSource" alias="subsystemB-dataSource"/>
+
+			The respective containers can use names most appropriate to their own convention while still being able to call the same singleton database.
+
+		- Bean Aliasing can also be implemented via attributes of @Bean methods.
+
+	Bean Runtime Type:
+
+		- Bean Runtime Type is the actual type that a bean variable is currently assigned i.e. the equivalent of instanceOf() in normal Java.
+		- Bean Runtime Type is non-trival to determine during runtime due to:
+
+			1. Class Name Only:		The data contained in the BeanDefinition are only text refereces of class names.
+			2. Wrapped Interface:		The bean instance may, due to AOP proxying, be wrapped with a interface proxy providing limited exposure to the beans actual type i.e. exposure to interface only.
+
+		- Bean Runtime Type is best found via BeanFactory.getType() whereby passing the specified bean name will return the type that is natrally generated for a bean of that name.
+
+	Bean Callback Methods:
+
+		- Bean callback methods are the methods which are 'called back' upon a particular external event e.g. click, mousemove, initialise, destroy...
+		- Bean callback methods can be declared within:
+
+			1. *.xml file:
+
+				1. Beans attribute:	<beans default-init-method="<initialisation_method>"				Bad practice: This is inappropriate given that is applied to all beans.
+				2. Bean attribute:	<bean id="..." init-method="<specific_initialisation_method>"			Bad practice: This is prone to error due to need for excessive maintenance.
+
+			2. Annotations:
+
+				- Annotations are considered the best practice for implementing callback methods within a modern Java spring application.
+				- Annotations prevent callback names from being coupled to Spring specific interfaces.
+				- Annotation based callback methods include:
+
+					@PostConstruct					//Run the method upon the event of the bean initialisation.
+					public void initMethod() {
+				       	    log.info("Initialise all aspects of the bean as if a constructor");
+				    	}
+
+					@PreDestroy					//Run the method upon the event of the bean garbage collection.
+				    	public void destroyMethod(){
+				            log.info("Destroy all aspects of the bean as if a destructor");
+				    	}
+
+					NB: Annotations library needs to be included within the project.
+
+	Bean Singletons:
+
+		- Bean Singletons are simply a type which has only x1 instance within the whole container
+
+	Bean Initialisation
+
+		- Bean Initialisation by the conatiner/ApplicationContxt is:
+
+			Singleton:	Eager 		Created as part of container initialisation process, therefore errors can be found earlier rather than when a bean happens to be created.
+			Other:		Lazy 		Created as/when required as program is running.
+
+		- Bean Initialisation lazy/eager can be set at global/container default state:
+
+			<beans default-lazy-init="true">
+			    <!-- No beans will be pre-instantiated, all beans including all singletons will be lazy... -->
+			</beans>
+
+		- Bean Initialisation on a Singleton bean can be set to be lazy using 'lazy-init' within the XML:
+
+			<bean id="classA" class="com.MyApplication.ExpensiveToCreateClassA" lazy-init="true"/>		//Lazy Singleton Bean
+			<bean name="classB" class="com.MyApplication.ClassB"/>						//Eager Singleton Bean
+
+			NB: If a lazy bean is the dependency of an eager bean, then both beans are created eagerily.
+
+	Bean Scope:
+
+		- Bean Scope is defined within the XML.
+		- Bean Scope has x6 levels (x4 only available if use web-aware ApplicationContext) and/or x1 custom/thead scope:
+
+			Scope							Description
+			------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			singleton		standard/all-scoped		Bean may be instantiated only once in IoC Container			Container can only ever have x1 instance of this bean.
+			prototype		standard/all-scoped		Bean is a prototype/template used to create many instances		Container can have multiple instance of this bean.
+
+			request			web-scoped			Bean is attached to lifecycle of single HTTP request			Each HTTP request will have its own instance of the bean created from a single bean definition.
+			session			web-scoped			Bean is attached to lifecycle of single HTTP session			Each HTTP session will have its own instance of the bean created from a single bean definition.
+			application		web-scoped			Bean is attached to lifecycle of ServletContxt
+			websocket		web-scoped			Bean is attached to lifecycle of WebSocket			
+
+		- Bean Scope:
+
+			Singleton:		For all stateless beans		Beans which do not hold a particular state				e.g. DatabaseConnectionManager or DAO
+			Prototype:		For all stateful beans		Beans which hold a particular state					e.g. Business logic
+
+		- Bean Scope: Instantiation:
+
+			Singleton:		Instantiated only when Container is instantiated (rather than during runtime).
+						Instantiation of any non-singleton dependencies may or may not be 'ready' at that time e.g. may end up being null or in unexpected state.
+						Instantiation of any non-singleton dependencies may require Method Injection to 'refesh' their instances.
+
+			Prototype:		Instantiated when requested by container throughout runtime.			
+
+		- Bean Scope: Singleton:
+
+			- Singleton:	Only x1 instance ever exists in container.
+			- Singleton:	Only x1 instance is stored in cache, all request for bean of this ID return the instance in the cache.
+			- Singleton:	Only x1 instance is created when the container is created.
+			- Singleton:	Only x1 instance is shared/injected into all client beans.
+			- Singleton:	Differs slightly to singleton definition in Design Patterns (Gang of Four) in that:
+
+						Design Patterns:	Singleton is created with/per ClassLoader
+						Spring:			Singleton is created with/per container/bean
+
+			- Singleton:	Defined in XML:
+
+						<bean id="accountService" class="com.myApplication.DefaultAccountService"/>
+						<bean id="accountService" class="com.myApplication.DefaultAccountService" scope="singleton"/>		//Redundant, singleton is default
+
+		- Bean Scope: Prototype:
+
+			- Prototype:	Multiple instances of beans in x1 container
+			- Prototype:	New instance is created/returned by container when is injected into client bean e.g. via normal injection or requested via .getBean().
+			- Prototype:	Defined in XML:
+
+						<bean id="accountUser" class="com.myApplication.DefaultAccountUser" scope="prototype"/>
+
+			- Prototype:	Lifecycle Management:
+
+						- Spring does not handle the complete lifecycle of prototype beans (unlike other beans/scopes).
+						- Spring instantiates/configures and assembles a prototype bean and then hands it over to client bean with no further interaction/management.
+						- Spring initialisation callbacks are called but destruction callbacks are not.
+						- Spring expects the developer to treat the bean as if it was created using 'new' in standard Java where once the bean has been created it is 'handed over' to the developer to manage its lifecycle including any tidying up and ensuring the release of any used resources.
+						- Spring expects the developer to use/define the beans custom 'post-processor' callback methods to clean up that beans use of resources.
+
+		- Bean Scope: Web: Initial Configuration:
+
+			- Web-scope beans:
+
+				Request
+				Session
+				Application
+				Websocket
+
+			- Web-scope beans require addition configuration to be defined within the web.xml file if both of the following:
+
+				1. Servlet:			Using a Servlet web container.
+				2. Request Processing:		Request processing is outside of Spring Dispatcher Servlet e.g. JSF.
+
+				If so required follow:		https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html#beans-factory-scopes-other-web-configuration
+
+				NB: If the web-scoped beans are accessed within a Spring MVC project and processed by the DispatherServlet then this is not necessary for it is all handled by DispatcherServlet.
+
+		- Bean Scope: Request
+
+			- Request:	Bean is newly/uniquely created/associated with each and every HTTP request.
+			- Request:	Bean state may be altered without concern of affecting other/subsequent beans.
+			- Request:	Bean life is associated with the life of the request, once the request has completed processing the bean is disgarded.
+			- Request:	Defined in XML:
+
+						<bean id="loginAction" class="com.myApplication.LoginAction" scope="request"/>
+
+			- Request:	Defined using annotation:
+
+						@RequestScope
+						@Component
+						public class LoginAction {
+						    // ...
+						}
+
+						Here:
+							1. Bean returned by this @Component (which would have been registered via @ComponentScan)
+							2. Bean has a scope of 'request' automtically applied.
+
+		- Bean Scope: Session
+
+			- Session:	Bean is newly/uniquely created/associated with each and every HTTP session.
+			- Session:	Bean state may be altered without concern of affecting other/subsequent beans.
+			- Session:	Bean life is associated with the life of the session, once the session is discarded the bean is disgarded.
+			- Session:	Defined in XML:
+
+						<bean id="userPreferences" class="com.something.UserPreferences" scope="session"/>
+
+			- Session:	Defined using annotation:
+
+						@SessionScope
+						@Component
+						public class UserPreferences {
+						    // ...
+						}
+
+						Here:
+							1. Bean returned by this @Component (which would have been registered via @ComponentScan)
+							2. Bean has a scope of 'session' automtically applied.
+
+		- Bean Scope: Application
+
+			- Application:	Bean is newly/uniquely created/associated with each and every ServletContext:
+
+						NB: Bean is a singleton per ServletContext (not per ApplicationContext) where there may be multiple ServletContext per ApplicationContext.
+
+			- Application:	Bean is stored/cached/exposed/visible as a single attribute of the ServletContext.
+			- Application:	Bean life is associated with the life of the entire web application, once the ServletContext is discarded the bean is disgarded.
+			- Application:	Bean state may be altered without concern of affecting other/subsequent beans.
+			- Application:	Defined in XML:
+
+						<bean id="appPreferences" class="com.something.AppPreferences" scope="application"/>
+
+			- Application:	Defined using annotation:
+
+						@ApplicationScope
+						@Component
+						public class AppPreferences {
+						    // ...
+						}
+
+						Here:
+							1. Bean returned by this @Component (which would have been registered via @ComponentScan)
+							2. Bean has a scope of 'application' automtically applied.
+
+
+		- Bean Scope: Websocket:
+
+			- Websocket:	Bean life is associated with the lifecycle of a WebSocket session as applied to STOMP over WebSocket applications.
+
+		- Bean Scope: Proxying: Collaborating Beans of Differing Scope
+
+			- Bean Scope can vary between beans where there may be situations when you need a singleton which collaborates with a bean of session-scope (or any situation where the x2 beans have differing lifecycles), this is achieved via the use of a proxy:
+
+				1. XML Configuration:
+
+					<bean id="userPreferences" class="com.myApplication.UserPreferences" scope="session">
+					    <aop:scoped-proxy/>
+					</bean>
+
+					<bean id="userManager" class="com.myApplication.UserManager">
+					    <property name="userPreferences" ref="userPreferences"/>
+					</bean>
+
+					Here:
+
+						1. UserManager is a singleton whose lifecycle is that of the container.
+						2. UserPreferences is of session scope whose lifecycle is that of the current session.
+						3. UserPreferences is a collaborator of UserManager but having differing lifecycles.
+
+				2. UserManager is instantiated only once therefore so is the property UserPreferences (but of course this changes with each session).
+				3. UserManager therefore uses an <aop:scoped-proxy> eqivalent of UserPreferences.
+				4. Container creates a object which exposes the same public interface as UserPreferences and is used as an intermediary to the real/current session scoped instance of UserPreferences.
+				5. UserManager is not aware and knows no difference.
+				6. UserManager invokes a method on the proxy at which point the proxy fetches the current instance and delegates the invocation onto the 'real' UserPreferences. 
+
+			- Bean proxy can be achieved via the following ways
+
+				1. <aop:scoped-proxy/>:					Declare in XML the proxy and have the container create/manage the proxy and relaying to current bean (which is of different/shorter lifecycle scope e.g. a session).
+				2. ObjectFactory<MyTargetBean>:				Declare injection point (constructor/setter argument or @Autowired field) as a ObjectFactory<MyTargetBean>, then call getObject() to get current instance.
+				3. ObjectProvider<MyTargetBean>:			Declare injection point (constructor/setter argument or @Autowired field) as a ObjectProvider<MyTargetBean>, then call getIfAvailable() and getIfUnique() to get current instance.
+				4. Provider<MyTargetBean>:				Declare injection point (constructor/setter argument or @Autowired field) as a Provider<MyTargetBean>, then call get() to get current instance.
+				5. <aop:scoped-proxy proxy-target-class="false"/>	Target bean must implement an interface which the client beans/collaborators can use to interact with the current target bean.
+				6. Directly:						Declare and inject request/session proxies directly into beans via @Autowiring within WebApplicationContext.
+
+				NB: Singletons:
+
+					- Proxying as described above can be applied between beans which are both singletons, where the reference going through an intermediate proxy that is serializable and therefore able to re-obtain the target singleton bean on deserialization.
+				
+				NB: Prototypes:
+
+					- When declaring a bean <aop:scoped-proxy/> which is also of scope=prototype, every method call on the container created proxy leads to the creation of a new target instance to which the method call is delegated/forwarded onto.
+
+				NB: CGLIB:
+
+					- Proxies created via <aop:scoped-proxy/> is via CGLIB.
+					- Proxies created via CGLIB do not delegate to private methods, attempting to call a private method will not delegate to the actual scoped target object.
+
+				NB: JDK interface-based proxies:
+
+					- Proxies created via standard JDK interface-based proxies can be an alternative to CGLIB based proxies by setting attribute proxy-target-class="false" (Item 5 above): 
+
+						<bean id="userPreferences" class="com.myApplication.UserPreferences" scope="session">
+						    <aop:scoped-proxy proxy-target-class="false"/>
+						</bean>
+
+					- Using JDK interface-based proxies removes the need for additional libraries to be included in the classpath.
+					- Using JDK interface-based proxies requires that the target bean implement an interface which the collaborators can use to interact with the current target bean.
+
+				NB: WebApplicationContext Direct Injection:
+
+					- Proxies can be injected directly into beans using @Autowired when within a WebApplicationContext (Item 6 above):
+
+						HttpServletRequest
+						HttpServletResponse
+						HttpSession
+						WebRequest
+						FacesContext		(If JSF is present)
+						ExternalContext		(If JSF is present)
+
+					- Proxies can be injected e.g. request/session objects into both singleton and serializable beans						
+
+				For more info on how to use the above:
+
+					- https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html#beans-factory-scopes-websocket
+					- https://docs.spring.io/spring-framework/reference/core/beans/standard-annotations.html
+					- https://docs.spring.io/spring-framework/reference/core/aop/proxying.html
+
+		- Bean Scope: Custom:
+
+			- Bean scopes are extensible.
+			- Bean scopes can be custom defined.
+			- Bean scopes can be overriden/extended (however this is considered bad practice).
+			- Bean scopes cannot override built-in singleton/prototype.
+			- Bean scopes that are custom involve the implementation of the following interface:
+
+				org.springframework.beans.factory.config.Scope
+
+				Which contain x4 core methods for the following actions:
+
+					Instantiate:	Retrieve (or instantiate and retrieve) a bean from a particular scope.
+					Destroy:	Remove a bean from a particular scope.
+
+				For example presume that a custom scope was of/called 'session' then:
+
+					Object get(String name, ObjectFactory<?> objectFactory)
+
+						- Bean Exists:		Bean is returned from session.
+						- Bean Not Exist:	Bean is instantiated, bound to the session and then returned from session.
+
+					Object remove(String name)
+
+						- Bean Exists:		Bean is removed from session and returned.
+						- Bean Not Exists:	Nothing happens and null is returned.
+
+					void registerDestructionCallback(String name, Runnable destructionCallback)
+
+						- Register a callback to occur when either:
+
+							1. Object Destroyed:	Object is naturally destroyed.
+							2. Object Expires:	Object is naturally destroyed due to the context i.e. session expires.
+
+					String getConversationId()
+
+						- Returns the 'conversation' identifer for the underlying scope e.g. if the scope is session then 'session' is returned.
+						- This identifer is defined when a scope is registered with the container.
+
+				NB: Spring supplies examples of how to implement this interface e.g. SimpleThreadScope
+
+			- Bean scopes that are custom require the container to be notified accordingly this can be done via:
+
+				1. Source Code:
+
+					void registerScope(String scopeName, Scope scope);
+
+					This method is declared on the ConfigurableBeanFactory interface, which is available through the BeanFactory property on most concrete implementations of ApplicationContext.
+
+						String scopeName:		Name that wish to apply/call custom scope
+						Scope scope:			Instance of the custom Scope implementation that you wish to register and use.
+
+					Below uses SimpleThreadScope which is included with Spring but is not registered by default. The sequence would be the same but for your own custom implementation of the Scope interface.
+
+						Source Code:
+
+							Scope threadScope = new SimpleThreadScope();				//Use own implementation of the interface 'Scope'
+							beanFactory.registerScope("thread", threadScope);			//Register with container
+
+						XML:
+
+							<bean id="..." class="..." scope="thread">				//Create beans which adhere to your own custom scope
+
+				2. XML:
+
+					<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">		//Register with container
+					    <property name="scopes">
+						<map>
+						    <entry key="thread">
+							<bean class="org.springframework.context.support.SimpleThreadScope"/>
+						    </entry>
+						</map>
+					    </property>
+					</bean>
+
+					<bean id="thing2" class="x.y.Thing2" scope="thread">					//Create beans which adhere to your own custom scope
+					    <property name="name" value="Rick"/>
+					    <aop:scoped-proxy/>
+					</bean>
+
+					NB: When <aop:scoped-proxy/> is placed within a <bean> declaration for a FactoryBean implementation, it is the factory bean itself that is scoped not the object returned from getObject().
+
+	Bean Behaviour:
+
+		- Bean behaviour can be set/configured via a number of ways using interfaces which can be grouped as follows:
+
+			1. Lifecycle Callbacks e.g.
+
+				InitializingBean
+				DisposableBean
+
+			2. 'Aware' Interfaces e.g.
+
+				ApplicationContextAware
+				BeanNameAware
+
+		- Lifecycle Callbacks
+
+			- Lifecycle Callbacks provide means for the interaction with the containers management of the bean lifecycle.
+			- Lifecycle Callbacks are methods which are 'called back' when a particular event occurs.
+			- Lifecycle Callbacks can be implemented via differing means:
+
+			Initialisation
+
+				1. InitializingBean (Interface)
+
+					1. Bean:	Implement interface 	org.springframework.beans.factory.InitializingBean
+					2. Bean:	Define 			void afterPropertiesSet() throws Exception
+					3. Container:	Callback:		afterPropertiesSet() is called by container once all properties within the bean have been set and initialised.
+
+								<bean id="beanA" class="com.myApplication.BeanA"/>
+
+								public class BeanA implements InitializingBean {
+								    @Override
+								    public void afterPropertiesSet() {
+									//Initialise Bean
+								    }
+								}
+
+					NB: Implementing InitializingBean is no longer recommended for it unnecessarily couples/ties the source code to Spring, there are alternatives listed below:
+
+				2. @PostConstruct
+
+					1. Bean:	Define method to be called back by container once initialisation is complete.
+					2. Bean:	Annotate with @PostConstruct.
+					3. Container:	Call callback method when bean initialisation is complete.
+
+				3. Init Block:
+
+					1. Bean:	Define an init block as normal
+					2. Bean:	It is presumed that the block would be instance based and not static (I presume that static is not a valid concept within a container environment - beans are just singletons by default)
+
+				4. XML: init-method="init"
+
+					1. XML File:	Use init-method attribute to specify the name of the void no argument method which will be called back upon bean initialisation.
+
+								<bean id="beanA" class="com.myApplication.BeanA" init-method="init"/>
+
+								public class BeanA {
+								    public void init() {
+									//Initialise Bean
+								    }
+								}
+
+							NB: This means of initialisation does not couple the source code to Spring.
+
+				5. @Bean(initMethod="init")
+
+					1. @Bean contains an attribute 'initMethod' which can be set to define the method which will be called back upon bean initialisation.
+
+				6. SmartInitializingSingleton.afterSingletonsInstantiated() (Interface)
+
+				7. ApplicationListener<ContextRefreshedEvent>
+
+				8. @EventListener(ContextRefreshedEvent.class)
+
+				NB:
+					- Container guarantees initialisation callback is called immediately after a bean is supplied with all dependencies.
+					- Container calls initialisation callback on the raw bean reference before AOP interceptors or others are applied to bean i.e.
+
+						1. Bean is instantiated.
+						2. Bean has initialisation methods called.
+						3. Bean has AOP proxy with its interceptor chain applied.
+
+				NB:
+					- If the bean and the proxy are defined separately, your code can even interact with the raw target bean, bypassing the proxy.
+					- Therefore it would be inconsistent to apply the interceptors to the init method for doing so would couple the lifecycle of the target bean to its proxy or interceptors and leave strange semantics when your code interacts directly with the raw target bean
+
+			Destruction:
+
+				1. DisposableBean (Interface)
+
+					1. Bean:	Implement interface 	org.springframework.beans.factory.DisposableBean
+					2. Bean:	Define 			void destroy() throws Exception
+					3. Container:	Callback:		destroy() is called by container when bean is about to be destroyed.
+
+								<bean id="beanA" class="com.myApplication.BeanA"/>
+
+								public class BeanA implements DisposableBean {
+								    @Override
+								    public void destroy() {
+									//Clean up e.g. release resources/connections
+								    }
+								}
+
+					NB: Implementing DisposableBean is no longer recommended for it unnecessarily couples/ties the source code to Spring, there are alternatives listed below:
+
+				2. @PreDestroy
+
+					1. Bean:	Define method to be called back by container just before the bean is to be destroyed.
+					2. Bean:	Annotate with @PreDestroy.
+					3. Container:	Call callback method when bean is about to be destroyed.
+
+				3. XML: destroy-method="cleanup"
+
+					1. XML File:	Use destroy-method attribute to specify the name of the void no argument method which will be called back upon bean initialisation.
+
+								<bean id="beanA" class="com.myApplication.BeanA" destroy-method="cleanup"/>
+
+								public class BeanA {
+								    public void cleanup() {
+									//Clean up e.g. release resources/connections
+								    }
+								}
+
+							NB: This means of destruction does not couple the source code to Spring.
+
+				4. @Bean(destroyMethod="init")
+
+					1. @Bean contains an attribute 'destroyMethod' which can be set to define the method which will be called back upon bean destruction.
+
+				5. @Bean: Method Inference
+
+					1. Bean:	Declares and defines either public 'close' or public 'shutdown' method.
+					2. Container:	Will automatically infer that these methods need to be called just before the bean is destroyed.
+
+					NB: This means of destruction does not couple the source code to Spring.
+					NB: Behaviour is similar to java.lang.AutoCloseable or java.io.Closeable.
+					NB: The @Bean method may need to be included in specific @Configuration class in order for inference to work (not clear in documentation).
+
+				6. XML: Inference: destroy-method="(inferred)"
+
+					1. XML File:	Uses the special (inferred) value assigned to 'destroy-method' attribute.
+					2. Container:	Will automatically look for any public 'close' or 'shutdown' methods and infer that these methods need to be called just before the bean is destroyed.
+
+				7. XML: Inference: <beans>: default-destroy-method="(inferred)"
+
+					1. XML File:	Uses the special (inferred) value assigned to 'default-destroy-method' attribute of <beans/>.
+					2. XML File:	The inferred behaviour is applied to all beans (whether all beans or just those in XML file - to be evaluated).
+					3. Container:	Will automatically look for any public 'close' or 'shutdown' methods and infer that these methods need to be called just before the bean is destroyed.
+
+							https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html#beans-factory-lifecycle-default-init-destroy-methods.
+
+			Destruction (Extended):
+
+				It is possible to have extended destruction sequences where 'early stop signal' are issued before any destroy methods are called on any singleton beans.
+
+					1. Lifecycle (Interface):
+
+						1. Bean:	Implement interface and recieve 'early stop signal' before the destroy method of any singleton beans are called.
+
+					2. SmartLifecycle (Interface):
+
+						1. Bean:	Implement interface and recieve time-bound 'early stop signal' before the destroy method of any singleton beans are called.
+						2. Container:	Container will wait for all such stop processing to complete before moving on to destroy methods.
+
+		- Lifecycle, LifecycleProcessor, Phased and SmartLifecycle:
+
+			- Lifecycle, LifecycleProcessor interfaces provides full interaction with bean lifecycle including:
+
+				public interface Lifecycle {					//org.springframework.context.Lifecycle
+				    void start();
+				    void stop();
+				    boolean isRunning();
+				}
+
+				public interface LifecycleProcessor extends Lifecycle {
+				    void onRefresh();
+				    void onClose();
+				}
+
+				e.g. starting/stopping a background process
+
+			- Lifecycle interfaces may be implemented by any Spring managed bean such that when:
+
+				1. ApplicationContext:		Receives start/stop signals (via stop/restart scenario during runtime).
+				2. ApplicationContext:		Delegates to a LifecycleProcessor which cascades those signals/calls to all implementations of Lifecycle within that particular context.
+
+			- Lifecycle interface is a plain contract for handling explicit start/stop notifications from the container, it does not imply 'auto-startup' at context-refresh time.
+
+				NB: For fine-grained control over auto-startup and graceful stopping (including startup/stop phases) use org.springframework.context.SmartLifecycle
+
+		- Lifecycle Destruction Sequence:
+
+			- Lifecycle destruction sequence for beans which implement Lifecycle is normally as follows:
+
+				1. Bean:	Receives 'stop' notification i.e. stop() on Lifecycle is called.
+				2. Bean:	Destroyed.
+
+				NB: Stop notifications are not guaranteed to come before destruction of bean at all times e.g. only destroy methods are called when:
+
+					1. Hot refresh (during a contexts lifetime).
+					2. Stopped refresh attempt.
+
+		- Lifecycle Default Initialisation/Destroy Callbacks Names
+
+			 - Lifecycle Callbacks default method names can be defined within <beans/>:
+
+				<beans default-init-method="init"/>
+				<beans default-destroy-method="destroy"/>
+
+				Here:
+
+					1. Container will look for any methods of the corresponding names.
+					2. Container will invoke methods inaccordance with corresponding stage of the lifecycle of the bean.
+
+					NB: Will need to be investigated whether possible to define more than x1 attribute value i.e. where have multiple names for initialisation/destroy methods.
+
+			- Lifecycle Callbacks can also be defined at the 'bean level' should that particular bean have different names for its initialisation and destroy methods i.e. override the defaults via:
+
+				<bean init-method=" "/>
+				<bean destroy-method=" "/>
+
+		- Lifecycle Multiple/Combined Callbacks:
+
+			- Lifecycle Callbacks (as of Spring 2.5) can be combined via the various use of:
+
+				1. InitializingBean/DisposableBean 
+				2. Custom init()/destroy() methods (of varying method names)
+				3. @PostConstruct/@PreDestroy
+
+			- Lifecycle Callbacks from differing mechanisms may be applied to the same bean, in which case a precedence is applied:
+
+				Method Names: Differing
+
+					1. @PostConstruct/@PreDestroy:		Methods annotated with @PostConstruct/@PreDestroy are called first.
+					2. InitializingBean/DisposableBean:	Methods which override/implemnt afterPropertiesSet()/destroy() called second.
+					3. Custom:				Methods which maybe custom defined in XML which ultimately call an equivalent init()/destroy() called last.
+
+					NB: If various mechanisms are applied to the same bean but happen to have the same method name within each mechanism then that method is called only once (presumably the method which is the 1st mechanism in order of precendence).
+
+		- Lifecycle Startup/Shutdown Ordering Between Dependencies:
+
+			class BeanA implments Lifecycle
+			{
+			    @Autowired
+			    BeanB beanB;				//BeanB also implements Lifecycle
+
+			    ...
+			}
+
+			Here:
+				1. BeanA is dependent upon BeanB.
+				2. Upon Start notification:		beanB then beanA
+				3. Upon Stop notification:		beanA then beanB
+				4. In general:
+
+					Starting runs from:		End of dependency chain back to root/initial bean		Root/Initial Bean <--- End of Dependency Chain
+					Stopping runs from:		Root/initial bean to end of dependency chain			Root/Initial Bean ---> End of Dependency Chain
+
+		- Lifecycle Startup/Shutdown Ordering Using SmartLifecycle:
+
+			- SmartLifecycle allows for the manual/explicit defining of the order of start/stop notification to beans (which implement SmartLifecycle) i.e. calls to start()/stop().
+
+				public interface Phased {
+				    int getPhase();
+				}
+
+				public interface SmartLifecycle extends Lifecycle, Phased {
+				    boolean isAutoStartup();
+				    void stop(Runnable callback);
+				}
+
+			- SmartLifecycle extends Lifecycle therefore has the necessary start()/stop() but also extends Phased which allows for setting of the ordering (or what phase/stage) the bean should be notified by the container.
+			- SmartLifecycle requires the bean to implement getPhase() which simply returns an int which determines when it should be notified:
+
+				Integer.MIN_VALUE:		First Start		Last Stop
+				Integer.MAX_VALUE:		Last Start		First Stop
+
+				Beans will set/return an int which states when it shall be started/stopped.
+
+				NB: In general beans should be started/stopped as follows (as described above):
+
+					"Dependencies: Start First and Stop Last"
+
+				NB: The 'default' phase value on any 'normal' Lifecycle object that does not implement SmartLifecycle is 0.
+				NB: The phase value can also be negative (therefore would start before (and stop after) any normal Lifecycle objects).
+
+			- SmartLifecycle stop() accepts a callback such that the bean must call run() once all other shutdown processing is complete. 
+			- SmartLifecycle (and possibly Lifecycle) objects are controlled via the default implementation of LifecycleProcessor called DefaultLifecycleProcessor:
+
+				- DefaultLifecycleProcessor enables asynchronous shutdown by using a timeout to wait for the invocation of run() for all objects in each phase.
+				- DefaultLifecycleProcessor default timeout is 30s but can be overriden by declaring the following bean in XML:
+
+					<bean id="lifecycleProcessor" class="org.springframework.context.support.DefaultLifecycleProcessor">
+					    <property name="timeoutPerShutdownPhase" value="10000"/>			//Timeout altered from 30s to 10s
+					</bean>
+
+			- SmartLifecycle is also invoked when:
+
+				1. Context is refreshed:		start();	(only if isAutoStartup() returns true)
+				2. Context is closed:			stop()
+
+				(rather than just when beans are explicitly start/stop) i.e. (presumably) the context will notify the implementation of LifecycleProcessor of when it is refreshed/closed which will then inform all objects that implement SmartLifecycle.
+
+				NB: Standard Context implementation does not call start() automatically when context is started (only when bean is normally instantiated/started as per the phase value described above).
+
+		- Lifecycle Callbacks: Considerations:
+
+			1. Initialisation Deadlock:
+
+				- @PostConstruct and initialisation methods in general are executed within the container’s singleton creation lock.
+				- Beans are only considered to be fully initialized and ready to be published to others after returning from the @PostConstruct/initialisation method.
+				- @PostConstruct and initialisation methods should only be used for:
+
+					1. Validation:		Validating the configuration the bean state
+					2. Internal State:	Preparing internal data structures based on the given configuration.
+
+					There should be no attempt to access/interact/ues other external beans, otherwise there is a risk for an initialisation deadlock.
+
+			2. Expensive Initialisation:
+
+				- Upon requirement for expensive post construction initialisation e.g. asynchronous database connection setup.
+				- Ideally the bean should either:
+
+					1. Implement Interface:
+
+						SmartInitializingSingleton.afterSingletonsInstantiated()
+
+					2. Implement Context Refresh Event Listener:
+
+						ApplicationListener<ContextRefreshedEvent>
+
+					3. Annotation:
+
+						@EventListener(ContextRefreshedEvent.class)
+
+				NB: All of these come after all regular singleton initialization and therefore outside of any singleton creation lock.
+
+	Bean Thread Safety
+
+		- Container singleton bean overall instantiation (appears) to have the following x4 general stages:
+ 
+			1. Creation:		Singleton bean is allocated memory
+			2. Initialisation:	Singleton bean fields are initialised
+			3. Publish:		Singleton bean is published into the container
+			4. Destruction:		Singleton bean is deallocated memory and destroyed
+
+		- Container singleton bean have following threading considerations during respective stages:
+
+			Bean Initialisation:	Singleton bean do not need to be concerned about visibility of initialisation state.
+						Singleton bean have visibility guarantees similar to 'final' even for setter-based configuration state that is mutable during the initialisation phase.
+						Singleton bean fields do not have to be marked as 'volatile' as long as they are only mutated during the initialisation phase.
+						Singleton bean fields which are altered between the stages of creation and publication should be either:
+
+							1. volatile:		Declared as 'volatile'
+							2. Lock:		Protected using a common lock
+
+			Bean Publishing:	Singleton bean is published in a thread safe manner using singleton lock guaranteeing visibility in other threads.
+						Singleton bean fields are fully thread safe once published, this includes FactoryBean instances (which are processed within the general singleton lock).
+
+
+			Bean Destruction:	Singleton bean destruction callbacks which contain state which is altered/accumulated between Initailaisation and Destruction should be kept in thread-safe structures (or in volatile fields in simple cases) as per common java guidelines.
+
+		- Container singleton bean involve deeper interaction/control of bean lifecycle (via say implementing LifeCycle or SmartLifecyle) while defining run-time mutable state e.g. a 'runnable' field, need to be declared volatile. 
+		- Container singleton bean callbacks all typically follow as expected ordering e.g. initialisation, start(), stop() then destruction. However in some cases destruction can occur without stop() being called e.g.
+
+			1. Bootstrap:		Cancelled bootstrap leading to extraordinary shutdown.
+			2. Timeout:		Stop timeout expires after being instigated by another bean.
+
+			It is therefore strongly recommended that all internal state within a bean is able to handle such circumstances when destroy occurs without stop being called e.g. ensure that the destruction processing fully releases all necessary memory/resources. 
+	
+			NB: All of the above is detailed:	https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html#beans-factory-thread-safety
+
+	Bean ApplicationContextAware:
+
+		- Bean ApplicationContextAware is an interface which a bean can implement in order to become 'aware' of its enclosing container
+
+			public interface ApplicationContextAware {								//org.springframework.context.ApplicationContextAware
+			    void setApplicationContext(ApplicationContext applicationContext) throws BeansException;
+			}
+
+		- Bean ApplicationContextAware is implemented by a bean which is passed reference to the current ApplicationContext.
+		- Bean ApplicationContextAware can be used include:
+
+			1. Bean implements ApplicationContextAware.
+			2. Bean is passed the current context instance which may be ApplicationContext (or subclass via casting e.g. ConfigurableApplicationContext, which exposes additional functionality).
+			3. Bean can now do all that is possible via the context instance e.g.
+
+				1. Other Beans:		Retrieval of other beans in container
+				2. File Resources:	Access to file resources
+				3. Events:		Publish application events
+				4. MessageSource:	Access to a MessageSource
+
+				NB: In general this should be avoided for it
+
+					1. Coupling:	Couples the source code to the container i.e. the source needs to interact with the container in order to work (and which may change in futue)
+					2. IoC:		Contradicts the principle of inversion of control
+
+ 			NB: Autowiring is another means of obtaining a reference to the ApplicationContext i.e. @Autowired applied to field, parameter in normal/standard way e.g.
+
+				1. Constructor:		ApplicationContext can be injected into constructor parameter:			Autowiring Mode: 'constructor'
+				2. Setter:		ApplicationContext can be injected into setter method parameter:		Autowiring Mode: 'byType'
+
+	Bean BeanNameAware:
+
+		- Bean BeanNameAware is an interface which a bean can implement in order to become 'aware' of its details as defined within its bean definition:
+
+			public interface BeanNameAware {									//org.springframework.beans.factory.BeanNameAware
+			    void setBeanName(String name) throws BeansException;
+			}
+
+		- Bean BeanNameAware are implemented by a bean which is passed reference to the bean name (is this Bean ID or name?).
+		- Bean BeanNameAware can be used include:
+
+			1. Bean implements BeanNameAware.
+			2. Bean is passed the current bean name.
+			3. Bean is passed the current name (via setBeanName()) at the following point during instantiation:
+
+				1. Bean Properties:	Populated.
+				2. Bean Name:		setBeanName() is invoked by container returning the bean name.
+				3. Initialisation:	InitializingBean.afterPropertiesSet() or 'init-method' invoked.
+
+	Bean 'Aware' Interfaces:
+
+		- Bean 'Aware' Interfaces take many forms providing access to various aspects of the container infrastructure:
+
+			ApplicationContextAware
+			ApplicationEventPublisherAware
+			BeanClassLoaderAware
+			BeanFactoryAware
+			BeanNameAware
+			LoadTimeWeaverAware
+			MessageSourceAware
+			NotificationPublisherAware
+			ResourceLoaderAware
+			ServletConfigAware
+			ServletContextAware
+
+		- Bean 'Aware' Interfaces are implemented by beans that need to know about certain aspects of the containr infrastructure.
+		- Bean 'Aware' Interfaces provide methods which are called by the container when applicable/appropriate, passing in the information as necessary.
+		- Bean 'Aware' Interfaces should only be used when absolutely necessary for they couple the source code to the container (contradicting IoC), they should only be used by 'infrastructure beans' which require such specific access/information.
+
+	Bean Inheritance:
+
+		- Bean inheritance can be implemented and defined within XML:
+
+			<bean id="parentBeanID"
+				abstract="true"
+				class="com.MyApplication.ParentBean">
+			    <property name="name" value="parent"/>
+			    <property name="age" value="1"/>
+			</bean>
+
+			<bean id="extendedBeanID"
+				class="com.MyApplication.ExtendedBean"
+				parent="parentBeanID" init-method="initialize">  
+			    <property name="name" value="extended"/>
+			    								<!-- age property value of 1 will be inherited from parent -->
+			</bean>
+
+			Here:
+				1. extendedBean inherits from parentBean as per a traditional class extension.
+				2. extendedBean inherits all metadata from parentBean (where not overriden) and override/extend/add where indicated e.g
+
+					Scope				Initialization Method
+					Constructor arguments		Destroy Method
+					Properties			Static Factory Method
+
+					NB: The following setting are always taken from child bean:
+
+						'depends on'
+						'autowire mode'
+						'dependency check'
+						'singleton'
+						'lazy init'
+
+				3. extendedBean has all of the benefits of tradional class extension e.g. 'saves typing', improves robustness and code reuse.
+				4. parentBean is effectively a template for other beans.
+
+			NB: 'abstract'
+
+				- If parentBean is declared as 'abstract' then:
+
+					1. No Instantiation:		Bean cannot be instantiated (as per abstract class).
+					2. Template:			Bean can only serve as template to other child bean definitions.
+					3. Error:			Bean will cause an error to be thrown if it is a 'ref' property of another bean or is called via getBean().
+					4. Ignored:			Bean will be ignored by containers internal preInstantiateSingletons()
+
+				- If parentBean does not specifiy a class then it must be declared 'abstract=true' otherwise an error will be thrown. This is due to:
+
+					- ApplicationContext pre-instantiates all singletons by default.
+					- ApplicationContext will try to instantiate this bean but will not know where to find class definition.
+
+		- Bean inheritance and child bean definitions are represented/accessible via ChildBeanDefinition class via the current ApplicationContext or ClassPathXmlApplicationContext.
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

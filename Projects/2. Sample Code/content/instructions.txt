@@ -1,0 +1,97 @@
+Welcome to Sample Code
+
+	Overview
+
+		- Sample Code is a simple, quick and efficent store, search and retrieval of research notes or previous working pieces of source code.
+		- Build up library by adding nodes.
+		- Library stored and backed by a simple JavaDB/Derby database.
+
+
+
+	Keyboard:
+									Required
+		Command				Shortcut Key		Focus			Action
+		________________________________________________________________________________________________________________________________________________
+
+	 	Open				Enter			Library Tree Node	Open node and show content in editor.
+		Delete				Del			Library Tree Node	Delete node and all decendents from database.
+		
+		Insert				Ctrl + I		Library Tree Node	Insert new node to branch or any node on clipboard.
+		Add				Ctrl + A		Library Tree Node	Parent Node:	Add new node to branch.
+												Leaf Node:	Convert to parent node and add new node.
+
+		Cut				Ctrl + X		Library Tree Node	Copy and delete node.		[Leaf Only] 
+		Copy				Ctrl + C		Library Tree Node	Copy node.			[Leaf Only] 
+		Paste				Ctrl + V		Library Tree Node	Parent Node:	Add copied node to branch.
+												Leaf Node:	Convert to parent node and add copied node.
+
+		Save				Ctrl + S		Global			Save the current nodes name and content to database.
+		
+		Move Up				Ctrl + Cursor Up	Library Tree Node	Swap node and move up in library.
+		Move Down			Ctrl + Cursor Down	Library Tree Node	Swap node and move down in library.
+		
+		Fullscreen			Ctrl + F		Global			Toggle fullscreen.
+		Fullscreen Exit			Escape			Global			Exit fullscreen.
+
+		Search				Enter			Search Field		Run search on local branch and all decendents.
+		Search Exit			Escape			Global			Exit the search and return to library.
+
+		Search Previous			Cursor Up		Global			Jump to previous matching word.
+		Search Next			Cursor Down		Global			Jump to next matching word.
+
+
+
+	Library Tree Context Menu:
+									Required
+		[Right click]						Focus			Action
+		___________________________________________________________________________________________________________________________________________________
+
+		Assign Icon						Library Tree Node	Assign icon to node, local branch or all decendent branches.
+		Expand:							Library Tree Node	Expand node or all decendents.
+		Collapse:						Library Tree Node	Collapse node or all decendents.
+ 
+
+
+	Search Procedure:
+
+		1. Library:		Select a node:
+
+						Selected Node		Action
+						___________________________________________________________________________________________
+
+						Root Node:		Search whole Library.
+						Parent Node:		Search within branch and all decendent branches.
+						Leaf Node:		Search within the leaf nodes own branch and all decendent branches.
+
+		2. Search Fragment:	Type the string or fragment to be searched, the focus will automatically jump to search text field, use | to search for multiple items:
+
+						map | iterator	//Search for all instances of 'map' and 'iterator', all searches are case insensitive.
+
+		3. Search Scope:	Toggle to search within:
+
+						Node Name | Node Code
+
+		4. [Enter]: 		Run search and a new tree will be built containing all nodes containing the searched word(s).
+		5. Click Node:		Select node to open.
+		6. Browse:		Use the cursor up/down to jump through all instances of searched word(s).
+		7. [Escape]:		To return library.
+
+
+
+	AutoSave:
+
+		1. Select a node and alter either node name or content.
+		2. Select another node.
+		3. Original node is automatically saved.
+		4. Disk save icon will appear in top right hand corner.		
+
+
+
+	Breadcrumb:
+
+		1. Select a node.
+		2. Breadcrumb trail will update to illustrate tree path of selected node.
+		3. Click on any breadcrumb to jump to node.
+
+
+	

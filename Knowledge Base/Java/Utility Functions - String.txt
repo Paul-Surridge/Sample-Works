@@ -1,0 +1,259 @@
+Utility Functions (Built-in)
+
+	String
+
+		Fields
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			CASE_INSENSITIVE_ORDER	4				Number of bytes used within an int using 2-complement
+
+		Constructors:
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			String(byte[] bytes)					byte[] 		-> String
+			String(byte[] bytes, Charset charset)			byte[] 		-> String 		Using the supplied Charset
+			String(byte[] bytes, int offset, int length)		byte[] 		-> String 		From offset for length bytes
+
+			String(byte[] bytes, int offset, int length,
+			       Charset charset)					byte[] 		-> String 		From offset for length bytes using the supplied Charset
+
+			String(byte[] bytes, int offset, int length,
+			       String charsetName)				byte[] 		-> String 		From offset for length bytes using the supplied Charset
+
+			String(byte[] bytes, String charsetName)		byte[] 		-> String 		Using the supplied Charset
+			String(char[] value)					char[] 		-> String
+			String(char[] value, int offset, int count)		char[] 		-> String 		Using offset and count
+			String(int[] codePoints, int offset, int count)		int[] 		-> String 		Using offset and count, the int values are interpreted using unicode and narrrowed/converted to chars (16 bit)
+			String(String original)					String 		-> String
+			String(StringBuffer buffer)				StringBuffer 	-> String
+			String(StringBuilder builder)				StringBuilder 	-> String
+
+		Conversion:
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			byte[]		getBytes()				this 		-> byte[]		Using the default/supplied charset.
+					getBytes(Charset cs)
+					getBytes(String charset)
+
+			char[]		toCharArray()				this 		-> char[]
+
+			String		toLowerCase()				this 		-> upper/lower case 	Using default or supplied Locale, care should be used to ensure conversion is as expected when using Locale.
+					toLowerCase(Locale locale)
+					toUpperCase()				
+					toUpperCase(Locale locale)
+
+		static	String		copyValueOf(char[] a)			char[] 		-> String 		Calls valueOf(char[] a).
+		static	String		copyValueOf(char[] a,
+						    int iOffset,int iCount)	
+
+		static	String		valueOf(boolean b)			boolean 	-> String 		"true" or "false"
+		static	String		valueOf(char c)				char 		-> String
+		static	String		valueOf(char[] ca)			char[] 		-> String
+		static	String		valueOf(char[] ca,			char[] 		-> String 		With offset and length, iOffset + iCount must not go out of bounds i.e. this would need to be worked out prior to invocation
+						int iOffset,
+						int iCount)
+		static	String		valueOf(double d)			double 		-> String		Equivalent to: Double.toString()
+		static	String		valueOf(float f)			float 		-> String		Equivalent to: Float.toString()
+		static	String		valueOf(int i)				int 		-> String		Equivalent to: Integer.toString()
+		static	String		valueOf(long l)				long 		-> String		Equivalent to: Long.toString()
+		static	String		valueOf(Object obj)			object 		-> String		Equivalent to: Object.toString()
+
+			String		toString()				Returns this (not a copy)
+
+		Extraction:
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			char		charAt(int i)				Return the char at i
+
+			int		codePointAt(int i)			Return the int at/before i which can then be interpreted as unicode
+			int		codePointBefore(int i)
+
+			void		getChars(int iSourceBegin,		Copies the characters of this into sDestination.
+						 int iSourceEnd,
+						 char[] sDestination,			[iSourceBegin - iSourceEnd)	Using standard Inclusive to exlusive
+						 int iDestinationStart)
+										Copies characters:
+
+											Source:
+
+												From:	iSourceBegin
+												To:	iSourceEnd - 1
+
+												Length:	iSourceEnd - iSourceBegin
+
+											Destination:
+
+												From:	iDestinationStart
+												To:	iDestinationStart + iSourceEnd - iSourceBegin - 1
+
+			CharSequence	subSequence(int iStart, int iEnd)	Return characters subsequence of this. NB: This method is only included so that String can implement CharSequence interface.
+
+			String		subString(int iStart)			Return the substring between iStart (inclusive) and iEnd (exclusive)
+			String		subString(int iStart, int iEnd)
+											From:	iStart
+											To:	iEnd - 1
+
+											Length:	iEnd - iStart
+
+		Format:
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		static	String		format(String s, Object...)		Generate a string which adheres to the format string inconjunction with the Locale and any Objects.
+					format(Locale l, String s, Object...)
+										[To be expanded]
+
+			String		trim()					Remove all leading and trailing whitespace
+
+			String		concat(String s)			Return this + s
+
+		static	String		join(CharSequence delim,
+					     CharSequence... elements)		Returns constructed String using varargs/Iterable<? extends CharSequence> with delimiter inbetween
+					join(CharSequence delim,
+					     Iterable<? extends CharSequence>)		String.join("-", "Java", "is", "a programmng language");
+														
+											returns:	"Java-is-a programmng language!
+
+		Find Index (Within):
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			int		indexOf(int ch)				Return the index of the first instance/occurence of ch/s (the character is represented using an int) or -1
+			int		indexOf(int ch, int fromIndex)
+			int		indexOf(String s)
+			int		indexOf(String s, int fromIndex)
+
+			int		lastIndexOf(int ch)			Return the index of the last instance/occurence of ch/s (the character is represented using an int) or -1
+			int		lastIndexOf(int ch, int fromIndex)
+			int		lastIndexOf(String s)
+			int		lastIndexOf(String s, int fromIndex)
+
+			int		offsetByCodePoints(int index,		Returns the index within this that is offset by offset number of code points
+							   int offset)
+
+		Replace:
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			String		replace(char cOld, char cNew)		Replace all instances in this of cOld with cNew, if no cOld is found then reference to this is returned (not a new copy of this)
+
+			String		replace(CharSequence cOld,		Replace all instances in this of cOld with cNew, if no cOld is found then reference to this is returned (not a new copy of this)
+						CharSequence cNew)
+											String s = "aaa"
+
+											s.replace("aa", "b")	//"ba" not "ab"
+
+			String 		replaceAll(String sRegex, String s)	Replace all/first substrings which match sRegex with s within this.
+					replaceFirst(String sRegex, String s)
+											NB: \ and $ in s may cause unexpected results if expected to be literal
+											    Use Matcher.quoteReplacement(java.lang.String) to suppress the special meaning of these characters.
+
+		Split:
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			String[]	split(String sRegex)			Returns String[] which contains the fragments of this which is split using delimiters which match the regular expression, limit is as follows:
+					split(String sRegex, int iLimit)
+											Limit determines the length of returned array
+											Limit <=0 then limit is discarded and array can be any length
+
+										Trailing empty strings are discarded.
+
+		Comparison:
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			int		compareTo(String s)			Compare lexicographically (dictionary order)
+			int		compareToIgnoreCase(String s)
+											this < s	Negative
+											this == s	0
+											this > s	Positive
+
+											The value returned is the difference between the first x2 characters which differ. If one is a prefix of the other then the difference in length is returned.
+
+			boolean		equals(Object obj)			Check if obj/s is not null, a string and matches this
+			boolean		equalsIgnorecase(String s)		
+
+		Contains Check:
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			boolean		contains(CharSequence cs)		Check if this contains cs
+
+			boolean		contentEquals(CharSequence cs)		Check if this contains the smae characters as cs/sb
+			boolean		contentEquals(StringBuffer sb)
+
+			boolean		endsWith(String s)			Check if this ends with suffix s.
+			boolean		startsWith(String s)			Check if this starts with prefix and/or with initial offset.
+			boolean		startsWith(String s, int offset)
+
+			boolean 	regionMatches(int thisOffset,		Checks if x2 substrings within this and s using the offsets of length len characters are the same.
+						      String s,
+						      int stringOffset,
+						      int len)
+
+			boolean 	regionMatches(boolean ignoreCase,
+						      int thisOffset,
+						      String s,
+						      int stringOffset,
+						      int len)
+
+			boolean 	matches(String sRegex)			Check if this matches the supplied regular expression
+
+		State:
+		-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			boolean		isEmpty()				Return length() == 0
+
+			int		length()				Return length of this string
+
+			int		hashCode()				Returns hash code for this.
+
+			int		codePointCounts(int iStart, int iEnd)	Return the number of code points between iStart and iEnd-1. Unpaired surrogates within the text range count as one code point each.
+
+			String		inter()					Return the internal canonical (presume cached) representation for this String object.
+
+											A pool of strings is maintained privately within the actual class of String
+
+										Returns the String with the same characters as this but is guaranteed to be from a pool of unique strings.
+
+
+		
+
+
+
+
+
+			
+
+
+
+
+
+
+
+
+
+			
+
+
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					

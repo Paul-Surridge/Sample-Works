@@ -1,0 +1,378 @@
+Local Class
+
+	Overview:
+
+		- Local Class is a named class within any method/block e.g.
+
+			1. Method
+			2. If Clause
+			3. Else Clause
+			4. Loop
+			5. Any Block...
+
+	Outer Referencing:
+
+		- Local Class is able to reference:
+
+			- Enclosing Class:
+
+				(Outer Block - non-static)					(Outer Block - static)
+				______________________________________________________________________________________________
+
+				non-static Members						static Members
+				static Members
+
+			- Enclosing Block:
+
+				Local Variables or Parameters ('final' or 'effectively final' only):
+
+					- Given:
+
+						void methodBlock(int iBlockParameter)
+						{
+							int i = 0;		//OK	Effectively Final if 'i' does not change once initialised.
+							final int j = 1;	//OK	non-static Constant
+						}
+					
+					- Starting in Java 8.
+					- Access to:
+
+						1. i
+						2. j
+						3. iBlockParameter
+
+						As long as:
+
+							1. They are not assigned an alternate value prior to Local Class.
+							2. They are not assigned a value within the Local Class itself.
+
+					- Local Variable or Parameter that never changes once it has been initialised is 'effectively final'.
+					- For Example:
+
+						1. If a Local Variable is initialised.
+						2. Altered.
+						3. Used in Local Class.		//Compile Error
+
+					NB: Capture: Whenever a Local Class accesses a Local Variable or Parameter it 'captures' that Local Variable or Parameter.
+
+			- Overall:
+
+				Essentially everything in enclosing block and enclosing class.
+
+	Members:
+
+		- Permitted Members:
+
+			1. non-static Objects
+			2. non-static Constants
+			3. non-static Methods
+				i. non-static Local Class
+				...
+
+			4. non-static Nested Class			
+			5. static Constants
+
+	Access Modifers:
+
+		- All Local Classes may only be defined as None/Default, 'private', 'protected' or 'public' not permitted.
+
+			void method()
+			{
+				private class LocalClass		//Fail
+				{...}
+
+				class LocalClass			//OK
+				{...}
+			}
+
+	non-static Context:
+
+		- All Local Classes are non-static Context, regardless if declared within a non-static or static Outer Block.
+		- Given:
+
+			- They have access to Instance Variables of Outer Block (as distinct from Outer Class).
+
+	Interface:
+
+		- All Nested Classes may implement Interfaces:
+
+			1. Inner Class
+			2. static Nested Class
+			3. Local Class
+
+	Shadowing:
+
+		- Members within Local Class shadow those in enclosing scope.
+		- Following the same general rules surrounding shadowing:
+
+			1. Compiler:	Checks Locally.
+			2. Compiler:	If identifier not found in Local Class it checks in enclosing scope.
+
+	Questions:
+
+		- Following variations surrounding Local Classes:
+
+			1. Outer Block Context:		Can the Local Class be contained within an outer method/block contained in top level non-static or static memory?	Yes:	A local class can be defined within a method/block containined within non-static or static memory.
+			2. Definition:			Can the Local Class be placed is either non-static or static entity of enclosing method/block?				No:	A local class is always/can only be placed in non-static memory.
+			3. Instantiation:		Can the Local Class be instantiated a non-static or static Local variable of enclosing method/block?			No:	A local class can only be instantiated as a non-static variable.
+			4. Members:			Can the Local Class contain non-static or static members?								No:	A local class can only have non-static members, only top level components have static members.
+
+	Answers:
+
+			1. Outer Block Context:		- A Local Class can be contained within a non-static and static Block.
+							- A Local Class contained within a non-static and static Block is identical, except:
+							
+								The only difference is what Top Level Class member can be accessed from the Local Class.
+
+								Outer Block Context		Access To Top Level Class Members
+								___________________________________________________________________
+
+								non-static			non-static and static
+								static 				static		
+
+			2. Definition:			- A Local Class may only be defined a non-static entity within Outer Block.
+
+								Outer Block Context		Definition within Outer Block
+								___________________________________________________________________
+
+								non-static			non-static
+								static				non-static
+
+								void method()
+								{
+									class LocalClass		//OK
+									{...}
+									static class LocalClass		//Fail
+									{...}
+								}
+
+								static void method()
+								{
+									class LocalClass		//OK
+									{...}
+									static class LocalClass		//Fail
+									{...}
+								}
+
+								- Given:
+
+									1. static entities are only declared and associated at 'Class Level' not at 'Method/Block Level'.
+									2. Regardless if the Local Class is within an static Outer Block e.g. static Method, static Initialisation Block.
+
+							- static Local Class do not exist.
+
+			3. Instantiation:		- A Local Class can only be instantiated as a non-static Local Variable within Outer Block.
+
+								Outer Block Context		Local Class Instantiation within Outer Block
+								___________________________________________________________________
+
+								non-static:			non-static
+								static:				non-static
+
+								- Given:
+
+									1. static entities are only declared and associated at 'Class Level' not at 'Method/Block Level'.
+									2. Regardless if the Local Class is within an static Outer Block e.g. static Method, static Initialisation Block.
+
+								NB:
+
+									A Local Class can only be instantiated AFTER the Local Class has been declared/defined i.e. no multiple pass through compliation.
+
+									void method()
+									{
+										class LocalClass		//OK
+										{...}
+									
+										LocalClass objLocalClass = new LocalClass();
+									}
+
+			4. Members:			- A Local Class may only contain non-static members and static Constants.
+
+								Outer Block Context		Local Class Members
+								___________________________________________________________________
+
+								non-static 			non-static (and static Constants).
+								static 				non-static (and static Constants).
+
+								NB: No Local Interfaces or Enum (which are inherently static).
+
+								void method()
+								{
+									class LocalClass
+									{
+										int i;			//OK
+										static j;		//Fail
+										static final k = 10;	//OK
+									}
+								}
+
+								- Given:
+
+									1. Local Class has access to Outer Class Instance Variables thererfore cannot have own static members.
+									2. Regardless if the Local Class is within an static Outer Block e.g. static Method, static Initialisation Block.
+
+			5. Outer Block Referencing:	- A Local Class ability to reference members in the Outer Block is independent on Outer Block Context:
+
+								Outer Block Context		Local Class Access to Block Local Variables
+								___________________________________________________________________________
+
+								non-static 			non-static Constants | Local Variables (Effectively Final) | Parameters (Effectively Final)
+								static 				non-static Constants | Local Variables (Effectively Final) | Parameters (Effectively Final)
+
+			6. Outer Class Referencing:	- A Local Class ability to reference members in a Outer Class independent on Outer Block Context:
+
+								Outer Class Context		Local Class Access to Outer Class Members
+								___________________________________________________________________________
+
+								non-static 			non-static Members and static Constants
+								static 				non-static Members and static Constants
+
+			7. Top Level Class Referencing:	- A Local Class ability to reference members in the Top Level Class depend on which contextual branch the Local Class is in:
+
+								Top Level Context		Local Class Access to Top Level Class Members
+								___________________________________________________________________________
+
+								non-static 			non-static and static Members
+								static 				static Members
+
+			8. Outer Scope:			- Local Class only 'exists' within the immediate blocks scope.
+							- Therefore:
+
+								1. Local Class may not have same name/identifier as another Local Class within enclosing Block.
+								2. Local Class may only have the same name/identifier as another Local Class within another Block.
+								3. Local Class cannot be instantiated from Outer Class.
+
+	Summary Matrix:
+
+		Key Points:
+
+			- All Local Classes declared within non-static or static Blocks are identical.
+			- Except that a Local Class within a static Block may only reference static members of Top Level Class.
+
+							(Outer Block - non-static)					Outer Block - static)
+							_____________________________________________________________________________________
+
+		Local Class:
+
+			Members:			non-static Only							non-static Only
+							non-static Constant						non-static Constant
+							static Constant							static Constant
+
+			Outer Block Referencing:	Local Variables (Effectively Final)				Local Variables (Effectively Final)	//From Java 8:	Local Variables which are 'effectively final'
+							Parameters 	(Effectively Final)				Parameters 	(Effectively Final)	//From Java 8:	Parameters which are 'effectively final's
+							non-static Constant						non-static Constant
+
+			Outer Class Referencing:	non-static Members						non-static Members
+							static Constant							static Constant
+
+			Top Level Class Referencing:	non-static Members						static Members Only
+							static Members
+
+			Shadowing:			Applicable							Applicable
+
+		Outer Block:
+
+			Local Class Instantiation:	non-static Only							non-static Only				//Local Class cannot instantiate static members.
+																				//static Objects are only applicable at Class Level not Block Level.
+																				//Instantiation must come after Class declaration.
+
+			Local Class Referencing:	via non-static Object						via non-static Object
+
+	How Best to Remember:
+
+		Local Class is a non-static Context with access to Instance Variables, therefore:
+
+			1. Members:			May only contain non-static and static Constants.
+			2. Outer Block Referencing:	Local Variables ('final' and 'effectively final') and Parameters ('final' and 'effectively final').
+			3. Top Level Class Referencing:	Dependent on Top Level Class Context Branch Block is contained within:
+
+								non-static:	Access to Top Level Class:	non-static and static Members
+								static:		Access to Top Level Class:	static Members
+
+			4. Local Class Instantiation:	via non-static Object only.
+ 
+	Inner Class Comparison:
+
+		Local Classes and Inner Classes within a non-static Block are similar:
+
+			Members:			Same
+			Outer Class Referencing:	Same
+			Shadowing:			Same
+			Instantiation:			Same
+
+		Except:
+
+			1. Local Class has access to Local Variables ('final' and 'effectively final') and Parameters ('final' and 'effectively final').
+			2. Local Class can only be instantiated within a Block opposed to a Class.
+
+	Serialisation:
+
+		- Serialisation of Nested Classes is strongly discouraged.
+		- Applicable to:
+
+			1. Inner Class
+			2. Local Class
+			3. Anonymous Class
+			4. Lambda Expressions
+
+			NB: Likely also just as applicable to static Nested Class?
+
+		- Due to:
+
+			- Java Compiler creating 'Synthetic Constructs' when compiling the above entities.
+			- Whereby the 'Synthetic Constructs' vary depending on the Java Compiler implementation.
+			- Therefore:
+
+				- .class files can vary depending on the compiler.
+				- Compatibility issues may arise if the above are serialised and deserialised with an alternate JRM.
+
+	Example:
+
+		class Class
+		{
+    			boolean bTest;
+    
+    			static
+    			{
+        			class LocalClass1
+        			{...}
+        
+        			LocalClass1 objLocalClass1 = new LocalClass1();
+    			}
+
+			//non-static Initialisation Block
+    			{
+        			class LocalClass1
+        			{...}
+    			}
+    
+    			Class(int i)
+    			{...}
+    
+    			int nonstaticMethod()
+    			{
+        			class LocalClass1
+        			{...}
+        
+        			LocalClass3 objLocalClass3 = new LocalClass3();
+        
+        			if(bTest)
+        			{
+           	 			class LocalClass2
+            				{...}
+        			}
+        
+        			return 10;
+    			}
+    			static int outerstaticMethod()   
+    			{
+        			class LocalClass1
+        			{...}
+        
+        			return 0;
+    			}  
+		}
+
+
+
+

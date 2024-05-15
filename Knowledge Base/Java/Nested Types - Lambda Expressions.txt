@@ -1,0 +1,737 @@
+Lambda Expressions
+
+	Overview:
+
+		- Lambda Expressions are soley for use with Functional Interfaces.
+		- Lambda Expressions are soley as direct replacements of Anonymous Classes.
+		- Lambda Expressions create an arbitary object which implements the expected Functional Interface.
+		- Lambda Expressions may be used anywhere irrespective whether within non-Static/Static memory.
+		- Lambda Expressions can be considered methods without names.
+		- Lambda Expressions act as a simplification and reduce verbosity.
+		- Lambda Expressions treat 'a block of code as a single variable or piece of data' that can be passed to a method as an argument.
+		- Lambda Expressions get mapped/transposed onto the x1 Abstract Method within the Functional Interface.
+
+		NB: Functional Interface:
+
+			1. An Interface with only x1 Abstract Method.
+			2. May contain any number of other normal Interface members e.g.
+
+				Constants
+				Static Methods
+				Default Methods
+				Overriden Methods (from Object)
+				...
+
+				(But must only contain x1 Abstract Method)
+
+			3. May be the 'Assignment Target' of the Lambda Expression (or Method Reference, Constructor Reference).
+
+	Areas Of Use:
+
+		- Lambda Expressions may be used in any of the following situations in place of a Functional Interface:
+
+			1. Variable Declarations:		Initialise an Anonymous Object and assign to a Functional Interface Variable.
+			2. Constructor/Method Argument:		Initialise an Anonymous Object and pass as an argument to a method expecting a Functional Interface Variable.
+			3. Assignment
+			4. Return Statement
+			5. Array Initialiser
+			6. Lambda Expression Body
+			7. Conditional Expression, ?:
+			8. Cast Expressions
+
+		- Lambda Expressions may be used with:
+
+				Initialisation:
+
+					1. Class (x1 Method):				Initialise a object of a Class which only contains x1 Method.
+					2. Class (implements Functional Interface):	Initialise a object of a Class which implements a Functional Interface.
+
+				Method Argument:
+
+					1. Class (x1 Method):				Directly define and pass as an argument to a method expecting a object of a Class with only x1 method.
+					2. Class (implements Functional Interface):	Directly define and pass as an argument to a method expecting a object of a Class which implements a Functional Interface.
+
+		Examples:
+
+			Given:
+
+				interface IntegerMath
+				{
+    					int operation(int a, int b);
+				}
+
+			1. Variable Declaration:
+
+				itfIntegerMath = (m, n) -> m - n + 1;
+
+			2. Constructor/Method Argument:
+
+				method((i, j) -> i + j, 10);
+
+			3. Assignment:
+
+				itfIntegerMath = (m, n) -> m - n + 2;	//Reassign Anonymous Object to Functional Interface Variable
+
+			4. Return Statement:
+
+				IntegerMath method1()
+    				{
+        				return (m, n) -> m - n + 3;
+    				}
+
+			5. Array Initialiser:
+
+				IntegerMath[] arrIntegerMath = {(m, n) -> m - n + 1, (m, n) -> m - n + 2};
+
+			6. Lambda Expression Body:
+
+				itfIntegerMath = (m, n) ->
+        			{
+            				//Lambda Expression Body
+            				IntegerMath itfIntegerMathLocal = (a, b) -> a - b + 1;
+            
+            				return m - n + 2;
+        			};
+
+			7. Conditional Expression, ?:	[Unknown how would implement Lambda Expression within Conditional Expression 	- To Be Researched]
+
+			8. Cast Expressions:		[Unknown how would implement Lambda Expression within Cast Expression 		- To Be Researched]
+
+	Example:
+
+		Stage 1: Raw Methods
+
+			static void printPersonsOlderThan(List<Person> roster, int age)
+			{
+    				for (Person p : roster)
+				{
+        				if (p.getAge() >= age)
+            					p.printPerson();
+    				}
+			}
+
+			- Several methods would be required to search for additional characteristics e.g. height, weight...
+			- This can become brittle e.g. if Person were to change or required further refinement of the serahc criteria.
+
+
+
+		Stage 2: Refined Methods
+
+			static void printPersonsWithinAgeRange(List<Person> roster, int low, int high)
+			{
+    				for (Person p : roster)
+				{
+        				if (low <= p.getAge() && p.getAge() < high)
+						p.printPerson();
+    				}
+			}
+
+			- Additional methods enable more refined search but is not a 'general' approach i.e. this approach is not something which promotes any future changes to have:
+
+				- Minimal Distruption
+				- Minimal Changes to Source Code
+				- Flexible
+				- Robust
+				- Safe and Confidence
+   
+			- This can still quickly become brittle having vast number of individual methods for each search criteria.
+			- It is more robust, flexible and easier to manage if the search criteria/method is stored in a separate class.
+
+
+
+		Stage 3: Functional Interface
+
+			static void printPersons(List<Person> roster, CheckPerson tester)
+			{
+    				for (Person p : roster)
+				{
+        				if (tester.test(p))
+            					p.printPerson();
+				}
+			}
+
+			interface CheckPerson
+			{
+    				boolean test(Person p);
+			}	
+
+			- It can be improved by passing in an object which implements CheckPerson.
+			- CheckPerson is a Functional Interface i.e. contains only x1 Abstract Method.
+			- Therefore any object (which implements CheckPerson) can be used to contain the necessary search criteria and means of finding the required people.
+			- Opening up options and the potential for very concise and lean code.
+
+
+
+		Stage 4: Invocation: via Anonymous Class
+
+			printPersons(roster, new CheckPerson()
+			{
+        			public boolean test(Person p)
+				{
+            				return p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25;		//Braces used as Return is a statement, not an expression.
+        			}
+    			}
+			);	//Anonymous Class is an expression embedded within another expression therefore ; still required to terminate overall statement.
+
+			- When printPerson() is invoked.
+			- An Anonymous Class which implements CheckPerson can be defined and passed (as a whole) as an argument.
+			- This provides the ability to separately define the search criteria.
+			- This is still verbose and can be reduced further by using a Lambda Expression.
+
+
+
+		Stage 5: Invocation: via Lambda Expression
+
+			printPersons(roster, (Person p) -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25);
+
+			- CheckPerson is a Functional Interface i.e. only x1 Abstract Method.
+			- Given only x1 Abstract Method, the name can be ommitted.
+			- Therefore a Lambda Expression can be submitted instead.
+
+
+
+		Stage 6: Functional Interface: Predicate<T>
+
+			- Java supplies many standard/typical Functional Interfaces.
+		
+				Packasge: java.util.function
+
+			- For Example:
+
+				interface Predicate<T>
+				{
+    					boolean test(T t);
+				}
+
+			- Predicate<T> is a common Functional Interface and can be used in place of CheckPerson.
+
+				interface CheckPerson
+				{
+    					boolean test(Person p);
+				}
+
+				interface Predicate<Person>
+				{
+    					boolean test(Person t);
+				}
+
+			- Consequently:
+
+				static void printPersonsWithPredicate(List<Person> roster, Predicate<Person> tester)
+				{
+    					for (Person p : roster)
+						if (tester.test(p)) 
+            						p.printPerson();
+				}
+
+			- Therefore printPersons can be invoked in same manner with a Lambda Expression
+
+				printPersons(roster, (Person p) -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25);
+
+
+
+		Stage 7: Functional Interface: Consumer<T>
+
+			- This method can be expanded upon using an additional Functional Interface called Consumer<T>:
+
+				interface Consumer<T>
+				{
+    					void accept(T t);
+				}
+ 
+			- p.printPerson() can be replaced with the x1 Abstract Method .accept(Person t) within Consumer<Person>.
+
+				static void processPersons(List<Person> roster, Predicate<Person> tester, Consumer<Person> block)
+				{
+        				for (Person p : roster)
+            					if (tester.test(p))
+                					block.accept(p);
+				}
+
+			- Consequently when invoked processPersons() can be expressed using x2 Lambda Expression (one for each Functional Interface).
+
+				processPersons(roster,
+					p -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25,
+					p -> p.printPerson());
+
+			- block.accept() could of course contain a 'block' of code which completes more complex logic than just print the persons name.
+
+
+
+		Stage 8: Functional Interface: Function<T,R>
+
+			- This method can be expanded upon using an additional Functional Interface called Function<T,R>:
+
+				interface Function<T,R>
+				{
+    					R apply(T t);
+				}
+
+			- Function<T,R> contains an Abstract Method which returns a value, rather than void.
+
+				static void processPersonsWithFunction(List<Person> roster, Predicate<Person> tester, Function<Person, String> mapper, Consumer<String> block)
+				{
+    					for (Person p : roster)
+					{
+        					if (tester.test(p)) 
+						{
+            						String data = mapper.apply(p);
+            						block.accept(data);
+        					}
+    					}
+				}
+
+			- Therefore: 	mapper.apply(p) permits some data associated with the Person that successfully passes tester.test(p) to be returned and used.
+			- Consequently:	Invocation of processPersonsWithFunction whilst passing the following Lambda Expressions enable the printing of email addresses that match the search criteria.
+
+				processPersonsWithFunction(roster,
+    					p -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25,		//Search Criteria:	tester.test(p)
+    					p -> p.getEmailAddress(),								//Get Data:		mapper.apply(p)
+    					email -> System.out.println(email)							//Print Data:		block.accept(data)		
+					);
+
+				NB: Must admit think I'd just create my own Functional Interfaces that contained better named Abstract Methods!		
+
+
+		Stage 9: Generics
+
+			- Generics can be included more extensively i.e. instead of searching Persons only, any object can be used as declared by the Static Method <X, Y>:
+
+				static <X, Y> void processElements(Iterable<X> source, Predicate<X> tester, Function<X, Y> mapper, Consumer<Y> block)
+				{
+    					for (X p : source) {
+        					if (tester.test(p)) {
+            						Y data = mapper.apply(p);
+            						block.accept(data);
+        					}
+    					}
+				}
+
+			- <X, Y>: Type Parameters used by the Generic Parameters in the Static Method.
+			- Generic Method is invoked as follows being passed x3 Lambda Expressions in order to define the x3 Functional Interfaces:
+
+				processElements(
+    					roster,
+    					p -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25,
+    					p -> p.getEmailAddress(),
+    					email -> System.out.println(email)
+				);
+
+		Stage 10: Aggregate Operations
+
+			- Aggregate Operations are associated with Streams:
+
+				roster
+    					.stream()
+    					.filter	(p 	-> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25)
+    					.map	(p 	-> p.getEmailAddress())
+    					.forEach(email 	-> System.out.println(email));
+
+			- The above is a further condensation of processElements() whereby it:
+
+				1. 2-Step Process:	Condensed defining and invoking processElements().
+				2. 1-Step Process:	Simultaneously defines and invokes processElements().
+				3. Successfully prints out all of the email addresses contained within the roster as per the search criteria defined in the filter().
+
+			- Each Operation Description:
+
+				Operation		Return Type	Declaration					Action
+				______________________________________________________________________________________________
+
+				.stream()		Stream<E> 	stream()					Returns a stream of elements.
+				.filter()		Stream<T> 	filter(Predicate<? super T> predicate)		Filters the stream using the Predicate object.
+				.map()			<R> Stream<R> 	map(Function<? super T,? extends R> mapper)	Maps/converts the elements which pass through filter as required.
+				.forEach()		void 		forEach(Consumer<? super T> action)		Performs action of elements which have passed through filter and Mapped/Converted.
+
+			- Aggregate Operations combined with Lambda Expressions enable highly compact, concise and customisable queries/action sets..
+
+
+	Syntax:
+
+		- Lambda Expression syntax is broken down as follows, given:
+	
+			p 				-> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25
+			(Abstract Method Parameters)	-> {Abstract Method Body}
+
+		- Components:
+
+			(Abstract Method Parameters):	A comma separated list of the parameters required by the Abstract Method.
+			->:				Arrow Token.
+			{Abstract Method Body}:		Body of the Abstract Method.
+
+				Either:
+
+					1. Single Expression:				Java Runtime evaluates the expression and returns its value.
+					2. Statement Block (with Return statement).	Java Runtime runs the statement block and returns the value upon reaching 'return'.
+
+				Single Expression:
+
+					p -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25
+
+				Statement Block:
+
+					p -> {
+    						return p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25;
+				  	     };
+
+					NB: 'return' is not an expression but a statement, therefore braces {} are required.
+					NB: Statement Block is a statement (rather than just an Expression) therefore must be terminated with ;
+
+		- Forms:
+
+			1. itfFunctionalInterface = p -> p>10;
+			2. itfFunctionalInterface = (p) -> p>10;			//With Parenthesis
+			3. itfFunctionalInterface = (m, n) -> m - n + 3;		//Multiple Parameters
+			4. itfFunctionalInterface = (int m, int n) -> m - n + 3;	//Explicit Type Witness
+			5. itfFunctionalInterface = (int m, int n) ->
+			   {
+				return m - n + 3;					//Statement Block
+			   };
+			6. itfFunctionalInterface = () ->				//Zero Parameters
+			   {
+				System.println("Test");
+
+				return;
+			   };
+
+		- Target Type:
+
+			- The JRM is able to 'know' the types of the Parameters and Return Type by simply referring to the types as defined in the Abstract Method.
+
+				interface IntegerMath
+				{
+        				int operation(int a, int b);   
+    				}
+
+				IntegerMath addition = (a, b) -> a + b;
+
+					Parameters:	(a, b)		Complier checks against the expected parameters of the Abstract Method within the Functional Interface.
+					Return Type:	a + b;		Compiler checks against the expected Return Type of the Abstract Method within the Functional Interface.
+
+				Therefore:
+
+					a:		Must be an Int.
+					b:		Must be an Int.
+					Return:		Must be an Int.
+
+			- The 'Target Type' are these expected types as defined by the Abstract Method.
+			- Therefore Lambda Expressions may only be used in situations where Target Typing can be discerned:
+
+				1. Variable Declarations:		Initialise an Anonymous Object and assign to a Functional Interface Variable.
+				2. Constructor/Method Argument:		Initialise an Anonymous Object and pass as an argument to a method expecting a Functional Interface Variable.
+				3. Assignments
+				4. Return Statements
+				5. Array Initializers
+				6. Lambda Expression Bodies
+				7. Conditional Expressions, ?:
+				8. Cast Expressions
+
+		- Explicit Declaration:
+
+			- If required the types for the parameters can be explicitly defined:
+
+				interface IntegerMath
+				{
+        				int operation(int a, int b);   
+    				}
+
+				IntegerMath addition = (int a, int b) -> a + b;
+
+			- If x1 parameter is explicitly defined, then both must be:
+
+				IntegerMath addition = (int a, b) -> a + b;		//Compile Fail
+
+		- Multiple Functional Interfaces:
+
+			- A program may contain:
+
+				x2 Functional Interfaces:
+
+					public interface Runnable
+					{
+    						void run();
+					}
+
+					public interface Callable<V>
+					{
+    						V call();
+					}
+
+				An Overloaded Method 'invoke':
+
+					void invoke(Runnable r)
+					{
+    						r.run();
+					}
+
+					<T> T invoke(Callable<T> c)
+					{
+    						return c.call();
+					}
+
+			- If a Lambda Expression is passed as an argument to an invocation of 'invoke':
+
+				String s = invoke(() -> "done");
+
+			- Even though it is ambiguous which Functional Interface is being passed as an argument, the JRM is still able to discern which of the x2 versions of 'invoke' it should call via the expected Return Type:
+
+				i.e. V call() is the only one which returns any type at all (in this case a String), therefore the invoked method must be:
+
+					<T> T invoke(Callable<T> c)
+					{
+    						return c.call();
+					}
+
+		- Example:
+
+			- Single Expression, given:
+
+				interface IntegerMath
+				{
+        				int operation(int a, int b);   
+    				}
+
+				IntegerMath addition = (a, b) -> a + b;
+
+			- Return statement not required given that the expression 'a + b' evaluates to an int as specified by the Abstract Method.
+
+		- Example:
+
+			- Given the method:
+
+				static void processPersonsWithFunction(List<Person> roster, Predicate<Person> tester, Function<Person, String> mapper, Consumer<String> block)
+				{
+    					for (Person p : roster)
+					{
+        					if (tester.test(p)) 
+						{
+            						String data = mapper.apply(p);
+            						block.accept(data);
+        					}
+    					}
+				}
+
+			- And corresponding invocation:
+
+				processPersonsWithFunction(
+					roster,
+    					p 	-> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25,
+    					p 	-> p.getEmailAddress(),
+    					email 	-> System.out.println(email)
+					);
+
+			- Reviewing:
+
+				Parameter:
+
+					Predicate<Person> tester
+
+					Corresponding Functional Interface:
+
+						interface Predicate<T>
+						{
+							boolean test(T t);
+						}
+
+				Lambda Expression:
+
+					p -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25
+
+				Equivalent to:
+
+					1. A generic Class which implements generic Interface Predicate<T> is declared, defined with 'test' being overriden:
+
+						class ClassPredicate<T> implements Predicate<T>
+						{
+							@Override
+							boolean test(T t)
+							{
+								return t.getGender() == Person.Sex.MALE && t.getAge() >= 18 && t.getAge() <= 25;
+							}
+						}
+
+					2. Then Instantiated:
+
+						ClassPredicate<Person> objClassPredicate = new ClassPredicate<>();
+
+					3. Passed as argument to the method:
+
+						processPersonsWithFunction(
+							roster,
+    							objClassPredicate,
+    							p 	-> p.getEmailAddress(),
+    							email 	-> System.out.println(email)
+							);
+
+					Such that instead of doing all of the above the class is declared, defined, instantiated and passed as an argument all in x1 expression.
+
+		- Zero Parameters:
+
+			- Given:
+
+				interface Predicate
+				{
+					boolean test();
+				}
+
+				If the x1 Abstract method requires zero arguments, syntax is reduced:
+
+				Target Method:
+
+					method(int i, Predicate predicate)
+					{
+						...
+					}
+
+				Invocation:
+
+					method(10, () -> {System.println("Test");});
+
+		- Multiple Parameters:
+
+			- Given:
+
+				interface Predicate<T, P>
+				{
+					boolean test(T t, P p, int i);
+				}
+
+				If the x1 Abstract method requires multiple arguments, syntax is expanded:
+
+				Target Method:
+
+					method(int i, Predicate<Person, String> predicate)
+					{
+						...
+					}
+
+				Invocation:
+
+					(p, t, i) -> {        	        
+							   if(p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25)
+								t = t + 1;
+							   else
+								t = t + 2;
+
+							   return (t > 10);
+						     }
+
+	External Access:
+
+		- Lambda Expressions share the same scope as its immediate enclosing environment whether that be at Class or Method scope.
+
+			Consequently:
+
+								(Top Level Class - Non-Static)					(Top Level Class - Static)
+								______________________________________________________________________________________________
+
+				Local Variables:		Non-Static Only							Non-Static Only
+								Non-Static Constant						Non-Static Constant
+
+				Outer Block Referencing:	Local Variables (Effectively Final)				Local Variables (Effectively Final)	//From Java 8:	Local Variables which are 'effectively final'
+								Parameters 	(Effectively Final)				Parameters 	(Effectively Final)	//From Java 8:	Parameters which are 'effectively final'
+								Non-Static Constant						Non-Static Constant
+
+				Top Level Class Referencing:	Non-Static Members						Static Members Only
+								Static Members
+
+				Shadowing:			Not Applicable							Not Applicable
+
+
+		- Lambda Expressions are Lexically Scoped and do not Shadow outer members, therefore:
+
+			1. Do not inherit any members from supertype.
+			2. Do not introduce a new level of scoping.
+			3. Are considered 'part of' and within the scope of the immediate environment.
+			4. Any new declarations are interpreted and considered as if they were declared in the immediate environment.
+
+		- Stacking:
+
+			- A Nested Class can only be declared/defined within another Class, not within a Method.
+			- Therefore nesting can only evolve as follows:
+
+				Top-Level ClassA
+				{
+					FunctionalInterfaceA iftInterfaceA;
+
+					class InnerClassB
+					{
+						FunctionalInterfaceB iftInterfaceB;
+
+						void classBMethod()
+						{
+							iftInterfaceB = {Lambda Expression};
+						}
+					}
+
+					void classAMethod()
+					{
+						iftInterfaceA = {Lambda Expression};
+					}
+				}
+
+			- The Scopes relevant to the Lambda Expression are:
+
+				Scope								Reference
+				_________________________________________________________________________
+
+				1. Method:	Immediate					   iField;		//Full Access to 'final' and 'effectively final' Local Variables and Parameters via Capturing.
+				2. Class:	Immediate		                      this.iField;
+				3. Class:	Next Level		            ClassName.this.iField;
+				4. Class:	Next Level		  ClassName.ClassName.this.iField;
+				5. ...
+				6. Class:	Top Level		ClassName...ClassName.this.iField;
+
+		- Capturing:
+
+			- Lambda Expression that accesses a Local Variable or Parameter is said to 'capture' that Local Variable or Parameter.
+
+		- Lambda Expressions Parameters:
+
+			- Lambda Expression Parameters may not conflict with any Local Variables or Parameters within the Immediate Method:
+
+				void method(int i)
+				{
+					iftFunctionalInterface = i -> i + 1;		//Compile Fail, i is already declared within method.
+				}
+
+		- 'final' and 'effectively final'
+
+			- Lambda Expression may only access 'final' and 'effectively final' Local Variables or Parameters within the Immediate Method:
+
+				void method(int i)
+				{
+					int j 		= 10;
+					final int k 	= 10;
+					
+					i = 11;
+					j = 11;
+
+					iftFunctionalInterface = p -> i + 1;		//Compile Fail, i assigned a value therefore not 'effectively final', remove 'i = 11' to compile OK.
+					iftFunctionalInterface = p -> j + 1;		//Compile Fail, j assigned a value therefore not 'effectively final', remove 'j = 11' to compile OK.
+					iftFunctionalInterface = p -> k + 1;		//OK
+				}
+
+			- Therefore Lambda Body may only read from Local Variable or Parameters without being able to change assigned value.
+
+	Serialisation:
+
+		- Serialisation of Nested Classes is strongly discouraged.
+		- Applicable to:
+
+			1. Inner Class
+			2. Local Class
+			3. Anonymous Class
+			4. Lambda Expressions
+
+			NB: Likely also just as applicable to Static Nested Class?
+
+		- Due to:
+
+			- Java Compiler creating 'Synthetic Constructs' when compiling the above entities.
+			- Whereby the 'Synthetic Constructs' vary depending on the Java Compiler implementation.
+			- Therefore:
+
+				- .class files can vary depending on the compiler.
+				- Compatibility issues may arise if the above are serialised and deserialised with an alternate JRM.
+

@@ -1,0 +1,25 @@
+Date		Type		Name							Out		In				Balance
+01 Jan 23 	DD 		SSE	 						210.28 		-				113,969.28
+09 Jan 23 	DD 		THAMES WATER 						25.00 		-				113,944.28
+10 Jan 23 	DD 		BT FIBRE 						81.94		-
+		SO 		TV LICENCE MBP 						12.12		-
+		VIS 		SAINSBURY'S S/MKT LONDON 				105.02 		-				113,745.20
+17 Jan 23 	VIS 		SAINSBURY'S S/MKT LONDON 				131.55 		-				113,613.64	(Error .55 -> .56)
+22 Jan 23 	VIS 		TSGN LONDON 						211.87		-
+		))) 		TK MAXX			 				3.95 		-				113,397.82
+25 Jan 23 	))) 		SAINSBURY'S S/MKT LONDON 				76.92 		-				113,320.90
+		))) 		SAINSBURY'S S/MKT LONDON 				10.00 		-				113,310.90
+27 Jan 23	CR		COMPANY OF EMPLOYMENT	 				- 		6,000.00			119,310.90
+
+
+
+
+
+
+
+
+
+
+
+
+

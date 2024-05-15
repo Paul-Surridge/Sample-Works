@@ -1,0 +1,559 @@
+Variables
+
+	Overview:
+
+		Variable has x4 types:
+
+			1. Instance Variable
+			2. Class Variable
+			3. Local Variable:	(Restricted in scope to a particular method/block within the class)
+			4. Parameter:		(Classed as a variable)
+
+		Variable maybe be declared and contain either:
+
+			1. Primitive.
+			2. Object 		(Instantiated Class)
+			3. Interface		(Invoked Interface)
+
+	Declaration (and Initialisation)
+
+		Primitive:
+
+			int myInt;		//Double Step
+			myInt = 1;
+
+			int myInt = 1;		//Single Step
+
+		Reference Types
+
+			Class:
+
+				ClassA myClass;							//Double Step
+				myClassA = new ClassA();
+
+				ClassA myClass = new ClassA();					//Single Step
+
+			Class: (Generic)
+
+				ClassA<Integer> myClass;					//Double Step
+				myClassA = new ClassA<>(new Integer(5));
+
+				ClassA<Integer> myClass = new ClassA<>(new Integer(5));		//Single Step
+
+			Interface:
+
+				InterfaceA myInterface;
+
+			Interface: (Generic)
+
+				InterfaceA<Integer> myInterface;
+
+		Qualifiers
+
+			final:		Variable may not be altered once initialised
+			static:		Class Variable
+
+		Access Modifiers:
+
+			public:		All
+			protected:	Subclass/Subinterface
+			private:	Class/Interface
+			[None]:		Package-Private
+
+		Arrays:
+
+			int[]   myInts;
+			int     myInts[];
+			int[3]  myInts = {1, 2, 3};
+			int[]   myInts = {1, 2, 3, 4, 5};
+			int[][] myInts = {{1, 2, 3, 4, 5},
+					  {1, 2, 3},
+					  {1, 2, 3, 4}};
+
+			Applicable:
+
+				Primitives
+				Object
+				Interfaces
+				Enums
+
+			Not Applicable:
+
+				Generic Class
+				Generic Interface
+
+		Default Values:
+
+			Numerical:	0
+			char:		''
+			boolean:	false
+			Object:		null
+
+			NB: Interface Reference variable is never instantiated therefore does not hold a default value.
+
+		Multiple Inline Declarations:
+
+			int i1, i2, i3 = 10;
+
+			NB: Only the last variable will be initialised, not all being assigned the value of 10.	 
+
+	Local Variables
+
+		- Must be initialised when declared.
+		- Unable to be assigned default values.
+
+	Statically Typed
+
+		- Java is a statically typed language
+		- All variables must be declared before they can be used. 
+
+	Identifiers
+
+		- Case Sensitive
+		- Unlimited length of Unicode letters and digits.
+		- Begin with:
+
+			1. Letter
+			2. Dollar $
+			3. Underscore
+
+			NB: $ and _ are discouraged from being first character.
+
+		- Constants:
+
+			static int NUMBER_OF_ITEMS = 4;
+
+			NB: Only place where an underscore should be used.
+
+	Call By Value
+
+		- All method invocations if via Call-By-Value not Call-By-Reference:
+
+		- Primitives:
+
+			int iInt1 = 10;
+			int iInt2 = 100;
+
+			c = method(iInt1, iInt2);		//method() is passed copies of 'iInt1' and 'iInt2'
+
+			int method(int iInt1, int iInt2)
+			{
+			    iInt1 = 20;				//Changes to 'iInt1' and 'iInt2' are NOT reflected in 'iInt1' and 'iInt2' in the outer scope.
+			    iInt2 = 200;
+			}
+
+		- Objects:
+
+			Integer iInt1 = 10;
+			Integer iInt2 = 100;
+
+			c = method(iInt1, iInt2);		//method() is passed copies of the reference 'iInt1' and 'iInt2'
+
+			int method(Integer iInt1, Integer iInt2)
+			{
+			    iInt1 = 20;				//Changes to 'iInt1' and 'iInt2' are reflected in 'iInt1' and 'iInt2' in the outer scope.
+			    iInt2 = 200;
+			}
+
+		- Even though may appear that objects are passed by reference, in actual fact the method is passed copies i.e. By-Value of the objects memory address (rather than the actual memory location containing the 
+
+	Variable Structure
+
+		Primitive:	|   Name   |   Address   |   Value = 10  |
+		Object:		|   Name   |   Address   |   Value = (Address -> Value)  |
+
+				Memory Location			Value					Example
+				___________________________________________________________________________________________
+
+		Primitive:	0x126A7F2E (Stack)		10					int iInt1 = 10;
+		Object:		0x1E2B74AB (Stack)		0x7E211FDE (Heap)			Integer iInt1 = 10;
+
+		Heap:
+				0x7E211FDE			10
+
+		(To be fully researched)
+
+	Primitives
+
+		- Overview:
+
+			- There are x8 primitive types.
+			- String is considered a class.
+
+		- Signed:	All primitive types are signed using 2-complement.
+
+					Width					Promotion (May Be Widen To)
+			____________________________________________________________________________________________
+
+			byte		8	(Integral Type)			short int long 		float double
+			short		16	(Integral Type)			      int long 		float double
+			int		32	(Integral Type)				  long 		float double
+			long		64	(Integral Type)						float double
+			float		32	(Single Precision)					      double
+			double		64	(Double Precision)
+
+			boolean		n/a
+			char		16	(Unicode)			      int long 		float double
+
+		- Promotion:
+
+			- Primitives are promoted when necessary e.g.
+
+				1. Concatenation:	When types are concatenated using +.
+				2. Method Return:	When a method is expected to return a particulr type.
+
+			- Promotion Rules:
+
+				1. Automatic:		All byte and short are automatically promoted to int.
+				2. Integral:		If x1 operand is a long:	The whole expression is promoted to and returns a long
+				3. Single Precision:	If x1 operand is a float:	The whole expression is promoted to and returns a float
+				4. Double Precision:	If x1 operand is a double:	The whole expression is promoted to and returns a double
+
+			- In general all operands of an expression are promoted to the widest primitive, evaluated and return widest primitive.
+
+					byte				long____		float
+					|				|	|		|
+					short				float	double		double
+					|
+				char____int_____________
+					|	|	|
+					long	float	double
+
+		- Promotion and Method Invocation:
+
+			- Type Arguments are automatically promoted should that promotion enable the invocation of a method, given that the JVM interprets Literals:
+
+				10	Interpreted as an int.
+				10.1f	Interpreted as a float.
+				'a'	Interpreted as a char.
+
+			- The JVM will promote any Type Arguments should that enable the invocation of an argument.
+
+			- Example 1:
+
+					void sum(int a, long b)  		//Method 1
+  					void sum(int a, int b, int c)		//Method 2
+
+					obj.sum(10,20);				//Statement 1 
+  					obj.sum(10,20,30);
+
+				- Statement 1:	The 20 is automatically interpreted as an int and promoted to long.
+
+			- Example 2:
+
+				- Ambiguity can however still arise if the JVM is unable to distinguish which method to invoke:
+
+					void sum(int a,long b){...}    
+  					void sum(long a,int b){...}
+
+					obj.sum(20,20);}			//Compile Fail
+
+				- The above will of course lead to ambiguity:
+
+			- Example 3:
+
+				- The JVM will only promote an argument if a matching type cannot be found in the invoked class or parent class(es):
+
+					class Shape
+					{
+			    		    void method(short i){...}		//Method 1
+			    		    void method(int i){...}		//Method 2
+			    		    void method(float i){...}		//Method 3
+					}
+
+					class Rectangle extends Shape
+					{
+			    		    void method(long i){...} 		//Method 4
+					}
+
+					class Main
+					{
+			    		    new Rectangle().method(10);		//Statement 1
+					}
+
+				- All x4 overloaded methods are aggregated.
+				- Statement 1 interprets the '10' as an int therefore calls Method 2 (not 4).
+
+		- Initialisation:
+
+			- It is not necessary to initialise the value of a primitive type when declared.
+			- It is recommended that variables are initialised when declared or as soon as possible.
+			- Default Values:
+
+				0/''/false
+
+			- However it is considered bad practice for should not assume to be 0/''/false.
+
+			NB: Local Variables must be initialised when declared (or before being used).
+
+		- Base
+
+			- Java supports decimal, hexadecimal (0x) and binary (0b):
+
+				int 	decimalValue	= 26;
+				int 	hexValue	= 0x14F2;
+				int 	decimalValue	= 0b1010001110;
+
+		- Literals
+
+			- There are x4 types of literals:
+
+				Integer
+				Float
+				Character
+				Class
+
+			- Integer Literal
+
+				- All integer literals are deemed as int unless declared long via suffix l/L:
+
+					byte 	Value1 = 26;
+					short 	Value2 = 30;
+					int 	Value3 = 32;
+					long 	Value4 = 32 (or 32L);
+
+			- Floating-Point Literal
+
+				- All floating-point literals are deemed as double unless declared float via suffix f/F:
+
+					float	Value6 = 123.4f
+					double	Value7 = 123.4;
+					double	Value8 = 1.234e2
+
+			- Character Literal
+
+				- Unicode (UTF-16) can be assigned to char and String.
+				- Unicode escape sequence: \u[16-bit Unicode]
+
+					\u01A3
+
+				- Unicode escape sequence may be placed elsewhere in program e.g. Field Names...
+				- Unicode special case escape sequences:
+
+					Backspace		\b
+					Tab			\t
+					Line Feed		\n
+					Form Feed		\f
+					Carriage Return		\r
+					Double Quote		\"
+					Single Quote		\'
+					Backslash		\\
+
+					NUL:			\0 (not null)
+
+					For Example:
+
+						System.out.println("She said \"Hello!\" to me.");
+
+				- Delimiters:
+
+					char:		Single Quote:	'T'
+					String:		Double Quote:	"Test"
+
+				- Character Wrapper Class are immutable once initialised.
+
+			- Class Literal
+
+				- Special case literal.
+			
+					classname.class
+
+				- This is object that represents the class itself.
+
+			- Underscore
+
+				- Underscore can be used as separator (or defacto comma).
+				- Can be used in a numerical literal:
+
+					long creditCardNumber 		= 1234_5678_9012_3456L;
+					long socialSecurityNumber 	= 999_99_9999L;
+					float pi 			= 3.14_15F;
+					long hexBytes 			= 0xFF_EC_DE_5E;
+					long hexWords 			= 0xCAFE_BABE;
+					long maxLong 			= 0x7fff_ffff_ffff_ffffL;
+					byte nybbles 			= 0b0010_0101;
+					long bytes 			= 0b11010010_01101001_10010100_10010010;
+
+				- Not permissible:
+
+					1. At the start/end:						1234_
+					2. Adjacent to a decimal point in a floating point literal:	3._14
+					3. Prior to an F or L suffix:					1234_f
+					4. In positions where a string of digits is expected.
+
+			- Null
+
+				- null cannot be assigned to a primitive.
+				- null can only be assigned to any non-prmitive variable.
+				- Primarily used for indicating whether an object is available.
+
+	Number:
+
+		- The class Number is the abstract parent of all numerical wrapper classes:
+
+			Number
+			|_______________________________________________________________________________________________________________________________________________________________
+			|		|		|		|		|		|			|		|			|		|
+			Byte		Short		Integer		Long		Float		Double			BigInteger	BigDecimal		AtomicInteger	AtomicLong
+
+			|______________________ Integral ___________________|		|__ Floating Point __|			|____ High Precision ____|		|____ Multithreading ____|
+
+		- Advantages of Wrapper Class (over primitives):
+
+			1. Argument:	To pass method argument expects/requires a object.
+			2. Constants:	To utilise the constants within the Wrapper Class.
+			3. Methods:	To utilise the large number of useful methods within the Wrapper Class.
+
+		- Conversion Methods:
+
+			Type Conversion:
+
+				All subclasses of the abstract class Number allow for the conversion and the return of other numerical primitive types:
+
+				1. byte 	byteValue()
+				2. short 	shortValue()
+				3. int 		intValue()
+				4. long 	longValue()
+				5. float 	floatValue()
+				6. double 	doubleValue()
+
+			String Conversion:
+
+				1. static Integer 	decode(String s):			Converts a String to an Integer, String maybe any decimal, octal or hexidecimal.
+				2. static int 		parseInt(String s):			Converts a String to an Integer, String maybe decimal only.
+				3. static int 		parseInt(String s, int radix):		Converts a String to an Integer, String maybe any decimal, octal, hexidecimal or binary as defined by radix 10, 8, 16 or 2 respectively.
+				4. static String 	toString(int i):			Converts argument to a String representing value.
+				5. static Integer 	valueOf(int i):				Converts int to Integer.
+				6. static Integer 	valueOf(String s)			Converts String to Integer.
+				7. static Integer 	valueOf(String s, int radix)		Converts String to Integer, using specified radix/base of 2, 8, 10 or 16 but returns a value in base 10.
+				8. String 		toString():				Converts invoking object to a String representing value.
+
+
+		- Comparison Methods:
+
+			All subclasses of the abstract class Number allow for the comparison with other Wrapper types:
+
+				1. int compareTo(Byte 		anotherByte)
+				2. int compareTo(Double 	anotherDouble)
+				3. int compareTo(Float 		anotherFloat)
+				4. int compareTo(Integer 	anotherInteger)
+				5. int compareTo(Long 		anotherLong)
+				6. int compareTo(Short 		anotherShort)
+
+		- Equals()
+
+			All subclasses of the abstract class Number allow for evaluating the equality with other Objects (as inherited from Object)	
+
+				boolean equals(Object obj)
+
+			Where:
+
+				True:
+
+					1. Initialised:		Object obj has been intialised and is not null.
+					2. Match:		Matching type of invoking class.
+
+				False:
+
+					1. Otherwise.
+
+		- Formatting:
+
+			- Formatting of numbers has following options:
+
+				1. PrintStream:		(java.io.PrintStream)
+				2. Formatter:		(java.util.Formatter)
+				3. NumberFormatter:	(java.text.NumberFormat)
+				4. System.out:		Returns a Printstream
+
+			- Review summary: 'Formatting' for full details.
+
+				https://docs.oracle.com/javase/tutorial/java/data/numberformat.html
+				https://docs.oracle.com/javase/tutorial/essential/io/formatting.html
+
+		- Mathematical Operations:
+
+			- Full Suite:			(java.lang.Math)
+			- Random Generators.
+
+				1. java.lang.Math.random()
+				2. java.util.random
+
+		- Not A Number (Nan):
+
+			- Floating Wrapper Class contain suitable methods to evaluate.
+
+	Characters
+
+		- Character is a wrapper for 'char':
+
+			16bit	(Unicode)
+
+		- Character Wrapper Class has many useful utility functions, including:
+
+			1. boolean isLetter(char ch)
+			2. boolean isDigit(char ch)
+			3. boolean isWhitespace(char ch)
+			4. boolean isUpperCase(char ch)
+			5. boolean isLowerCase(char ch)
+			6. boolean toUpperCase(char ch)
+			7. boolean toLowerCase(char ch)
+			8. String toString(char ch)
+
+			NB: More than x50 within API.
+
+		- Characters may be initialised via:
+
+			char 	c1 = 'c';				//Literal
+    			char 	c2 = '\u03A9';				//Unicode
+    			char 	c3 = 12;				//Decimal
+			char 	c4 = 0x14;				//Hex
+    			char 	c5 = 0b1010001110;			//Binary
+			char 	c6 = '\t';				//Escape Sequence
+
+			char[] 	c7 = {'a', 'b', 'c', 'd', 'e'};		//Array
+
+	Strings
+
+		- Strings are immutable in Java.
+		- Strings should be used with caution if the time complexity is of concern:
+
+			public static void main(String[] args)
+			{
+        		    String s = "";
+        		    int n = 10000;
+
+        		    for (int i = 0; i < n; i++)
+            			s += "hello";				//Time: O(n^2)
+        		}
+
+		- Strings which need to be mutable have the following options:
+
+			1. char array:
+
+				public static void main(String[] args)
+				{
+        		    	    String s = "Hello World";
+        		    	    char[] str = s.toCharArray();
+        		    	    str[5] = ',';			//Time: O(1)
+
+        		    	    System.out.println(str);
+    				}	
+
+			2. StringBuilder:
+
+				public static void main(String[] args)
+				{
+        			    int n = 10000;
+        			    StringBuilder str = new StringBuilder();
+
+        			    for (int i = 0; i < n; i++)		//Time: O(n)
+            				str.append("hello");
+
+        			    String s = str.toString();
+				}
+
+
+
+
+

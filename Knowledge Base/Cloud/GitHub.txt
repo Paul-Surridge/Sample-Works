@@ -1,0 +1,437 @@
+GitHub:
+
+	Overview:
+
+		- GitHub is the worlds most popular distributed version control system, version control systems have had many developmental iterations:
+		- GitHub generally enables the following within a project:
+
+			1. Contributors.
+			2. Contributions.
+			3. History (of changes).
+			4. Rollback to previous versions.
+			5. Commits/savepoints.
+			6. Ability to experiment and make adjustments to the source code whilst not affecting the original source code.
+
+		- GitHub centrally revolves:
+
+			1. Master Branch:		Master Branch is the core branch containing the currented deployed version of the project.
+			2. Feature Branches:		Feature Branches are cloned copies of the current Master Branch which can be used for any purpose and do not affect the Master Branch.
+			3. Merge:			Feature Branches can be merged back into the Master Branch once a Pull Request has been authorised.
+
+	Software Components:
+
+		Roles Summary:
+
+			Program			Install Location		Role
+			____________________________________________________________________________________________________________________________________________________________________
+
+			git:			Local Machine			Overall monitoring, management and evolution of the local repository using the hidden .git folder
+
+			GitHub Desktop:		Local Machine			Overall management of synchronisation between the local repository and the mirrored repository on GitHub.com e.g. pull requests/issues etc...
+										All features/aspects available on GitHub.com
+
+			GitHub CLI:		Local Machine			CLI eqivalent of GitHub Desktop
+										GitHub Desktop maybe a GUI based wrapper of the CLI.
+
+		git:
+			- 'git' is an open source program available from:
+
+				Website:		https://git-scm.com/
+				Program Name:		Git-2.33.0.2-64-bit.exe
+				Install Location:	C:\Program Files\Git
+
+			- 'git' is not 'owned' by GitHub.
+			- 'git' has a CLI only therefore can only be invoked/interacted with via a CLI interpreter.
+			- 'git' utilises a hidden .git directory in a folder designated a repository.
+			- 'git' is the core program which manages and evaluates the changes and evolution of a repository e.g.
+
+				1. Select Folder:	'git' is opened and a folder is designated a repository.
+				2. Initialise Repo:	'git' places a hidden .git folder in the repository.
+				3. Initial State:	'git' assesses and records the initial state of the folder within the .git folder.
+				
+				Modifications are applied to the contents of the folder e.g. files added, removed, modified.
+
+				4. Compare:		'git' is invoked to evaluate and compare the changes that have taken place.
+				5. Patch:		'git' produces a patch which contains all the additions/subtractions applied to the contents of the folder.
+
+			- 'git' is invoked/interacted primarily via:
+
+				GitHub Desktop:			(Indirectly)
+				GitHub CLI:			(Indirectly)
+				Command Line Interpreter:	e.g. directly via Command Prompt, Powershell, Terminal, Bash, zsh or other command line interpreter.
+
+		GitHub.com:
+
+			- GitHub.com is a privately owned company which allows git repositories to be mirrored locally and shared online.
+			- GitHub.com has the following interfaces:
+
+				1. Web Interface
+				2. GitHub Desktop
+				3. GitHub CLI
+
+				NB: GitHub Desktop and GitHub CLI are essentially the same:
+
+					GitHub CLI:		CLI based directly 
+					GitHub Desktop:		GUI based wrapper of the GitHub CLI
+
+			- GitHub.com is generally intended to be used as follows:
+
+				1. GitHub.com:			An account is created.
+				2. Required software components downloaded and installed:
+
+					'git'
+					GitHub Desktop
+					GitHub CLI
+
+				3. Local Folder:		Local folder is chosen to be a repository on local machine.
+				4. Initialise Repo:
+
+					Either:
+
+					git:			Use 'git' (via its own CLI) to initialise and declare a local folder as a repository.
+					GitHub Desktop:		Use GitHub Desktop (which calls the instance of 'git') to initialise and declare a local folder as a repository.
+
+								NB: A hidden folder .git will be created in the folder to be designated a repository to contain all necessary files to manage the repository by 'git'. 
+
+				5. Upload Repo:
+
+					Either:
+
+					GitHub Desktop:		Use GitHub Desktop to upload/'push' the local repo upto GitHub.com and remain as a mirrored repo for others to branch and contribute.
+					GitHub CLI:		Use GitHub CLI to upload/'push' the local repo upto GitHub.com and remain as a mirrored repo for others to branch and contribute.
+
+				6. Modifications:
+
+					Either:
+
+					git:			Use git to track, stage and commit modifications
+					GitHub Desktop:		Use GitHub Desktop to track, commit and upload/merge modifications (via its invocation of 'git')
+					GitHub CLI:		Use GitHub CLI to track, commit and upload/merge modifications (via its invocation of 'git')
+					GitHub.com:		Use GitHub.com to apply modifications via the web interface and use GitHub Desktop/CLI to download/fetch/sync with the files online
+
+				7. Development/Collaboration:
+
+					Development/collaboration and team management can be instituted via branching the main branch.
+					Development/collaboration can be achieved by allowing a branch to be taken from a repository, modified and merged back into the main branch by applying the generated patch.
+
+		GitHub CLI:
+
+			- GitHub.com has produced a program call GitHub CLI which is a secure gateway to the account on Github.com.
+			- GitHub CLI is a command line based equivalent of GitHub Desktop.
+
+				Website:		https://cli.github.com/
+				Progam Name:		gh_2.18.1_windows_amd64.msi
+				Install Location:	C:\Program Files\GitHub CLI\gh.exe
+
+			- GitHub CLI allows the interaction with an account on Github.com via a local CLI interpreter.
+			- GitHub CLI needs to be installed on local machine.
+			- GitHub CLI has a CLI only.
+			- GitHub CLI can only be invoked/interacted with via a CLI interpreter e.g.
+
+				Command Prompt
+				Powershell
+				Terminal
+				git-cmd.exe
+
+			- GitHub CLI via a login process is able to send/receive commands/status to the logged in account on GitHub.com.
+			- GitHub CLI is reference via command line interpreter using 'gh'.
+
+		GitHub Desktop:
+
+			- GitHub Desktop is a full GUI based application for managing the mirroring between local and online repositories:
+
+				Uploading:	Pushing the local repository up to the online repository.
+				Downloading:	Pulling the online repository down to the local repository.
+
+			- GitHub Desktop is the GUI equivalent of GitHub CLI and likely simply a wrapper application fo GitHub CLI.
+
+		git-cmd.exe:
+
+			- GitHub.com optionally supplies an instance of Windows Command Prompt should it be needed.
+
+		cmd.exe:
+
+			- Standard Windows supplied command line interpreter Command Prompt.
+			- Main tool/program used to interact with all program with a CLI only:
+
+				git
+				GitHub-CLI
+
+	GitHub Concepts
+
+		Pull Request:
+
+			- Pull request is an intermediary stage opposed to simply merging your own modification straight into [main] or another branch.
+			- Pull request is a means to allow:
+
+				Discussion
+				Review
+				Assessment
+				Feedback
+
+			- Pull request enables important, critical aspects to be 'double-checked' and confirmed that it is suitable and 'okay' to be pulled/merged into [main] or another branch.
+			- Pull request enables the owner/reviewer/team leader to decide that it is appropriate for the modification to be applied to [main] or another branch.
+			- Pull request enables the ability to contribute to repositories that you may not have write-access to e.g. popular repos of open source software.
+			- Pull request are a feature associated with the host platform (rather than git directly) therefore each hosting platform will have their own means of implementing pull requests.
+			- Pull request are 'branch' orientated (not 'commit' orientated) therefore a pull request is the request to include the whole branch not just the latest commit.
+			- Pull request is a request to the repository owner to 'pull in' your own local branch into the master branch.
+			- Pull request is a request to initially share/discuss your own proposed works with the wider team.
+			- Pull request is an opportunity to iterate/refine the branches until they are accepted.
+			- Pull request may be opened at anytime to carry out other tasks including the following:
+
+				1. Share screenshots.
+				2. Share ideas.
+				3. Require assistance.
+				4. Review work.
+
+		Fork:
+
+			- Fork is creating your own representation of repo within your own account on the hosting platform.
+			- Fork is not cloning and downloading a copy of the repo.
+			- Fork is typically followed by cloning the repo which will download a full copy of the repo into a local repo on your local machine.
+			- Fork is ultimately intended to allow your own modifications to be applied to your own copy/clone of the repo and then submit a pull request.
+
+		Main Branch:
+
+			- Main branch is created when the repository is created.
+			- Main branch should always be considered 'deployed' or running live.
+			- Main branch should always be considered 'deployable' i.e. it must be maintained and always in a state that it could be deployed/shipped at all times.
+			- Main branch synonyms:
+
+				1. Default Branch
+				2. Master Branch
+				3. Base Branch
+
+			- Main branch should be considered as the 'main repo', the main branch is the remote repo shareed by the development team.
+
+		Local Branch:
+
+			- Local branch is the 
+
+		Feature Branch:
+
+			- Feature Branch is a clone/duplicate of original Master Branch.
+			- Feature Branch enables the safe alterations to a cloned original program in safe environment.
+			- Feature Branch should be concise and short-lived, consigned to only complete small/incremental changes e.g.
+
+				1. x1 Feature
+				2. x1 Bug fix
+
+				This helps to reduce confusion between contributors when Branches are only open for a few days.
+
+			- Feature Branch should contain an accurate description of the works being completed to maintain clarity, transparency and accuratacy of works and progress. e.g.
+
+				'refactor-authentication'
+				'user-content-cache-key'
+
+			- Feature Branch synonyms:
+
+				1. Local Branch
+				2. Compare Branch
+				3. Head Branch
+				4. Topic Branch
+				5. Branch
+
+				NB: Upon opening GitHub the browser will automatically open in the Master Branch (not any previous Feature Branch).
+
+		Feature Branches - Concurent:
+
+			- Concurrent branches need to be managed accordingly e.g.
+			- Concurrent branches need to be safely worked on using a suitable 'locking' mechanism.
+			- Concurrent branches may generate merge conflicts which are to be resolved by the owner of the repository.
+
+		Issue:
+
+			- Issue is a raised point of dicussion which can be used for multiple purpose:
+
+				1. Reporting Bugs.
+				2. Questions.
+				3. Feature Requests.
+				4. Code Review.
+				5. Discuss Ideas, Enhancements and Tasks.
+				6. Improve ability to collaborate.
+
+				NB: An Issue may not necessarily be an issue with 'Production'.
+
+			- Issue provides:
+
+				1. Cohesion:	Complete story and history all in one place.
+				2. History:	Record of how a decison was derived and made.
+				3. Reference:	Reference to the issues encountered.
+
+			- Issue can be catagorised with Labels and assigned to specific Team Members.
+			- Issue allow for discussion on separate thread without effecting or jepordising the orginal works.
+			- Issue enable the sharing of data/information.
+			- Issue titles should be considered analogous to an Email Subject.
+			- Issue notation:
+
+				Issue No 17:	#17
+
+			- Issue can be associated with Pull Request e.g. having #32 in the Pull Request indicates that the Issue 32 was the reason for Pull Request and should the Pull Request be accepted, Issue 32 can be closed.
+
+		Deployment:
+
+			- Deployment of the Main Branch can be automated to run when a Local Branch is merged into the Main Branch.
+			- Deployment process can vary and be dependent on the projects structure e.g.
+
+				Number of Areas					Description
+				_____________________________________________________________________________________________________________________
+
+				x1	Main Branch/Production			Main Branch and Production combined in same location
+
+				x2	Main Branch				Main Branch and Production in separate location
+					Production
+
+				x3	Test Environment			Main Branch, Test Environment and Production in x3 separate locations
+					Main Branch
+					Production
+
+				Test Environment:	A provisional test environment in order to fully test product before being deployed in Production or Main Branch.
+
+		Repository Watch and Notifications:
+
+			- Repository can be watched/followed if desired.
+			- Repository can issue notifications of the general types and frequency:
+
+				Option		Notifications
+				___________________________________________________
+
+				Watch:		1. New Issue.
+						2. New Pull Request.
+						3. New Comment.
+						4. Issue Closed.
+						5. Pull Request Merged or 'Pulled'.
+
+				Not Watch:	@-mentioned only.
+
+				Ignore:		None
+
+			- Repository watch and notifications is configurable within the 'Settings'.
+
+		Discussion:
+
+			- Discussion is a formal place to discuss the repository without opening Issues.
+			- Discussions can occur at the following levels:
+
+				1. Repository Level
+				2. Issue Level
+
+				NB: Issue has its own Discussion thread.
+
+		Interfaces:
+
+			- GitHub has a number of interfaces:
+
+				1. Website
+				2. GitHub Desktop
+				3. Git Kraken
+				4. Command Line
+
+		Markdown:
+
+			- Markdown is the formatting of communications used within GitHub.
+			- Markdown file extension:
+
+				*.md
+				*.markdown
+
+			- eMoji Chect Sheet:
+
+				https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md
+
+		Gist:
+
+			- Gist is a short form, quick and brief 'gist' of an idea for a piece of code to be shared on GitHub.
+
+		Diff:
+
+			- Diff is the collection of differences that have occured within a project.
+			- Diff can be viewed with the 'Files Changed' tab.
+			- Diff is reflected in the green/red lines which highlight the changed lines of source code.
+
+		@Messaging:
+
+			- @Messaging is the central means of referencing specific members via GitHub.
+
+	Models of Working:
+
+		- GitHub has the following x2 models:
+
+			1. Fork and Pull:
+
+				- Developer forks a copy of the project under their personal account.
+				- Developer has full control over their own fork.
+				- Developer has full ability to add/remove any feature to their own fork.
+				- Developer requests to merge their own separately modified fork into the original applications Master Branch via a Pull Request.
+				- Maintainers of the Master Branch of the original project can review the forked modifications in the Pull Request before they are merged/pulled into original project.
+
+			2. Shared Repository:
+
+				- Developers are all explicitly designated as Contributors with read, write and administer access.
+				- Developers operate within a simple permission structure.
+				- Features include:
+
+					1. Protected Branches
+					2. Marketplace
+
+					NB: An Open Source project (or projects where anyone can contribute) managing permissions can be challenging.		
+
+	GitHub Elements
+
+		README.md:
+
+			- README.md is the central introductory file used on GitHub.
+			- README.md is displayed on the initial page of the repository.
+			- README.md should explain the general functionality, intention and contents of the project.
+
+		CONTRIBUTING.md:
+
+			- CONTRIBUTING.md describes the process of adding/contributing to the repository.
+			- CONTRIBUTING.md can be accessed via a link when anyone creates:
+
+				1. Issue.
+				2. Pull Request.
+
+		ISSUE_TEMPLATE.md:
+
+			- ISSUE_TEMPLATE.md is a pre-populated Issue body with a fixed body of text/fields and any other standard pieces of information that are requried when submitting an Issue.
+
+		GitHub Pages:
+
+			- Github Pages are an automatically generated group of static web pages which provide an interface to the repository.
+			- Github Pages are required to be manually turned on/initialised.
+			- Github Pages are available via:
+
+				https://paul-surridge.github.io/github-slideshow/#/
+				https://[username].github.io/[Repository]/#/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="anchorPaneSplashCSSID" fx:id="apPokerTable" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="poker.PokerGame">
+  <children>
+    <ImageView id="imagsViewBackground" fitHeight="700.0" fitWidth="949.9999472718403" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/generic/Background%20-%20Light%20Grey.jpg" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewSplashBackground" fitHeight="562.0" fitWidth="919.0" layoutX="17.0" layoutY="68.0" pickOnBounds="true">
+      <image>
+        <Image url="@../app/images/generic/Translucent%20Border%20-%20Large.png" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewHeader" fitHeight="62.89999771118164" fitWidth="950.0" pickOnBounds="true" AnchorPane.topAnchor="0.0">
+      <image>
+        <Image url="@../app/images/generic/Header.png" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewFooter" fitHeight="55.875" fitWidth="950.0000610351562" layoutX="1.0" pickOnBounds="true" AnchorPane.topAnchor="644.0">
+      <image>
+        <Image url="@../app/images/generic/Footer.png" />
+      </image>
+    </ImageView>
+    <ImageView id="imageViewExit" fx:id="ivClosePoker" fitHeight="38.0" fitWidth="38.0" layoutX="905.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/generic/Close.png" />
+      </image>
+    </ImageView>
+    <Label id="labelPoker" layoutX="404.0" layoutY="0.0" prefHeight="56.0" prefWidth="143.0" text="Poker" textAlignment="CENTER" textFill="WHITE" visible="false">
+      <font>
+        <Font name="Agent Orange" size="28.0" fx:id="x9" />
+      </font>
+    </Label>
+    <ImageView id="btnHelp" fx:id="ivHelp" fitHeight="41.0" fitWidth="41.0" layoutX="885.0" layoutY="653.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      <image>
+        <Image url="@../app/images/poker/Help%20-%20Icon.png" />
+      </image>
+    </ImageView>
+    <Button id="butTest" fx:id="btnCheckOrSee" blendMode="HARD_LIGHT" layoutX="550.0" layoutY="653.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="87.0" text="Check" textFill="BLACK">
+      <font>
+        <Font name="System Bold" size="16.0" fx:id="x3" />
+      </font>
+    </Button>
+    <Button id="butTest" fx:id="btnRaise" blendMode="HARD_LIGHT" font="$x3" layoutX="644.0" layoutY="653.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="70.0" text="Raise" textFill="#319900" />
+    <Button id="butTest" fx:id="btnFold" blendMode="HARD_LIGHT" font="$x3" layoutX="720.0" layoutY="653.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="70.0" text="Fold" textFill="RED" />
+    <Button id="butTest" fx:id="btnChangeCards" blendMode="HARD_LIGHT" font="$x3" layoutX="796.0" layoutY="653.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="130.0" text="Change Cards" textFill="BLACK" />
+    <Label fx:id="labBetAmountHeader" layoutX="33.0" layoutY="653.0" prefHeight="38.0" prefWidth="153.0" text="Raise Amount     £" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <TextField fx:id="txtBetAmount" layoutX="182.0" layoutY="657.0" prefHeight="30.0" prefWidth="55.0">
+         <font>
+            <Font size="14.0" />
+         </font></TextField>
+    <ImageView fitHeight="535.0" fitWidth="890.0" layoutX="32.0" layoutY="81.0" pickOnBounds="true" preserveRatio="false">
+      <image>
+        <Image url="@../app/images/poker/Poker%20Felt%20-%20No%202.jpg" />
+      </image>
+    </ImageView>
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#663100" height="535.0" layoutX="24.0" layoutY="81.0" stroke="BLACK" strokeType="INSIDE" width="8.0" />
+    <Rectangle arcHeight="5.0" arcWidth="5.0" height="535.0" layoutX="922.0" layoutY="80.0" stroke="BLACK" strokeType="INSIDE" width="8.0">
+      <fill>
+        <Color blue="0.000" green="0.192" red="0.400" fx:id="x1" />
+      </fill>
+    </Rectangle>
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="$x1" height="8.0" layoutX="24.0" layoutY="74.0" stroke="BLACK" strokeType="INSIDE" width="906.0" />
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="$x1" height="8.0" layoutX="24.0" layoutY="613.0" stroke="BLACK" strokeType="INSIDE" width="906.0" />
+    <Ellipse fx:id="elPot" fill="BLACK" layoutX="477.0" layoutY="340.0" opacity="0.0" radiusX="100.0" radiusY="97.0" strokeType="INSIDE" visible="true">
+      <stroke>
+        <Color blue="0.000" green="0.960" red="1.000" fx:id="x2" />
+      </stroke>
+    </Ellipse>
+    <Rectangle fx:id="recPlayer1TurnIndicator" arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="110.0" layoutX="284.0" layoutY="474.0" opacity="0.0" stroke="$x2" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="2.5" width="385.0" />
+    <Rectangle id="recPlayer1TurnIndicator" fx:id="recPlayer3TurnIndicator" arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="110.0" layoutX="285.0" layoutY="90.0" opacity="0.0" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="2.5" width="385.0">
+      <stroke>
+        <Color blue="0.000" green="0.961" red="1.000" fx:id="x7" />
+      </stroke>
+    </Rectangle>
+    <Rectangle id="recPlayer1TurnIndicator" fx:id="recPlayer2TurnIndicator" arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="385.0" layoutX="35.0" layoutY="145.0" opacity="0.0" stroke="$x7" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="2.5" width="110.0" />
+    <Rectangle id="recPlayer1TurnIndicator" fx:id="recPlayer4TurnIndicator" arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="385.0" layoutX="795.0" layoutY="145.0" opacity="0.0" stroke="$x7" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" strokeWidth="2.5" width="110.0" />
+    <ImageView fx:id="ivPlayer3CoinsIcon" fitHeight="55.0" fitWidth="55.0" layoutX="285.0" layoutY="209.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/poker/Coins%20-%20Icon.png" />
+      </image>
+    </ImageView>
+    <ImageView id="ivPlayer1MoneyIcon" fx:id="ivPlayer1CoinsIcon" fitHeight="55.0" fitWidth="55.0" layoutX="284.0" layoutY="414.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/poker/Coins%20-%20Icon.png" />
+      </image>
+    </ImageView>
+    <ImageView fx:id="ivPlayer2CoinsIcon" fitHeight="55.0" fitWidth="55.0" layoutX="160.0" layoutY="154.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/poker/Coins%20-%20Icon.png" />
+      </image>
+    </ImageView>
+    <ImageView fx:id="ivPlayer4CoinsIcon" fitHeight="55.0" fitWidth="55.0" layoutX="727.0" layoutY="154.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../app/images/poker/Coins%20-%20Icon.png" />
+      </image>
+    </ImageView>
+    <Label id="labBetAmountHeader" fx:id="labPlayer2Amount" alignment="CENTER_LEFT" contentDisplay="LEFT" layoutX="158.0" layoutY="500.0" prefWidth="90.0" text="£450" textAlignment="LEFT" textFill="$x2">
+      <font>
+        <Font size="30.0" fx:id="x4" />
+      </font>
+    </Label>
+    <Label fx:id="labPlayer1Amount" alignment="CENTER_RIGHT" font="$x4" layoutX="580.0" layoutY="429.0" prefWidth="90.0" text="£450" textAlignment="RIGHT" textFill="$x7" />
+    <Label id="labBetAmountHeader" fx:id="labPlayer3Amount" alignment="CENTER_RIGHT" font="$x4" layoutX="580.0" layoutY="208.0" prefWidth="90.0" text="£450" textAlignment="RIGHT" textFill="$x7" />
+    <Label id="labBetAmountHeader" fx:id="labPlayer4Amount" alignment="CENTER_RIGHT" font="$x4" layoutX="694.0" layoutY="500.0" prefWidth="90.0" text="£450" textAlignment="RIGHT" textFill="$x7" />
+    <Label id="labBetAmountHeader" fx:id="labPlayer2Name" layoutX="76.0" layoutY="547.0" text="Player 2" textFill="WHITE" />
+    <Label id="labBetAmountHeader" fx:id="labPlayer3Name" layoutX="454.0" layoutY="204.0" text="Player 3" textFill="WHITE" />
+    <Label id="labBetAmountHeader" fx:id="labPlayer1Name" layoutX="454.0" layoutY="457.0" text="Player 1" textFill="WHITE" />
+    <Label id="labBetAmountHeader" fx:id="labPlayer4Name" layoutX="834.0" layoutY="547.0" text="Player 4" textFill="WHITE" />
+    <Label id="labBetAmountHeader" fx:id="labPotAmount" alignment="CENTER" contentDisplay="CENTER" layoutX="375.0" layoutY="298.0" opacity="0.0" prefHeight="80.0" prefWidth="199.9998779296875" text="£10,452" textAlignment="CENTER" textFill="$x7" visible="true">
+      <font>
+        <Font size="50.0" />
+      </font>
+    </Label>
+    <Label id="labGameIDisplayState" fx:id="labInGameStatusFeed" layoutX="35.0" layoutY="585.0" prefHeight="27.0" prefWidth="402.0" text="Player 2 See and Raise £1234" textFill="WHITE">
+      <font>
+        <Font size="16.0" fx:id="x6" />
+      </font>
+    </Label>
+    <Button id="butTest" fx:id="btnNextRoundProceed" blendMode="HARD_LIGHT" font="$x3" layoutX="390.0" layoutY="653.0" minHeight="38.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="153.0" text="Next Round" textFill="BLACK" />
+    <AnchorPane fx:id="apGameSetup" layoutX="174.0" layoutY="159.0" prefHeight="391.0" prefWidth="606.0" visible="false">
+      <children>
+        <ImageView fx:id="ivGameSetupBackground" fitHeight="366.5435791015625" fitWidth="589.9999389648438" layoutX="14.0" layoutY="14.0" opacity="0.7" pickOnBounds="true" preserveRatio="false">
+          <image>
+            <Image url="@../app/images/poker/GameSetup/Background%20-%20Game%20Setup.png" />
+          </image>
+        </ImageView>
+        <Button id="butTest" fx:id="btnGameStart" blendMode="HARD_LIGHT" font="$x3" layoutX="442.0" layoutY="306.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="130.0" text="Game Start" textFill="#0c9900" />
+        <Slider id="sliBatSize" fx:id="sliGameStartAmount" blockIncrement="1.0" layoutX="78.0" layoutY="182.0" majorTickUnit="100.0" max="1000.0" min="100.0" minorTickCount="50" prefWidth="250.0" showTickMarks="true" snapToTicks="true" />
+        <Label id="labPlayerStartAmount" fx:id="labGameStartAmountHeader" alignment="TOP_LEFT" layoutX="61.0" layoutY="91.0" prefHeight="41.0" prefWidth="343.0" text="1. Set the amount each player starts with when new game.&#10;2. Set the amount each player will ante every round." textFill="WHITE" />
+        <Label id="labelPoker" fx:id="labGameSetupHeader" font="$x9" layoutX="47.0" layoutY="35.0" prefHeight="56.0" prefWidth="250.0" text="Game Setup" textAlignment="CENTER" textFill="WHITE" />
+        <Label id="labelPoker" fx:id="labStartAmountHeader" layoutX="47.0" layoutY="132.0" prefHeight="56.0" prefWidth="250.0" text="Game Start Amount" textAlignment="CENTER" textFill="WHITE">
+          <font>
+            <Font name="Agent Orange" size="16.0" fx:id="x10" />
+          </font>
+        </Label>
+        <Slider id="sliBatSize" fx:id="sliAnteAmount" blockIncrement="1.0" layoutX="78.0" layoutY="262.0" majorTickUnit="10.0" max="50.0" min="10.0" minorTickCount="5" prefWidth="250.0" showTickMarks="true" snapToTicks="true" />
+        <Label id="labelPoker" fx:id="labAnteAmountHeader" font="$x10" layoutX="47.0" layoutY="212.0" prefHeight="56.0" prefWidth="250.0" text="Ante Amount" textAlignment="CENTER" textFill="WHITE" />
+            <TextField fx:id="txtGameStartAmount" alignment="CENTER_RIGHT" layoutX="527.0" layoutY="176.0" prefHeight="25.0" prefWidth="55.0" />
+        <CheckBox fx:id="chkShowComputerPlayerCards" layoutX="47.0" layoutY="336.0" mnemonicParsing="false" prefWidth="183.0" text="Show Computer Player Cards" textFill="WHITE" />
+            <TextField fx:id="txtAnteAmount" alignment="CENTER_RIGHT" layoutX="527.0" layoutY="256.0" prefHeight="25.0" prefWidth="55.0" />
+            <Label id="labelPoker" fx:id="labStartAmountHeader1" layoutX="328.0" layoutY="160.0" prefHeight="56.0" prefWidth="99.0" text="£100 - 1000" textFill="WHITE">
+               <font>
+                  <Font name="Agent Orange" size="16.0" fx:id="x101" />
+               </font>
+            </Label>
+            <Label id="labelPoker" fx:id="labStartAmountHeader11" layoutX="328.0" layoutY="241.0" prefHeight="56.0" prefWidth="99.0" text="£10 - 50" textFill="WHITE">
+               <font>
+                  <Font name="Agent Orange" size="16.0" fx:id="x1011" />
+               </font>
+            </Label>
+            <Label id="labelPoker" fx:id="labStartAmountHeader12" layoutX="513.0" layoutY="160.0" prefHeight="56.0" prefWidth="14.0" text="£" textFill="WHITE">
+               <font>
+                  <Font name="Agent Orange" size="16.0" fx:id="x1012" />
+               </font>
+            </Label>
+            <Label id="labelPoker" fx:id="labStartAmountHeader121" layoutX="513.0" layoutY="240.0" prefHeight="56.0" prefWidth="14.0" text="£" textFill="WHITE">
+               <font>
+                  <Font name="Agent Orange" size="16.0" fx:id="x10121" />
+               </font>
+            </Label>
+      </children>
+    </AnchorPane>
+    <Label id="labGameIDisplayState" fx:id="labInGameStatusFeedPlayerWinOrExit" alignment="CENTER_RIGHT" font="$x6" layoutX="515.0" layoutY="585.0" prefHeight="27.0" prefWidth="402.0" text="" textFill="WHITE" />
+  </children>
+</AnchorPane>
