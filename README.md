@@ -28,7 +28,7 @@ Please find a repository containing the following folders/files:
 	Folder contains screenshots of the x3 java/javaFX projects contained in the Projects folder and
 	works completed at previous employer.
 
-**/Knowledge Base**
+**/Research**
 
 	Folder contains a sample of my research condensed into concise form for quick reference of key
 	concepts, syntax and constructs.
