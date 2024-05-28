@@ -6,8 +6,8 @@ Please find a repository containing the following folders/files:
 	2. Projects			x3 java/javaFX projects for review
 	3. Screenshots			Screenshots of x3 java/javaFX projects and from previous employer
 	4. Redundancy and Retraining	Summary of events of redundancy and subsequent retraining
-	4. Software Principles		Personal principles applied to all software
-	5. Software Proficiencies	Proficiencies of java, kotlin, android and cloud technologies
+	5. Software Principles		Personal principles applied to all software
+	6. Software Proficiencies	Proficiencies of java, kotlin, android and cloud technologies
 
 **/Projects:**
 
