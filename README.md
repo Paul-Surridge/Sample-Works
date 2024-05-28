@@ -25,8 +25,8 @@ Please find a repository containing the following folders/files:
 
 **/Screenshots:**
 
-	Folder contains screenshots of the x3 java projects contained in the Projects folder and works
-	completed at previous employer.
+	Folder contains screenshots of the x3 java/javaFX projects contained in the Projects folder and
+	works completed at previous employer.
 
 **/Knowledge Base**
 
