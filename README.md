@@ -7,7 +7,7 @@ Please find a repository containing the following folders/files:
 	3. Screenshots			Screenshots of x3 java/javaFX projects and from previous employer
 	4. Pandemic and Retraining	Summary of events of pandemic, redundancy and subsequent retraining
 	5. Software Principles		Summary of personal principles applied to all software
-	6. Software Proficiencies	Summary of research of java, kotlin, android and cloud technologies
+	6. Software Proficiencies	Summary of research of java, kotlin and cloud technologies
 
 **/Projects:**
 
