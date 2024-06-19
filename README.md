@@ -2,7 +2,7 @@
 
 Please find a repository containing the following folders/files:
 
-	1. Projects			x3 java/javaFX projects for review
+	1. Projects			Sample x3 java/javaFX projects for review
 	2. Research			Sample of my personal research built up through training period
 	3. Screenshots			Screenshots of x3 java/javaFX projects and from previous employer
 	4. Pandemic and Training	Summary of pandemic, redundancy and subsequent training period
