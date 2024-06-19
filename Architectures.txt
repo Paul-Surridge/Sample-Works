@@ -1,16 +1,16 @@
-Design Architecture 
+Cloud Native Development
 
 	Overview:
 
-		- Compute architecture is a broad field.
-		- Compute architecture involves the following broad evolution where the management of the infrastructure is commoditised, 'abstracted away' or 'unknown' and managed by other dedicated 3rd party service providers.
-		- Compute architecture involves a number of spectrums:
+		- Cloud native development is a broad field.
+		- Cloud native development involves the following broad evolution where the management of the infrastructure is commoditised, 'abstracted away' or 'unknown' and managed by other dedicated 3rd party cloud service providers.
+		- Cloud native development involves a number of spectrums:
 
 			1. Location:				On-Premise | Cloud | Hybrid
-			2. Infrastructure Management:		Compute model describes the extent infrastructure and resources outside the application are managed by a service provider
+			2. Infrastructure Management:		Compute model describes the extent infrastructure and resources outside the application are managed by cloud service provider
 			3. Architecture:			Monolith | Microservices
 
-		- Compute architecture can be based using differing compute models these include:
+		- Cloud native development can be completed using differing compute models these include:
 
 			1. Traditional IT (On-Prem)
 			2. IaaS
@@ -18,13 +18,13 @@ Design Architecture
 			4. Serverless/FaaS
 			5. SaaS
 
-			These compute models encompass a varying degree of the management by service providers:
+			These compute models encompass a varying degree of the management by the cloud service providers:
 
 							Traditional IT	IaaS		PaaS		Serverless	SaaS
 							(On-Prem)					FaaS
 							____________________________________________________________________________________
 
-				Applications		-		-		-		-		C
+				Applications		-		-		-		-		C				C: Cloud Service Provider
 				Data			-		-		-		C		C
 				Runtime			-		-		C		C		C
 				Middleware		-		-		C		C		C
@@ -34,9 +34,9 @@ Design Architecture
 				Storage			-		C		C		C		C
 				Networking		-		C		C		C		C
 
-		- Major service providers: 
+		- Cloud native development has the following major cloud service providers: 
 
-			Service Providers				IaaS		 		PaaS					Serverless/FaaS
+			Cloud Service Providers				IaaS		 		PaaS					Serverless/FaaS
 			______________________________________________________________________________________________________________________________________________
 
 			Amazon						AWS				AWS Elastic Beanstalk			AWS Lambda

@@ -3,15 +3,15 @@
 Please find a repository containing the following folders/files:
 
 	1. Projects			x3 java/javaFX projects for review
-	2. Research			Condensed research/reference of java, kotlin and cloud technologies
+	2. Research			Sample of my collated research built up through training period
 	3. Screenshots			Screenshots of x3 java/javaFX projects and from previous employer
-	4. Pandemic and Retraining	Summary of events of pandemic, redundancy and subsequent retraining
+	4. Pandemic and Training	Summary of pandemic, redundancy and subsequent training period
 	5. Software Principles		Summary of personal principles applied to all software
-	6. Software Proficiencies	Summary of research of java, kotlin and cloud technologies
+	6. Software Proficiencies	Summary of proficiencies and works completed during training period
 
-**/Projects:**
+**/Projects/Java:**
 
-	Folder contains x3 java/javaFX projects:
+	Folder contains x3 java/javaFX projects for review:
 
 	1. Bank Accounts Manager*	In-depth assessment and chart analysis of personal banking history
 	2. Sample Code			Source code and reference material repository
@@ -23,6 +23,13 @@ Please find a repository containing the following folders/files:
 	Projects can be reviewed/run within either Netbeans or IntelliJ as described in the enclosed file
 	'IDE - Netbeans or IntelliJ.txt'. Alternatively screenshots are contained in the Screenshots folder.
 
+**/Projects/Crestron AMX:**
+
+	Folder contains x1 Crestron and x1 AMX project for review:
+
+	1. Crestron:	Video Wall with multiplexed DM-NVX based distribution throughout building
+	2. AMX:		DVX-Series based control of integrated system using Cisco C-Series codecs
+
 **/Screenshots:**
 
 	Folder contains screenshots of the x3 java/javaFX projects contained in the Projects folder and
@@ -30,8 +37,8 @@ Please find a repository containing the following folders/files:
 
 **/Research**
 
-	Folder contains a sample of my research condensed into concise form for quick reference of key
-	concepts, syntax and constructs.
+	Folder contains a sample of my research built up during training period used for quick reference of
+	key concepts, syntax and constructs.
 
 	/Cloud
 	____________________________________________________________________________________________________
