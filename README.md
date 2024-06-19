@@ -13,11 +13,11 @@ Please find a repository containing the following folders/files:
 
 	Folder contains x3 java/javaFX projects for review:
 
-	1. Bank Accounts Manager*	In-depth assessment and chart analysis of personal banking history
+	1. Bank Accounts Manager	In-depth assessment and chart analysis of personal banking history
 	2. Sample Code			Source code and reference material repository
 	3. Classic Games		Poker, space invaders, pong and missile command
 	
-	*Bank Accounts Manager is the more advanced and substantial program containing sample transaction
+	Bank Accounts Manager is the most advanced and substantial program containing sample transaction
 	data for demonstration purposes.
 
 	Projects can be reviewed/run within either Netbeans or IntelliJ as described in the enclosed file
