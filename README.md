@@ -28,7 +28,7 @@ Please find a repository containing the following folders/files:
 	Folder contains x1 Crestron and x1 AMX project for review:
 
 	1. Crestron:	Video Wall with multiplexed DM-NVX based distribution throughout building
-	2. AMX:		DVX-Series based control of integrated system using Cisco C-Series codecs
+	2. AMX:		DVX-Series based control of local integrated system with Cisco C-Series codecs
 
 **/Screenshots:**
 
@@ -39,22 +39,6 @@ Please find a repository containing the following folders/files:
 
 	Folder contains a sample of my research built up during training period used for quick reference of
 	key concepts, syntax and constructs.
-
-	/Cloud
-	____________________________________________________________________________________________________
-
-	1.	Cloud Native Application Development
-	2. 	Continuous Integration
-	3.	Docker
-	4.	Git - Concepts and Commands
-	5.	Git - Workflows
-	6. 	GitHub
-	7.	Glossary
-	8.	Kubernetes
-	9.	Maven - Gradle
-	10.	Scrum
-	11. 	TDD	
-	12.	XML/HTTP/REST
 
 	/Java
 	____________________________________________________________________________________________________
@@ -205,3 +189,19 @@ Please find a repository containing the following folders/files:
 	3. 	Big O Notation
 	4.	Dynamic Programming
 	5.	Recursion
+
+	/Workflows
+	____________________________________________________________________________________________________
+
+	1. 	Continuous Integration
+	2.	Design Architecture
+	3.	Docker
+	4.	Git - Concepts and Commands
+	5.	Git - Workflows
+	6. 	GitHub
+	7.	Glossary
+	8.	Kubernetes
+	9.	Maven - Gradle
+	10.	Scrum
+	11. 	TDD	
+	12.	XML/HTTP/REST
