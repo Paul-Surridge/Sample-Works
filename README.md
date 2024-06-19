@@ -3,7 +3,7 @@
 Please find a repository containing the following folders/files:
 
 	1. Projects			x3 java/javaFX projects for review
-	2. Research			Sample of my collated research built up through training period
+	2. Research			Sample of my personal research built up through training period
 	3. Screenshots			Screenshots of x3 java/javaFX projects and x7 Crestron/AMX projects
 	4. Pandemic and Training	Summary of pandemic, redundancy and subsequent training period
 	5. Software Principles		Summary of personal principles applied to all software
