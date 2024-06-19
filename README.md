@@ -2,7 +2,7 @@
 
 Please find a repository containing the following folders/files:
 
-	1. Projects			x3 java/javaFX, x1 Crestron and x1 AMX projects for review
+	1. Projects			x3 java/javaFX projects for review
 	2. Research			Sample of my collated research built up through training period
 	3. Screenshots			Screenshots of x3 java/javaFX projects and x7 Crestron/AMX projects
 	4. Pandemic and Training	Summary of pandemic, redundancy and subsequent training period
@@ -22,13 +22,6 @@ Please find a repository containing the following folders/files:
 
 	Projects can be reviewed/run within either Netbeans or IntelliJ as described in the enclosed file
 	'IDE - Netbeans or IntelliJ.txt'. Alternatively screenshots are contained in the Screenshots folder.
-
-**/Projects/Crestron AMX:**
-
-	Folder contains x1 Crestron and x1 AMX project for review:
-
-	1. Crestron:	Video Wall with multiplexed DM-NVX based distribution throughout building
-	2. AMX:		DVX-Series based control of local integrated system with Cisco C-Series codecs
 
 **/Screenshots:**
 
