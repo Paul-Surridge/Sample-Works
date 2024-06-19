@@ -194,7 +194,7 @@ Please find a repository containing the following folders/files:
 	____________________________________________________________________________________________________
 
 	1. 	Continuous Integration
-	2.	Design Architecture
+	2.	Design Architectures
 	3.	Docker
 	4.	Git - Concepts and Commands
 	5.	Git - Workflows
