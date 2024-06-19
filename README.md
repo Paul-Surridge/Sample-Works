@@ -9,7 +9,7 @@ Please find a repository containing the following folders/files:
 	5. Software Principles		Summary of personal principles applied to all software
 	6. Software Proficiencies	Summary of proficiencies and works completed during training period
 
-**/Projects/Java:**
+**/Projects:**
 
 	Folder contains x3 java/javaFX projects for review:
 
