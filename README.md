@@ -4,7 +4,7 @@ Please find a repository containing the following folders/files:
 
 	1. Projects			x3 java/javaFX projects for review
 	2. Research			Sample of my personal research built up through training period
-	3. Screenshots			Screenshots of x3 java/javaFX projects and x7 Crestron/AMX projects
+	3. Screenshots			Screenshots of x3 java/javaFX projects and from previous employer
 	4. Pandemic and Training	Summary of pandemic, redundancy and subsequent training period
 	5. Software Principles		Summary of personal principles applied to all software
 	6. Software Proficiencies	Summary of proficiencies and works completed during training period
@@ -26,7 +26,7 @@ Please find a repository containing the following folders/files:
 **/Screenshots:**
 
 	Folder contains screenshots of the x3 java/javaFX projects contained in the Projects folder and
-	works completed at previous employer.
+	x7 Crestron/AMX projects completed at previous employer.
 
 **/Research**
 
