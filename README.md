@@ -7,7 +7,7 @@ Please find a repository containing the following folders/files:
 	3. Screenshots			Screenshots of x3 java/javaFX projects and from previous employer
 	4. Pandemic and Prof. Dev.	Summary of pandemic, redundancy and subsequent training period
 	5. Software Principles		Summary of personal principles applied to all software
-	6. Software Proficiencies	Summary of proficiencies and works completed during training period
+	6. Software Proficiencies	Summary of proficiencies within languages/technologies
 
 **/Projects:**
 
