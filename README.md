@@ -2,9 +2,9 @@
 
 Please find a repository containing the following folders/files:
 
-	1. Projects			Sample projects for review
-	2. Research			Sample research for review of key concepts, constructs, syntax
-	3. Screenshots			Sample screenshots for review
+	1. Projects			Sample java/javaFX, Crestron and AMX projects for review
+	2. Research			Sample research of key concepts, constructs, syntax for review
+	3. Screenshots			Sample java/javaFX, Crestron and AMX screenshots for review
 	4. Pandemic and Prof. Dev.	Summary of pandemic, redundancy and subsequent training period
 	5. Software Principles		Summary of personal principles applied to all software
 	6. Software Proficiencies	Summary of proficiencies within all languages/technologies
