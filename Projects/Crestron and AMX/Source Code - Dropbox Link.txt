@@ -1,0 +1,8 @@
+For reason unknown it is not possible to upload the following Crestron archive to GitHub:
+
+	Crestron Archive:	AVMI - NOC Video Wall - Digital Signage - v1.zip
+	AMX Archive:		TCR - AVMI - City Office - Meeting Room 3 - 280314.AXW
+
+Therefore both files have been uploaded to the following Dropbox link:
+
+	https://www.dropbox.com/scl/fo/8zc7clvqiinb1hlrm1y9f/AELwvjBjMyO5VQrwSd-XelQ?rlkey=p4h4hai218dgpvufwxlvtra6i&e=1&st=ojfkm0m9&dl=0
