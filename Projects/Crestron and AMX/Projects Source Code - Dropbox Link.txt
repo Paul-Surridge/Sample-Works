@@ -1,4 +1,4 @@
-For reason unknown it is not possible to upload the following Crestron archive to GitHub:
+For reason unknown it is not possible to upload the following Crestron *.zip archive to GitHub:
 
 	Crestron Archive:	AVMI - NOC Video Wall - Digital Signage - v1.zip
 	AMX Archive:		TCR - AVMI - City Office - Meeting Room 3 - 280314.AXW
