@@ -5,19 +5,22 @@ Please find a repository containing the following folders/files:
 	1. Projects			Sample java/javaFX, Crestron and AMX projects
 	2. Research			Sample of collated key concepts, constructs, syntax 
 	3. Screenshots			Sample java/javaFX, Crestron and AMX screenshots
-	4. Pandemic and Prof. Dev.	Summary of pandemic, redundancy and subsequent professional development
+	4. Pandemic and Prof. Dev.	Summary of pandemic, redundancy and professional development
 	5. Software Principles		Summary of personal principles applied to all software
 	6. Software Proficiencies	Summary of proficiencies within all languages/technologies
 
 **/Projects/Crestron and AMX:**
 
-	Folder contains x1 Crestron and x1 AMX project for review.
+	Folder contains x1 Crestron and x1 AMX project for review:
+
+	1. Video Wall and DM-NVX Digital Signage:		Management and Control (Crestron)
+	2. Integrated Cisco C-Series and Presentation:		DVX-Series Processor (AMX)
 
 **/Projects/Java:**
 
 	Folder contains x3 java/javaFX projects for review:
 
-	1. Bank Accounts Manager	In-depth assessment and chart analysis of personal banking history
+	1. Bank Accounts Manager	Advanced chart analysis of personal banking history
 	2. Sample Code			Source code and reference material repository
 	3. Classic Games		Poker, space invaders, pong and missile command
 	
@@ -29,13 +32,16 @@ Please find a repository containing the following folders/files:
 
 **/Screenshots:**
 
-	Folder contains screenshots of the x3 java/javaFX projects contained in the Projects folder and
-	x7 Crestron/AMX projects completed at previous employer.
+	Folder contains:
+
+	1. Java/JavaFX:		Screenshots of the x3 projects contained in the Projects folder
+	2. Crestron/AMX:	Screenshots of x7 Crestron/AMX projects completed at previous employer
 
 **/Research**
 
-	Folder contains a sample of my research built up during professional development period of key
-	concepts, syntax and constructs of the following:
+	During period of professional development I collated key concepts, constructs and syntax into
+	highly condensed and concise form serving both as a means of solidifying my own understanding
+	but also as highly valuable reference material in the future:
 
 	/Java
 	____________________________________________________________________________________________________
