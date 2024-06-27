@@ -1,0 +1,1022 @@
+Android Development:
+
+	Ecology:
+
+		- Android was created by Google.
+		- Android has many libraries under the name JetPack.
+		- Android has recently added a major new way of building UI's using Compose compared to the previous means of using 'Views'.
+		- Android has decided to officially support Kotlin which is a language developed by JetBrains, who are the same company which produced many software development tools including IntelliJ.
+		- Android use of the name 'Jet' in JetPack and the name of the company JetBrains maybe or maybe not connected, but JetBrains did not build nor manage JetPack (Google Android does).
+
+	Views:
+
+		- Views are and outdated paradigm which are XML based/generated.
+		- Views defines the design within XML where ID's are then obtained within the program.
+		- Views has the states of UI components set via setters within the program.
+		- Views can be error prone given the need to manually update UI if an external configuration change occurs e.g. user rotates UI.
+
+	Compose:
+
+		- Compose is a toolkit for building Android UI's.
+		- Compose allows for the building of UI's via @Composable functions.
+		- Compose enables all of the UI components/elements to be defined within the program as Kotlin functions.
+		- Compose stores the state of the UI component stored within the component (no need to continually monitor and ensure in correct state).
+		- Compose utilises event handlers to listen for state changes from user (known as 'Recomposition').
+		- Compose has x3 basic standard layout elements which are natural containers within the form:
+
+			1. Column
+			2. Row
+			3. Box
+
+	Row:
+
+		- Row is a container element within Compose.
+		- Row is generally as follows:
+
+			 -------------------------------------
+			|  -------------   -------------   ---------
+			| |		| |		| |
+			|  -------------   -------------   ---------
+			 -------------------------------------
+
+		- Row maybe wider than the sum of the widths of the child elements, at which point the property horizontalArrangement is applied. 
+
+	Column:
+
+		- Column is a container element within Compose.
+		- Column is generally as follows:
+
+			 -----------------
+			|  -------------  |
+			| |		| |
+			|  -------------  |
+			|  -------------  |
+			| |		| |
+			|  -------------  |
+			|  -------------  |
+			| |		| |
+			|  -------------  |
+
+		- Column maybe higher than the sum of the heights of the child elements, at which point the property verticalArrangement is applied.
+
+	Box:
+
+		- Box allows for the 'stacking' of elements on top of one another.
+		- Box allows for the specific arrangement of elements that it contains.
+
+	Composable:
+
+		- @Composable
+		- Composable functions define the components within the UI, such components are called 'composables'.
+		- Composable functions are immutable.
+		- Composable functions are fast.
+		- Composable functions are capitalised (pascal case rather than camel case).
+
+			@Composable
+			fun Greeting(name: String, modifier: Modifier = Modifier)
+			{
+
+		- Composable functions are said to 'emit UI'.
+		- Composable functions do not return anything.
+		- Composable functions can (and the only other functions) able to call other Composable Functions.
+		- Composable functions are declarative i.e. they are specified not to be built/instantiated in any particular order but simply declared and the compiler scans, builds and maintains their implemention as it best sees fit. 
+		- Composable functions cannot be referenced i.e. it is not possible to hold a reference to them and later update its content (you need to call again with differing arguments).
+		- Composable functions should not call Global variable or properties.
+		- Composable functions should be side effect free i.e. operate the same when passed the same argument (idempotent).
+		- Composable functions are called again when its arguments change and a new UI component is generated and drawn again (called 'recomposition').
+		- Composable functions can be executed in any order (as deemed most appropriately by compiler) and not specifically as ordered in *.kt.
+		- Composable functions run in parallel taking advantage of multiple cores when rendering a screen.
+		- Composable functions should not contain local variables for this is no longer side effect free and may result in undefined behaviour.
+		- Compose may have its own compiler which utilises annotations.
+		- Compose naturally tries to only change which has needed to change.
+		- Composable functions should all have a Modifier as a parameter.
+		- It may be case that a *.kt file runs within Compose (rather than the Android project/program per se), the UI components are defined using functions with @Composable.
+		- Compose allows for building a large collection/library of reusable components using annotations.
+		- Recomposition is 'optimistic':
+
+			Compose will expect to complete the recomposition before being given a new argument.
+			If a new argument is passed before it has finished a recomposition it 'might' cancel the current recomposition and try again.
+
+		- Composable functions may be called frequently e.g. animations, therefore it is important that the functions are fast so that frames are not dropped.
+		- Composable function parameters are initented to define behaviour.
+		- Composable function utilise MutableState, remember and rememberSavable to store state and have Composable track and automatically implement changes to the UI (presume it automatically recomposes).
+		- Composable functions must:
+
+			Be a noun:	 					DoneButton()
+			NOT a verb or verb phrase: 				DrawTextField()
+			NOT a nouned preposition: 				TextFieldWithLink()
+			NOT an adjective: 					Bright()
+			NOT an adverb: 						Outside()
+			Nouns MAY be prefixed by descriptive adjectives: 	RoundIcon()
+
+	Layouts
+
+		- Layouts and UI elements are heirarchical with elements within elements.
+		- Layouts and heirarchies within Compose are constructed by calling composable functions from other composable functions.
+
+			@Composable
+			fun MessageCard(msg: Message) {		//x2 Text composables are contained with the MessageCard composable 
+			    Text(text = msg.author)
+			    Text(text = msg.body)
+			}
+
+		- Layout is an object within Compose with the following standard elements:
+
+			Column
+			Row
+			Box
+
+		- Layout wraps components accordingly.
+
+	Light Bulb:
+
+		- Light Bulb is an icon which can appear with Android Studio.
+		- Light Bulb allows for convenient actions to be quickly applied to existing source code.
+
+			1. Highlight a body of text within the source code.
+			2. If applicable a light bulb will appear nearby allowing for code to be applied.		
+
+	Naming Conventions:
+
+		https://github.com/androidx/androidx/blob/androidx-main/compose/docs/compose-api-guidelines.md#naming-unit-composable-functions-as-entities
+
+	Meterial Design:
+
+		- Material Design is an adaptable toolkit of guidelines, components and tools that support tehbest practices of UI Design.
+		- Material Design is shipped with Compose (Composes Material Design 2 and 3) along with 'Material You' which is latest and intended to ultilise the latest features of Android 12+.
+		- Material Design is shipped with Compose (Composes Material Design 2 and 3).
+
+	Material You:
+
+		- Material You supports Themes, which allow for the generic customisation e.g.
+
+			Colour
+			Typography
+			Shapes
+
+			Themes should be the outermost function that is invoked.
+
+	Scaffold:
+
+		- Scaffold is a fundamental component of the Material Design toolkit.
+		- Scaffold is a layout for arranging common UI components in common patterns.
+
+	Surface:
+
+		- Surface is a central metaphor within Material Design for which content sits on.
+		- Surface has many properties.
+
+	Composable Function Lambda:
+
+		- Composable Function Lambda is a function that is passed as an argument to another function (just like Java) i.e. a body of source code is passed as an argument.
+		- Composable Function Lambda allows for the building up of objects inline by defining and passing functionality directly into other object without the need to defined them separately, instantiate and pass in. 
+
+	Modifiers:
+
+		- Modifiers decorate/augment Composable, every Composable in the Compose Toolkit accepts Modifiers as parameters.
+		- Modifiers can be chained together e.g.
+
+			Size
+			Padding
+			Alpha
+			Clickable(Define called source code when composable is clicked)
+
+		- Modifiers are composable specific i.e. each composable will have its own set of modifiers.
+		- Modifiers are not accessible outside of the composable function therefore modifiers are type safe.
+		- Modifiers can/should be passed down to any child @Composables that may be contained within an @Composable:
+
+			@Composable
+			fun GreetingText(sMessage: String, sFrom: String, modifier: Modifier = Modifier)
+			{
+    			    Column(modifier) {
+        			Text(text = sMessage, fontSize = 30.sp, lineHeight = 116.sp)
+        			Text(text = sFrom, fontSize = 36.sp)
+    			    }
+			}
+
+		- Modifiers can be passed and used to set the properties of both:
+
+			1. UI Elements:		Text, Image ...
+			2. Layouts:		Box, Row, Column
+
+	Live Templates:
+
+		- Live Templates are a collection of templates that can be added to your source code.
+		- Live Templates are accessible via Preferences | Editor | Live Templates
+		- Live Templates include:
+
+			Shortcuts:
+
+				+ Tab or Return
+
+				comp		
+
+					@Composable
+					fun () {
+
+					}
+
+				rw
+
+					Row { this: RowScope
+
+					}
+
+				prev
+
+					@Preview
+					@Composable
+					fun () {
+
+					}
+
+					NB: These composable functions can not receive arguments
+
+			Identifer Context Menu:
+
+				Rightclick on any appicable identifier and select to 'Surround' with an applicable object.
+
+
+	Gutter Icons:
+
+		- Gutter Icons can be found in the left hand side of the editor.
+		- Gutter Icons provide access via click/right click to the available options.
+
+			Image:		Switch image resource
+			Colour:		Colour picker
+		
+	Previews:
+
+		- Previews allow a composable to be previewed without needing to compile, build and run on a device.
+		- Previews output their preview to the 'Preview Window' (accessible via 'split' button in top right hand corner).
+		- Previews can be adjusted and refined in realtime by clicking on cog wheel in gutter.
+		- Previews can be stacked to add another instance of the composable to the Preview Window in order to allow for comparison:
+
+			@Preview(fontScale = 1.5f)
+			@Preview(showBackground = true ...
+
+		- Previews can only be applied to composables which do not take any parameters, therefore wrap accordingly:
+
+			@Composable
+			fun MessageCard(name: String) {
+			    Text(text = "Hello $name")
+			}
+
+			@Preview
+			@Composable
+			fun PreviewMessageCard() {			//Wrap the MessageCard function within a function which does not contain parameters so that it can be previewed 
+			    MessageCard("World")
+			}
+
+		- Previews can be encorporated into custom annotations:
+
+			@Preview(
+				Value Pairs
+			)
+			@Preview(
+				Value Pairs
+			)
+			annotation class FontScalePreviews
+
+			@Preview(
+				Value Pairs
+			)
+			@Preview(
+				Value Pairs
+			)
+			annotation class LightDarkPreviews
+
+			//The above annotations can be applied directly to any composable and the values are applied automatically.
+
+	Live Edit:
+
+		- Live Edit allows for the manual changing of constant literals within the code e.g. composable function without the need to recompile, rebuild and upload.
+		- Live Edit changes will be reflected in realtime if being shown in the Preview Window.
+
+	Layout Inspector:
+
+		- Layout Inspector allows for debug.
+		- Layout Inspector requires a process to be selected e.g. the App you currently have in development.
+		- Layout Inspector left hand side contains all of the nodes with the UI graph, right click on any node to show/hide other nodes in other subtree to increase clarity.
+		- Layout Inspector allows to select on a composable in the UI which opens a table of properties on right hand side, click on properties to open/jump applicable aspect in source code.
+		- Layout Inspector allows for the opening of a image to overlay the emulator to ensure that the UI design is exactly as it needs to be as shown in the image file.
+
+	Scalable Pixels:
+
+		- Scalable Pixels are a unit of measure of font size.
+		- Scalable Pixels automatically adjust and scale depending upon the 'preferred' text size within the phones local settings.
+		- Scalable Pixels have the notation 'sp'
+
+	AndroidX:
+
+		- AndroidX is the 'Android Extension' package.
+		- AndroidX contains a set of core libraries and classes for app development.
+
+	String Resources:
+
+		- String Resources are string constants which can be injected into source code as required.
+		- String Resources are typically stored within the project within external/separate *.xml file.
+		- String resources are extracted from the source code via teh Extract Resource dialog:
+
+			1. Highlight the text (no need to include "").
+			2. Click on Light Bulb.
+			3. 'Extract String Resource'.
+			4. Give name:	[Lower case with _ to spearate words] e.g.	happy_birthday_message
+			5. Resoure String is now accessible/referenced via R:		stringResource(R.string.happy_birthday_text)
+
+			NB: Some versions of Android Studio replace the text with .getString(), this should be changed to stringResource().
+
+	Shortcuts:
+
+		Alt + Enter:
+
+			1. Highlight text
+			2. Press Alt+Enter to open menu allowing for constructs and modifications to be applied
+
+		Help + Find Action:
+
+			1. Type in what want to do.
+			2. Android Studio produces a list of settings.
+
+	Best Practices:
+
+		1. Parent Modifier Pass Down:		It is always best to have all of the configuration/setting/establishing/defining of modifiers as high up as possible within @Composable tree graph, so that modifiers can just be passed down to child @Composables.
+		2. Image Pixels Per Square Inch:	Devices have differing DPI, this must be taken into consideration when using images for to ensure that they do not take up too much memory or appear to large etc... 
+ 		3. Resource Management:
+
+			- Resources should all be appropriately arranged and organised within corresponding folders e.g.
+
+				drawable:	images
+				mipmap:		launcher icons
+				values:		string resources
+
+			- Resource types listing:	https://developer.android.com/guide/topics/resources/available-resources
+
+	Tips/How Tos:
+
+		Add An Image:
+
+			1. Resource Manager.
+			2. Import Drawable, import image from computer file system.
+			3. Image file will be imported into the applicable resource folder within this project.
+
+		Type Inference:
+
+			1. If in doubt or need to know what type is being assigned/inferred to a variable (val/var).
+			2. Simply hover over variable and tooltip will describe what is the inferred type.
+ 
+		Find UI Element:
+
+			1. Click on element within Design Pane.
+			2. Cursor automatically jumps to corresponding composable function in source code.
+
+		Find API Information:
+
+			1. Review the import statement at the top of the source file.
+			2. Open: https://developer.android.com/reference.
+			3. Look for the library and package on left hand side.
+			4. Open Overview
+
+	Activity:
+
+		- Activity is a container for one or more screens within App.
+		- Activity is a unit within the program with which provide users with the ability to interact with program.
+		- Activity is the entry point for an App, typically a class called 'MainActivity' which implements 'ComponentActivity'.
+		- Activity is what is launched when the App starts.
+		- Activity used to represent x1 screen, then 'Fragments' allowed for multiple screens within x1 Activity, however that paradigm has been replaced with Jetpack Compose which all runs/contained within x1 activity within whole App.
+		- Activity may contain multiple screens when using Jetpack Compose.
+		- Activity have the following life cycle:
+
+						[Activity Launched]
+						|
+			User navigates to ----> onCreate()
+			the activity		|
+			|			onStart() <-----------------------------------------------------------------------------onRestart()
+			|			|											|
+			|			onResume() <--------------------------------------------				|
+			|			|							|				|
+			[App process killed]	[Activity Running]					|				|
+			|			|							|				|
+			|			Another activity comes into foreground			|				|
+			|			|							|				|
+			Other Apps with	------- onPause() ---------------------------------------------	User returns to activity	|
+			higher priority		|											|
+			need memory		Activity no longer visible								|
+			|			|											|
+			----------------------- onStop() ------------------------------------------------------------------------------ User navigates to activity
+						|
+						Activity is finished or being destroyed by OS
+						|
+						onDestroy()
+						|
+						[Activity Shutdown]
+
+			onCreate():
+
+				- Initialise variables
+				- Initialise view/content of activity
+				- UI not visible
+
+			onStart():
+
+				- UI becomes visible but user cannot interact
+				- Curtains have opened, the players and stage are visible but the play has not started just yet
+				
+			onResume():
+
+				- User can fully interact with App
+				- Activity is now running
+
+			onPause():
+
+				- When any other activity or piece of foreground becomes focus e.g. OS dialog or similar
+				- UI is visible
+
+			onStop():
+
+				- UI is not visible
+
+			onDestroy():
+
+				- Resources released to OS
+				- Typically invoked by:
+
+					1. User (via back button)
+					2. OS (when need resources)
+					3. OS (when configuration change e.g. screen rotation, language or others)
+
+			NB:
+
+				- All functions are overriden/implemented in the 'MainActivity' class. All of which can have simple text printed to console to illustrate when stages are called.
+				- OS does not guarantee that onStop() and onDestroy() will always be called, therefore important data should be saved within onPause().
+
+	Back Stack:
+
+		- Back Stack is a component/concept within all Apps.
+		- Back Stack is a stack of screens/activities e.g. given a web browsing App
+
+			New Bookmark Screen
+			-------------------
+			Bookmark Screen
+			-------------------
+			Browser Screen
+
+			Screens are pushed/popped onto stack as the screens are opened and closed.
+
+		- Back Stack is the collection of screens which form a single unit called a Task.
+
+	Task:
+
+		- Task represents an App.
+		- Task contains the Back Stack.
+		- Task may exist in many instances at any one time i.e. by having many Apps open simultaneously.
+		- Task(s) are all managed by the OS.
+
+			1. Task1 opens another App on the OS called Task2, the OS now has x2 Tasks.
+			2. Task2 opens and uses various activities building up the Back Stack within Task2.
+			3. User closes the activities in Task2, once Back Stack is empty OS reverts to the BAck Stack of Task1.
+
+	Launch Mode:
+
+		- Launch Mode refers to how the OS will behave when a new activity is opened and placed onto the Back Stack.
+
+			Standard:		Activities are simply placed onto the Back Stack.
+
+			Single Top:		Only x1 activity can be on the Back Stack at any one time.
+
+				1. Browser App open with x1 activity open.
+				2. Open Instagram and click on link.
+				3. No further instances of Browser activity are added to the Browser Back Stack but focus refers to the single activity in step 1.
+
+			Single Task:
+
+				1. Open Browser App.
+				2. Open Instagram and click on link.
+				3. Instead of refering to Browser App instance in step 1 another Browser task is created.
+				4. Therefore if user closes the 2nd Browser instance, user returns to Instagram rather than remain with Browser App.
+
+			Single Instance:
+
+				1. The same as 'Single Task', except.
+				2. Once within the second Browser Task it is not possible to open any other activities e.g. payment activity which prevents user from opening other activities (which may be a security risk).
+
+
+	Architectures
+
+		- Architectures adhere to common/familiar design patterns:
+
+			MVVM		MVC
+			MVI		MPC
+
+		- Architecture which is the most common in Android is MVVM (View ViewModel Model):
+
+
+					UI Actions -->				Updates Model -->
+				View				View Model					Model
+					<-- Notifies UI				<-- Notifies View Model
+
+
+			- MVVM has the following components:
+
+				View: 		UI
+				Model: 		Data / Remote API
+				View Model:	Interpretation Logic / Bridge / Storage of UI State
+
+			- MVVM model is the underlying model of data that is interpreted for the view, they are a 'model for a view'.
+			- MVVM is commonly used for individual components of an application e.g. ListView, but in Android it is typically applied to whole screen.
+			- MVVM ViewModel is typically a single class.
+			- MVVM ViewModel can be scoped to be applicable to only certain aspects/activities of an App or shared across multiple/all activites or only have a certain lifecycle.
+
+	Rotation / Configuration Change
+
+		- Rotation / Configuration Change typically cause the task to be destroyed causing the ViewModel class to be recreated (using default values)
+		- Rotation / Configuration Change can be mitigated by extending the Google supplied ViewModel (androidx.lifecycle) as your own custom ViewModel which will:
+
+			1. Automatically retain state when rotated, the ViewModel (and its state) now outlives the lifecycle.
+			2. Only be destroyed if the user explicitly pops the activity off the tasks Back Stack e.g. via the Back Button.
+
+	Context:
+
+		- Context is an instance of a class:
+
+			val myContext: Context 			(android.content)
+
+		- Context is a bridge/interface/access to the OS and other Apps.
+		- Context provides a 'context' for your App to operate within the wider OS e.g. gain access/communicate with:
+
+			OS Component
+			OS Filesystem
+			Resources
+			Preferences
+			Database
+			Other Apps
+			Launch Other App e.g. open a text file
+
+		- Context is part of standard heirachy:
+
+				 		Object
+				 _______________|_______________________
+				|			|		|
+				ContentProvider		Context		BroadcastReceiver
+							|
+							ContextWrapper
+				 _______________________|_______________
+				|			|		|
+				ContextThemeWrapper	Service		Application
+				|
+				Activity
+
+		- Context is the superclass of Activity and Application.
+		- Context is therefore available in all extended classes shown above and can be obtained as shown below e.g.
+
+			class MainActivity : ComponentActivity() {
+
+			    override fun onCreate(savedInstanceState: Bundle?) {
+				super.onCreate(savedInstanceState)
+
+				val myContext: context = this
+			    }
+			}
+
+		- Context can be liable to memory leaks:
+
+			1. An instance of Activity is created.
+			2. An instance of Application is created.
+			3. The Context within the Activity is assigned to a reference within the instance of Application.
+			4. The lifecycle of the Activity is different to the Application leading to a potential situation where the instance of Application has reference to a context within an Activity which no longer exists.
+
+			NB: Therefore Context should only used within its respective instance to ensure that they are always garbage collected alon with the instance of class. IDE will typically display a warning.
+
+	Resources:
+
+		- Resources can be any such:
+
+			Image		Vector Graphic
+			String		Animations
+			Text		Data
+			Icons
+			...
+
+			Anything that your program uses which is not source code. 
+
+		- Resources are typically/should be found with 'res' folder of project:
+
+			res
+			    drawable:		Drawable graphics				val drawable = resources.getDrawable(R.drawable.myPicture)
+			    mipmap:		Icons
+			    values:		Constants e.g. colours, strings, labels		val colour = colorResource(id = R.color.myCustomColour)
+			    xml:		Backup/extraction definitions
+
+		- Resources are added to projects via the Resource Manager.
+		- Resources are accessible by Compose i.e. Compose has full access to all resources within the resource folders.
+		- Resources are accessed via resource ID's that are generated by the projects R class.
+
+			- R Class is automatically generated which contains all of the resource ID's in the project.
+			- R Class typically defines the resource ID's as being the filename of the resource:
+
+				R.drawable.myImage.png
+
+			- R Class is rooted from the resource directory in the project i.e. 'drawable' above is a subdirectory in the 'res' folder.
+
+		- Resources are accessed/referenced within source code via:
+
+			Context:		Used when within a class that extends Context e.g. an extension of ComponentActivity
+
+							class MainActivity : CoponentActivity() {
+						    	    override fun onCreate(...) {
+								resources.getDrawable(...)
+
+			ApplicationContext:	Used when not within a class that extends Context:
+
+							applicaionContext.resources
+
+		- Resources all have an ID (Integer) which is accessed via R:
+
+			val drawable = resources.getDrawable(R.drawable.myPicture)		//R respresents the resources associated with the package, R must be imported (do not import the R from other packages by mistake)
+
+		- Resources typically are then just sent to screen using a Painter:
+
+			setContent {
+			    ActivitiesTheme {
+				Image (
+				    painter = painterResource(id = R.drawable.myPicture),
+				    contentDescription = null
+				    modifier = Modifier
+					.fillMaxWidth()
+				)
+
+		- Resources vector graphics are defined via *.xml file, importing a vector graphic e.g. *.svg/*.psd will automatically generate *.xml file
+		- Resources can be denoted with Qualifiers within () next to resource in project tree:
+
+			res
+			    drawable
+				myVectorGraphic.xml (v24)		//Only Andriod version 24 and above support resource
+			    mipmap
+				ic_launcher.webp (hdpi)			//Icon for applicable device
+
+			Qualifiers remove of the need to manually check which resources are available for which device the program is running on, qualifiers naturally handle/uses the correct/compatible resource:
+
+				1. Right Click:		res | drawable
+				2. Select:		New | Drawable Resource File
+				3. Import:		Import and define/apply qualifiers from list
+
+				NB: Android Studio will create new folders as new qualifiers are applied and place the resource within e.g.	'drawable-night'		//All resources associated with 'night' theme
+
+			Qualifiers can be useful e.g.
+
+				Screen Size:		Use certain resources dependent on screen size of device
+				Theme:			Use certain resources dependent upon the theme that is selected				
+			
+			Qualifiers can be combined to refine when resource is used.
+
+	Intents:
+
+		- Intents are intented to be means of encapsulating a description of an intention to be applied to another Android component either a component within your own App or another external App e.g.
+
+			Activity
+			Services
+			Broadcast
+
+		- Intents can be
+
+			Explcit:	Specifically targetted towards a specific program either own/local program or external program e.g. launch an activity of another program, say YouTube App.
+			Implicit:	Specific action where the OS will present the User with a Chooser on which applicable/appropriate program to send the Intent to and use e.g. open a text file, send an email
+
+		- Intent is a class within 'android.content':
+
+			Explicit Intent:
+
+				Button(onClick = {
+				    Intent(applicationContext, SecondActivity::class.java).also {	//Send intent to local App to instantiate 'SecondActivity'
+					startActivity(it)						//'it' is the receiver of the lamda which in this case is the Intent itself
+				    }
+				}
+
+				The above will cause the SecondActivity to launch when the button is pressed
+			    
+				Button(onClick = {
+				    Intent(Intent.ACTION_MAIN).also {					//Send intent to another App
+					it.'package' = "com.google.android.youtube"			//Ensure Intent knows the package of the targetted App to be open
+
+					if(it.resolveActivity(packageManager) != null) {		//Ensure that package exists on machine, if so start activity
+					    startActivity(it)
+					}
+
+					//Alternatively use try-catch block
+
+					try {
+					    startActivity(it)
+					} catch(e: ActivityNotFoundException)
+					{...}
+				    }
+				}
+
+				NB: Packages can be returned via:
+
+					1. Android Studio:	Terminal
+					2. Type:		adb shell
+					3. Type:		pm list packages
+					4. Type:		pm list packages | grep youtube		//Result of 'list packages' is forwarded to grep to search for term 'youtube'
+
+			Implicit Intent:
+
+				val intent = Intent(Intent.ACTION_SEND).apply {
+				    type = "text/plain"
+				    putExtra(Intent.EXTRA_EMAIL, arrayOf(test@test.com))
+				    putExtra(Intent.EXTRA_SUBJECT, "My Subject")
+				    putExtra(Intent.EXTRA_TEXT, "My Email Body")
+				}
+
+				if(intent.resolveActivity(packageManager) != null) {			//Ensure that package exists on machine, if so start activity in program that can handle 'Intent.ACTION_SEND'
+				    startActivity(intent)
+				}
+
+		- Intent objects can pass data to the target using 'extras' NB: ComponentActivity contains an inherent Intent object which is the 'receiver' of any incoming intents and can be referenced directly using simply 'intent.getStringExtra(name: String!)'
+		- Intents need to be include/specified at 'both ends' i.e. applications need to define how Intents are handled when being sent and received.
+		- Intents need to be included/specified with the manifest file:
+
+			Outgoing:
+
+				- Manifest file needs to include block specifiying the type of intent that the program will/can generate e.g.
+
+					<queries>
+					    <intent>
+						<action android:name="android.intent.action.SEND" />
+						<data android:mimeType="text/plain" />
+					    </intent>
+					</queries>
+
+			Incoming:
+
+				- Manifest file needs to include block specifiying the type of intent that the program can accept called 'Intent Filter' e.g.
+
+					<intent-filter>
+					    <action android:name="android.intent.action.MAIN" />
+					    <category android:name="android.intent.category.LAUNCHER" />
+					</intent-filter>
+
+					<intent-filter>									//Multiple filters can be applied
+					    <action android:name="android.intent.action.SEND" />
+					    <category android:name="android.intent.category.DEFAULT" />
+					    <data android:mimeType="image/jpg" />					//Could use wildcard "image/*" to include all image types
+					</intent-filter>
+
+				- Program will need to (of course) include the necessary logic/means to display the data contained in the Intent (which may be an image), if the program does not have means then nothing happens.
+
+					1. App receives an incoming Intent which contains an image.
+					2. OS will open a new Task of the App, whereby passing the Intent within MainActivty Class (as defined)
+					3. If the LaunchMode of the App is defined as 'SingleTop' then only x1 instance of the App can exist.
+					4. In which case MainActivity class should override onNewIntent() in order to handle/parse the incoming Intent.
+
+						override fun onNewIntent(intent: Intent?) {
+						    super.onNewIntent(intent)
+
+						    val uri = intent?.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+						}
+
+	Broadcasts:
+
+		- Broadcast is a system wide event that can be received and consumed.
+		- Broadcast is an intent sent to many Apps (rather than to a specific App).
+		- Broadcast can be issued by the OS or an App.
+		- Broadcast will include an Intent containing all of the relevant details about teh Broadcast.
+		- Broadcast examples include:
+
+			Boot:			Once the device is booted all programs are notified, should there be any initialisation/data request tasks that they need to perform.
+			Call:			Once the device receives an incoming call, any audio/music App's may mute.
+			Airplane Mode:		Once the device is in Airplane Mode App adjusts accordingly.
+
+		- Broadcast is sent e.g. via a Button:
+
+			Button(onClick = {
+			    sendBroadcast(Intent("TEST_ACTION"))		//Send a custom broadcast with the custom string "TEST_ACTION"
+			}){
+			    Text(text = "Send Broadcast")			//Trailing Lambda defines the label on the button
+			}
+
+		- Broadcast is consumed/handled via a Broadcast Receiver which is a class.
+
+			1. Create a class which extends 'BroadcastReceiver' to handle any incoming Broadcast:
+
+				class myBroadcastReceiver: BroadcastReceiver() {
+
+			    	    override fun onReceive(context: Context?, intent: Intent?) {
+					if(intent?.action == Intent.ACTION_AIRPLACE_MODE_CHANGED)		//Check the contents/nature/type of the Intent
+					{
+				    	    val isTurnedOn = Settings.Global.getInt(context?.contentResolver, Settings.Global.AIRPLANE_MODE_ON) != 0
+
+				    	    println("Is Airplane Mode on: $isTurnedOn")
+					}
+				    }
+				}
+
+			2. Register Receiver in MainActivty:
+
+				class MainActivity: ...
+				{
+				    private val airPlaneModeReceiver = AirplaneModeReceiver()
+
+				    override fun onCreate( ...
+					registerReceiver(airPlaneModeReceiver, IntentFilter(Intent.ACTION_AIRPLACE_MODE_CHANGED))
+
+				    ...
+
+				    override fun onDestroy() {
+					super.onDestry()
+					unregisterReciever(airPlaneModeReceiver)
+				    }
+				}
+
+			3. Unregister Receiver in MainActivity within onDestroy()
+
+		- Broadcast Receivers can be Dynamic or Static:
+
+			Dynamic:	- Created/destroyed explicitly as required.
+					- Only consumes/processes the event when App is running.
+					- Defined with in the source code.
+
+			Static:		- Consume/processes at all times even when App is not running e.g. Bootup.
+					- Notifications are limited in order to preserve battery.
+					- Defined within the manifest file.
+
+						<receiver android:name="...">
+						    <intent-filter>
+							...
+						    </intent-filter>
+						</receiver>
+
+					- If the Broadcast was issued by an App (opposed to OS) then the sending App must explicitly declare/define the target App and its package to receive/consume the Broadcast.
+
+	Services:
+
+		- Service is an application which run in the background:
+
+			Service:		Runs in background without UI, user unaware e.g. data retrieval/sync		OS can stop 	(at anytime when resources low)			Work Manager
+			Foreground Service:	Runs in backgroudd with UI, user aware e.g. music, running application		OS can not stop	(presumes user wants it running)		Most Common Form of Service
+
+		- Service is a component just like an activity but without a UI.
+		- Service is typically implemented/handled within a class which extends 'Service' and overrides applicable functions, for full demo template:
+
+			https://www.youtube.com/watch?v=YZL-_XJSClc&list=PLQkwcJG4YTCSVDhww92llY3CAnc_vUhsm&index=8
+
+		- Service and permissions need to be declared within manifest (as with any Android component).
+
+	Work Manager:
+
+		- Work Manager is a facility provided by the OS.
+		- Work Manager provides the ability to run long running or periodic tasks in the background safely with guarantee that they will always run and not be stopped by OS.
+		- Work Manager creates 'workers' by extending 'CoroutineWorker', I presume back ground threads in order for the work to be completed, for full demo:
+
+			https://www.youtube.com/watch?v=A2JetouoNSc&list=PLQkwcJG4YTCSVDhww92llY3CAnc_vUhsm&index=9
+
+		- Work Manager 'workers' are expected to finish as some point in time, not to run indefinitely, therefore such conditions need to be added to the defined Worker.
+
+	URI:
+
+		- URI (Unique Resource Identifier) may refer to any resources on the device.
+		- URI is a path to a specific resource.
+		- URI are unlike a constant/fixed path in Windows/OS which is a path to a file/resource where always have permission to access, but rather formed of x4 differing types:
+
+			Resource	File
+			Data		Content
+
+			class MainActivity : ComponentActivity() {
+			    override fun onCreate(...)
+			    {
+				val uri = Uri.parse("android.resource://$packageName/drawable/myPicture.jpg")			//Resource URI
+				val file = FIle(filesDir, myPicture.jpg)							//File URI
+				val data = Uri.parse("data:text/plain;charset=UTF-8,Hello&20World")				//Data URI
+			    }
+			}
+
+		- URI can be passed between Apps however it may be likely that there will be permission issues, therefore URI's should primarily be used within own App only.
+		- URI require specific considerations when being used to ensure that permissions are handled appropriately
+		- URI interact with App memory/storage:
+
+			Internal:	Apps contain their own internal private file system
+			External:	Apps may access shared external storage
+
+	Content Providers:
+
+		- Content Providers are mechanisms within your App to provide content/resources to other external Apps.
+		- Content Providers are exposed by Apps for use/consumption by other Apps e.g.
+
+			Contacts:	A native Contacts List App includes a Content Provider of those contacts for use by another App.
+			Calendar:	A native Calendar App includes a Content Provider that issues/sends all calendar events to another App which subscribes/consumes those events.
+			Media Store:	Common Content Provider of all media aspects within device
+
+		- Content Providers typically provide an advanced API for sorting/querying/filtering content and its metadata similar to database.
+		- Content Providers can be included within own App as per demo:
+
+			https://www.youtube.com/watch?v=IVHZpTyVOxU&list=PLQkwcJG4YTCSVDhww92llY3CAnc_vUhsm&index=11
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
