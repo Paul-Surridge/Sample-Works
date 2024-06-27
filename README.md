@@ -11,20 +11,20 @@ Please find a repository containing the following folders/files:
 
 **/Projects/Crestron and AMX:**
 
-	Folder contains x1 Crestron and x1 AMX project for review:
+	Folder contains x1 Crestron and x1 AMX project:
 
 	1. Video Wall and DM-NVX Digital Signage:		Management and Control (Crestron)
 	2. Integrated Cisco C-Series and Presentation:		DVX-Series Processor (AMX)
 
 **/Projects/Java:**
 
-	Folder contains x3 java/javaFX projects for review:
+	Folder contains x3 java/javaFX projects:
 
-	1. Bank Accounts Manager	Advanced chart analysis of personal banking history
+	1. Bank Account Manager		Advanced chart analysis of personal banking history
 	2. Sample Code			Source code and reference material repository
 	3. Classic Games		Poker, space invaders, pong and missile command
 	
-	Bank Accounts Manager is the most advanced and substantial program containing sample transaction
+	Bank Accounts Manager is the more advanced and substantial program containing sample transaction
 	data for demonstration purposes.
 
 	Projects can be reviewed/run within either Netbeans or IntelliJ as described in the enclosed file
@@ -32,10 +32,10 @@ Please find a repository containing the following folders/files:
 
 **/Screenshots:**
 
-	Folder contains:
+	Folder contains screenshots of the following:
 
-	1. Java/JavaFX:		Screenshots of the x3 projects contained in the Projects folder
-	2. Crestron/AMX:	Screenshots of x7 Crestron/AMX projects completed at previous employer
+	1. x3 Java/JavaFX projects contained in the Projects folder
+	2. x7 Crestron/AMX projects completed at AVMI (previous employer)
 
 **/Research**
 
