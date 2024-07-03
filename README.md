@@ -2,9 +2,9 @@
 
 Please find a repository containing the following folders/files:
 
-	1. Projects			Sample java/javaFX, Crestron and AMX projects
+	1. Projects			Sample Crestron/AMX and java/javaFX projects
 	2. Research			Sample of collated key concepts, constructs, syntax 
-	3. Screenshots			Sample java/javaFX, Crestron and AMX screenshots
+	3. Screenshots			Sample Crestron/AMX and java/javaFX screenshots
 	4. Pandemic and Prof. Dev.	Summary of pandemic, redundancy and professional development
 	5. Software Principles		Summary of personal principles applied to all software
 	6. Software Proficiencies	Summary of proficiencies within all languages/technologies
@@ -34,8 +34,8 @@ Please find a repository containing the following folders/files:
 
 	Folder contains screenshots of the following:
 
-	1. x3 Java/JavaFX projects contained in the Projects folder
-	2. x7 Crestron/AMX projects completed at AVMI (previous employer)
+	1. x7 Crestron/AMX projects completed at AVMI (previous employer)
+	2. x3 Java/JavaFX projects contained in the Projects folder
 
 **/Research**
 
