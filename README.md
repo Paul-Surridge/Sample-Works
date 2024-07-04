@@ -13,9 +13,9 @@ Please find a repository containing the following folders/files for review:
 
 	Folder contains x3 java/javaFX projects:
 
-	1. Bank Account Manager		Advanced chart analysis of personal banking history
-	2. Sample Code			Source code and reference material repository
-	3. Classic Games		Poker, space invaders, pong and missile command
+		1. Bank Account Manager		Advanced chart analysis of personal banking history
+		2. Sample Code			Source code and reference material repository
+		3. Classic Games		Poker, space invaders, pong and missile command
 	
 	Bank Accounts Manager is the more advanced and substantial program containing sample transaction
 	data for demonstration purposes.
@@ -27,8 +27,8 @@ Please find a repository containing the following folders/files for review:
 
 	Folder contains screenshots of the following:
 
-	1. x3 Java/JavaFX projects contained in the Projects folder
-	2. x7 Crestron/AMX projects completed at AVMI (previous employer)
+		1. x3 Java/JavaFX projects contained in the Projects folder
+		2. x7 Crestron/AMX projects completed at AVMI (previous employer)
 
 **/Research**
 
