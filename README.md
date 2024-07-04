@@ -2,21 +2,14 @@
 
 Please find a repository containing the following folders/files:
 
-	1. Projects			Sample Crestron/AMX and java/javaFX projects
+	1. Projects			Sample x3 java/javaFX projects
 	2. Research			Sample of collated key concepts, constructs, syntax 
-	3. Screenshots			Sample Crestron/AMX and java/javaFX screenshots
+	3. Screenshots			Sample java/javaFX and Crestron/AMX screenshots
 	4. Pandemic and Prof. Dev.	Summary of pandemic, redundancy and professional development
 	5. Software Principles		Summary of personal principles applied to all software
 	6. Software Proficiencies	Summary of proficiencies within all languages/technologies
 
-**/Projects/Crestron and AMX:**
-
-	Folder contains x1 Crestron and x1 AMX project:
-
-	1. Video Wall and DM-NVX Digital Signage:		Management and Control (Crestron)
-	2. Integrated Cisco C-Series and Presentation:		DVX-Series Processor (AMX)
-
-**/Projects/Java:**
+**/Projects:**
 
 	Folder contains x3 java/javaFX projects:
 
@@ -34,8 +27,8 @@ Please find a repository containing the following folders/files:
 
 	Folder contains screenshots of the following:
 
-	1. x7 Crestron/AMX projects completed at AVMI (previous employer)
-	2. x3 Java/JavaFX projects contained in the Projects folder
+	1. x3 Java/JavaFX projects contained in the Projects folder
+	2. x7 Crestron/AMX projects completed at AVMI (previous employer)
 
 **/Research**
 
