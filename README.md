@@ -5,9 +5,8 @@ Please find a repository containing the following folders/files for review:
 	1. Projects			Sample x3 java/javaFX projects
 	2. Research			Sample of collated key concepts, constructs, syntax 
 	3. Screenshots			Sample of java/javaFX and Crestron/AMX screenshots
-	4. Pandemic and Prof. Dev.	Summary of pandemic, redundancy and professional development
-	5. Software Principles		Summary of personal principles applied to all software
-	6. Software Proficiencies	Summary of proficiencies within all languages/technologies
+	4. Software Principles		Summary of personal principles applied to all software
+	5. Software Proficiencies	Summary of proficiencies within all languages/technologies
 
 **/Projects:**
 
